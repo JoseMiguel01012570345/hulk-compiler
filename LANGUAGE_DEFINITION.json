@@ -25,13 +25,15 @@
 
     ],
     "simbols":[
-        
+        "[",
+        "]"
     ],
     "simbol_accesors":[
 
     ],
     "simbol_agrupators":[
-
+        "[",
+        "]"
     ],
     "simbol_separators":[
 

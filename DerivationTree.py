@@ -2,7 +2,7 @@ from EnumsTokensDefinition import TokenType, Type, Keyword
 from HULK_LANGUAGE_DEFINITION import KEYWORD_VALUES, SIMBOL_VALUES, OPERATOR_VALUES
 from enum import Enum
 from TokensDefinition import SimbolToken, OperatorToken, LiteralToken
-import importing_file as impF
+import production_class_representation as pdr
 
 class NodeType(Enum):
 
@@ -155,46 +155,6 @@ class DerivationTree:
         return ASTNode
 
     pass
-
-class ASTNode:
-    
-    """
-    defines the nodes of the AST
-
-    > token: Token
-    > token -> token corresponding to the node
-    > kwargs -> must contain the functions 'Resolver', 'Checker', and Type
-    > Resolver must receive as parameters the value of this node and its children
-    > Checker must receive as parameters the value of this node, its children, and a dictionary with the context up to the
-    > Both, the Resolver and the Checker must return a tuple where the first value is the result and the second the error in case of occurrence
-    
-    """   
-    @property
-    def set_identifier(self,id):  
-        
-        self.id = id
-        
-        return self.id
-    
-    def get_context(self):
-        
-        # work with the Contex_Builder to return a context
-        
-        pass
-    
-    def context_check(self):
-        
-        pass
-
-    def type_checking(self):
-        pass        
-
-    def cil_node_code(self):
-        """
-        return CIL codes
-
-        """
-        pass
     
 class builder:
 
@@ -202,7 +162,8 @@ class builder:
         
         feature = self.filter_feature(label)
         
-        return feature
+        self.feature = feature        
+        
 
     def filter_feature(self,label):
         
@@ -221,7 +182,8 @@ class builder:
         features = []
         try:
             
-            features.append( impF.pdr.function_call(token_list) )
+            features.append( pdr.function_call(token_list) )
+            
             
             
             pass
@@ -234,15 +196,15 @@ class builder:
     
     def F(self ,toke_list:list):
         
-        return impF.pdr.function_call(toke_list)
+        return pdr.function_call(toke_list)
         
     def c(self,token_list):
         
-        return impF.pdr.function_name(token_list)
+        return pdr.function_name(token_list)
     
     def P(self,toke_list):
         
-        return impF.pdr.params(toke_list)
+        return pdr.params(toke_list)
     
     def T(self,token_list):
         
@@ -265,7 +227,7 @@ class builder:
     
     def p(self,toke_list):
         
-        return impF.pdr.params(toke_list)
+        return pdr.params(toke_list)
     
     def if_(self,toke_list):
         return  

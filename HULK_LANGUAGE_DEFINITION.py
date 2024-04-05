@@ -1,5 +1,4 @@
 from EnumsTokensDefinition import Keyword,Simbol,Operator
-from OperatorResolvers import *
 import json
 
 """
@@ -197,12 +196,12 @@ OPERATOR_VALUES = [
     '--',
     ':=',
     '!',
-    '?',
     '&',
     '|',
-    '~',
+    '!',
     'is',
-    'as'
+    'as',
+    '@@',
 ]
 
 OPERATOR_DICT = {
@@ -223,10 +222,9 @@ OPERATOR_DICT = {
     '--' : Operator.MMinus,
     ':=' : Operator.DoublePointEq,
     '!' : Operator.Distint,
-    '?' : Operator.Ask,
     '&' : Operator.And,
     '|' : Operator.Or,
-    '~' : Operator.Not,
+    '!' : Operator.Not,
     'is' : Operator.Is,
     'as' : Operator.As
 }
@@ -245,32 +243,6 @@ OPERATORS_UNARY = [
     '++',
     '--'
 ]
-
-OPERATOR_RESOLVERS = {
-    '+' : PlusOperatorResolver,
-    '-' : MinusOperatorResolver,
-    '*' : MulOperatorResolver,
-    '/' : DivOperatorResolver,
-    '^' : ExpOperatorResolver,
-    '%' : RestOperatorResolver,
-    '<' : LessThanOperatorResolver,
-    '>' : GreatherThanOperatorResolver,
-    '<=' : LessEqThanOperatorResolver,
-    '>=' : GreatherEqThanOperatorResolver,
-    '=' : EqOperatorResolver,
-    '==' : DoubleEqOperatorResolver,
-    '@': ConcatOperatorResolver,
-    '++' : PPlusOperatorResolver,
-    '--' : MMinusOperatorResolver,
-    ':=' : DoublePointEqOperatorResolver,
-    '!' : DistintOperatorResolver,
-    '?' : AskOperatorResolver,
-    '&' : AndOperatorResolver,
-    '|' : OrOperatorResolver,
-    '~' : NotOperatorResolver,
-    'is' : IsOperatorResolver,
-    'as' : AsOperatorResolver
-}
 
 SIMBOL_VALUES = [
     "(",

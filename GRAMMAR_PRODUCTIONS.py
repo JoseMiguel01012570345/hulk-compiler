@@ -19,7 +19,7 @@ gramar =[
 # expression_block
 [
     ["O",[["E","E"],["O","$2","O"], ["T","$2","O"] ,["O","E"],["O","B"],["O","$2","b"],["b","$2","E"],["M","E"],["E","M"],["O","M"],["M","O"],['O','Q'],['Q','$2']]],
-    ['O',[["E","$2","M"],['M','$2','O']]],
+    ['O',[["E","$2","M"],['M','$2','O'],['O','T']]],
     ["O",[["O","$2","E"],["E","$2","b"] , ["E","$2","O"],["O","$2"] , ["O",";"],["E","$2","E"],["b","$2","b"],[ 'O', '$2', 'M']]],
     ["b",[["{","O","}"],["{","E","}"],["{","B","}"],["{","}"],["b","$2"],["{","b","}"],["{","T","}"]]],
     ["B",[["b",";"]]],
@@ -155,8 +155,7 @@ def traslator(token_list:list):
     parse_list=[("$1",None)]
     parse_list.append(("$2",None))
     
-    token_list.insert(0,"{")
-    token_list.insert(-1,"}")
+    parse_list.append(("{",None))
     
     index=0
     while index < len(token_list ):
@@ -168,9 +167,11 @@ def traslator(token_list:list):
                 
                 if token_list[index1] == "'" or token_list[index1] == "\"" :
                 
-                    builder = DT.builder( "T")
+                    builder = DT.builder( "T").feature
                     
                     parse_list.append(("T", DT.DerivationTree( token_list[index1] , None ,builder) ) )
+                    #parse_list.append(("T", None ) )
+                    
                     index = index1
                     index += 1
                 
@@ -186,7 +187,7 @@ def traslator(token_list:list):
                 if arg == "in":
                     parse_list.append(("$2",None))
                     
-                parse_list.append((token_list[index],None))
+                parse_list.append((token_list[index].Text,None))
                 
                 if arg == ";" or arg == ")" or arg == "}" or arg == "]" or arg == "," or arg == "=>":
                     
@@ -199,18 +200,21 @@ def traslator(token_list:list):
             
             if index + 1 < len(token_list) and token_list[index + 1 ].Text == "(" :
                 
-                builder = DT.builder( "c")
+                builder = DT.builder( "c").feature
                 
-                parse_list.append(("c", DT.DerivationTree( token_list[index] , None ,builder) ) )
+            parse_list.append(("c", DT.DerivationTree( token_list[index] , None ,builder) ) )
+            #parse_list.append(("c", None ) )
             
-            else:
+        else:
                 
-                builder = DT.builder("T")
-                
-                parse_list.append(("T", DT.DerivationTree( token_list[index] , None ,builder) ) )
+            builder = DT.builder("T").feature
+            parse_list.append(("T", None ))
+            
+            #parse_list.append(("T", DT.DerivationTree( token_list[index] , None ,builder) ) )
                 
         index += 1
     
     parse_list.append(("$3",None))
-    
+    parse_list.insert(-1,("}",None))
+        
     return parse_list

@@ -1,7 +1,7 @@
 from RegExDefinitions import TokenFinitRegEx
 from RegExInterface import State,IRegEx
 import GRAMMAR_PRODUCTIONS as GD
-import DerivationTree
+import DerivationTree as dt
 
 class Parser():
     
@@ -43,12 +43,13 @@ class Parser():
         self._error = None
         self._match = False
         self._stack = []
-        self.derivation_Tree: DerivationTree.DerivationTree = None
+        self.derivation_Tree: dt.DerivationTree = None
         
         parsed_code = self.gradient_parser(grammar,self._stack,code)
         
+        print(parsed_code)
         if not parsed_code:
-            self.Error = True
+            self._error = True
         
         pass
     
@@ -256,7 +257,7 @@ class Parser():
         new_pointer = []
         for p in pointer:
             
-            if p[0] <= len(stack) - 1 and p[1] == stack[p[0] ]:
+            if p[0] <= len(stack) - 1 and p[1] == stack[p[0]][0]:
                 new_pointer.append(p)
         
         new_pointer.append(pointer[-1])
@@ -299,21 +300,20 @@ class Parser():
                     stack,self.stack_pointer = self.reduce_pointer( self.stack_pointer ,stack) # reduce the stack pointer
                     
                     shift = shift = self._shift_reduce( pivot= code[index_pointer][0] ,index_pointer = len(stack) , next_point= next_pointer ) # check again | shift or reduce
-                
+            
             stack.append( code[index_pointer] )
             
             index_pointer += 1
     
         return self.parsed_code(stack)
     
-    @property
     def derivation_tree(self, label , token_list):
         
         '''
         pattern to follow -> existing tree is child of the new node
         '''
-        builder = DerivationTree.builder( label ) # pick the builder
+        builder = dt.builder( label ).feature # pick the builder
         
-        tree = DerivationTree( label , token_list ,builder) # build derivation tree
+        tree = dt.DerivationTree( label , token_list ,builder) # build derivation tree
         
-        return tree
+        return None

@@ -1,13 +1,52 @@
-import importing_file as impF
-
+import HULK_LANGUAGE_DEFINITION as hulk
+import EnumsTokensDefinition as enumTD
 '''
 NOTE:
 
-token_list is of the form : ( label , ASTnode )
+token_list is of the form : ( label , ASTNode )
 
 '''
+class ASTNode:
+    
+    """
+    defines the nodes of the AST
 
-class function_call( impF.dt.ASTNode):
+    > token: Token
+    > token -> token corresponding to the node
+    > kwargs -> must contain the functions 'Resolver', 'Checker', and Type
+    > Resolver must receive as parameters the value of this node and its children
+    > Checker must receive as parameters the value of this node, its children, and a dictionary with the context up to the
+    > Both, the Resolver and the Checker must return a tuple where the first value is the result and the second the error in case of occurrence
+    
+    """   
+    @property
+    def set_identifier(self,id):  
+        
+        self.id = id
+        
+        return self.id
+    
+    def get_context(self):
+        
+        # work with the Contex_Builder to return a context
+        
+        pass
+    
+    def context_check(self):
+        
+        pass
+
+    def type_checking(self):
+        pass        
+
+    def cil_node_code(self):
+        """
+        return CIL codes
+
+        """
+        pass
+
+class function_call( ASTNode):
 
     def __init__( self, token_list ):
         
@@ -17,7 +56,7 @@ class function_call( impF.dt.ASTNode):
         
         pass
 
-class function_name(impF.dt.ASTNode):
+class function_name(ASTNode):
         
         def __init__(self,token_list):
 
@@ -28,7 +67,7 @@ class function_name(impF.dt.ASTNode):
             
         pass
 
-class params( impF.dt.ASTNode):
+class params( ASTNode):
     
     parameters = []
     
@@ -70,7 +109,13 @@ class params( impF.dt.ASTNode):
 
 class binary_expression:
     
-    def __init__(self,token_list):
+    def __init__(self,token_list:list):
+        
+        try:
+            if not token_list[1].type() == enumTD.OperatorType.Binary or token_list[1] == ':' or token_list[1] == 'in' :
+                return False
+        except:
+            return False
         
         binary_expresion =[ ('+',self.plus(token_list)) , ('-', self.minus(token_list)) ,
                             ('*', self.multiplication(token_list)) ,('/', self.divition(token_list)) ,
@@ -94,7 +139,7 @@ class binary_expression:
     
                 return item[1]
     
-    class dot(impF.dt.ASTNode):
+    class dot(ASTNode):
         
         def __init__(self,token_list):
             
@@ -106,7 +151,7 @@ class binary_expression:
         
         pass
         
-    class in_(impF.dt.ASTNode):
+    class in_(ASTNode):
         
         def __init__(self,token_list):
             
@@ -118,7 +163,7 @@ class binary_expression:
         
         pass
 
-    class plus(impF.dt.ASTNode):
+    class plus(ASTNode):
             
             def __init__(self,token_list):
               
@@ -128,7 +173,7 @@ class binary_expression:
                 
             pass      
   
-    class minus(impF.dt.ASTNode):
+    class minus(ASTNode):
         
         def __init__(self,token_list):
             
@@ -138,7 +183,7 @@ class binary_expression:
 
         pass
     
-    class multiplication(impF.dt.ASTNode):
+    class multiplication(ASTNode):
         
         def __init__(self,token_list):
             
@@ -148,7 +193,7 @@ class binary_expression:
 
         pass
     
-    class divition(impF.dt.ASTNode):
+    class divition(ASTNode):
         
         def __init__(self,token_list):
             
@@ -158,7 +203,7 @@ class binary_expression:
 
         pass
     
-    class _pow(impF.dt.ASTNode):
+    class _pow(ASTNode):
         
         def __init__(self,token_list):
             
@@ -168,7 +213,7 @@ class binary_expression:
 
         pass
     
-    class per_cent(impF.dt.ASTNode):
+    class per_cent(ASTNode):
         
         def __init__(self,token_list):
             
@@ -178,7 +223,7 @@ class binary_expression:
 
         pass
     
-    class concatenation(impF.dt.ASTNode):
+    class concatenation(ASTNode):
         
         def __init__(self,token_list):
             
@@ -188,7 +233,7 @@ class binary_expression:
 
         pass
     
-    class blank_space_concatenation(impF.dt.ASTNode):
+    class blank_space_concatenation(ASTNode):
         
         def __init__(self,token_list):
             
@@ -198,7 +243,7 @@ class binary_expression:
 
         pass
    
-    class double_dot(impF.dt.ASTNode):
+    class double_dot(ASTNode):
         
         def __init__(self,token_list):
             
@@ -208,7 +253,7 @@ class binary_expression:
         
         pass
     
-    class double_dot_equal(impF.dt.ASTNode):
+    class double_dot_equal(ASTNode):
         
         def __init__(self,token_list):
             
@@ -218,7 +263,7 @@ class binary_expression:
         
         pass
     
-    class as_(impF.dt.ASTNode):
+    class as_(ASTNode):
         
         def __init__(self,token_list):
             
@@ -228,7 +273,7 @@ class binary_expression:
             
         pass
     
-    class is_(impF.dt.ASTNode):
+    class is_(ASTNode):
         
         def __init__(self,token_list):
             
@@ -238,7 +283,7 @@ class binary_expression:
             
         pass
     
-    class equal(impF.dt.ASTNode):
+    class equal(ASTNode):
         
         def __init__(self,token_list):
             
@@ -248,7 +293,7 @@ class binary_expression:
         
         pass
     
-    class bigger_than(impF.dt.ASTNode):
+    class bigger_than(ASTNode):
         
         def __init__(self,token_list):
             
@@ -258,7 +303,7 @@ class binary_expression:
         
         pass
     
-    class smaller_than(impF.dt.ASTNode):
+    class smaller_than(ASTNode):
         
         def __init__(self,token_list):
             
@@ -268,7 +313,7 @@ class binary_expression:
         
         pass
     
-    class bigger_or_equal(impF.dt.ASTNode):
+    class bigger_or_equal(ASTNode):
         
         def __init__(self,token_list):
             
@@ -278,7 +323,7 @@ class binary_expression:
         
         pass
     
-    class smaller_or_equal(impF.dt.ASTNode):
+    class smaller_or_equal(ASTNode):
         
         def __init__(self,token_list):
             
@@ -288,7 +333,7 @@ class binary_expression:
         
         pass
     
-    class assign(impF.dt.ASTNode):
+    class assign(ASTNode):
         
         def __init__(self,token_list):
             
@@ -298,7 +343,7 @@ class binary_expression:
         
         pass
     
-    class or_(impF.dt.ASTNode):
+    class or_(ASTNode):
         
         def __init__(self,token_list):
             
@@ -308,7 +353,7 @@ class binary_expression:
         
         pass
     
-    class and_(impF.dt.ASTNode):
+    class and_(ASTNode):
         
         def __init__(self,token_list):
             
@@ -318,7 +363,7 @@ class binary_expression:
         
         pass
     
-    class different(impF.dt.ASTNode):
+    class different(ASTNode):
         
         def __init__(self,token_list):
             
@@ -328,7 +373,7 @@ class binary_expression:
         
         pass
     
-    class divide_and_assign(impF.dt.ASTNode):
+    class divide_and_assign(ASTNode):
         
         def __init__(self,token_list):
             
@@ -338,7 +383,7 @@ class binary_expression:
         
         pass
     
-    class multiply_and_assign(impF.dt.ASTNode):
+    class multiply_and_assign(ASTNode):
         
         def __init__(self,token_list):
             
@@ -348,7 +393,7 @@ class binary_expression:
         
         pass
     
-    class plus_and_assign(impF.dt.ASTNode):
+    class plus_and_assign(ASTNode):
         
         def __init__(self,token_list):
             
@@ -358,7 +403,7 @@ class binary_expression:
         
         pass
     
-    class minus_and_assign(impF.dt.ASTNode):
+    class minus_and_assign(ASTNode):
         
         def __init__(self,token_list):
             
@@ -372,10 +417,12 @@ class unary_expression:
     
     def __init__(self,token_list):
     
+        if hulk.OPERATORS_UNARY.__contains__(token_list[0]):
+            return False
+        
         unary = [ ('!',self.not_(token_list)),
                    ('++',self.plus_plus(token_list)),
                    ('--',self.minus_minus(token_list)),
-                   ('let',self.let(token_list))
                  ]
         
         for item in unary:
@@ -384,50 +431,52 @@ class unary_expression:
                 
                 return item[1]
     
-    class not_(impF.dt.ASTNode):
+    class not_(ASTNode):
         
         def __init__(self,token_list):
             
             self.set_identifier('!')
             self.right = token_list[1][1]
             
-    class plus_plus(impF.dt.ASTNode):
+    class plus_plus(ASTNode):
         
         def __init__(self,token_list):
             
             self.set_identifier('++')
             self.right = token_list[1][1]
     
-    class minus_minus(impF.dt.ASTNode):
+    class minus_minus(ASTNode):
         
         def __init__(self,token_list):
             
             self.set_identifier('--')
             self.right = token_list[1][1]
-    
-    class let(impF.dt.ASTNode):
-        
-        def __init__(self,token_list):
-            
-            self.set_identifier('let')
-            self.right = token_list[1][1]
-    
-class variable(impF.dt.ASTNode):
+     
+class variable(ASTNode):
     
     def __init__(self,token_list):
+        
+        if hulk.SYMBOLS_and_OPERATORS_parser.__contains__(token_list[0]): 
+            return False
         
         self.set_identifier('var')
         self.name=token_list[0]
-        
+    
         pass
 
-class variable_def(impF.dt.ASTNode):
+class variable_def(ASTNode):
     
     def __init__(self,token_list):
         
-        self.set_identifier('declare_var')
-        self.null_son = None
-        self.expression = token_list[1][1]
+        try:
+        
+            if token_list[0] == 'let':
+        
+                self.set_identifier('declare_var')
+                self.null_son = None
+                self.expression = token_list[1][1]
+        except:
+            return False
         
         pass
     
