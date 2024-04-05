@@ -127,7 +127,6 @@ class builder:
         return 
     
     def N(self,token_list):
-        
         return None  
     
     def O(self,token_list):
@@ -150,10 +149,10 @@ class builder:
         return  pdr.elif_(token_list)
     
     def M(self,token_list):
-        return pdr.type_or_function(token_list).selection
+        return pdr.type_or_function_or_protocol(token_list).selection
     
     def Q(self,token_list):
-        return pdr.def_function(token_list) 
+        return pdr.type_or_function_or_protocol(token_list).selection
     
     def E(self,token_list):
         return pdr.expression_E(token_list)

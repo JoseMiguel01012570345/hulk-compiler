@@ -519,6 +519,14 @@ class if_(ASTNode):
     avaliable = False
     def __init__(self,token_list):
         
+        if token_list[0][0] == 'if': 
+            
+            self.avaliable = True
+            self.set_identifier(id='if')
+            
+            self.condition = token_list[1][1]
+            self.body = token_list[2][1]
+        
         pass
     
     pass
@@ -528,11 +536,18 @@ class elif_(ASTNode):
     avaliable = False
     def __init__(self,token_list):
         
+        if token_list[0][0] == 'if' and token_list[1][0] == 'elif' : 
+            
+            self.avaliable = True
+            self.set_identifier(id='elif')
+            self.condition = token_list[2][1]
+            self.body = token_list[3][1]
+        
         pass
     
     pass
 
-class type_or_function:
+class type_or_function_or_protocol:
     
     avaliable = False
     selection = None
@@ -546,15 +561,71 @@ class type_or_function:
         
         avaliable = False
         def __init__(self,token_list):
+            
+            
+        
             pass
         
         pass
 
-    class def_type(ASTNode):
+    class type_(ASTNode):
         
         avaliable = False
         def __init__(self,token_list):
             
+            if token_list[0][0] == 'type':
+                
+                self.set_identifier(id='type')
+                
+                self.name = token_list[1][1].name
+                self.body = None
+                self.constructor = None
+                
+                if token_list[1][1].id == 'FunctionCall':
+                    self.constructor = token_list[1][1].args
+                
+                self.parent_name = None
+                self.base = None
+                
+                if token_list[2][0] == 'inherits' :
+                    
+                    self.parent_name = token_list[3][1].name
+                    
+                    if token_list[3][1].id == 'FunctionCall':
+                        self.base = token_list[3][1].args
+                    
+                    self.body = token_list[4][1]
+                
+                    if self.constructor != None and self.base != None:
+                        self.avaliable = True
+                        
+                else:
+                    self.body = token_list[2][1]
+                
+            pass
+        
+    class protocol(ASTNode):
+        
+        avaliable = False
+        def __init__(self,token_list):
+            
+            if token_list[0][0] == 'protocol':
+            
+                self.set_identifier(id='protocol')
+                
+                self.name = token_list[1][1].name
+                self.body = None
+                
+                self.parent_name = None
+            
+                if token_list[2][0] == 'extends' :
+                    
+                    self.parent_name = token_list[3][1].name
+                    self.body = token_list[4][1]
+                        
+                else:
+                    self.body = token_list[2][1]
+        
             pass
 
 class expression_E(ASTNode):
@@ -564,4 +635,3 @@ class expression_E(ASTNode):
         pass
 
     pass
-
