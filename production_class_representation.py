@@ -575,7 +575,8 @@ class type_or_function_or_protocol:
                         self.anotated_type = token_list[3][0]
                         self.body = token_list
                     
-#                    elif token_list
+                    elif token_list:
+                        pass
                     
                 elif len(token_list) > 1 and token_list[1][0] == ':':
                     pass
