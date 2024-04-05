@@ -114,7 +114,7 @@ class builder:
         
     def c(self,token_list):
         
-        return pdr.function_name(token_list)
+        return pdr.variable(token_list)
     
     def P(self,toke_list):
         

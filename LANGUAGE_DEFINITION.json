@@ -36,7 +36,7 @@
         "]"
     ],
     "simbol_separators":[
-
+        
     ],
     "simbol_declarators":[
 
@@ -52,7 +52,8 @@
         "!",
         "!=",
         "&=",
-        "|="
+        "/=",
+        "||"
     ],
     "operators_unary":[
 

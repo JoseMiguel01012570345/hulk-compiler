@@ -230,6 +230,16 @@ class Parser():
             
             new_stack = self.remove_item_stack(stack=stack , pop_number= pop_number )
             
+            # -------------------------------------------------
+            
+            printing_stack = []
+            for item in new_stack:
+                printing_stack.append(item[0])
+            
+            printing_stack.append(best_match)
+            print(printing_stack)
+            
+            # -------------------------------------------------
             new_stack.append(( best_match , new_derivation_tree ))
             
             return new_stack , True
@@ -319,6 +329,6 @@ class Parser():
         '''
         
         
-        AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
+        #AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
         
-        return AST_node
+        return None

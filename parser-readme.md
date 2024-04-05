@@ -32,7 +32,7 @@
 
 - $T -> let\space  T \space|\space T:T$
 - $E -> let\space E \space|\space T:E$
-- $p -> T \$2 T \space|\space T \$2 p$
+- $p -> T \space , \space \$2 \space  T \space|\space T \space , \space \$2 p$
 - $T -> T:=T$
 - $E -> T:=E$
 - $T -> T=T$

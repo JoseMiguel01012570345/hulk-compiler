@@ -20,7 +20,7 @@ gramar =[
 # expression_block
 [
     ["O",[["E","E"],["O","$2","O"], ["T","$2","O"] ,["O","E"],["O","B"],["O","$2","b"],["b","$2","E"],["M","E"],["E","M"],["O","M"],["M","O"],['O','Q'],['Q','$2']]],
-    ['O',[["E","$2","M"],['M','$2','O'],['O','T']]],
+    ['O',[["E","$2","M"],['M','$2','O']]],
     ["O",[["O","$2","E"],["E","$2","b"] , ["E","$2","O"],["O","$2"] , ["O",";"],["E","$2","E"],["b","$2","b"],[ 'O', '$2', 'M']]],
     ["b",[["{","O","}"],["{","E","}"],["{","B","}"],["{","}"],["b","$2"],["{","b","}"],["{","T","}"]]],
     ["B",[["b",";"]]],
@@ -40,7 +40,8 @@ gramar =[
 
     ["T" , [ ["let","T"] , ["T",":","T"]]],
     ["E" , [ ["let","E"] , ["T",":","E"]]],
-    ["p" , [ ["T", ",","$2" ,"T" ] , ["T",",","$2","p"] ]], ## add function and types !!!!!!!!!!
+     ## add function and types !!!!!!!!!!
+    ["p" , [ ["T", ",","$2" ,"T" ] , ["T",",","$2","p"] ]],
     ["T" , [ ["T",":=","T"] ]],
     ["E" , [ ["T",":=","E"] ]],
     ["T" , [ ["T","=","T"]  ]],
@@ -93,7 +94,7 @@ gramar =[
     
     ["E" , [["for","T","$2","B"] , ["for","T","$2","E"], ["for","T","E"]]],
     ["E", [ ["for","T","$2","b"]]],
-    
+    ['T',[["for","T","$2","T"],["for","T","T"]]]
 ],
 
 # conditional
@@ -157,8 +158,8 @@ def traslator(token_list:list):
     parse_list.append(("$2",None))
     
     parse_list.append(("{",None))
-    print( [item.Text for item in token_list ])
     index=0
+    
     while index < len(token_list ):
         
         if token_list[index].Text =="'" or token_list[index].Text == "\"" : 
@@ -166,12 +167,12 @@ def traslator(token_list:list):
             index1 = index + 1
             while index1 < len(token_list):
                 
-                if token_list[index1] == "'" or token_list[index1] == "\"" :
+                if token_list[index1].Text == "'" or token_list[index1].Text == "\"" :
                 
-                    AST_node = DT.builder( "T" , [token_list[index1].Text, None ] ).ASTNode
+                    #AST_node = DT.builder( "T" , [token_list[index1].Text, None ] ).ASTNode
                     
-                    parse_list.append(("T", AST_node ) )
-                    #parse_list.append(("T", None ) )
+                    #parse_list.append(("T", AST_node ) )
+                    parse_list.append(("T", None ) )
                     
                     index = index1
                     index += 1
@@ -201,15 +202,16 @@ def traslator(token_list:list):
             
             if index + 1 < len(token_list) and token_list[index + 1 ].Text == "(" :
                 
-                AST_node = DT.builder( "c", [ (token_list[index].Text, None ) ] ).ASTNode
+                #AST_node = DT.builder( "c", [ (token_list[index].Text, None ) ] ).ASTNode
                 
-                parse_list.append(("c", AST_node ) )
-                #parse_list.append(("c", None ) )
+                #parse_list.append(("c", AST_node ) )
+                parse_list.append(("c", None ) )
             
             else:
                 
-                AST_node = DT.builder("T" , [ token_list[index].Text , None ] ).ASTNode
-                parse_list.append(("T", AST_node) )
+                #AST_node = DT.builder("T" , [ token_list[index].Text , None ] ).ASTNode
+                #parse_list.append(("T", AST_node) )
+                parse_list.append(("T", None) )
                     
         index += 1
     

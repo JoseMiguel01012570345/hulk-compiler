@@ -20,6 +20,8 @@ class ASTNode:
     
     """   
     
+    anotated_type = None
+    
     def set_identifier(self,id_:str):  
         
         self.id = id_
@@ -60,26 +62,9 @@ class function_call( ASTNode):
         
         except:    
             pass
+        
         pass
-
-class function_name(ASTNode):
-
-        avaliable = False
-        def __init__(self,token_list):
-
-            try:
-            
-                self.set_identifier( id_= "function_name")
-                self.name = token_list[0][0]
-                self.avaliable = True
-            
-            except:
-                pass    
-            
-            pass
-            
-        pass
-
+    
 class params( ASTNode):
     
     parameters = []
@@ -89,19 +74,17 @@ class params( ASTNode):
         
         self.set_identifier('params')
         
-        try:
+        if self.validator(token_list): self.avaliable = True
         
-            if token_list[0][0] == 'p': # if the first token is a param
+        if self.avaliable and token_list[0][0] == 'p': # if the first token is a param
             
-                param1 = token_list[0][1].parameters
+            self.parameters = token_list[0][1].parameters
             
-                for item in param1:
-                    self.parameters.append(item)
-                
-            else:
-                param1 = token_list[0][1]
-                
-                
+        elif self.avaliable:
+            
+            param1 = token_list[0][1]
+            self.parameters.append(param1)
+            
             if token_list[1][0] == 'p': #  if second token is a param, unbox param "p"
                 
                 for item in token_list[1][1].parameters:
@@ -109,18 +92,19 @@ class params( ASTNode):
                     self.parameters.append(item)
 
             else:
-                try:
                     
-                    param2 = token_list[1][1]
-                    self.parameters.append(param2)
-                    
-                
-                except: pass
+                param2 = token_list[1][1]
+                self.parameters.append(param2)
             
-            self.avaliable = True
-                                
-        except: self.avaliable = False
-    
+                            
+    def validator(self,token_list):
+        
+        if token_list[0][0] == 'p': return True
+        
+        if len(token_list)>1 and token_list[1][0] == ',': return True
+        
+        return False
+
     pass
 
 class binary_expression:
@@ -439,7 +423,7 @@ class unary_expression:
     def __init__(self,token_list):
     
         if hulk.OPERATORS_UNARY.__contains__(token_list[0]):
-            self.avaliable = False
+            pass
         
         else:
             self.avaliable = True
@@ -508,9 +492,7 @@ class variable_def(ASTNode):
                 self.null_son = None
                 self.expression = token_list[1][1]
         except:
-            self.avaliable = False
-        
-        pass
+            pass
     
     pass
 
@@ -562,9 +544,54 @@ class type_or_function_or_protocol:
         avaliable = False
         def __init__(self,token_list):
             
+            self.name = None
+            self.args = None
+            self.body = None
             
+            if self.validator(token_list):
+                
+                self.validator = True
+                self.set_identifier(id='function_form')
+                
+                
+                if token_list[0][0] == 'function':
+                    
+                    self.name = token_list[1][1].name
+                    self.args = token_list[1][1].args
+                    
+                    if token_list[2][1].id == 'block' or token_list[2][1].id == 'expression':
+                    
+                        self.body = token_list[2][1]
+                    
+                    elif token_list[2][0] == '=>':
+                        
+                        self.body = token_list[3][1]
+                    
+                    elif token_list[2][0] == ':':
+                        
+                        if token_list[2][1].id == 'function_form':
+                            self.anotated_type
+                        
+                        self.anotated_type = token_list[3][0]
+                        self.body = token_list
+                    
+#                    elif token_list
+                    
+                elif len(token_list) > 1 and token_list[1][0] == ':':
+                    pass
+                
+                else:
+                    pass
+            
+                pass
         
             pass
+        
+        def validator(self,token_list):
+            
+            
+            
+            return False
         
         pass
 

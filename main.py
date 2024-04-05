@@ -79,13 +79,18 @@ if not Error:
     tokens = [token for token in my_list if token.Text != '\n' and token.Text != ' ']
     
     my_list = tokens
-        
-    #print(my_list)
+    
+    # ----------------------------
+    zz=[]
+    for item in my_list:
+        zz.append(item.Text)
+    
+    print(zz)
+    # ----------------------------
     
     gd_token= GRAMMAR_PRODUCTIONS.traslator(my_list)
 
     #print(gd_token)
-
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
     
     
