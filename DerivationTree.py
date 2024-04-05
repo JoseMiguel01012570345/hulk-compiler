@@ -4,18 +4,6 @@ from enum import Enum
 from TokensDefinition import SimbolToken, OperatorToken, LiteralToken
 import production_class_representation as pdr
 
-class NodeType(Enum):
-
-    Variable = 0
-    Number = 1
-    String = 2
-    Boolean = 3
-    Function = 4
-    Type = 5
-    Undefined = 6
-
-    pass
-
 def AST(self):
         """
         retorna el AST asociado
