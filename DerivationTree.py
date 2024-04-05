@@ -95,16 +95,15 @@ class builder:
     def inicializer(self , token_list ) -> list :
         
         features = []
-        try:
             
-            features.append( pdr.function_call(token_list) )
-            
-            
-            
-            pass
+        features.append( pdr.function_call(token_list) )
+        features.append( pdr.function_name(token_list) )
+        features.append( pdr.params(token_list) )
+        features.append( pdr.binary_expression(token_list) )
+        features.append( pdr.unary_expression(token_list) )
+        features.append( pdr.variable(token_list) )
+        features.append( pdr.variable_def(token_list) )
         
-        except:
-            pass
         
         
         return
@@ -127,37 +126,37 @@ class builder:
         
         return 
     
-    def N(self,toke_list):
+    def N(self,token_list):
         
         return None  
     
-    def O(self,toke_list):
+    def O(self,token_list):
         return  
     
-    def b(self,toke_list):
+    def b(self,token_list):
         return  
     
-    def B(self,toke_list):
+    def B(self,token_list):
         return  
     
-    def p(self,toke_list):
+    def p(self,token_list):
         
-        return pdr.params(toke_list)
+        return pdr.params(token_list)
     
-    def if_(self,toke_list):
-        return  
+    def if_(self,token_list):
+        return  pdr.if_(token_list)
     
-    def elif_(self,toke_list):
-        return  
+    def elif_(self,token_list):
+        return  pdr.elif_(token_list)
     
-    def M(self,toke_list):
-        return  
+    def M(self,token_list):
+        return pdr.type_or_function(token_list).selection
     
-    def Q(self,toke_list):
-        return  
+    def Q(self,token_list):
+        return pdr.def_function(token_list) 
     
-    def E(self,toke_list):
-        return  
+    def E(self,token_list):
+        return pdr.expression_E(token_list)
     
     pass
 

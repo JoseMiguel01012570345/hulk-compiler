@@ -48,16 +48,22 @@ class ASTNode:
 
 class function_call( ASTNode):
 
+    avaliable = False
     def __init__( self, token_list ):
         
-        self.set_identifier('FunctionCall')
-        self.name = token_list[0][1].name
-        self.args = token_list[1][1]
+        try:
         
+            self.set_identifier('FunctionCall')
+            self.name = token_list[0][1].name
+            self.args = token_list[1][1]
+            self.avaliable = True
+        
+        except:    
+            pass
         pass
 
 class function_name(ASTNode):
-        
+
         avaliable = False
         def __init__(self,token_list):
 
@@ -124,6 +130,7 @@ class binary_expression:
     def __init__(self,token_list:list):
         
         try:
+            # fixxxxx
             if not token_list[1].type() == enumTD.OperatorType.Binary or token_list[1] == ':' or token_list[1] == 'in' :
                 pass
         except:
@@ -506,4 +513,55 @@ class variable_def(ASTNode):
         pass
     
     pass
+
+class if_(ASTNode):
     
+    avaliable = False
+    def __init__(self,token_list):
+        
+        pass
+    
+    pass
+
+class elif_(ASTNode):
+    
+    avaliable = False
+    def __init__(self,token_list):
+        
+        pass
+    
+    pass
+
+class type_or_function:
+    
+    avaliable = False
+    selection = None
+    
+    def __init__(self,token_list):
+        
+        
+                
+        pass
+    class def_function(ASTNode):
+        
+        avaliable = False
+        def __init__(self,token_list):
+            pass
+        
+        pass
+
+    class def_type(ASTNode):
+        
+        avaliable = False
+        def __init__(self,token_list):
+            
+            pass
+
+class expression_E(ASTNode):
+    
+    avaliable = False
+    def __init__(self,token_list):
+        pass
+
+    pass
+

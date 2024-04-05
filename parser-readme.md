@@ -89,7 +89,7 @@
 # While
 
 - $E ->  while \space T\$2B \space|\space while \space T\$2E \space|\space while\space T\space E$
-- $E -> while \space T\$2b $
+- $E -> while \space T \space \$2 \space b$ 
 
 - $E -> while \space T \space \$2 \space B | while \space T \space \$2 \space E \space | \space while \space T \space E \space$
 - $E -> while \space T \space \$2 \space b$
