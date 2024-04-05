@@ -216,6 +216,20 @@ class builder:
             if label == item[0]:
                 return item[1]
         
+    def inicializer(self , token_list ) -> list :
+        
+        features = []
+        try:
+            
+            features.append((impF.pdr.function_call(token_list)))
+            
+            pass
+        except:
+            pass
+        
+        
+        return
+    
     def F(self ,toke_list:list):
         
         return impF.pdr.function_call(toke_list)
@@ -235,7 +249,8 @@ class builder:
         return 
     
     def N(self,toke_list):
-        return  
+        
+        return None  
     
     def O(self,toke_list):
         return  
@@ -248,7 +263,7 @@ class builder:
     
     def p(self,toke_list):
         
-        return
+        return impF.pdr.params(toke_list)
     
     def if_(self,toke_list):
         return  
@@ -262,5 +277,9 @@ class builder:
     def Q(self,toke_list):
         return  
     
+    def E(self,toke_list):
+        return  
+    
     pass
+
 

@@ -1,5 +1,12 @@
 import importing_file as impF
 
+'''
+NOTE:
+
+token_list is of the form : ( label , ASTnode )
+
+'''
+
 class function_call( impF.dt.ASTNode):
 
     def __init__( self, token_list ):
@@ -28,16 +35,27 @@ class params( impF.dt.ASTNode):
     def __init__(self,token_list):
         
         self.set_identifier('params')
-        param1 = token_list[0][1]
         
-        self.parameters.append(param1)
+        if token_list[0][0] == 'p': # if the first token is a param
         
-        if token_list[1][0] == 'p': # unbox param "p"
-            
-            for item in token_list[1][1].parameters:
+            param1 = token_list[0][1].parameters
+        
+            for item in param1:
                 self.parameters.append(item)
             
-        else: 
+            return
+        
+        else:
+            param1 = token_list[0][1]
+        
+            
+        if token_list[1][0] == 'p': #  if second token is a param, unbox param "p"
+            
+            for item in token_list[1][1].parameters:
+                
+                self.parameters.append(item)
+
+        else:
             try:
                 
                 param2 = token_list[1][1]
@@ -403,6 +421,15 @@ class variable(impF.dt.ASTNode):
         
         pass
 
+class variable_def(impF.dt.ASTNode):
     
+    def __init__(self,token_list):
+        
+        self.set_identifier('declare_var')
+        self.null_son = None
+        self.expression = token_list[1][1]
+        
+        pass
     
+    pass
     
