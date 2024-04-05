@@ -43,7 +43,7 @@ class Parser():
         self._error = None
         self._match = False
         self._stack = []
-        self.derivation_Tree: dt.DerivationTree = None
+        self.derivation_Tree = None
         
         parsed_code = self.gradient_parser(grammar,self._stack,code)
         
@@ -224,7 +224,7 @@ class Parser():
             
         if len(best_match) > 0:
 
-            token_list = self.match_derivation_token( best_match , stack[ len(stack)- pop_number :] )
+            token_list = self.match_derivation_token( stack[ len(stack)- pop_number :] )
 
             new_derivation_tree = self.derivation_tree( best_match , token_list )
             
@@ -236,7 +236,7 @@ class Parser():
         
         return stack , False
     
-    def match_derivation_token(self, label ,reduced_token):
+    def match_derivation_token(self ,reduced_token):
         
         token_list = []
         
@@ -246,9 +246,9 @@ class Parser():
             if item[0] == "$1" or item[0] == "$2" or item[0] == "$3":
                 continue
     
-            token_list.append(item[1])
+            token_list.append(item)
         
-        return ( label, token_list )
+        return token_list
     
     def reduce_pointer( self , pointer:list , stack:list ): # pop all pointer which where reduced
         
@@ -266,8 +266,13 @@ class Parser():
         return stack,new_pointer
     
     def parsed_code(self,stack):
+        
+        if len(stack) == 3 and (stack[1][0] == "E" or stack[1][0] == "b" ):
             
-        return len(stack) == 3 and (stack[1][0] == "E" or stack[1][0] == "b" )
+            self.derivation_Tree = stack[1][1]
+            return True
+
+        return False
     
     def gradient_parser(self,gramar,stack:list , code ):        
         '''
@@ -277,7 +282,7 @@ class Parser():
         index_pointer = 1
         
         shift = True
-        print(code)
+        
         while index_pointer <  len(code) :
             
             next_pointer =- 1
@@ -312,8 +317,8 @@ class Parser():
         '''
         pattern to follow -> existing tree is child of the new node
         '''
-        builder = dt.builder( label ).feature # pick the builder
         
-        tree = dt.DerivationTree( label , token_list ,builder) # build derivation tree
         
-        return tree
+        AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
+        
+        return AST_node

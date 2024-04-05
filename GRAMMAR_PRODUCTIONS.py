@@ -1,4 +1,5 @@
 import HULK_LANGUAGE_DEFINITION as HK
+import production_class_representation as pdr
 
 gramar =[
 
@@ -167,9 +168,9 @@ def traslator(token_list:list):
                 
                 if token_list[index1] == "'" or token_list[index1] == "\"" :
                 
-                    builder = DT.builder( "T").feature
+                    AST_node = DT.builder( "T" , [token_list[index1].Text, None ] ).ASTNode
                     
-                    parse_list.append(("T", DT.DerivationTree( token_list[index1].Text , None ,builder) ) )
+                    parse_list.append(("T", AST_node ) )
                     #parse_list.append(("T", None ) )
                     
                     index = index1
@@ -200,15 +201,15 @@ def traslator(token_list:list):
             
             if index + 1 < len(token_list) and token_list[index + 1 ].Text == "(" :
                 
-                builder = DT.builder( "c").feature
+                AST_node = DT.builder( "c", [ (token_list[index].Text, None ) ] ).ASTNode
                 
-                parse_list.append(("c", DT.DerivationTree( token_list[index].Text , None ,builder) ) )
+                parse_list.append(("c", AST_node ) )
                 #parse_list.append(("c", None ) )
             
             else:
                 
-                builder = DT.builder("T").feature
-                parse_list.append(("T", DT.DerivationTree( token_list[index].Text , None ,builder) ) )
+                AST_node = DT.builder("T" , [ token_list[index].Text , None ] ).ASTNode
+                parse_list.append(("T", AST_node) )
                     
         index += 1
     

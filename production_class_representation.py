@@ -19,10 +19,10 @@ class ASTNode:
     > Both, the Resolver and the Checker must return a tuple where the first value is the result and the second the error in case of occurrence
     
     """   
-    @property
-    def set_identifier(self,id):  
+    
+    def set_identifier(self,id_:str):  
         
-        self.id = id
+        self.id = id_
         
         return self.id
     
@@ -58,11 +58,18 @@ class function_call( ASTNode):
 
 class function_name(ASTNode):
         
+        avaliable = False
         def __init__(self,token_list):
 
-            self.set_identifier("function_name")
-            self.name = token_list[0][1].name
-    
+            try:
+            
+                self.set_identifier( id_= "function_name")
+                self.name = token_list[0][0]
+                self.avaliable = True
+            
+            except:
+                pass    
+            
             pass
             
         pass
@@ -70,74 +77,79 @@ class function_name(ASTNode):
 class params( ASTNode):
     
     parameters = []
+    avaliable = False
     
     def __init__(self,token_list):
         
         self.set_identifier('params')
         
-        if token_list[0][0] == 'p': # if the first token is a param
+        try:
         
-            param1 = token_list[0][1].parameters
-        
-            for item in param1:
-                self.parameters.append(item)
+            if token_list[0][0] == 'p': # if the first token is a param
             
-            return
-        
-        else:
-            param1 = token_list[0][1]
-        
+                param1 = token_list[0][1].parameters
             
-        if token_list[1][0] == 'p': #  if second token is a param, unbox param "p"
-            
-            for item in token_list[1][1].parameters:
+                for item in param1:
+                    self.parameters.append(item)
                 
-                self.parameters.append(item)
+            else:
+                param1 = token_list[0][1]
+                
+                
+            if token_list[1][0] == 'p': #  if second token is a param, unbox param "p"
+                
+                for item in token_list[1][1].parameters:
+                    
+                    self.parameters.append(item)
 
-        else:
-            try:
+            else:
+                try:
+                    
+                    param2 = token_list[1][1]
+                    self.parameters.append(param2)
+                    
                 
-                param2 = token_list[1][1]
-                self.parameters.append(param2)
+                except: pass
             
-            except:
-                pass
-                
-        pass    
+            self.avaliable = True
+                                
+        except: self.avaliable = False
     
     pass
 
 class binary_expression:
     
+    avaliable = False
+    AST = None
     def __init__(self,token_list:list):
         
         try:
             if not token_list[1].type() == enumTD.OperatorType.Binary or token_list[1] == ':' or token_list[1] == 'in' :
-                return False
+                pass
         except:
-            return False
+            self.avaliable = True
         
-        binary_expresion =[ ('+',self.plus(token_list)) , ('-', self.minus(token_list)) ,
-                            ('*', self.multiplication(token_list)) ,('/', self.divition(token_list)) ,
-                            ('^', self._pow(token_list)),('**', self._pow(token_list)),
-                            ('%', self.per_cent(token_list)),('@', self.concatenation(token_list)),
-                            ('@@', self.blank_space_concatenation(token_list), (':',self.double_dot(token_list))),
-                            (':=', self.double_dot_equal(token_list), ('as',self.as_(token_list))),
-                            ('is', self.is_(token_list), ('==',self.equal(token_list))),
-                            ('>', self.bigger_than(token_list), ('<',self.smaller_than(token_list))),
-                            ('>=', self.bigger_or_equal(token_list), ('<=',self.smaller_or_equal(token_list))),
-                            ('=', self.assign(token_list), ('|',self.or_(token_list))),
-                            ('&', self.and_(token_list), ('!=',self.different(token_list))),
-                            ('/=', self.divide_and_assign(token_list), ('*=',self.multiply_and_assign(token_list))),
-                            ('+=', self.plus_and_assign(token_list), ('-=',self.minus_and_assign(token_list))),
-                            ('in', self.in_(token_list)) , ('.', self.in_(token_list))
-                            ]
-    
-        for item in binary_expresion:
-    
-            if item[0] == token_list[1]:
-    
-                return item[1]
+            binary_expresion =[ ('+',self.plus(token_list)) , ('-', self.minus(token_list)) ,
+                                ('*', self.multiplication(token_list)) ,('/', self.divition(token_list)) ,
+                                ('^', self._pow(token_list)),('**', self._pow(token_list)),
+                                ('%', self.per_cent(token_list)),('@', self.concatenation(token_list)),
+                                ('@@', self.blank_space_concatenation(token_list), (':',self.double_dot(token_list))),
+                                (':=', self.double_dot_equal(token_list), ('as',self.as_(token_list))),
+                                ('is', self.is_(token_list), ('==',self.equal(token_list))),
+                                ('>', self.bigger_than(token_list), ('<',self.smaller_than(token_list))),
+                                ('>=', self.bigger_or_equal(token_list), ('<=',self.smaller_or_equal(token_list))),
+                                ('=', self.assign(token_list), ('|',self.or_(token_list))),
+                                ('&', self.and_(token_list), ('!=',self.different(token_list))),
+                                ('/=', self.divide_and_assign(token_list), ('*=',self.multiply_and_assign(token_list))),
+                                ('+=', self.plus_and_assign(token_list), ('-=',self.minus_and_assign(token_list))),
+                                ('in', self.in_(token_list)) , ('.', self.in_(token_list))
+                                ]
+        
+            for item in binary_expresion:
+        
+                if item[0] == token_list[1]:
+        
+                    self.AST = item[1]
     
     class dot(ASTNode):
         
@@ -415,21 +427,26 @@ class binary_expression:
     
 class unary_expression:
     
+    avaliable = False
+    AST = None
     def __init__(self,token_list):
     
         if hulk.OPERATORS_UNARY.__contains__(token_list[0]):
-            return False
+            self.avaliable = False
         
-        unary = [ ('!',self.not_(token_list)),
-                   ('++',self.plus_plus(token_list)),
-                   ('--',self.minus_minus(token_list)),
-                 ]
-        
-        for item in unary:
+        else:
+            self.avaliable = True
             
-            if item[0] == token_list[0]:
+            unary = [ ('!',self.not_(token_list)),
+                    ('++',self.plus_plus(token_list)),
+                    ('--',self.minus_minus(token_list)),
+                    ]
+            
+            for item in unary:
                 
-                return item[1]
+                if item[0] == token_list[0]:
+                    
+                    self.AST = item[1]
     
     class not_(ASTNode):
         
@@ -454,29 +471,37 @@ class unary_expression:
      
 class variable(ASTNode):
     
+    avaliable = False
+     
     def __init__(self,token_list):
         
         if hulk.SYMBOLS_and_OPERATORS_parser.__contains__(token_list[0]): 
-            return False
+            pass
         
-        self.set_identifier('var')
-        self.name=token_list[0]
-    
+        else:
+            self.avaliable = True
+            self.set_identifier('var')
+            self.name=token_list[0]
+        
         pass
 
 class variable_def(ASTNode):
+    
+    avaliable = False
     
     def __init__(self,token_list):
         
         try:
         
             if token_list[0] == 'let':
-        
+                
+                self.avaliable=True
+                
                 self.set_identifier('declare_var')
                 self.null_son = None
                 self.expression = token_list[1][1]
         except:
-            return False
+            self.avaliable = False
         
         pass
     

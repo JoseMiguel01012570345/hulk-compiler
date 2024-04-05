@@ -16,78 +16,7 @@ class NodeType(Enum):
 
     pass
 
-class DerivationTree:
-    """
-    This class defines the derivation tree of a grammar
-
-    token: Token
-    childs: list(DerivationTree)
-
-    builder: constructor of the AST node class that will return
-
-    """
-
-    def __init__(self, label, childs, builder):
-
-        self._token = label
-        self._childs = childs
-        self._builder = builder
-
-        pass
-
-    @property
-    def IsLeaf(self):
-
-        return len(self._childs) == 0
-
-    @property
-    def Childs(self):
-
-        return [
-            child
-            for child in self._childs
-            if not child.Type == TokenType.Simbol and not len(child.Text) == 0
-        ]
-
-    @property
-    def IsRelevant(self):
-
-        return (
-            KEYWORD_VALUES.count(self.Text) > 0
-            or SIMBOL_VALUES.count(self.Text) > 0
-            or OPERATOR_VALUES.count(self.Text) > 0
-        )
-
-    @property
-    def Type(self):
-
-        try:
-            return self._token.Type
-
-        except Exception:
-            return Type.NONE
-
-    @property
-    def Text(self):
-
-        try:
-            return self._token.Text
-
-        except Exception:
-            return self._token
-
-    @property
-    def Token(self):
-
-        return self._token
-
-    @property
-    def ASTNode(self):
-
-        return self._builder(self._token)
-
-    @property
-    def AST(self):
+def AST(self):
         """
         retorna el AST asociado
         """
@@ -153,16 +82,14 @@ class DerivationTree:
         # agregamos la referencia y retornamos
         ASTNode.Childs = ASTChilds
         return ASTNode
-
-    pass
     
 class builder:
 
-    def __init__(self, label ):
+    def __init__(self, label ,token_list ):
         
         feature = self.filter_feature(label)
         
-        self.feature = feature        
+        self.ASTNode = feature(token_list)        
         
 
     def filter_feature(self,label):
@@ -208,7 +135,7 @@ class builder:
     
     def T(self,token_list):
         
-        # detect the kind of expression it is
+        # detects the kind of expression it is
         
         return 
     
