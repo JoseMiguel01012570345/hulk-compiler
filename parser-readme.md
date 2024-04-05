@@ -96,21 +96,15 @@
 
 # function
 
-- $M -> function \space T \space \$2 \space => \space \$2 \space E \space$
-- $M -> function \space T \space \$2 \space : \space T \space => \space \$2 \space E \space$
-- $M -> function \space T \space \$2 \space => \space \$2 \space b \space$
-- $M -> function \space T \space \$2 \space : \space T \space => \space \$2 \space b \space$
-- $M -> function \space T \space \$2 \space : \space T \space b \space$
-- $M -> function \space T \space \$2 \space b \space$
-- $M -> function \space T \space E \space$
-- $M -> function \space T \space => \space \$2 \space E \space$
-- $M -> T \space \$2 \space : \space Q \space$
-- $M -> T \space \$2 \space : \space E \space$
-- $M -> T \space \$2 \space : \space T \space b \space$
-- $M -> function \space T \space \$2 \space : \space Q$
-- $Q -> T \space => \$2 \space E$
-- $M -> M \space \$2 \space | \space M \space \$2 \space M \space | \space M; | \space M M$
-
+   ["M" , [ ["function","T","$2","=>","$2","E"] , ["function","T","$2",":","T" ,"=>","$2","E"] 
+            ,["function","T","$2","=>","$2","b"] ,["function","T","$2",":","T","=>","$2","b"] ,
+             [ 'function', 'T',"$2", ':', 'T', 'b'],['function', 'T', '$2', 'b', ],['function', 'T', '$2' ,'E', ],
+             ['T', '$2', '=>', '$2', 'E'],['T', '$2' , 'E'],['T', '$2', 'b',],['T', '$2', ':' , 'T' , '=>', '$2', 'E'],
+             ['T', '$2', ':', 'E'],['T', '$2', ':', 'T', 'b'],
+            ]],
+    
+    ["M",[["M","$2"],["M","$2","M"],["M",";"],["M","M"]]]
+    
 # types
 
 - $M -> \space type \space T \space \$2 \space b \space | \space type \space T \space \$2 \space inherits \space T \space \$2 \space b | \space type \space T \space b \space | \space type \space T \space inherits \space T \space b$
