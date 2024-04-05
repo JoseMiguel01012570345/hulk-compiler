@@ -277,7 +277,7 @@ class Parser():
         index_pointer = 1
         
         shift = True
-        
+        print(code)
         while index_pointer <  len(code) :
             
             next_pointer =- 1
@@ -316,4 +316,4 @@ class Parser():
         
         tree = dt.DerivationTree( label , token_list ,builder) # build derivation tree
         
-        return None
+        return tree

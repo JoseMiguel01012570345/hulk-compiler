@@ -16,7 +16,7 @@
 # Expression_block
 
 - $O -> EE  \space | \space O \$ 2O \space|\space T\$2 O \space|\space OE \space|\space OB \space|\space O \$2 b | b \$2 E \space|\space ME \space|\space EM \space|\space OM \space|\space MO \space|\space OQ \space|\space Q\$2$
-- $O -> E \$2 M \space|\space M \$2 O$
+- $O -> E \$2 M \space|\space M \$2 O | \space O \space T$
 - $O -> O \$2 E \space|\space E \$2 b  \space|\space E \$2 O \space|\space O \$2 | O; | E \$2 E | b \$2 b | O \$2 M$
 - $b -> \{ O \} \space|\space \{ E \} \space|\space \{ B \} \space|\space \{ \} \space|\space b \$2 \space| \space \{ b \} \space|\space \{ T \}$
 - $B -> b;$

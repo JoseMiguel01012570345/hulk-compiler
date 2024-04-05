@@ -156,7 +156,7 @@ def traslator(token_list:list):
     parse_list.append(("$2",None))
     
     parse_list.append(("{",None))
-    
+    print( [item.Text for item in token_list ])
     index=0
     while index < len(token_list ):
         
@@ -169,7 +169,7 @@ def traslator(token_list:list):
                 
                     builder = DT.builder( "T").feature
                     
-                    parse_list.append(("T", DT.DerivationTree( token_list[index1] , None ,builder) ) )
+                    parse_list.append(("T", DT.DerivationTree( token_list[index1].Text , None ,builder) ) )
                     #parse_list.append(("T", None ) )
                     
                     index = index1
@@ -202,16 +202,14 @@ def traslator(token_list:list):
                 
                 builder = DT.builder( "c").feature
                 
-            parse_list.append(("c", DT.DerivationTree( token_list[index] , None ,builder) ) )
-            #parse_list.append(("c", None ) )
+                parse_list.append(("c", DT.DerivationTree( token_list[index].Text , None ,builder) ) )
+                #parse_list.append(("c", None ) )
             
-        else:
+            else:
                 
-            builder = DT.builder("T").feature
-            parse_list.append(("T", None ))
-            
-            #parse_list.append(("T", DT.DerivationTree( token_list[index] , None ,builder) ) )
-                
+                builder = DT.builder("T").feature
+                parse_list.append(("T", DT.DerivationTree( token_list[index].Text , None ,builder) ) )
+                    
         index += 1
     
     parse_list.append(("$3",None))
