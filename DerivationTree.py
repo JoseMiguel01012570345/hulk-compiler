@@ -221,9 +221,11 @@ class builder:
         features = []
         try:
             
-            features.append((impF.pdr.function_call(token_list)))
+            features.append( impF.pdr.function_call(token_list) )
+            
             
             pass
+        
         except:
             pass
         
