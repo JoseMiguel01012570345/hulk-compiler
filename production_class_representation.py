@@ -550,47 +550,84 @@ class type_or_function_or_protocol:
             
             if self.validator(token_list):
                 
-                self.validator = True
+                self.avaliable= True
                 self.set_identifier(id='function_form')
                 
+                if token_list[0][0] == 'function': 
+                    self.function_kw(token_list)
+                            
+                elif token_list[0][1].id == 'FunctionCall': 
+                    self.simple_form(token_list)
+                   
+        def function_kw(self,token_list):
+            
+            self.name = token_list[1][1].name
+            self.args = token_list[1][1].args
+            
+            if token_list[2][1].id == 'block' or token_list[2][1].id == 'expression':
+            
+                # function f b | function f E
+                self.body = token_list[2][1]
+            
+            
+            elif token_list[2][0] == '=>':
+            
+                # function f => E | function f => b
+                self.body = token_list[3][1]
+            
+            elif token_list[2][0] == ':':
+            
+                self.anotated_type = token_list[3][1]
                 
-                if token_list[0][0] == 'function':
+                if token_list[4][0] == '=>':
                     
-                    self.name = token_list[1][1].name
-                    self.args = token_list[1][1].args
-                    
-                    if token_list[2][1].id == 'block' or token_list[2][1].id == 'expression':
-                    
-                        self.body = token_list[2][1]
-                    
-                    elif token_list[2][0] == '=>':
-                        
-                        self.body = token_list[3][1]
-                    
-                    elif token_list[2][0] == ':':
-                        
-                        if token_list[2][1].id == 'function_form':
-                            self.anotated_type
-                        
-                        self.anotated_type = token_list[3][0]
-                        self.body = token_list
-                    
-                    elif token_list:
-                        pass
-                    
-                elif len(token_list) > 1 and token_list[1][0] == ':':
-                    pass
+                    # function f : T => b | function f : T => E
+                    self.body=token_list[5][1]
                 
                 else:
-                    pass
+                    # function f : T b
+                    self.body=token_list[5][1]
             
-                pass
-        
-            pass
-        
+        def simple_form(self,token_list):
+            
+            self.name = token_list[0][1].name
+            self.args = token_list[0][1].args
+            
+            if token_list[1][0] == ":":
+                
+                # c():T
+                self.anotated_type = token_list[2][1]
+                
+                if len(token_list)>3:
+                    
+                    # c():T => b
+                    self.body = token_list[4][1]
+                
+                elif len(token_list) > 2:
+                    
+                    # c():T b
+                    self.body = token_list[3][1]
+                
+            elif token_list[1][0] == "=>":
+                
+                # c() => E | c() => b
+                self.body = token_list[2][1]
+            
+            else:
+                
+                # c() E | c() b
+                self.body = token_list[1][1]
+    
         def validator(self,token_list):
             
+            try:
+                if token_list[0][0] == 'function': return True
+                
+                if token_list[0][0].id == 'FunctionCall' and (token_list[1][0] == ':' or token_list[1][0] == '=>' ):
+                    return True
             
+            except:
+                pass
             
             return False
         
