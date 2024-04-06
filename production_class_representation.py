@@ -455,7 +455,6 @@ class unary_expression:
 
     class new(ASTNode):
 
-
         def __init__(self,token_list):
             
             self.set_identifier('new')
@@ -712,7 +711,6 @@ class protocol(ASTNode):
                 self.body = token_list[2][1]
     
         pass
-
 class vectors(ASTNode):
     
     avaliable = False

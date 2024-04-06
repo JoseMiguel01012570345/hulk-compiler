@@ -83,6 +83,8 @@ class builder:
         
         self.ASTNode = feature(token_list)        
         
+    # every function in this class returns an AST of its production
+    
     def filter_(self,token_list):
         
         non_token = ['$2','$1','$3',';','{','}','(',')']
@@ -183,6 +185,9 @@ class builder:
 
     def M(self,token_list):
 
+        if len(token_list) == 1 and token_list[0][0] == 'M':
+            return token_list[0][1]
+
         type_ = pdr.type_(token_list)
         protocol = pdr.protocol(token_list)
         function = pdr.def_function(token_list)
@@ -195,16 +200,33 @@ class builder:
         
         return None
         
-    def E(self,token_list):
+    def expression(self,token_list):
         
         # detects the kind of expression it is
-    
-    
-        return 
-    
-    def T(self,token_list):
+
+        expressions =[
+            
+            self.P(token_list),
+            self.O(token_list),
+            self.b(token_list),
+            self.B(token_list),
+            self.p(token_list),
+            self.if_(token_list),
+            self.elif__(token_list),
+            self.M(token_list),
+            
+         ]
         
-        # detects the kind of expression it is
+        binary_exp = pdr.binary_expression(token_list)
+        if binary_exp.avaliable:
+            return binary_exp.AST
         
-        return 
+        unary_exp = pdr.unary_expression(token_list)
+        if unary_exp.avaliable: 
+            return unary_exp.AST
+        
+        for item in expressions:
+            if item != None: return item    
+    
+        return None
 
