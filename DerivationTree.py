@@ -242,6 +242,9 @@ class builder:
         if unary_exp.avaliable: 
             return unary_exp.AST
         
+        vector = pdr.vectors(token_list)
+        if vector.avaliable:
+            return vector
         
         for item in expressions:
             if item != None: return item    
@@ -258,7 +261,7 @@ class builder:
     
     def for_(self,token_list):
         
-        for_ = pdr.while_(token_list)
+        for_ = pdr.for_(token_list)
         
         if for_.avaliable: return for_
         

@@ -79,23 +79,25 @@ class params( ASTNode):
         
         if self.avaliable and token_list[0][0] == 'p': # if the first token is a param
             
-            self.parameters = token_list[0][1].parameters
+            self.parameters = [ item for item in token_list[0][1].parameters ]
             
         elif self.avaliable:
             
             param1 = token_list[0][1]
-            self.parameters.append(param1)
+            new_parameters = []
             
-            if token_list[1][0] == 'p': #  if second token is a param, unbox param "p"
+            if token_list[2][0] == 'p': #  if second token is a param, unbox param "p"
                 
-                for item in token_list[2][1].parameters:
-                    
-                    self.parameters.append(item)
-
+                new_parameters = [ item for item in token_list[2][1].parameters ]
+                new_parameters.insert(0,param1)
+                self.parameters = new_parameters
             else:
                     
                 param2 = token_list[2][1]
-                self.parameters.append(param2)
+                new_parameters.append(param1)
+                new_parameters.append(param2)
+                self.parameters = new_parameters
+        
             
                             
     def validator(self,token_list):
@@ -624,12 +626,12 @@ class def_function(ASTNode):
             # c():T
             self.anotated_type = token_list[2][1]
             
-            if len(token_list)>3:
+            if len(token_list)>4:
                 
                 # c():T => b
                 self.body = token_list[4][1]
             
-            elif len(token_list) > 2:
+            elif len(token_list) > 3:
                 
                 # c():T b
                 self.body = token_list[3][1]
@@ -704,9 +706,11 @@ class protocol(ASTNode):
     def __init__(self,token_list):
         
         if token_list[0][0] == 'protocol':
+            
+            self.avaliable = True
         
             self.set_identifier('protocol')
-            
+                
             self.name = token_list[1][1].name
             self.body = None
             self.anotated_type = self.name
@@ -735,7 +739,7 @@ class vectors(ASTNode):
         
         if self.validator(token_list):
             
-            self.validator = True
+            self.avaliable = True
 
             self.array_(token_list)
             
@@ -749,7 +753,7 @@ class vectors(ASTNode):
         
         if token_list[1][0] == 'p':
             
-            self.domain = token_list[1][1].parameters
+            self.domain = [ item for item in token_list[1][1].parameters ]
             
         elif token_list[1][0] == 'T' :
             
@@ -821,6 +825,8 @@ class while_(ASTNode):
         
         if self.validator(token_list):
             
+            self.avaliable = True
+            self.set_identifier('while')
             self.condition = token_list[1][1]
             self.body = token_list[2][1]
         
@@ -832,7 +838,6 @@ class while_(ASTNode):
             return True
         
         return False
-
 class for_(ASTNode):
     
     avaliable = False
@@ -843,6 +848,8 @@ class for_(ASTNode):
         
         if self.validator(token_list):
             
+            self.avaliable = True            
+            self.set_identifier('for')
             self.condition = token_list[1][1]
             self.body = token_list[2][1]
         
@@ -870,7 +877,10 @@ class block(ASTNode):
             
             if len(token_list) == 1: # if the first token is a param
                 
-                self.expressions = token_list[0][1].expressions
+                if token_list[0][0] == 'M':
+                    self.expressions = token_list[0][1]
+                else: 
+                    self.expressions = token_list[0][1].expressions
 
             else:
                 
@@ -878,7 +888,12 @@ class block(ASTNode):
                     
                     self.expressions = token_list[0][1].expressions
                     
-                    self.expressions.append(token_list[1][1])
+                    if type(self.expressions) == list:
+                        self.expressions.append(token_list[1][1])
+                    
+                    else:
+                        new_expression_set = [self.expressions , token_list[1][1]]
+                        self.expressions = new_expression_set
                     
                     pass
                 
