@@ -91,34 +91,33 @@ class builder:
             
             if label == item[0]:
                 return item[1]
-        
-    def inicializer(self , token_list ) -> list :
-        
-        features = []
-            
-        features.append( pdr.function_call(token_list) )
-        features.append( pdr.function_name(token_list) )
-        features.append( pdr.params(token_list) )
-        features.append( pdr.binary_expression(token_list) )
-        features.append( pdr.unary_expression(token_list) )
-        features.append( pdr.variable(token_list) )
-        features.append( pdr.variable_def(token_list) )
-        
-        
-        
-        return
     
     def F(self ,toke_list:list):
         
-        return pdr.function_call(toke_list)
+        fc = pdr.function_call(toke_list)
+        
+        if fc.avaliable : return fc
+        
+        return None
         
     def c(self,token_list):
         
-        return pdr.variable(token_list)
+        variable = pdr.variable(token_list)
+        
+        if variable.avaliable : return variable
+        
+        return None
     
     def P(self,toke_list):
         
-        return pdr.params(toke_list)
+        try:
+            params = pdr.params([toke_list[1]])
+        
+            if params.avaliable: return params
+        
+        except:
+        
+            return  None
     
     def T(self,token_list):
         
@@ -140,22 +139,45 @@ class builder:
     
     def p(self,token_list):
         
-        return pdr.params(token_list)
+        params = pdr.params(token_list)
+        
+        if params.avaliable: return params
+        
+        return None
     
     def if_(self,token_list):
-        return  pdr.if_(token_list)
+        
+        if_ = pdr.if_(token_list)
+        
+        if if_.avaliable : return if_
+        
+        return None
     
     def elif_(self,token_list):
-        return  pdr.elif_(token_list)
-    
+        
+        elif_= pdr.elif_(token_list)
+        
+        if elif_.avaliable : return elif_
+        
+        return  None
+
     def M(self,token_list):
-        return pdr.type_or_function_or_protocol(token_list).selection
-    
-    def Q(self,token_list):
-        return pdr.type_or_function_or_protocol(token_list).selection
-    
+
+        type_ = pdr.type_(token_list)
+        protocol = pdr.protocol(token_list)
+        function = pdr.def_function(token_list)
+        
+        if type_.avaliable: return type_
+        
+        if protocol.avaliable: return protocol
+        
+        if function.avaliable: return function
+        
+        return None
+        
     def E(self,token_list):
-        return pdr.expression_E(token_list)
+        
+        return 
     
     pass
 

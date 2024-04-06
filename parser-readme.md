@@ -15,9 +15,9 @@
 
 # Expression_block
 
-- $O -> EE  \space | \space O \$ 2O \space|\space T\$2 O \space|\space OE \space|\space OB \space|\space O \$2 b | b \$2 E \space|\space ME \space|\space EM \space|\space OM \space|\space MO \space|\space OQ \space|\space Q\$2$
-- $O -> E \$2 M \space|\space M \$2 O | \space O \space T$
-- $O -> O \$2 E \space|\space E \$2 b  \space|\space E \$2 O \space|\space O \$2 | O; | E \$2 E | b \$2 b | O \$2 M$
+- $O -> E \space E  \space | \space O \space \$2 \space O \space|\space T \space \$2 \space O \space|\space O \space E \space|\space O \space B \space|\space O \space \$2 \space b | b \space \$2 \space E \space|\space M \space E \space|\space E \space M \space|\space O \space M \space|\space M \space O \space|\space O \space Q \space|\space Q \space \$2$
+- $O -> E \space \$2  \space M \space|\space M \space \$2 \space O$
+- $O -> O \space \$2 \space E \space|\space E \space \$2 \space b  \space|\space E \space \$2 \space O \space|\space O \space \$2 \space | \space O; | E \space \$2  \space E | \space b \space \$2 \space b \space |\space O \space \$2 \space M$
 - $b -> \{ O \} \space|\space \{ E \} \space|\space \{ B \} \space|\space \{ \} \space|\space b \$2 \space| \space \{ b \} \space|\space \{ T \}$
 - $B -> b;$
 - $T -> T \$2 $
@@ -32,7 +32,7 @@
 
 - $T -> let\space  T \space|\space T:T$
 - $E -> let\space E \space|\space T:E$
-- $p -> T \space , \space \$2 \space  T \space|\space T \space , \space \$2 p$
+- $p -> T \$2 T \space|\space T \$2 p$
 - $T -> T:=T$
 - $E -> T:=E$
 - $T -> T=T$
@@ -60,7 +60,7 @@
 - $E ->  T\$2+E \space|\space T\$2+E \space|\space T\$2-E \space|\space  T\$2*E \space|\space T\$2/E \space|\space T\$2/E \space|\space T\$2^E \space|\space T\$2\%E \space|\space T\$2**E$
 - $E ->  T+E \space|\space F+E \space|\space T-E \space|\space  T*E \space|\space T/E \space|\space T/E \space|\space T^E \space|\space TE$
 
-- $T ->  T-=T \space|\space T+=T \space|\space T/=T [T,*=,T] , [T,--]  , [T,++]]]$
+- $T ->  T-=T \space|\space T+=T \space|\space T/=T \space|\space T *= T \space|\space T--  \space|\space T++$
 - $T ->  T-=T \space|\space T+=T \space|\space T/=T \space|\space T*=T \space|\space T-- \space|\space T++$
 - $E ->  T-=E \space|\space T+=E \space|\space T/=E \space|\space T*=E \space|\space E-- \space|\space E++ \space|\space E** \space|\space E**E$
 
@@ -73,8 +73,8 @@
 
 # For
 
-- $E ->  for\space T\$2B \space|\space for\space T\$2E \space|\space forTE$
-- $E ->  for\space T\$2b$
+- $E ->  for\space T \space \$2 \space B \space|\space for\space T \space \$2 \space E \space|\space for \space T \space E$
+- $E ->  for\space T \space \$2 \space b$
 
 # conditional
 
@@ -89,22 +89,28 @@
 # While
 
 - $E ->  while \space T\$2B \space|\space while \space T\$2E \space|\space while\space T\space E$
-- $E -> while \space T \space \$2 \space b$ 
+- $E -> while \space T\$2b $
 
 - $E -> while \space T \space \$2 \space B | while \space T \space \$2 \space E \space | \space while \space T \space E \space$
 - $E -> while \space T \space \$2 \space b$
 
 # function
 
-   ["M" , [ ["function","T","$2","=>","$2","E"] , ["function","T","$2",":","T" ,"=>","$2","E"] 
-            ,["function","T","$2","=>","$2","b"] ,["function","T","$2",":","T","=>","$2","b"] ,
-             [ 'function', 'T',"$2", ':', 'T', 'b'],['function', 'T', '$2', 'b', ],['function', 'T', '$2' ,'E', ],
-             ['T', '$2', '=>', '$2', 'E'],['T', '$2' , 'E'],['T', '$2', 'b',],['T', '$2', ':' , 'T' , '=>', '$2', 'E'],
-             ['T', '$2', ':', 'E'],['T', '$2', ':', 'T', 'b'],
-            ]],
-    
-    ["M",[["M","$2"],["M","$2","M"],["M",";"],["M","M"]]]
-    
+- $M -> function \space T \space \$2 \space => \space \$2 \space E \space$
+- $M -> function \space T \space \$2 \space : \space T \space => \space \$2 \space E \space$
+- $M -> function \space T \space \$2 \space => \space \$2 \space b \space$
+- $M -> function \space T \space \$2 \space : \space T \space => \space \$2 \space b \space$
+- $M -> function \space T \space \$2 \space : \space T \space b \space$
+- $M -> function \space T \space \$2 \space b \space$
+- $M -> function \space T \space E \space$
+- $M -> function \space T \space => \space \$2 \space E \space$
+- $M -> T \space \$2 \space : \space Q \space$
+- $M -> T \space \$2 \space : \space E \space$
+- $M -> T \space \$2 \space : \space T \space b \space$
+- $M -> function \space T \space \$2 \space : \space Q$
+- $Q -> T \space => \$2 \space E$
+- $M -> M \space \$2 \space | \space M \space \$2 \space M \space | \space M; | \space M M$
+
 # types
 
 - $M -> \space type \space T \space \$2 \space b \space | \space type \space T \space \$2 \space inherits \space T \space \$2 \space b | \space type \space T \space b \space | \space type \space T \space inherits \space T \space b$
