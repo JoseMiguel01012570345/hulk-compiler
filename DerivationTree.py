@@ -77,13 +77,23 @@ class builder:
         
         feature = self.filter_feature(label)
         
+        token_list = self.filter(token_list)
+        
+        if len(token_list) == 0 : return None
+        
         self.ASTNode = feature(token_list)        
         
+    def filter_(self,token_list):
+        
+        non_token = ['$2','$1','$3',';','{','}','(',')']
+        new_token_list = [ item for item in token_list if not any( item == garbage for garbage in non_token )  ]
+        
+        return new_token_list
 
     def filter_feature(self,label):
         
-        features = [('F',self.F) , ('P',self.P) , ('T',self.T) , ('N',self.N) ,
-                    ('O',self.O) , ('b',self.b) , ('B',self.B) , ('p',self.p) , 
+        features = [('F',self.F) , ('P',self.P) , ('T',self.T) , ('O',self.O) ,
+                    ('b',self.b) , ('B',self.B) , ('p',self.p) , 
                     ('if',self.if_) , ('elif',self.elif_) , ('M',self.M) ,
                     ('c',self.c) ]
         
@@ -119,23 +129,27 @@ class builder:
         
             return  None
     
-    def T(self,token_list):
-        
-        # detects the kind of expression it is
-        
-        return 
-    
-    def N(self,token_list):
-        return None  
-    
     def O(self,token_list):
-        return  
+        
+        block = pdr.block(token_list)
+        
+        if block.avaliable: return block
+        
+        return None
     
     def b(self,token_list):
-        return  
+        
+        if token_list[0][0] != 'b': return None
+        
+        if len(token_list) == 0: return None # no expression in block , nothing to return
+        
+        return token_list[0][1]  # return what the block has
     
     def B(self,token_list):
-        return  
+        
+        if token_list[0][0] != 'B': return None
+    
+        return  token_list[0][1] # return what the block has
     
     def p(self,token_list):
         
@@ -147,6 +161,9 @@ class builder:
     
     def if_(self,token_list):
         
+        if token_list[0][0] == 'if' and len(token_list) == 1 : 
+            return token_list[0][1]
+        
         if_ = pdr.if_(token_list)
         
         if if_.avaliable : return if_
@@ -155,6 +172,9 @@ class builder:
     
     def elif_(self,token_list):
         
+        if token_list[0][0] == 'if' and len(token_list) == 1 : 
+            return token_list[0][1]
+
         elif_= pdr.elif_(token_list)
         
         if elif_.avaliable : return elif_
@@ -177,8 +197,14 @@ class builder:
         
     def E(self,token_list):
         
+        # detects the kind of expression it is
+    
+    
         return 
     
-    pass
-
+    def T(self,token_list):
+        
+        # detects the kind of expression it is
+        
+        return 
 

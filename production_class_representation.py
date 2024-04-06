@@ -531,12 +531,29 @@ class elif_(ASTNode):
     avaliable = False
     def __init__(self,token_list):
         
-        if token_list[0][0] == 'if' and token_list[1][0] == 'elif' : 
+        if (token_list[0][0] == 'if' and token_list[1][0] == 'elif') : 
             
             self.avaliable = True
             self.set_identifier(id='elif')
             self.condition = token_list[2][1]
             self.body = token_list[3][1]
+        
+        pass
+    
+    
+    pass
+
+class else_(ASTNode):
+    
+    avaliable = False
+    def __init__(self,token_list):
+        
+        if token_list[1][0] == 'else' : 
+            
+            self.avaliable = True
+            self.set_identifier(id='else')
+            self.condition = token_list[0][1].condition
+            self.body = token_list[2][1]
         
         pass
     
@@ -824,5 +841,53 @@ class for_(ASTNode):
         
         if toke_list[0][0] == 'for':
             return True
+        
+        return False
+
+class block(ASTNode):
+    
+    expressions = [] # solve from left to right
+    avaliable = False
+    
+    def __init__(self,token_list):
+        
+        self.set_identifier('block')
+        
+        if self.validator(token_list): 
+            
+            self.avaliable = True
+            
+            if len(token_list) == 1: # if the first token is a param
+                
+                self.expressions = token_list[0][1].expressions
+            
+            else:
+                
+                if token_list[0][0] == 'O':
+                    
+                    for item in token_list[0][1]:
+                        self.expressions.append(item.expressions)
+                    
+                    self.expressions.append(token_list[1][1])
+                    
+                    pass
+                
+                elif token_list[1][0] == 'O':
+                    
+                    self.expressions.append(token_list[0][1])
+                    
+                    for item in token_list[1][1]:
+                        self.expressions.append(item.expressions)
+                    
+                    pass
+                else:
+                    self.expressions.append(token_list[0][1])
+                    self.expressions.append(token_list[1][1])
+                            
+    def validator(self,token_list):
+        
+        if token_list[0][0] == 'p': return True
+        
+        if len(token_list)>1 and token_list[1][0] == ',': return True
         
         return False
