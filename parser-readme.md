@@ -15,7 +15,7 @@
 
 # Expression_block
 
-- $O -> E \space E  \space | \space O \space \$2 \space O \space|\space T \space \$2 \space O \space|\space O \space E \space|\space O \space B \space|\space O \space \$2 \space b | b \space \$2 \space E \space|\space M \space E \space|\space E \space M \space|\space O \space M \space|\space M \space O \space|\space O \space Q \space|\space Q \space \$2$
+- $O -> E \space E  \space | \space O \space \$2 \space O \space|\space T \space \$2 \space O \space|\space O \space E \space|\space O \space B \space|\space O \space \$2 \space b | b \space \$2 \space E \space|\space M \space E \space|\space E \space M \space|\space O \space M \space|\space M \space O \space|\space O \space  \space|\space  \space \$2$
 - $O -> E \space \$2  \space M \space|\space M \space \$2 \space O$
 - $O -> O \space \$2 \space E \space|\space E \space \$2 \space b  \space|\space E \space \$2 \space O \space|\space O \space \$2 \space | \space O; | E \space \$2  \space E | \space b \space \$2 \space b \space |\space O \space \$2 \space M$
 - $b -> \{ O \} \space|\space \{ E \} \space|\space \{ B \} \space|\space \{ \} \space|\space b \$2 \space| \space \{ b \} \space|\space \{ T \}$
@@ -104,11 +104,11 @@
 - $M -> function \space T \space \$2 \space b \space$
 - $M -> function \space T \space E \space$
 - $M -> function \space T \space => \space \$2 \space E \space$
-- $M -> T \space \$2 \space : \space Q \space$
+- $M -> T \space \$2 \space : \space  \space$
 - $M -> T \space \$2 \space : \space E \space$
 - $M -> T \space \$2 \space : \space T \space b \space$
-- $M -> function \space T \space \$2 \space : \space Q$
-- $Q -> T \space => \$2 \space E$
+- $M -> function \space T \space \$2 \space : \space $
+- $ -> T \space => \$2 \space E$
 - $M -> M \space \$2 \space | \space M \space \$2 \space M \space | \space M; | \space M M$
 
 # types

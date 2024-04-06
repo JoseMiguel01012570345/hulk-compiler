@@ -22,8 +22,8 @@ class Parser():
         ['>','<','>=','<=','==', '!' ,'is'],
         ['&','|','!'],
         ['.'],
-        ['=','+=','-=','/=','*=','--',':=','++','--'],
         ["let"],
+        ['=','+=','-=','/=','*=','--',':=','++','--'],
         ['if'],
         ['elif'],
         ['else'],
@@ -192,6 +192,16 @@ class Parser():
 
     def reduce_stack(self , stack:list , grammar , next_point ):
             
+        # -------------------------------------------------
+                        
+        printing_stack = []
+        for item in stack:
+            printing_stack.append(item[0])
+        
+        print(printing_stack)
+        
+        # -------------------------------------------------
+            
         self.best_match =0
         
         sub_stack = stack[ self.stack_pointer[next_point][0] : ]
@@ -230,7 +240,7 @@ class Parser():
             new_stack = self.remove_item_stack(stack=stack , pop_number= pop_number )
             
             # -------------------------------------------------
-            
+                        
             printing_stack = []
             for item in new_stack:
                 printing_stack.append(item[0])
@@ -318,7 +328,7 @@ class Parser():
             stack.append( code[index_pointer] )
             
             index_pointer += 1
-    
+        
         return self.parsed_code(stack)
     
     def derivation_tree(self, label , token_list):
@@ -327,6 +337,6 @@ class Parser():
         pattern to follow -> existing tree is child of the new node
         '''
         
-        #AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
+        AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
         
-        return None
+        return AST_node

@@ -14,22 +14,8 @@ def traslator(token_list:list):
     while index < len(token_list ):
         
         if token_list[index].Text =="'" or token_list[index].Text == "\"" : 
-            
-            index1 = index + 1
-            while index1 < len(token_list):
-                
-                if token_list[index1].Text == "'" or token_list[index1].Text == "\"" :
-                
-                    # AST_node = DT.builder( "T" , [token_list[index1], None ] ).ASTNode
-                    # parse_list.append(("T", AST_node ) )
-                    parse_list.append(("T", None ) )
-                    
-                    index = index1
-                    index += 1
-                
-                    break
-                
-                index1 +=1
+            index+=1
+            continue    
                     
         kw = False                    
         for arg in HK.SYMBOLS_and_OPERATORS_parser:            
@@ -52,15 +38,16 @@ def traslator(token_list:list):
             
             if index + 1 < len(token_list) and token_list[index + 1 ].Text == "(" :
                 
-                # AST_node = DT.builder( "c", [ (token_list[index], None ) ] ).ASTNode
-                # parse_list.append(("c", AST_node ) )
-                parse_list.append(("c", None ) )
+                AST_node = DT.builder( "var", [ (token_list[index], None ) ] ).ASTNode
+                parse_list.append(("c", AST_node ) )
+                
+                #parse_list.append(("c", None ) )
             
             else:
                 
-                # AST_node = DT.builder("T" , [ token_list[index] , None ] ).ASTNode
-                # parse_list.append(("T", AST_node) )
-                parse_list.append(("T", None) )
+                AST_node = DT.builder("var" , [ (token_list[index] , None) ] ).ASTNode
+                parse_list.append(("T", AST_node) )
+                #parse_list.append(("T", None) )
                     
         index += 1
     

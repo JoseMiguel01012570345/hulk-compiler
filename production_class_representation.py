@@ -53,17 +53,18 @@ class function_call( ASTNode):
     avaliable = False
     def __init__( self, token_list ):
         
-        try:
+        if self.validator(token_list):
         
             self.set_identifier('FunctionCall')
             self.name = token_list[0][1].name
             self.args = token_list[1][1]
             self.avaliable = True
         
-        except:    
-            pass
-        
         pass
+    
+    def validator(self, token_list):
+        
+        if token_list[0][0] == 'c': return True
     
 class params( ASTNode):
     
@@ -87,13 +88,13 @@ class params( ASTNode):
             
             if token_list[1][0] == 'p': #  if second token is a param, unbox param "p"
                 
-                for item in token_list[1][1].parameters:
+                for item in token_list[2][1].parameters:
                     
                     self.parameters.append(item)
 
             else:
                     
-                param2 = token_list[1][1]
+                param2 = token_list[2][1]
                 self.parameters.append(param2)
             
                             
@@ -121,16 +122,16 @@ class binary_expression:
                                 ('*', self.multiplication(token_list)) ,('/', self.divition(token_list)) ,
                                 ('^', self._pow(token_list)),('**', self._pow(token_list)),
                                 ('%', self.per_cent(token_list)),('@', self.concatenation(token_list)),
-                                ('@@', self.blank_space_concatenation(token_list), (':',self.double_dot(token_list))),
-                                (':=', self.double_dot_equal(token_list), ('as',self.as_(token_list))),
-                                ('is', self.is_(token_list), ('==',self.equal(token_list))),
-                                ('>', self.bigger_than(token_list), ('<',self.smaller_than(token_list))),
-                                ('>=', self.bigger_or_equal(token_list), ('<=',self.smaller_or_equal(token_list))),
-                                ('=', self.assign(token_list), ('|',self.or_(token_list))),
-                                ('&', self.and_(token_list), ('!=',self.different(token_list))),
-                                ('/=', self.divide_and_assign(token_list), ('*=',self.multiply_and_assign(token_list))),
-                                ('+=', self.plus_and_assign(token_list), ('-=',self.minus_and_assign(token_list))),
-                                ('in', self.in_(token_list)) , ('.', self.in_(token_list))
+                                ('@@', self.blank_space_concatenation(token_list)), (':',self.double_dot(token_list)),
+                                (':=', self.double_dot_equal(token_list)), ('as',self.as_(token_list)),
+                                ('is', self.is_(token_list)), ('==',self.equal(token_list)),
+                                ('>', self.bigger_than(token_list)), ('<',self.smaller_than(token_list)),
+                                ('>=', self.bigger_or_equal(token_list)), ('<=',self.smaller_or_equal(token_list)),
+                                ('=', self.assign(token_list)), ('|',self.or_(token_list)),
+                                ('&', self.and_(token_list)), ('!=',self.different(token_list)),
+                                ('/=', self.divide_and_assign(token_list)), ('*=',self.multiply_and_assign(token_list)),
+                                ('+=', self.plus_and_assign(token_list)), ('-=',self.minus_and_assign(token_list)),
+                                ('in', self.in_(token_list)) , ('.', self.dot(token_list))
                                 ]
         
             for item in binary_expresion:
@@ -138,12 +139,13 @@ class binary_expression:
                 if item[0] == token_list[1][0]:
         
                     self.AST = item[1]
+                    return
     
     def validator(self,token_list):
         
         operators = [ '.', '-=', '*=', '!=', '|', '<=', '<', '==', 'as', ':', '@', '**', '/',
                         '-', '+' , '*' , '^' , '%' , '@@', ':=', 'is', '>' , '>=', '=' , '&' ,
-                        '/=', '+=', 'in', ]
+                        '/=', '+=', 'in' ]
         try:
         
             if operators.__contains__(token_list[1][0]):
@@ -452,6 +454,7 @@ class unary_expression:
                 if item[0] == token_list[0][0]:
                     
                     self.AST = item[1]
+                    return
 
     class new(ASTNode):
 
@@ -465,12 +468,10 @@ class unary_expression:
     class let(ASTNode):
     
         def __init__(self,token_list):
-        
-            if token_list[0] == 'let':
-                
-                self.set_identifier('let')
-                self.right = token_list[1][1]
-    
+            
+            self.set_identifier('let')
+            self.right = token_list[1][1]
+
     class not_(ASTNode):
         
         def __init__(self,token_list):
@@ -498,15 +499,16 @@ class variable(ASTNode):
      
     def __init__(self,token_list):
         
-        if hulk.SYMBOLS_and_OPERATORS_parser.__contains__(token_list[0][0]) and token_list[0][0].SelfType != 'object'  : 
-            pass
+        try:
+            if not token_list[0][0].Type.name == 'Variable' and not token_list[0][0].KeywordType.name == 'Function'  :
+                pass
+            
+            else:
+                self.avaliable = True
+                self.set_identifier('var')
+                self.name=token_list[0][0].Text
         
-        else:
-            self.avaliable = True
-            self.set_identifier('var')
-            self.name=token_list[0]
-        
-        pass
+        except : pass
 
 class if_(ASTNode):
     
@@ -516,7 +518,7 @@ class if_(ASTNode):
         if token_list[0][0] == 'if': 
             
             self.avaliable = True
-            self.set_identifier(id='if')
+            self.set_identifier('if')
             
             self.condition = token_list[1][1]
             self.body = token_list[2][1]
@@ -528,13 +530,15 @@ class if_(ASTNode):
 class elif_(ASTNode):
     
     avaliable = False
+    condition=None
     def __init__(self,token_list):
         
         if (token_list[0][0] == 'if' and token_list[1][0] == 'elif') : 
             
             self.avaliable = True
-            self.set_identifier(id='elif')
-            self.condition = token_list[2][1]
+            self.set_identifier('elif')
+            
+            self.condition = [ token_list[0][1] , token_list[2][1] ]
             self.body = token_list[3][1]
         
         pass
@@ -545,13 +549,16 @@ class elif_(ASTNode):
 class else_(ASTNode):
     
     avaliable = False
+    condition = None
     def __init__(self,token_list):
         
         if token_list[1][0] == 'else' : 
             
             self.avaliable = True
-            self.set_identifier(id='else')
-            self.condition = token_list[0][1].condition
+            self.set_identifier('else')
+            
+            self.condition = token_list[0][1]
+            
             self.body = token_list[2][1]
         
         pass
@@ -570,7 +577,7 @@ class def_function(ASTNode):
         if self.validator(token_list):
             
             self.avaliable= True
-            self.set_identifier(id='function_form')
+            self.set_identifier('function_form')
             
             if token_list[0][0] == 'function': 
                 self.function_kw(token_list)
@@ -583,13 +590,13 @@ class def_function(ASTNode):
         self.name = token_list[1][1].name
         self.args = token_list[1][1].args
         
-        if token_list[2][1].id == 'block' or token_list[2][1].id == 'expression':
+        if token_list[2][0] == 'b' or token_list[2][0] == 'E':
         
             # function f b | function f E
             self.body = token_list[2][1]
+    
         
-        
-        elif token_list[2][0] == '=>':
+        if token_list[2][0] == '=>':
         
             # function f => E | function f => b
             self.body = token_list[3][1]
@@ -642,7 +649,7 @@ class def_function(ASTNode):
         try:
             if token_list[0][0] == 'function': return True
             
-            if token_list[0][0].id == 'FunctionCall' and (token_list[1][0] == ':' or token_list[1][0] == '=>' ):
+            if token_list[0][1].id == 'FunctionCall' and (token_list[1][0] == ':' or token_list[1][0] == '=>' ):
                 return True
         
         except:
@@ -659,11 +666,14 @@ class type_(ASTNode):
         
         if token_list[0][0] == 'type':
             
-            self.set_identifier(id='type')
+            self.set_identifier('type')
+            
+            self.avaliable = True
             
             self.name = token_list[1][1].name
             self.body = None
             self.constructor = None
+            self.anotated_type = self.name
             
             if token_list[1][1].id == 'FunctionCall':
                 self.constructor = token_list[1][1].args
@@ -695,10 +705,11 @@ class protocol(ASTNode):
         
         if token_list[0][0] == 'protocol':
         
-            self.set_identifier(id='protocol')
+            self.set_identifier('protocol')
             
             self.name = token_list[1][1].name
             self.body = None
+            self.anotated_type = self.name
             
             self.parent_name = None
         
@@ -711,6 +722,7 @@ class protocol(ASTNode):
                 self.body = token_list[2][1]
     
         pass
+
 class vectors(ASTNode):
     
     avaliable = False
@@ -760,10 +772,11 @@ class literal(ASTNode):
             
     def validator(self,token_list):
         
-        if token_list[0][0].SelfType != 'number' and token_list[0][0].SelfType != 'string' and token_list[0][0].SelfType != 'boolean':
-            return True
-        
-        return False
+        try:
+            if token_list[0][0].SelfType == 'Number' or token_list[0][0].SelfType == 'String' or token_list[0][0].SelfType == 'Boolean':
+                return True
+        except:    
+            return False
     
     pass
 
@@ -806,7 +819,7 @@ class while_(ASTNode):
     
     def __init__(self,token_list):
         
-        if self.validator:
+        if self.validator(token_list):
             
             self.condition = token_list[1][1]
             self.body = token_list[2][1]
@@ -828,7 +841,7 @@ class for_(ASTNode):
     
     def __init__(self,token_list):
         
-        if self.validator:
+        if self.validator(token_list):
             
             self.condition = token_list[1][1]
             self.body = token_list[2][1]
@@ -858,13 +871,12 @@ class block(ASTNode):
             if len(token_list) == 1: # if the first token is a param
                 
                 self.expressions = token_list[0][1].expressions
-            
+
             else:
                 
                 if token_list[0][0] == 'O':
                     
-                    for item in token_list[0][1]:
-                        self.expressions.append(item.expressions)
+                    self.expressions = token_list[0][1].expressions
                     
                     self.expressions.append(token_list[1][1])
                     
@@ -874,18 +886,14 @@ class block(ASTNode):
                     
                     self.expressions.append(token_list[0][1])
                     
-                    for item in token_list[1][1]:
-                        self.expressions.append(item.expressions)
+                    for item in token_list[1][1].expressions:
+                        self.expressions.append(item)
                     
                     pass
                 else:
                     self.expressions.append(token_list[0][1])
                     self.expressions.append(token_list[1][1])
-                            
+    
     def validator(self,token_list):
         
-        if token_list[0][0] == 'p': return True
-        
-        if len(token_list)>1 and token_list[1][0] == ',': return True
-        
-        return False
+        return True

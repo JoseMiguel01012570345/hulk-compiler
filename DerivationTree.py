@@ -77,9 +77,12 @@ class builder:
         
         feature = self.filter_feature(label)
         
-        token_list = self.filter(token_list)
+        token_list = self.filter_(token_list)
         
-        if len(token_list) == 0 : return None
+        if len(token_list) == 0 : 
+            
+            self.ASTNode = None
+            return None
         
         self.ASTNode = feature(token_list)        
         
@@ -88,16 +91,16 @@ class builder:
     def filter_(self,token_list):
         
         non_token = ['$2','$1','$3',';','{','}','(',')']
-        new_token_list = [ item for item in token_list if not any( item == garbage for garbage in non_token )  ]
+        new_token_list = [ item for item in token_list if not any( item[0] == garbage for garbage in non_token )  ]
         
         return new_token_list
 
     def filter_feature(self,label):
         
-        features = [('F',self.F) , ('P',self.P) , ('T',self.T) , ('O',self.O) ,
-                    ('b',self.b) , ('B',self.B) , ('p',self.p) , 
-                    ('if',self.if_) , ('elif',self.elif_) , ('M',self.M) ,
-                    ('c',self.c) ]
+        features = [('F',self.F) , ('P',self.P) , ('O',self.O) ,
+                    ('b',self.b) , ('B',self.B) , ('p',self.p) , ('E',self.expression),
+                    ('if',self.if_) , ('elif',self.elif_) , ('M',self.M) , ('T',self.expression),
+                    ('c',self.c) , ( 'var' ,self.var) ,('N',self.N)]
         
         for item in features:
             
@@ -108,10 +111,13 @@ class builder:
         
         fc = pdr.function_call(toke_list)
         
-        if fc.avaliable : return fc
+        if fc.avaliable : 
+            return fc
         
         return None
         
+    def N(self,token_list): return None
+    
     def c(self,token_list):
         
         variable = pdr.variable(token_list)
@@ -122,15 +128,10 @@ class builder:
     
     def P(self,toke_list):
         
-        try:
-            params = pdr.params([toke_list[1]])
-        
-            if params.avaliable: return params
-        
-        except:
-        
-            return  None
+        params = pdr.params(toke_list)
     
+        if params.avaliable: return params
+        
     def O(self,token_list):
         
         block = pdr.block(token_list)
@@ -140,12 +141,15 @@ class builder:
         return None
     
     def b(self,token_list):
+                
+        if len(token_list) == 0 or len(token_list) > 1 :
+            return None # no expression in block , nothing to return
         
-        if token_list[0][0] != 'b': return None
+        derivations = ["O","E","B","b","T"]
         
-        if len(token_list) == 0: return None # no expression in block , nothing to return
+        if any(token_list[0][0] == item for item in derivations): return token_list[0][1]  # return what the block has
         
-        return token_list[0][1]  # return what the block has
+        pass
     
     def B(self,token_list):
         
@@ -161,6 +165,14 @@ class builder:
         
         return None
     
+    def else_(self,token_list):
+        
+        else_ = pdr.else_(token_list)
+        
+        if else_.avaliable : return else_
+        
+        return None    
+    
     def if_(self,token_list):
         
         if token_list[0][0] == 'if' and len(token_list) == 1 : 
@@ -174,7 +186,7 @@ class builder:
     
     def elif_(self,token_list):
         
-        if token_list[0][0] == 'if' and len(token_list) == 1 : 
+        if token_list[0][0] == 'elif' and len(token_list) == 1 : 
             return token_list[0][1]
 
         elif_= pdr.elif_(token_list)
@@ -204,17 +216,22 @@ class builder:
         
         # detects the kind of expression it is
 
+        if len(token_list) == 1 : 
+            return token_list[0][1]
+
         expressions =[
             
+            self.F(token_list),
             self.P(token_list),
-            self.O(token_list),
             self.b(token_list),
             self.B(token_list),
             self.p(token_list),
+            self.else_(token_list),
+            self.elif_(token_list),
             self.if_(token_list),
-            self.elif__(token_list),
             self.M(token_list),
-            
+            self.while_(token_list),
+            self.for_(token_list),
          ]
         
         binary_exp = pdr.binary_expression(token_list)
@@ -225,8 +242,32 @@ class builder:
         if unary_exp.avaliable: 
             return unary_exp.AST
         
+        
         for item in expressions:
             if item != None: return item    
     
         return None
-
+    
+    def while_(self,token_list):
+        
+        while_ = pdr.while_(token_list)
+        
+        if while_.avaliable: return while_
+        
+        return None
+    
+    def for_(self,token_list):
+        
+        for_ = pdr.while_(token_list)
+        
+        if for_.avaliable: return for_
+        
+        return None
+    
+    def var(self,token_list):
+        
+        var = pdr.variable(token_list)
+        if var.avaliable : return var
+        
+        literal = pdr.literal(token_list)
+        if literal.avaliable: return literal
