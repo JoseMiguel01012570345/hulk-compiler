@@ -190,7 +190,7 @@ class Parser():
         
         return stack
 
-    def reduce_stack(self , stack:list , gramar , next_point ):
+    def reduce_stack(self , stack:list , grammar , next_point ):
             
         self.best_match =0
         
@@ -205,19 +205,19 @@ class Parser():
         
             target = sub_stack[ index: ]
             
-            for productions in gramar:
+            for features in grammar:
                 
-                for sub_production in productions:
-                    
-                    for derivation in sub_production[1]: # walk through each derivation and stay with the longer prefix that matches
+                for productions in features:
                         
-                        new_best_match = self.match(target,derivation)
+                    for prefix in productions[1]:
+                    
+                        new_best_match = self.match(target,prefix)
                         
                         if new_best_match :
                             
-                            best_match = sub_production[0]
+                            best_match = productions[0]
                             
-                            pop_number = len(derivation)
+                            pop_number = len(prefix)
             
             index += 1
             
@@ -326,7 +326,6 @@ class Parser():
         '''
         pattern to follow -> existing tree is child of the new node
         '''
-        
         
         #AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
         

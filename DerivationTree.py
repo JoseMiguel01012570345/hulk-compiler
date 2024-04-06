@@ -84,7 +84,7 @@ class builder:
         
         features = [('F',self.F) , ('P',self.P) , ('T',self.T) , ('N',self.N) ,
                     ('O',self.O) , ('b',self.b) , ('B',self.B) , ('p',self.p) , 
-                    ('if',self.if_) , ('elif',self.elif_) , ('M',self.M) , ('Q',self.Q) ,
+                    ('if',self.if_) , ('elif',self.elif_) , ('M',self.M) ,
                     ('c',self.c) ]
         
         for item in features:

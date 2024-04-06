@@ -1,5 +1,5 @@
 import HULK_LANGUAGE_DEFINITION as hulk
-import EnumsTokensDefinition as enumTD
+
 '''
 NOTE:
 
@@ -141,9 +141,12 @@ class binary_expression:
     
     def validator(self,token_list):
         
+        operators = [ '.', '-=', '*=', '!=', '|', '<=', '<', '==', 'as', ':', '@', '**', '/',
+                        '-', '+' , '*' , '^' , '%' , '@@', ':=', 'is', '>' , '>=', '=' , '&' ,
+                        '/=', '+=', 'in', ]
         try:
         
-            if hulk.OPERATOR_VALUES.__contains__(token_list[1]) or token_list[1][0] == ':' or token_list[1][0]== 'in' :
+            if operators.__contains__(token_list[1][0]):
                 return True
         
         except: pass
@@ -430,8 +433,8 @@ class unary_expression:
     AST = None
     def __init__(self,token_list):
     
-        if not hulk.OPERATORS_UNARY.__contains__(token_list[0][0]):
-            
+        unary_operators = ['!','++','--','new','let']
+        if not unary_operators.__contains__(token_list[0][0]):            
             pass
         
         else:
@@ -468,7 +471,6 @@ class unary_expression:
                 
                 self.set_identifier('let')
                 self.right = token_list[1][1]
-
     
     class not_(ASTNode):
         
@@ -497,7 +499,7 @@ class variable(ASTNode):
      
     def __init__(self,token_list):
         
-        if hulk.SYMBOLS_and_OPERATORS_parser.__contains__(token_list[0][0]): 
+        if hulk.SYMBOLS_and_OPERATORS_parser.__contains__(token_list[0][0]) and token_list[0][0].SelfType != 'object'  : 
             pass
         
         else:
@@ -694,26 +696,133 @@ class protocol(ASTNode):
     
         pass
 
-class expression_E(ASTNode):
-    
-    avaliable = False
-    def __init__(self,token_list):
-        pass
-
-    pass
-
 class vectors(ASTNode):
     
+    avaliable = False
+    filter_ = None
+    domain = None
+    
     def __init__(self,token_list):
+        
+        self.set_identifier('vector')
+        
+        if self.validator(token_list):
+            
+            self.validator = True
+
+            self.array_(token_list)
+            
+    def validator(self,token_list):
+        
+        if token_list[0][0] == '[': return True
+        
+        return False
+    
+    def array_(self,token_list):
+        
+        if token_list[1][0] == 'p':
+            
+            self.domain = token_list[1][1].parameters
+            
+        elif token_list[1][0] == 'T' :
+            
+            self.filter_ = token_list[1][1]
+            self.domain = token_list[3][1]        
+
+class literal(ASTNode):
+    
+    value = None
+    avaliable = False
+    def __init__(self,token_list):
+        
+        if self.validator(token_list) :
+            pass
+        
+        else:
+            self.avaliable = True
+            self.set_identifier('literal')
+            self.value = token_list[0][0].Text
+            
+    def validator(self,token_list):
+        
+        if token_list[0][0].SelfType != 'number' and token_list[0][0].SelfType != 'string' and token_list[0][0].SelfType != 'boolean':
+            return True
+        
+        return False
+    
+    pass
+
+class index(ASTNode):
+    
+    avaliable = False
+    args = None
+    name = None
+    def __init__(self,token_list):
+        
+        if self.validator:
+            
+            self.set_identifier('index')
+            self.name = token_list[0][1].name
+            self.args = token_list[2][1]      
+        
         pass
+    
+    def validator(self,token_list):
+        
+        target = ["T","[" , "T" , "]" ]  
+        try:
+            index = 0
+            while index < len(token_list):
+                
+                if token_list[index] != target[index]: return False
+                
+                index += 1
+                                
+        except: 
+            return False
+        
+        return True
 
 class while_(ASTNode):
     
+    avaliable = False
+    condition = None
+    body = None
+    
     def __init__(self,token_list):
+        
+        if self.validator:
+            
+            self.condition = token_list[1][1]
+            self.body = token_list[2][1]
+        
         pass
+    
+    def validator(self,toke_list):
+        
+        if toke_list[0][0] == 'while':
+            return True
+        
+        return False
 
 class for_(ASTNode):
     
+    avaliable = False
+    condition = None
+    body = None
+    
     def __init__(self,token_list):
+        
+        if self.validator:
+            
+            self.condition = token_list[1][1]
+            self.body = token_list[2][1]
+        
         pass
-
+    
+    def validator(self,toke_list):
+        
+        if toke_list[0][0] == 'for':
+            return True
+        
+        return False

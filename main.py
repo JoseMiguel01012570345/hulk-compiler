@@ -7,6 +7,7 @@ from ExpressionDefinitions import NumberExpression,StringExpression,BooleanExpre
 from VariableDefinitions import NumberVariable,StringVariable,BooleanVariable
 from LiteralDefinitions import NumberLiteral,StringLiteral,BooleanLiteral
 import GRAMMAR_PRODUCTIONS
+import translator
 import Parser as P
 from os import system
 
@@ -88,7 +89,7 @@ if not Error:
     print(zz)
     # ----------------------------
     
-    gd_token= GRAMMAR_PRODUCTIONS.traslator(my_list)
+    gd_token= translator.traslator(my_list)
 
     #print(gd_token)
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
