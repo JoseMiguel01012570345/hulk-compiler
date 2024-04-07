@@ -1,4 +1,3 @@
-import HULK_LANGUAGE_DEFINITION as hulk
 
 '''
 NOTE:
@@ -6,32 +5,63 @@ NOTE:
 token_list is of the form : ( label , ASTNode )
 
 '''
+
 class ASTNode:
       
-    
     anotated_type = None
-    context = []
     
     def set_identifier(self,id_:str):  
         
         self.id = id_
-        
         return self.id
     
-    def get_context(self):
+    def def_node(self):
         
-        # work with the Contex_Builder to return a context
+        def_node = ['function_form','protocol','type','let']
+        
+        for item in def_node:
+            
+            if item == self.id:
+                return True
+        
+        return False
+    
+    def send_context(self): 
+        
+        '''
+        pass the context from one child to another
+        
+        '''
+        
+        children: list = self.visitor()
+    
+        for child in children:
+            
+            my_context = [ item for item in self.context]
+            ASTNode(child).context = my_context
         
         pass
     
     def context_check(self):
         
+        children = self.visitor()
+        
+        for child in children:
+            
+            if type(child) == enumerate:
+                
+                for element in child:
+                    AST(element).context_check()
+                    
+                pass
+            
+            else:
+                AST(child).context_check()
+        
         pass
-
+        
     def type_checking(self):
         pass        
-
-
 
     def visitor(self):
         
@@ -49,9 +79,8 @@ class ASTNode:
         
         '''
         
-        return [ self.left , self.right]
+        return [ self.left , self.right ]
     
-
     def cil_node_code(self):
         """
         return CIL codes
@@ -59,7 +88,39 @@ class ASTNode:
         """
         pass
 
-class function_call( ASTNode):
+class Object(ASTNode):
+    
+    anotated_type = 'Object'
+    name = 'Object'
+    pass
+
+class Number(Object):
+    
+    anotated_type = 'Number'
+    name = 'Number'
+    
+    pass
+
+class Boolean(Object):
+    
+    anotated_type = 'Boolean'
+    name = 'Boolean'
+    
+    pass
+
+class String(Object):
+    
+    anotated_type = 'String'
+    name = 'String'
+    
+    pass
+class AST(ASTNode):
+    
+    context = [ Object , Number , Boolean ]
+    
+    pass
+
+class function_call( AST): # check context
 
     '''
     atributes of this class are:
@@ -69,7 +130,7 @@ class function_call( ASTNode):
     > args
     
     '''
-
+    
     avaliable = False
     def __init__( self, token_list ):
         
@@ -88,12 +149,26 @@ class function_call( ASTNode):
             return self.args
     
         else: return [self.args]
+    
+    def context_check(self):
+        
+        exist = [ item for item in self.context if AST(item).id == 'function_form' and def_function(item).name == self.name ] 
+        
+        if len(exist) != 0 :
+            return True
+        
+        return False
+    
+    def type_checking(self):
+        return super().type_checking()
+    
+    pass
         
     def validator(self, token_list):
         
         if token_list[0][0] == 'c': return True
     
-class params( ASTNode):
+class params( AST):
     
     '''
     atributes of this class are:
@@ -159,7 +234,7 @@ class binary_expression:
     '''
     
     avaliable = False
-    AST = None
+    AST_binary = None
     def __init__(self,token_list:list):
         
         if self.validator(token_list):
@@ -203,7 +278,7 @@ class binary_expression:
         
         return False
 
-    class dot(ASTNode):
+    class dot(AST):
         
         def __init__(self,token_list):
             
@@ -217,7 +292,7 @@ class binary_expression:
         
         def visitor(self):
             return [ self.left , self.right ]
-    class in_(ASTNode):
+    class in_(AST):
         
         def __init__(self,token_list):
             
@@ -232,7 +307,7 @@ class binary_expression:
         
         pass
 
-    class plus(ASTNode):
+    class plus(AST):
             
         def __init__(self,token_list):
             
@@ -245,7 +320,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()    
   
-    class minus(ASTNode):
+    class minus(AST):
         
         def __init__(self,token_list):
             
@@ -258,7 +333,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class multiplication(ASTNode):
+    class multiplication(AST):
         
         def __init__(self,token_list):
             
@@ -271,7 +346,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class divition(ASTNode):
+    class divition(AST):
         
         def __init__(self,token_list):
             
@@ -284,7 +359,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class _pow(ASTNode):
+    class _pow(AST):
         
         def __init__(self,token_list):
             
@@ -297,7 +372,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class per_cent(ASTNode):
+    class per_cent(AST):
         
         def __init__(self,token_list):
             
@@ -310,7 +385,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class concatenation(ASTNode):
+    class concatenation(AST):
         
         def __init__(self,token_list):
             
@@ -322,7 +397,7 @@ class binary_expression:
         
         def visitor(self):
             return super().visitor()
-    class blank_space_concatenation(ASTNode):
+    class blank_space_concatenation(AST):
         
         def __init__(self,token_list):
             
@@ -335,7 +410,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
    
-    class double_dot(ASTNode):
+    class double_dot(AST):
         
         def __init__(self,token_list):
             
@@ -348,7 +423,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class double_dot_equal(ASTNode):
+    class double_dot_equal(AST):
         
         def __init__(self,token_list):
             
@@ -361,7 +436,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class as_(ASTNode):
+    class as_(AST):
         
         def __init__(self,token_list):
             
@@ -373,7 +448,7 @@ class binary_expression:
     
         def visitor(self):
             return super().visitor()
-    class is_(ASTNode):
+    class is_(AST):
         
         def __init__(self,token_list):
             
@@ -386,7 +461,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class equal(ASTNode):
+    class equal(AST):
         
         def __init__(self,token_list):
             
@@ -398,7 +473,7 @@ class binary_expression:
         
         def visitor(self):
             return super().visitor()
-    class bigger_than(ASTNode):
+    class bigger_than(AST):
         
         def __init__(self,token_list):
             
@@ -411,7 +486,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class smaller_than(ASTNode):
+    class smaller_than(AST):
         
         def __init__(self,token_list):
             
@@ -424,7 +499,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class bigger_or_equal(ASTNode):
+    class bigger_or_equal(AST):
         
         def __init__(self,token_list):
             
@@ -437,7 +512,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class smaller_or_equal(ASTNode):
+    class smaller_or_equal(AST):
         
         def __init__(self,token_list):
             
@@ -450,7 +525,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class assign(ASTNode):
+    class assign(AST):
         
         def __init__(self,token_list):
             
@@ -462,7 +537,7 @@ class binary_expression:
     
         def visitor(self):
             return super().visitor()
-    class or_(ASTNode):
+    class or_(AST):
         
         def __init__(self,token_list):
             
@@ -475,7 +550,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class and_(ASTNode):
+    class and_(AST):
         
         def __init__(self,token_list):
             
@@ -487,7 +562,7 @@ class binary_expression:
         
         def visitor(self):
             return super().visitor()
-    class different(ASTNode):
+    class different(AST):
         
         def __init__(self,token_list):
             
@@ -500,7 +575,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class divide_and_assign(ASTNode):
+    class divide_and_assign(AST):
         
         def __init__(self,token_list):
             
@@ -512,7 +587,7 @@ class binary_expression:
     
         def visitor(self):
             return super().visitor()
-    class multiply_and_assign(ASTNode):
+    class multiply_and_assign(AST):
         
         def __init__(self,token_list):
             
@@ -525,7 +600,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class plus_and_assign(ASTNode):
+    class plus_and_assign(AST):
         
         def __init__(self,token_list):
             
@@ -538,7 +613,7 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
     
-    class minus_and_assign(ASTNode):
+    class minus_and_assign(AST):
         
         def __init__(self,token_list):
             
@@ -550,7 +625,7 @@ class binary_expression:
     
         def visitor(self):
             return super().visitor()
-    
+
 class unary_expression:
     
     '''
@@ -563,7 +638,7 @@ class unary_expression:
     '''
     
     avaliable = False
-    AST = None
+    AST_unary = None
     def __init__(self,token_list):
     
         unary_operators = ['!','++','--','new','let']
@@ -587,7 +662,7 @@ class unary_expression:
                     self.AST = item[1]
                     return
 
-    class new(ASTNode):
+    class new(AST):
 
         def __init__(self,token_list):
             
@@ -596,20 +671,34 @@ class unary_expression:
             
             pass
         
+        def context_check(self):
+        
+            exist = [ item for item in self.context if AST(item).id == 'type' and type_(item).name == self.name ] 
+            
+            if len(exist) != 0 :
+                return True
+            
+            return False
+        
         def visitor(self):
             return self.right
         
-    class let(ASTNode):
+    class let(AST):
     
         def __init__(self,token_list):
             
             self.set_identifier('let')
             self.right = token_list[1][1]
             
+            try:
+                self.name = token_list[1][1].left.name
+            except:
+                raise Exception('no inicialization for let')
+            
         def visitor(self):
             return self.right
 
-    class not_(ASTNode):
+    class not_(AST):
         
         def __init__(self,token_list):
             
@@ -619,7 +708,7 @@ class unary_expression:
         def visitor(self):
             return self.right
             
-    class plus_plus(ASTNode):
+    class plus_plus(AST):
         
         def __init__(self,token_list):
             
@@ -628,7 +717,7 @@ class unary_expression:
     
         def visitor(self):
             return self.right
-    class minus_minus(ASTNode):
+    class minus_minus(AST):
         
         def __init__(self,token_list):
             
@@ -638,7 +727,7 @@ class unary_expression:
         def visitor(self):
             return self.right
      
-class variable(ASTNode):
+class variable(AST): # check context
     
     '''
     this class has the attributes:
@@ -666,7 +755,16 @@ class variable(ASTNode):
     def visitor(self):
         return None
 
-class if_(ASTNode):
+    def context_check(self):
+        
+        for item in self.context:
+            
+            if AST(item).id == 'let' and variable(item).name == self.name :
+                return True
+        
+        return False
+
+class if_(AST):
     
     '''
     this class has the attributes:
@@ -695,7 +793,7 @@ class if_(ASTNode):
     def visitor(self):
         return [ self.condition , self.body ]
 
-class elif_(ASTNode):
+class elif_(AST):
     
     '''
     this class has the attributes:
@@ -729,7 +827,7 @@ class elif_(ASTNode):
         
     pass
 
-class else_(ASTNode):
+class else_(AST):
     
     
     '''
@@ -767,7 +865,7 @@ class else_(ASTNode):
     def visitor(self):
         return [ self.condition , self.body ]
 
-class def_function(ASTNode):
+class def_function(AST):
     
     '''
     atributes of this class are:
@@ -796,7 +894,22 @@ class def_function(ASTNode):
                         
             elif token_list[0][1].id == 'FunctionCall': 
                 self.simple_form(token_list)
-                
+    
+    def send_context(self):
+        
+        new_context = []
+        if type (self.args) == enumerate:
+            
+            new_context = [ item for item in self.args ]
+        else:
+            new_context.append(self.args)    
+            
+        AST(self.body).context = new_context
+        AST(self.args).context = new_context
+        
+        
+        pass
+    
     def function_kw(self,token_list):
         
         self.name = token_list[1][1].name
@@ -873,7 +986,7 @@ class def_function(ASTNode):
         return False
     
     pass
-class type_(ASTNode):
+class type_(AST): # check context
     
     '''
     atributes of this class are:
@@ -923,9 +1036,36 @@ class type_(ASTNode):
                 self.body = token_list[2][1]
         pass
     
+    def context_check(self):
+        
+        if self.parent_name != None:
+            for item in self.context:
+                
+                if AST(item).id == 'type' and type_(item).parent_name == self.parent_name: 
+                    return True
+        
+            return False
+        
+        else: return True
+
+    def send_context(self):
+        
+        new_context = []
+        if type (self.args) == enumerate:
+            
+            new_context = [ item for item in self.args ]
+        else:
+            new_context.append(self.args)    
+            
+        AST(self.args).context = new_context
+        AST(self.base).context = new_context
+        AST(self.body).context = new_context
+        
+        pass
+    
     def visitor(self):
         return [ self.constructor , self.base , self.base ]
-class protocol(ASTNode):
+class protocol(AST): # check context
     
     '''
     atributes of this class are:
@@ -962,9 +1102,18 @@ class protocol(ASTNode):
     
         pass
     
+    def context_check(self):
+        
+        for item in self.context:
+            
+            if AST(item).id == 'protocol' and protocol(item).parent_name == self.parent_name: 
+                return True
+        
+        return False
+    
     def visitor(self):
         return [ self.body ]
-class vectors(ASTNode):
+class vectors(AST):
     
     '''
     
@@ -1012,7 +1161,7 @@ class vectors(ASTNode):
 
     def visitor(self):
         return [ self.filter_ , self.domain ]
-class literal(ASTNode):
+class literal(AST):
     
     '''
     attributes:
@@ -1047,7 +1196,7 @@ class literal(ASTNode):
     
     pass
 
-class index(ASTNode):
+class index(AST): # check context
     
     '''
     attributes:
@@ -1088,9 +1237,18 @@ class index(ASTNode):
         
         return True
     
+    def context_check(self):
+        
+        for item in self.context:
+            
+            if AST(item).id == 'var' and variable(item).name == self.name : 
+                return True
+        
+        return False
+    
     def visitor(self):
         return [self.index]
-class while_(ASTNode):
+class while_(AST):
     
     '''
     attributes:
@@ -1126,7 +1284,7 @@ class while_(ASTNode):
     def visitor(self):
         return [ self.condition , self.body ]
 
-class for_(ASTNode):
+class for_(AST):
     
     '''
     attributes:
@@ -1161,7 +1319,8 @@ class for_(ASTNode):
     
     def visitor(self):
         return [ self.condition , self.body ]
-class block(ASTNode):
+
+class block(AST):
     
     '''
     attributes:
@@ -1215,6 +1374,20 @@ class block(ASTNode):
                 else:
                     self.expressions.append(token_list[0][1])
                     self.expressions.append(token_list[1][1])
+    
+    def send_context(self):
+        
+        new_context = [ item for item in self.expressions ]
+        
+        for expression in self.expressions:
+        
+            if AST(expression).def_node():
+                
+                new_context.extend( [ expression ] )
+
+            AST(expression).context = [ item for item in new_context ]
+        
+        pass
     
     def validator(self,token_list):
         

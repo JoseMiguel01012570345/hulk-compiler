@@ -191,11 +191,11 @@ class builder:
         
         binary_exp = pdr.binary_expression(token_list)
         if binary_exp.avaliable:
-            return binary_exp.AST
+            return binary_exp.AST_binary
         
         unary_exp = pdr.unary_expression(token_list)
         if unary_exp.avaliable: 
-            return unary_exp.AST
+            return unary_exp.AST_unary
         
         vector = pdr.vectors(token_list)
         if vector.avaliable:
