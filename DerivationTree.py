@@ -73,6 +73,21 @@ def AST(self):
     
 class builder:
 
+    '''
+    This class builds the AST for every node, nodes are:
+    
+    > Function call
+    > blocks
+    > for loop
+    > while loop
+    > if , elif , else
+    > variables
+    > literals
+    > class (type)
+    > protocols
+    
+    '''
+
     def __init__(self, label ,token_list ):
         
         feature = self.filter_feature(label)
@@ -106,6 +121,12 @@ class builder:
             
             if label == item[0]:
                 return item[1]
+    
+    '''
+    All of the next methods are the derivations that a parser can derivate in, 
+    except for for_ , while_ and variable 
+    
+    '''
     
     def F(self ,toke_list:list):
         
@@ -232,6 +253,7 @@ class builder:
             self.M(token_list),
             self.while_(token_list),
             self.for_(token_list),
+            self.indexation(token_list),
          ]
         
         binary_exp = pdr.binary_expression(token_list)
@@ -264,6 +286,14 @@ class builder:
         for_ = pdr.for_(token_list)
         
         if for_.avaliable: return for_
+        
+        return None
+    
+    def indexation(self,token_list):
+        
+        index = pdr.index(token_list)
+        
+        if index.avaliable: return index
         
         return None
     

@@ -50,6 +50,15 @@ class ASTNode:
 
 class function_call( ASTNode):
 
+    '''
+    atributes of this class are:
+    
+    > id
+    > name : FunctionCall
+    > args
+    
+    '''
+
     avaliable = False
     def __init__( self, token_list ):
         
@@ -67,6 +76,14 @@ class function_call( ASTNode):
         if token_list[0][0] == 'c': return True
     
 class params( ASTNode):
+    
+    '''
+    atributes of this class are:
+    
+    > id : params
+    > parameters
+    
+    '''
     
     parameters = []
     avaliable = False
@@ -111,6 +128,16 @@ class params( ASTNode):
     pass
 
 class binary_expression:
+    
+    '''
+    this class selects the kind of binary expression the token_list refers to. Every
+    class in this class has as attributes:
+    
+    > id : the kind of expression it is specified by its symbol
+    > left: left member
+    > right: right member
+    
+    '''
     
     avaliable = False
     AST = None
@@ -433,6 +460,15 @@ class binary_expression:
     
 class unary_expression:
     
+    '''
+    this class selects the kind of binary expression the token_list refers to. Every
+    class in this class has as attributes:
+    
+    > id : the kind of expression it is specified by its symbol
+    > right: right unary member
+    
+    '''
+    
     avaliable = False
     AST = None
     def __init__(self,token_list):
@@ -497,6 +533,14 @@ class unary_expression:
      
 class variable(ASTNode):
     
+    '''
+    this class has the attributes:
+    
+    > id : var
+    > name: name of the variable
+    
+    '''
+    
     avaliable = False
      
     def __init__(self,token_list):
@@ -514,6 +558,15 @@ class variable(ASTNode):
 
 class if_(ASTNode):
     
+    '''
+    this class has the attributes:
+    
+    > id : if
+    > condition : condition for if statement
+    > body: body of the statement
+    
+    '''
+    
     avaliable = False
     def __init__(self,token_list):
         
@@ -530,6 +583,19 @@ class if_(ASTNode):
     pass
 
 class elif_(ASTNode):
+    
+    '''
+    this class has the attributes:
+    
+    > id : elif
+    > condition : condition for elif statement and the condition for the if statement , the condition is a list
+    > body: body of the statement
+    
+    NOTE:
+    
+    The condition is a list that refers to if statement , and has second element has the elif statement
+    
+    '''
     
     avaliable = False
     condition=None
@@ -550,6 +616,21 @@ class elif_(ASTNode):
 
 class else_(ASTNode):
     
+    '''
+    this class has the attributes:
+    
+    > id : else
+    > condition : condition for else is the condition for the if statement and condition for the
+                elif statement, the condition is a list that refers to elif
+    > body: body of the statement
+    
+    
+    NOTE:
+    
+    the condition is a list to refers to elif statement , in case it exists , or tho the if statement in worst case
+    
+    '''
+    
     avaliable = False
     condition = None
     def __init__(self,token_list):
@@ -568,6 +649,16 @@ class else_(ASTNode):
     pass
 
 class def_function(ASTNode):
+    
+    '''
+    atributes of this class are:
+    
+    > id : function_form
+    > name: name of the function declared
+    > args
+    > body
+    
+    '''
     
     avaliable = False
     def __init__(self,token_list):
@@ -663,6 +754,18 @@ class def_function(ASTNode):
 
 class type_(ASTNode):
     
+    '''
+    atributes of this class are:
+    
+    > id : type
+    > name: name of the type
+    > constructor: constructor params
+    > parent_name: the name of the class this class inherits from
+    > base: parents constructor
+    > body
+    
+    '''
+    
     avaliable = False
     def __init__(self,token_list):
         
@@ -702,6 +805,16 @@ class type_(ASTNode):
     
 class protocol(ASTNode):
     
+    '''
+    atributes of this class are:
+    
+    > id : protocol
+    > name: name of the type
+    > parent_name: the name of the class this class inherits from
+    > body
+    
+    '''
+    
     avaliable = False
     def __init__(self,token_list):
         
@@ -728,6 +841,19 @@ class protocol(ASTNode):
         pass
 
 class vectors(ASTNode):
+    
+    '''
+    
+    vector forms: 
+    1. [ filter || domain ]
+    2. [ 1,2,3,4, ... ]
+    
+    attributes:
+    
+    > filter_ : the filter of a vector
+    > domain: the domain of a vector
+    
+    '''
     
     avaliable = False
     filter_ = None
@@ -762,6 +888,14 @@ class vectors(ASTNode):
 
 class literal(ASTNode):
     
+    '''
+    attributes:
+    
+    > id: literal
+    > value: value of the literal
+    
+    '''
+    
     value = None
     avaliable = False
     def __init__(self,token_list):
@@ -786,16 +920,26 @@ class literal(ASTNode):
 
 class index(ASTNode):
     
+    '''
+    attributes:
+    
+    > id : index
+    > name: name of the indexation vector
+    > index : index of the vector 
+    
+    '''
+    
     avaliable = False
     args = None
     name = None
     def __init__(self,token_list):
         
-        if self.validator:
+        if self.validator(token_list):
             
+            self.avaliable = True
             self.set_identifier('index')
             self.name = token_list[0][1].name
-            self.args = token_list[2][1]      
+            self.index = token_list[2][1]      
         
         pass
     
@@ -806,7 +950,7 @@ class index(ASTNode):
             index = 0
             while index < len(token_list):
                 
-                if token_list[index] != target[index]: return False
+                if token_list[index][0] != target[index]: return False
                 
                 index += 1
                                 
@@ -816,6 +960,15 @@ class index(ASTNode):
         return True
 
 class while_(ASTNode):
+    
+    '''
+    attributes:
+    
+    > id : while
+    > condition : condition of the while loop
+    > body
+    
+    '''
     
     avaliable = False
     condition = None
@@ -838,7 +991,17 @@ class while_(ASTNode):
             return True
         
         return False
+
 class for_(ASTNode):
+    
+    '''
+    attributes:
+    
+    > id : for
+    > condition : condition of the for loop
+    > body
+    
+    '''
     
     avaliable = False
     condition = None
@@ -863,6 +1026,14 @@ class for_(ASTNode):
         return False
 
 class block(ASTNode):
+    
+    '''
+    attributes:
+    
+    > id : block
+    > expressions : expressions inside of the block
+    
+    '''
     
     expressions = [] # solve from left to right
     avaliable = False
