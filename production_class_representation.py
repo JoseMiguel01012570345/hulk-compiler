@@ -31,8 +31,25 @@ class ASTNode:
     def type_checking(self):
         pass        
 
+
+
     def visitor(self):
-       return [ self.left , self.right]
+        
+        '''
+        visitor returns a list of elements you can visit
+        example: 
+        
+            while condition 
+                
+                body
+                
+            "visitor" returns : [ condition , body ]
+        
+        by default "visitor" returns binary operation visitation
+        
+        '''
+        
+        return [ self.left , self.right]
     
 
     def cil_node_code(self):

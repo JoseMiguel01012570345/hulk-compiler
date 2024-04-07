@@ -1,0 +1,551 @@
+[33mcommit 978d0a75ca7c7be117595a7ff1b157ef322f1477[m[33m ([m[1;36mHEAD -> [m[1;32mjhosef[m[33m, [m[1;31morigin/jhosef[m[33m)[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Apr 7 01:08:04 2024 -0400
+
+    visitor pattern
+
+[33mcommit fe724fa7d93cea4804d04911c556031eb519c363[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sat Apr 6 22:25:24 2024 -0400
+
+    fix to indexation and  documentation added to production_class_representation.py
+
+[33mcommit 2c8c07adaca3dd35afb6ab635eec1b08665d5f69[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sat Apr 6 14:04:31 2024 -0400
+
+    AST finally done
+
+[33mcommit 9b378f8d689fed88a10f382c4ca7d7db1fe62eb2[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sat Apr 6 11:46:46 2024 -0400
+
+    fixing error at the AST
+
+[33mcommit c7c3cf6bd1e414aad3a74219768dcb2cb6560a78[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sat Apr 6 05:44:18 2024 -0400
+
+    general expression made
+
+[33mcommit cf6be7e1d9b9668943d979bd436d0cbb0d8c1c5d[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sat Apr 6 05:22:32 2024 -0400
+
+    blocks done
+
+[33mcommit 3993d8b3d5b6ea845de2e82e158ace1adeb340e4[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sat Apr 6 02:34:35 2024 -0400
+
+    for,while added to AST
+
+[33mcommit b25b9d0419ec77dc861ceceda7e9707de5ab3fcd[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 22:29:19 2024 -0400
+
+    adding for, while,vector to AST
+
+[33mcommit 41a9b56362c1fa42133d44ac9bc38f5d44e3abde[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 14:50:37 2024 -0400
+
+    function AST finished
+
+[33mcommit daadcc619049291b3b088af922895645fb391be5[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 13:29:52 2024 -0400
+
+    update readme function production
+
+[33mcommit 0a2ba53f234996166487655e49ae320471123fac[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 13:27:51 2024 -0400
+
+    fixing grammar
+
+[33mcommit f25af6001f0cc8b31b86c736a1ffa1789fcccd1d[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 10:42:52 2024 -0400
+
+    important fix for the parser
+
+[33mcommit 2c8b22547de8a3bc8b8c73adbfeda08d0a7ccb16[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 08:44:09 2024 -0400
+
+    type and protocol , coded
+
+[33mcommit ff68bfbd300674d483c4e167bc908909dd3220cb[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 07:56:52 2024 -0400
+
+    add if-elif to derivation tree
+
+[33mcommit bc81e8190badc9029f1c60a1e3f60bf518916778[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 07:25:47 2024 -0400
+
+    NodeType deletion
+
+[33mcommit 6da23cf5d3d9bdc87274f3c18008c477f7723431[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 07:24:29 2024 -0400
+
+    function_call, function_name,variable and N are working
+
+[33mcommit e5493d32858aa511bde90e97425556ac73c63d12[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 06:11:41 2024 -0400
+
+    fixing again the translator
+
+[33mcommit e305fa5d581a7c4da56d5def8d78f1a74e63b229[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 05:58:00 2024 -0400
+
+    fixes to translator and parser
+
+[33mcommit 9a4fdef1d21fcf7f91ab9c91ef550604b82484c0[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 03:47:46 2024 -0400
+
+    la pinche madre q me pario
+
+[33mcommit 8092354e884995265db3fb88d7a30c9e121acdaf[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 03:22:53 2024 -0400
+
+    variable declaration
+
+[33mcommit 55b9e4213842e7bbd3911d553eda939430f42a96[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Apr 5 02:46:27 2024 -0400
+
+    variable node created
+
+[33mcommit 9f88b28edd7e8f237933dd2441147135564161c9[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 23:08:58 2024 -0400
+
+    production_class_representation on the way
+
+[33mcommit 04e43c979d0961437dfb151def635caa9c39d560[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 21:19:11 2024 -0400
+
+    changing ASTnode structure
+
+[33mcommit 8950819e982025f4d9a5fd7dea7081edbd563477[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 18:55:04 2024 -0400
+
+    building the builders
+
+[33mcommit c6adfc0321bc52936ab55264bc4dafd33a3f1e58[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 08:34:37 2024 -0400
+
+    dolor de cabeza , muerto de cansado
+
+[33mcommit e6fd6a75a0f7b245b08d97be60ea30cf768db04a[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 06:05:47 2024 -0400
+
+    changes made to Parser inheritence
+
+[33mcommit 5127bdb70b6fe9733733fd3c4493c53656b7d006[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 06:02:52 2024 -0400
+
+    abdel task
+
+[33mcommit dfd571e2c5a43a2c0b219ab40e0cc89dadea4f17[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 05:49:07 2024 -0400
+
+    brackets added to code and AST coupelling
+
+[33mcommit 3790bd5bcfae661ea7a61a6adc888293d6f529f7[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 05:05:32 2024 -0400
+
+    ignoring test.py
+
+[33mcommit 7cacf5f00c69bd7d09a76fbc0ce4da6d93090bab[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 05:03:46 2024 -0400
+
+    refactoring files
+
+[33mcommit b9ac9f15f3853e4b0e3bb6d162f8a12bb744a92d[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 04:56:22 2024 -0400
+
+    main.py updated
+
+[33mcommit 73d609d4361839a6f7a00a199b1618ef0e98d3c8[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 04:55:05 2024 -0400
+
+    all marged
+
+[33mcommit 0c1dbb498bcc64005f8d61c0c6a6630623228855[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 01:56:32 2024 -0400
+
+    changes to yonyUK
+
+[33mcommit f44e33a21c1a713cd070ea9cb97dcd8d560bfdfc[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Apr 4 01:22:54 2024 -0400
+
+    restructuring AST
+
+[33mcommit 451caa4b7e9050f3e7219af244066ee7ae5c7ed8[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Wed Apr 3 23:53:18 2024 -0400
+
+    abdel titanic
+
+[33mcommit bb6fe0905f2e8f6515d0665d17b50966c1829ce7[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Wed Apr 3 23:20:57 2024 -0400
+
+    another warfare
+
+[33mcommit 37df88a11be255816eedd6405b7f2b201cad8aa9[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Wed Apr 3 23:10:25 2024 -0400
+
+    warfare
+
+[33mcommit 5d4bf3c50333543d41de870f6eb9af4266efbdca[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Wed Apr 3 23:57:51 2024 -0400
+
+    working on cil
+
+[33mcommit f44647e362591c6a1acf6859d9bcea73212d08f3[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Wed Apr 3 18:48:01 2024 -0400
+
+    working on builder
+
+[33mcommit b6ffd2d4860e198d0f6fbe721ddd37bbae5fd236[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Wed Apr 3 05:53:42 2024 -0400
+
+    hard-coded Parser-AST
+
+[33mcommit e4febc5a78511af9e2c9383568c7b98eabd6fb8c[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Wed Apr 3 18:40:04 2024 -0400
+
+    working on builder
+
+[33mcommit f6efbabe9f3cc5e70deb2a3308acbaf067982dc0[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Tue Apr 2 15:32:18 2024 -0400
+
+    readme
+
+[33mcommit a0dfeb3a60b2ce36cd752fc760e8fecfb02c8c03[m
+Author: Eggyf <124287542+Eggyf@users.noreply.github.com>
+Date:   Tue Apr 2 15:27:47 2024 -0400
+
+    Update parser-readme.md
+
+[33mcommit 42f9a483be442dc90b893889a4b03e8e02931310[m
+Author: Eggyf <124287542+Eggyf@users.noreply.github.com>
+Date:   Tue Apr 2 15:27:23 2024 -0400
+
+    Update parser-readme.md
+
+[33mcommit 22c17b4a1371cc9a34edf44064bdb7216696f66f[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Tue Apr 2 15:29:20 2024 -0400
+
+    readme
+
+[33mcommit d2c74eb7d4b71e9e549d20e9d033712a5c45ff0e[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Tue Apr 2 15:26:07 2024 -0400
+
+    readme
+
+[33mcommit cf7d09003cbae51bd7d697b57b4cbc89baf79b97[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Tue Apr 2 15:23:25 2024 -0400
+
+    readme
+
+[33mcommit 8fc1a3adaab4d12165fa0bc9f826b856d324e27e[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Tue Apr 2 15:22:08 2024 -0400
+
+    readme
+
+[33mcommit 4ec23eb4d011406d7855f963f32441cb45684ecc[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Tue Apr 2 15:19:54 2024 -0400
+
+    readme
+
+[33mcommit ebd2377146a1122ebadbe975c71d6dddccefcdbc[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Tue Apr 2 13:54:55 2024 -0400
+
+    readme
+
+[33mcommit edf1b040bd2d229427180a2a4543b8b9753b3cef[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Tue Apr 2 13:28:45 2024 -0400
+
+    task for builder left
+
+[33mcommit 9cf9a9d9c07cee6be17ea753008683779b53c3bf[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Tue Apr 2 13:50:33 2024 -0400
+
+    readme
+
+[33mcommit c8c0f4aa9e676d342a3e939d75142e3d2f276a54[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Tue Apr 2 12:25:25 2024 -0400
+
+    assembling ast structure to parser
+
+[33mcommit 87fe404f5e4d216a9718abf583ee8024bbd3c92d[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Tue Apr 2 13:01:33 2024 -0400
+
+    Readme
+
+[33mcommit 3056524b960eaf23dc935b64798a0d700a7bfa61[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Mon Apr 1 23:13:08 2024 -0400
+
+    parser criteria
+
+[33mcommit a3b9df9dcbe43390106588616dcc58897c7cf0e0[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Mon Apr 1 22:46:22 2024 -0400
+
+    comment added
+
+[33mcommit a7b845e541174cca320d438f1888037a1e1a11c7[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Mon Apr 1 22:24:56 2024 -0400
+
+    commit por gusto
+
+[33mcommit 85d1a87d4098bc008603b1c06c24b0e5beba287d[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Mon Apr 1 22:24:07 2024 -0400
+
+    readme improved
+
+[33mcommit ed5133caa09d6e6f2e4459ecf1626eb937d48783[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Mon Apr 1 12:08:26 2024 -0400
+
+    readme updated
+
+[33mcommit fda4dcb7b1884f76db52c42169289e7fcbd08132[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Mon Apr 1 11:10:52 2024 -0400
+
+    parser arleady finished
+
+[33mcommit d1eb87fa4c8a409f17d89aa9bb426103c2b82cf6[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 31 17:09:20 2024 -0400
+
+    types, while, function already done
+
+[33mcommit c4ac16e05d79b68f8f9524c3551ef632387b6712[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 31 15:56:29 2024 -0400
+
+    in completed
+
+[33mcommit 5961e2fc7b9b50573b6806906734ccafa9af08c1[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 31 14:02:26 2024 -0400
+
+    for , block , if else ,elif done
+
+[33mcommit 811ca97d0b51201d30abaa07ad5a673db9a3e751[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 31 09:19:52 2024 -0400
+
+    block operation allowed
+
+[33mcommit 5c341717b826193da68069cf754ce98ba941fbe2[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 31 09:16:02 2024 -0400
+
+    fixes to blocks
+
+[33mcommit 17010f0f4e306a6942b17a180d4a877fc0f8424e[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 31 07:33:46 2024 -0400
+
+    F added to productions
+
+[33mcommit d16ad3b3e9d9af862ca024a2b3db939366434e00[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 31 05:55:21 2024 -0400
+
+    lexer error fixed
+
+[33mcommit 533231a7987cc6d653998ddad360f3ebef3cb925[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 31 05:21:52 2024 -0400
+
+    many marges
+
+[33mcommit e77b3ad0f82284b9934bd65a2856b0f5eeb5081f[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 31 03:56:25 2024 -0400
+
+    parser almost finished
+
+[33mcommit e30c47c45c07cb262495e7474df3f53dbd668390[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Mar 29 21:01:00 2024 -0400
+
+    fist parsing
+
+[33mcommit 09ab9001e8cfc412cf944465f246a8c11c36c6c0[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Mar 29 09:23:08 2024 -0400
+
+    grammar tokenikezed
+
+[33mcommit bcb48a9cc004f65ca2601ecd67fdb7751ee2cd53[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Mar 29 06:41:04 2024 -0400
+
+    gramar modified
+
+[33mcommit ee1ad42667311a90612bd691f34222c910d1c22e[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Fri Mar 29 03:25:03 2024 -0400
+
+    grammar modified extensifly
+
+[33mcommit 4b749d9ad949b39f0e1197a894c93580b09816b5[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Mar 28 22:02:00 2024 -0400
+
+     grammar copied to GRAMATIC_DEFINITION.PY
+
+[33mcommit e54cf29e908327acf5121a20f4925027f996ecbd[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Mar 28 12:58:09 2024 -0400
+
+    many fixes added to gramatic for it to be count
+
+[33mcommit 7e9b0779b7012bab33a9e413269a8853172f79e4[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Mar 28 11:23:44 2024 -0400
+
+    adding lookahead
+
+[33mcommit 629548b0b1b66155bd39455dda77d7f284f27d7c[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Mar 28 06:35:42 2024 -0400
+
+    translator moved from GrammarParser
+
+[33mcommit 82f43872f443d77c5e91e356d7065065f8bb0cac[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Thu Mar 28 00:47:54 2024 -0400
+
+    ambiguiti on function deleted
+
+[33mcommit eeb1a31840580fa88974f2fbba5d45c64c346f60[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Wed Mar 27 22:58:15 2024 -0400
+
+    translator moved from GrammarParser
+
+[33mcommit 0768c922f7401187ac48ba31d6a0e9d1cb012c6d[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 17 15:40:09 2024 -0400
+
+     production notes updated
+
+[33mcommit 4ed6c940c3ae7172214d61a4aa43a84a045df880[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 17 15:34:14 2024 -0400
+
+     grammar done
+
+[33mcommit e4a1d4f567b3ed81dd041f684cb314e60d5018d5[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 17 03:57:58 2024 -0400
+
+    types done
+
+[33mcommit 8a096a2d25033a40e44a730854c308c943864d2c[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 17 01:44:18 2024 -0400
+
+    improvement
+
+[33mcommit 8d81e980ad239f579d2764505802d63dfa0751b8[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sat Mar 16 16:24:38 2024 -0400
+
+    production in classes
+
+[33mcommit 62efe728a4745104021bb53e8a9eeb2a8cacfdd6[m
+Author: Jhosef <jmperezperez25@gmail.com>
+Date:   Sun Mar 10 11:48:20 2024 -0400
+
+    first commit
+
+[33mcommit add39188600502f6401133a8e6587ca63db6058f[m
+Author: YonyUk <yonatanjoseguerraperez@gmail.com>
+Date:   Sun Mar 31 04:51:38 2024 -0400
+
+    arreglando detalles del lexer
+
+[33mcommit e4498be79c607ec363249a9c864e1a2d2b1d2b2b[m
+Author: YonyUk <yonatanjoseguerraperez@gmail.com>
+Date:   Sat Mar 30 08:10:41 2024 -0400
+
+    analisis semantico y resolucion del AST iniciado
+
+[33mcommit e1a09fae993d7fdef137e94c67fbd3bedae21ad2[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Fri Mar 29 01:11:11 2024 -0400
+
+    finalizando generador de codigo
+
+[33mcommit 75b133521d5533d435da67bd2168853198f9a160[m
+Author: Eggyf <abdelfregel1711@gmail.com>
+Date:   Thu Mar 28 23:56:50 2024 -0400
+
+    generador de codigo
+
+[33mcommit dda93046d7867b3ff517731ac370f3c72f52e226[m
+Author: YonyUk <yonatanjoseguerraperez@gmail.com>
+Date:   Thu Mar 28 23:15:42 2024 -0400
+
+    generador de codigo inicio
+
+[33mcommit 3d9d966148b2e41e3bd1cf6962bf0a20b5ecf11b[m
+Author: YonyUk <yonatanjoseguerraperez@gmail.com>
+Date:   Sat Mar 23 01:34:07 2024 -0400
+
+    Create README.md
+
+[33mcommit abf3a86e21f42c09a961c36019696a7f86ebdce7[m
+Author: YonyUk <yonatanjoseguerraperez@gmail.com>
+Date:   Sat Mar 23 01:32:35 2024 -0400
+
+    Add files via upload
