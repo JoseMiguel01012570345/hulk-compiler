@@ -38,7 +38,7 @@ class ASTNode:
         for child in children:
             
             my_context = [ item for item in self.context]
-            ASTNode(child).context = my_context
+            child.context = my_context
         
         pass
     
@@ -51,12 +51,12 @@ class ASTNode:
             if type(child) == enumerate:
                 
                 for element in child:
-                    AST(element).context_check()
+                    element.context_check()
                     
                 pass
             
             else:
-                AST(child).context_check()
+                child.context_check()
         
         pass
         
@@ -152,7 +152,7 @@ class function_call( AST): # check context
     
     def context_check(self):
         
-        exist = [ item for item in self.context if AST(item).id == 'function_form' and def_function(item).name == self.name ] 
+        exist = [ item for item in self.context if item.id == 'function_form' and def_function(item).name == self.name ] 
         
         if len(exist) != 0 :
             return True
@@ -261,7 +261,7 @@ class binary_expression:
         
                 if item[0] == token_list[1][0]:
         
-                    self.AST = item[1]
+                    self.AST_binary = item[1]
                     return
     
     def validator(self,token_list):
@@ -659,7 +659,7 @@ class unary_expression:
                 
                 if item[0] == token_list[0][0]:
                     
-                    self.AST = item[1]
+                    self.AST_unary = item[1]
                     return
 
     class new(AST):
@@ -687,13 +687,15 @@ class unary_expression:
     
         def __init__(self,token_list):
             
-            self.set_identifier('let')
-            self.right = token_list[1][1]
+            if token_list[0][0] == 'let':
             
-            try:
-                self.name = token_list[1][1].left.name
-            except:
-                raise Exception('no inicialization for let')
+                self.set_identifier('let')
+                self.right = token_list[1][1]
+                
+                try:
+                    self.name = token_list[1][1].left.name
+                except:
+                    raise Exception('no inicialization for let')
             
         def visitor(self):
             return self.right
@@ -759,7 +761,7 @@ class variable(AST): # check context
         
         for item in self.context:
             
-            if AST(item).id == 'let' and variable(item).name == self.name :
+            if item.id == 'let' and variable(item).name == self.name :
                 return True
         
         return False
@@ -904,8 +906,8 @@ class def_function(AST):
         else:
             new_context.append(self.args)    
             
-        AST(self.body).context = new_context
-        AST(self.args).context = new_context
+        self.body.context = new_context
+        self.args.context = new_context
         
         
         pass
@@ -1041,7 +1043,7 @@ class type_(AST): # check context
         if self.parent_name != None:
             for item in self.context:
                 
-                if AST(item).id == 'type' and type_(item).parent_name == self.parent_name: 
+                if item.id == 'type' and item.parent_name == self.parent_name: 
                     return True
         
             return False
@@ -1057,9 +1059,9 @@ class type_(AST): # check context
         else:
             new_context.append(self.args)    
             
-        AST(self.args).context = new_context
-        AST(self.base).context = new_context
-        AST(self.body).context = new_context
+        self.args.context = new_context
+        self.base.context = new_context
+        self.body.context = new_context
         
         pass
     
@@ -1106,7 +1108,7 @@ class protocol(AST): # check context
         
         for item in self.context:
             
-            if AST(item).id == 'protocol' and protocol(item).parent_name == self.parent_name: 
+            if item.id == 'protocol' and item.parent_name == self.parent_name: 
                 return True
         
         return False
@@ -1241,7 +1243,7 @@ class index(AST): # check context
         
         for item in self.context:
             
-            if AST(item).id == 'var' and variable(item).name == self.name : 
+            if item.id == 'var' and item.name == self.name : 
                 return True
         
         return False
@@ -1381,11 +1383,11 @@ class block(AST):
         
         for expression in self.expressions:
         
-            if AST(expression).def_node():
+            if expression.def_node():
                 
                 new_context.extend( [ expression ] )
 
-            AST(expression).context = [ item for item in new_context ]
+            expression.context = [ item for item in new_context ]
         
         pass
     
@@ -1395,3 +1397,4 @@ class block(AST):
     
     def visitor(self):
         return self.expressions
+    

@@ -2,6 +2,7 @@ from RegExDefinitions import TokenFinitRegEx
 from RegExInterface import State,IRegEx
 import GRAMMAR_PRODUCTIONS as GD
 import DerivationTree as dt
+from production_class_representation import AST
 
 class Parser():
     
@@ -289,6 +290,8 @@ class Parser():
         if len(stack) == 3 and (stack[1][0] == "E" or stack[1][0] == "b" ):
             
             self.derivation_Tree = stack[1][1]
+            self.derivation_Tree.send_context()
+            
             return True
 
         return False

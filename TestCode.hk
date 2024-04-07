@@ -1,6 +1,7 @@
-numbers[7];
 
+let p = new Knight("Phil", "Collins") 
+    in print(p.name());
 
+let x: Number = 42 in print(x);
 
-
-
+function tan(x: Number): Number => sin(x) / cos(x);
