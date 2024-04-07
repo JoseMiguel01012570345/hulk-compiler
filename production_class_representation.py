@@ -7,20 +7,10 @@ token_list is of the form : ( label , ASTNode )
 
 '''
 class ASTNode:
-    
-    """
-    defines the nodes of the AST
-
-    > token: Token
-    > token -> token corresponding to the node
-    > kwargs -> must contain the functions 'Resolver', 'Checker', and Type
-    > Resolver must receive as parameters the value of this node and its children
-    > Checker must receive as parameters the value of this node, its children, and a dictionary with the context up to the
-    > Both, the Resolver and the Checker must return a tuple where the first value is the result and the second the error in case of occurrence
-    
-    """   
+      
     
     anotated_type = None
+    context = []
     
     def set_identifier(self,id_:str):  
         
@@ -40,6 +30,10 @@ class ASTNode:
 
     def type_checking(self):
         pass        
+
+    def visitor(self):
+       return [ self.left , self.right]
+    
 
     def cil_node_code(self):
         """
@@ -71,6 +65,13 @@ class function_call( ASTNode):
         
         pass
     
+    def visitor(self):
+        
+        if self.args.id == 'parameters':
+            return self.args
+    
+        else: return [self.args]
+        
     def validator(self, token_list):
         
         if token_list[0][0] == 'c': return True
@@ -115,7 +116,8 @@ class params( ASTNode):
                 new_parameters.append(param2)
                 self.parameters = new_parameters
         
-            
+    def visitor(self):
+        return self.parameters
                             
     def validator(self,token_list):
         
@@ -196,6 +198,8 @@ class binary_expression:
         
         pass
         
+        def visitor(self):
+            return [ self.left , self.right ]
     class in_(ASTNode):
         
         def __init__(self,token_list):
@@ -206,17 +210,23 @@ class binary_expression:
         
             pass
         
+        def visitor(self):
+            return super().visitor()
+        
         pass
 
     class plus(ASTNode):
             
-            def __init__(self,token_list):
-              
-                self.set_identifier('+')
-                self.left = token_list[0][1]
-                self.right = token_list[2][1]
-                
-            pass      
+        def __init__(self,token_list):
+            
+            self.set_identifier('+')
+            self.left = token_list[0][1]
+            self.right = token_list[2][1]
+            
+        pass      
+    
+        def visitor(self):
+            return super().visitor()    
   
     class minus(ASTNode):
         
@@ -228,6 +238,9 @@ class binary_expression:
 
         pass
     
+        def visitor(self):
+            return super().visitor()
+    
     class multiplication(ASTNode):
         
         def __init__(self,token_list):
@@ -237,6 +250,9 @@ class binary_expression:
             self.right = token_list[2][1]
 
         pass
+    
+        def visitor(self):
+            return super().visitor()
     
     class divition(ASTNode):
         
@@ -248,6 +264,9 @@ class binary_expression:
 
         pass
     
+        def visitor(self):
+            return super().visitor()
+    
     class _pow(ASTNode):
         
         def __init__(self,token_list):
@@ -257,6 +276,9 @@ class binary_expression:
             self.right = token_list[2][1]
 
         pass
+    
+        def visitor(self):
+            return super().visitor()
     
     class per_cent(ASTNode):
         
@@ -268,6 +290,9 @@ class binary_expression:
 
         pass
     
+        def visitor(self):
+            return super().visitor()
+    
     class concatenation(ASTNode):
         
         def __init__(self,token_list):
@@ -277,7 +302,9 @@ class binary_expression:
             self.right = token_list[2][1]
 
         pass
-    
+        
+        def visitor(self):
+            return super().visitor()
     class blank_space_concatenation(ASTNode):
         
         def __init__(self,token_list):
@@ -287,6 +314,9 @@ class binary_expression:
             self.right = token_list[2][1]
 
         pass
+    
+        def visitor(self):
+            return super().visitor()
    
     class double_dot(ASTNode):
         
@@ -297,6 +327,9 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
+        
+        def visitor(self):
+            return super().visitor()
     
     class double_dot_equal(ASTNode):
         
@@ -308,6 +341,9 @@ class binary_expression:
         
         pass
     
+        def visitor(self):
+            return super().visitor()
+    
     class as_(ASTNode):
         
         def __init__(self,token_list):
@@ -318,6 +354,8 @@ class binary_expression:
             
         pass
     
+        def visitor(self):
+            return super().visitor()
     class is_(ASTNode):
         
         def __init__(self,token_list):
@@ -327,6 +365,9 @@ class binary_expression:
             self.right = token_list[2][1]
             
         pass
+        
+        def visitor(self):
+            return super().visitor()
     
     class equal(ASTNode):
         
@@ -337,7 +378,9 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
-    
+        
+        def visitor(self):
+            return super().visitor()
     class bigger_than(ASTNode):
         
         def __init__(self,token_list):
@@ -347,6 +390,9 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
+    
+        def visitor(self):
+            return super().visitor()
     
     class smaller_than(ASTNode):
         
@@ -358,6 +404,9 @@ class binary_expression:
         
         pass
     
+        def visitor(self):
+            return super().visitor()
+    
     class bigger_or_equal(ASTNode):
         
         def __init__(self,token_list):
@@ -367,6 +416,9 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
+    
+        def visitor(self):
+            return super().visitor()
     
     class smaller_or_equal(ASTNode):
         
@@ -378,6 +430,9 @@ class binary_expression:
         
         pass
     
+        def visitor(self):
+            return super().visitor()
+    
     class assign(ASTNode):
         
         def __init__(self,token_list):
@@ -388,6 +443,8 @@ class binary_expression:
         
         pass
     
+        def visitor(self):
+            return super().visitor()
     class or_(ASTNode):
         
         def __init__(self,token_list):
@@ -398,6 +455,9 @@ class binary_expression:
         
         pass
     
+        def visitor(self):
+            return super().visitor()
+    
     class and_(ASTNode):
         
         def __init__(self,token_list):
@@ -407,7 +467,9 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
-    
+        
+        def visitor(self):
+            return super().visitor()
     class different(ASTNode):
         
         def __init__(self,token_list):
@@ -417,6 +479,9 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
+    
+        def visitor(self):
+            return super().visitor()
     
     class divide_and_assign(ASTNode):
         
@@ -428,6 +493,8 @@ class binary_expression:
         
         pass
     
+        def visitor(self):
+            return super().visitor()
     class multiply_and_assign(ASTNode):
         
         def __init__(self,token_list):
@@ -437,6 +504,9 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
+    
+        def visitor(self):
+            return super().visitor()
     
     class plus_and_assign(ASTNode):
         
@@ -448,6 +518,9 @@ class binary_expression:
         
         pass
     
+        def visitor(self):
+            return super().visitor()
+    
     class minus_and_assign(ASTNode):
         
         def __init__(self,token_list):
@@ -457,6 +530,9 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
+    
+        def visitor(self):
+            return super().visitor()
     
 class unary_expression:
     
@@ -499,9 +575,12 @@ class unary_expression:
         def __init__(self,token_list):
             
             self.set_identifier('new')
-            self.left = token_list[1][1]
+            self.right = token_list[1][1]
             
             pass
+        
+        def visitor(self):
+            return self.right
         
     class let(ASTNode):
     
@@ -509,6 +588,9 @@ class unary_expression:
             
             self.set_identifier('let')
             self.right = token_list[1][1]
+            
+        def visitor(self):
+            return self.right
 
     class not_(ASTNode):
         
@@ -517,6 +599,9 @@ class unary_expression:
             self.set_identifier('!')
             self.right = token_list[1][1]
             
+        def visitor(self):
+            return self.right
+            
     class plus_plus(ASTNode):
         
         def __init__(self,token_list):
@@ -524,12 +609,17 @@ class unary_expression:
             self.set_identifier('++')
             self.right = token_list[1][1]
     
+        def visitor(self):
+            return self.right
     class minus_minus(ASTNode):
         
         def __init__(self,token_list):
             
             self.set_identifier('--')
             self.right = token_list[1][1]
+            
+        def visitor(self):
+            return self.right
      
 class variable(ASTNode):
     
@@ -555,6 +645,9 @@ class variable(ASTNode):
                 self.name=token_list[0][0].Text
         
         except : pass
+    
+    def visitor(self):
+        return None
 
 class if_(ASTNode):
     
@@ -581,6 +674,9 @@ class if_(ASTNode):
         pass
     
     pass
+
+    def visitor(self):
+        return [ self.condition , self.body ]
 
 class elif_(ASTNode):
     
@@ -611,10 +707,13 @@ class elif_(ASTNode):
         
         pass
     
-    
+    def visitor(self):
+        return [ self.condition , self.body  ]
+        
     pass
 
 class else_(ASTNode):
+    
     
     '''
     this class has the attributes:
@@ -647,6 +746,9 @@ class else_(ASTNode):
         pass
     
     pass
+
+    def visitor(self):
+        return [ self.condition , self.body ]
 
 class def_function(ASTNode):
     
@@ -737,6 +839,9 @@ class def_function(ASTNode):
             # c() E | c() b
             self.body = token_list[1][1]
 
+    def visitor(self):
+        return [ self.args , self.body ]
+
     def validator(self,token_list):
         
         try:
@@ -751,7 +856,6 @@ class def_function(ASTNode):
         return False
     
     pass
-
 class type_(ASTNode):
     
     '''
@@ -800,9 +904,10 @@ class type_(ASTNode):
                     
             else:
                 self.body = token_list[2][1]
-            
         pass
     
+    def visitor(self):
+        return [ self.constructor , self.base , self.base ]
 class protocol(ASTNode):
     
     '''
@@ -839,7 +944,9 @@ class protocol(ASTNode):
                 self.body = token_list[2][1]
     
         pass
-
+    
+    def visitor(self):
+        return [ self.body ]
 class vectors(ASTNode):
     
     '''
@@ -886,6 +993,8 @@ class vectors(ASTNode):
             self.filter_ = token_list[1][1]
             self.domain = token_list[3][1]        
 
+    def visitor(self):
+        return [ self.filter_ , self.domain ]
 class literal(ASTNode):
     
     '''
@@ -915,6 +1024,9 @@ class literal(ASTNode):
                 return True
         except:    
             return False
+    
+    def visitor(self):
+        return None
     
     pass
 
@@ -958,7 +1070,9 @@ class index(ASTNode):
             return False
         
         return True
-
+    
+    def visitor(self):
+        return [self.index]
 class while_(ASTNode):
     
     '''
@@ -991,6 +1105,9 @@ class while_(ASTNode):
             return True
         
         return False
+    
+    def visitor(self):
+        return [ self.condition , self.body ]
 
 class for_(ASTNode):
     
@@ -1024,7 +1141,9 @@ class for_(ASTNode):
             return True
         
         return False
-
+    
+    def visitor(self):
+        return [ self.condition , self.body ]
 class block(ASTNode):
     
     '''
@@ -1083,3 +1202,6 @@ class block(ASTNode):
     def validator(self,token_list):
         
         return True
+    
+    def visitor(self):
+        return self.expressions
