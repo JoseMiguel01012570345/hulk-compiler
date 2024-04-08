@@ -1,7 +1,9 @@
 
-let p = new Knight("Phil", "Collins") 
-    in print(p.name());
-
-let x: Number = 42 in print(x);
-
 function tan(x: Number): Number => sin(x) / cos(x);
+
+type Point(x: Number, y: Number) {
+    
+    x: Number = x;
+    y: Number = y;
+}
+

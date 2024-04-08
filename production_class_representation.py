@@ -9,15 +9,23 @@ token_list is of the form : ( label , ASTNode )
 class ASTNode:
       
     anotated_type = None
+    hash_ = 0
+    
+    def my_self(self):
+        
+        if self.def_node():
+            return { 'id': self.id  , 'name': self.name  }
+        
     
     def set_identifier(self,id_:str):  
         
         self.id = id_
+        
         return self.id
     
     def def_node(self):
         
-        def_node = ['function_form','protocol','type','let']
+        def_node = ['function_form','protocol','type','let','super_class','build_in']
         
         for item in def_node:
             
@@ -37,13 +45,23 @@ class ASTNode:
         
         if children == None : return
         
-        for child in children:
-            
-            my_context = [ item for item in self.context]
-            child.context = my_context
-            child.send_context()
+        if type(children) == list:
         
-            pass
+            for child in children:
+                
+                if child == None: continue
+                
+                my_context = [ item for item in self.context]
+                child.context = [ item for item in my_context ]
+                child.send_context()
+            
+                pass
+        else:
+            my_context = [ item for item in self.context]
+            
+            if children != None:
+                children.context = [ item for item in my_context ]
+                children.send_context()
         
         pass
     
@@ -53,7 +71,7 @@ class ASTNode:
         
         for child in children:
             
-            if type(child) == enumerate:
+            if type(child) == list:
                 
                 for element in child:
                     element.context_check()
@@ -93,36 +111,8 @@ class ASTNode:
         """
         pass
 
-class Object(ASTNode):
-    
-    anotated_type = 'Object'
-    name = 'Object'
-    pass
-
-class Number(Object):
-    
-    anotated_type = 'Number'
-    name = 'Number'
-    
-    pass
-
-class Boolean(Object):
-    
-    anotated_type = 'Boolean'
-    name = 'Boolean'
-    
-    pass
-
-class String(Object):
-    
-    anotated_type = 'String'
-    name = 'String'
-    
-    pass
+  
 class AST(ASTNode):
-    
-    context = [ Object , Number , Boolean ]
-    
     pass
 
 class function_call( AST): # check context
@@ -136,7 +126,9 @@ class function_call( AST): # check context
     
     '''
     
+    context = []
     avaliable = False
+    
     def __init__( self, token_list ):
         
         if self.validator(token_list):
@@ -150,7 +142,7 @@ class function_call( AST): # check context
     
     def visitor(self):
         
-        if self.args.id == 'parameters':
+        if self.args != None and self.args.id == 'parameters':
             return self.args
     
         else: return [self.args]
@@ -185,6 +177,7 @@ class params( AST):
     
     parameters = []
     avaliable = False
+    context = []
     
     def __init__(self,token_list):
         
@@ -285,6 +278,7 @@ class binary_expression:
 
     class dot(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('.')
@@ -299,6 +293,7 @@ class binary_expression:
             return [ self.left , self.right ]
     class in_(AST):
         
+        context = []        
         def __init__(self,token_list):
             
             self.set_identifier('in')
@@ -312,30 +307,46 @@ class binary_expression:
         
         def send_context(self):
             
-            new_context = []
-            if self.left.id == 'parameters':
-                new_context = self.left.parameters
+            expressions = self.left
+            new_context = [ item for item in self.context ]
+            
+            if expressions.id == 'parameters':
+            
+                    for expression in self.expressions:
+        
+                        # nodes that define new variables , increases context
+                        exp_id =  self.expression_id(expression,new_context)
+                        new_context.append( exp_id )
             
             else:
-                new_context.append(self.left)    
-            
-            def_stack = []
-            for item in new_context:
                 
-                if item.def_node():
-                    def_stack.append(item)
-                
-                pass
+                exp_id =  self.expression_id(self.left,new_context)
+                new_context.append( exp_id )
             
-            self.left.context = def_stack   
-            self.right.context = def_stack    
+            self.left.context = new_context
+            self.left.send_context()
+            
+            self.right.context = new_context
+            self.right.send_context()
             
             return 
+        
+        def expression_id(self,expression,new_context):
+            
+            if expression.def_node() : 
+                            
+                expression_type = expression.my_self()
+                if any(item for item in new_context if item['id'] == expression_type['id'] and item['name'] == expression_type['name'] ):
+            
+                    raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
+
+                return expression_type 
         
         pass
 
     class plus(AST):
             
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('+')
@@ -349,6 +360,7 @@ class binary_expression:
   
     class minus(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('-')
@@ -362,6 +374,7 @@ class binary_expression:
     
     class multiplication(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('*')
@@ -375,6 +388,7 @@ class binary_expression:
     
     class divition(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('/')
@@ -388,6 +402,7 @@ class binary_expression:
     
     class _pow(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('^')
@@ -401,6 +416,7 @@ class binary_expression:
     
     class per_cent(AST):
         
+        context = []        
         def __init__(self,token_list):
             
             self.set_identifier('%')
@@ -414,6 +430,7 @@ class binary_expression:
     
     class concatenation(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('@')
@@ -426,6 +443,7 @@ class binary_expression:
             return super().visitor()
     class blank_space_concatenation(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('@@')
@@ -439,6 +457,7 @@ class binary_expression:
    
     class double_dot(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier(':')
@@ -452,6 +471,7 @@ class binary_expression:
     
     class double_dot_equal(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier(':=')
@@ -465,6 +485,7 @@ class binary_expression:
     
     class as_(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('as')
@@ -477,6 +498,7 @@ class binary_expression:
             return super().visitor()
     class is_(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('is')
@@ -490,6 +512,7 @@ class binary_expression:
     
     class equal(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('==')
@@ -502,6 +525,7 @@ class binary_expression:
             return super().visitor()
     class bigger_than(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('>')
@@ -515,6 +539,7 @@ class binary_expression:
     
     class smaller_than(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('<')
@@ -528,6 +553,7 @@ class binary_expression:
     
     class bigger_or_equal(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('>=')
@@ -541,6 +567,7 @@ class binary_expression:
     
     class smaller_or_equal(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('<=')
@@ -554,6 +581,7 @@ class binary_expression:
     
     class assign(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('=')
@@ -566,6 +594,7 @@ class binary_expression:
             return super().visitor()
     class or_(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('|')
@@ -579,6 +608,7 @@ class binary_expression:
     
     class and_(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('&')
@@ -591,6 +621,7 @@ class binary_expression:
             return super().visitor()
     class different(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('!=')
@@ -604,6 +635,7 @@ class binary_expression:
     
     class divide_and_assign(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('/=')
@@ -616,6 +648,7 @@ class binary_expression:
             return super().visitor()
     class multiply_and_assign(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('*=')
@@ -629,6 +662,7 @@ class binary_expression:
     
     class plus_and_assign(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('+=')
@@ -642,6 +676,7 @@ class binary_expression:
     
     class minus_and_assign(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('-=')
@@ -691,6 +726,7 @@ class unary_expression:
 
     class new(AST):
 
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('new')
@@ -711,7 +747,8 @@ class unary_expression:
             return self.right
         
     class let(AST):
-    
+        
+        context = []
         def __init__(self,token_list):
             
             if token_list[0][0] == 'let':
@@ -729,6 +766,7 @@ class unary_expression:
 
     class not_(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('!')
@@ -736,9 +774,9 @@ class unary_expression:
             
         def visitor(self):
             return self.right
-            
     class plus_plus(AST):
         
+        context = []    
         def __init__(self,token_list):
             
             self.set_identifier('++')
@@ -746,8 +784,10 @@ class unary_expression:
     
         def visitor(self):
             return self.right
+    
     class minus_minus(AST):
         
+        context = []
         def __init__(self,token_list):
             
             self.set_identifier('--')
@@ -767,6 +807,7 @@ class variable(AST): # check context
     '''
     
     avaliable = False
+    context = []
      
     def __init__(self,token_list):
         
@@ -805,6 +846,7 @@ class if_(AST):
     '''
     
     avaliable = False
+    context = []
     def __init__(self,token_list):
         
         if token_list[0][0] == 'if': 
@@ -839,6 +881,8 @@ class elif_(AST):
     
     avaliable = False
     condition=None
+    context = []
+    
     def __init__(self,token_list):
         
         if (token_list[0][0] == 'if' and token_list[1][0] == 'elif') : 
@@ -876,6 +920,8 @@ class else_(AST):
     
     avaliable = False
     condition = None
+    context = []
+    
     def __init__(self,token_list):
         
         if token_list[1][0] == 'else' : 
@@ -907,6 +953,8 @@ class def_function(AST):
     '''
     
     avaliable = False
+    context = []
+    
     def __init__(self,token_list):
         
         self.name = None
@@ -924,20 +972,60 @@ class def_function(AST):
             elif token_list[0][1].id == 'FunctionCall': 
                 self.simple_form(token_list)
     
+        
+    def retrive_var_context(self,node:ASTNode):
+        
+        if node.id == ':' and node.left.id == 'var' :
+            
+            return { 'id': 'var', 'name': node.left.name }
+    
+        return None
+
+    def create_context(self,args_AST:list):
+        
+        params_context = []
+        for param in args_AST:
+            
+            var = self.retrive_var_context(param)
+            if var != None:
+                params_context.append(var)
+        
+        params_context
+
     def send_context(self):
         
-        new_context = []
-        if type (self.args) == enumerate:
+        new_context = [ item for item in self.context ]
+        params_context = self.create_context(args_AST= self.constructor)
+        my_type = self.my_self()
+        
+        if any(item for item in new_context if self.equal(my_type,item)):
+                
+            raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
             
-            new_context = [ item for item in self.args ]
-        else:
-            new_context.append(self.args)    
-            
-        self.body.context = new_context
+        else:    
+            new_context.append(my_type)
+        
+        self.args.context = self.merge_context(params_context,new_context)
+        self.args.send_context()
+        
+        body_context = self.merge_context(params_context,new_context)
+        
+        self.body.context = body_context
         self.body.send_context()
         
-        self.args.context = new_context
-        self.args.send_context()
+        pass
+    
+    def merge_context(self,contex1,contex2):
+        
+        result_context = [  ]
+        for item in contex1:
+            
+            if any( item2 for item2 in contex2 if self.equal(item,item2)):
+                continue
+            
+            result_context.append(item)
+        
+        return result_context
         
         pass
     
@@ -1017,6 +1105,7 @@ class def_function(AST):
         return False
     
     pass
+
 class type_(AST): # check context
     
     '''
@@ -1032,6 +1121,7 @@ class type_(AST): # check context
     '''
     
     avaliable = False
+    context = []
     def __init__(self,token_list):
         
         if token_list[0][0] == 'type':
@@ -1079,28 +1169,71 @@ class type_(AST): # check context
         
         else: return True
 
+    def retrive_var_context(self,node:ASTNode):
+        
+        if node.id == ':' and node.left.id == 'var' :
+            
+            return { 'id': 'var', 'name': node.left.name }
+        
+        return None
+
+    def create_context(self,args_AST:list):
+        
+        params_context = []
+        for param in args_AST:
+            
+            var = self.retrive_var_context(param)
+            if var != None:
+                params_context.append(var)
+        
+        params_context
+
     def send_context(self):
         
-        new_context = []
-        if type (self.args) == enumerate:
+        new_context = [ item for item in self.context ]
+        params_context = self.create_context(args_AST= self.constructor)
+        my_type = self.my_self()
+        
+        if any(item for item in new_context if self.equal(my_type,item)):
+                
+            raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
             
-            new_context = [ item for item in self.args ]
-        else:
-            new_context.append(self.args)    
-            
-        self.args.context = new_context
+        else:    
+            new_context.append(my_type)
+        
+        self.args.context = self.merge_context(params_context,new_context)
         self.args.send_context()
         
-        self.base.context = new_context
+        base_context = self.create_context(args_AST= self.base)
+        self.base.context = base_context
         self.base.send_context()
         
-        self.body.context = new_context
+        body_context = self.merge_context(params_context,new_context)
+        
+        self.body.context = body_context
         self.body.send_context()
         
         pass
     
+    def merge_context(self,contex1,contex2):
+        
+        result_context = [  ]
+        for item in contex1:
+            
+            if any( item2 for item2 in contex2 if self.equal(item,item2)):
+                continue
+            
+            result_context.append(item)
+        
+        return result_context
+    
+    def equal(self,node1,node2):
+        
+        return node1['id'] == node2['id'] and node1['name'] == node2['name'] 
+    
     def visitor(self):
         return [ self.constructor , self.base , self.base ]
+
 class protocol(AST): # check context
     
     '''
@@ -1114,6 +1247,8 @@ class protocol(AST): # check context
     '''
     
     avaliable = False
+    context = []
+    
     def __init__(self,token_list):
         
         if token_list[0][0] == 'protocol':
@@ -1149,6 +1284,7 @@ class protocol(AST): # check context
     
     def visitor(self):
         return [ self.body ]
+
 class vectors(AST):
     
     '''
@@ -1167,7 +1303,8 @@ class vectors(AST):
     avaliable = False
     filter_ = None
     domain = None
-    
+    context = []
+        
     def __init__(self,token_list):
         
         self.set_identifier('vector')
@@ -1197,6 +1334,7 @@ class vectors(AST):
 
     def visitor(self):
         return [ self.filter_ , self.domain ]
+
 class literal(AST):
     
     '''
@@ -1209,6 +1347,8 @@ class literal(AST):
     
     value = None
     avaliable = False
+    context = []
+    
     def __init__(self,token_list):
         
         if self.validator(token_list) :
@@ -1246,6 +1386,8 @@ class index(AST): # check context
     avaliable = False
     args = None
     name = None
+    context = []
+    
     def __init__(self,token_list):
         
         if self.validator(token_list):
@@ -1298,6 +1440,7 @@ class while_(AST):
     avaliable = False
     condition = None
     body = None
+    context = []
     
     def __init__(self,token_list):
         
@@ -1334,6 +1477,7 @@ class for_(AST):
     avaliable = False
     condition = None
     body = None
+    context = []
     
     def __init__(self,token_list):
         
@@ -1370,13 +1514,19 @@ class block(AST):
     > id : block
     > expressions : expressions inside of the block
     
+    >> solve from left to right
+    
     '''
     
-    expressions = [] # solve from left to right
+    expressions = [] 
     avaliable = False
+    context = []
     
     def __init__(self,token_list):
         
+        self.expressions = []
+        self.avaliable = False
+        self.context = []
         self.set_identifier('block')
         
         if self.validator(token_list): 
@@ -1419,14 +1569,22 @@ class block(AST):
     
     def send_context(self):
         
-        new_context = [ item  for item in self.context ]
+        new_context = [ item for item in self.context ]
+        
         for expression in self.expressions:
         
-            if expression.def_node():
+            # nodes that define new variables , increases context
+            if expression.def_node() : 
                 
-                new_context.extend( [ expression ] )
+                expression_type = expression.my_self()
+                if any(item for item in new_context if item['id'] == expression_type['id'] and item['name'] == expression_type['name'] ):
+            
+                    raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
 
-            expression.context = [ item for item in new_context ]
+                else:
+                    new_context.append(  expression_type )
+
+            expression.context = new_context
             expression.send_context()
             
         pass

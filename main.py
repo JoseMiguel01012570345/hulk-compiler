@@ -10,7 +10,7 @@ import GRAMMAR_PRODUCTIONS
 import translator
 import Parser as P
 from os import system
-
+from build_in_classes import Object,Number,Boolean,String
 
 def FiltToken(token):
     return len(token.Text) > 0
@@ -94,8 +94,11 @@ if not Error:
     #print(gd_token)
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
     
-    gp.derivation_Tree.send_context()
+    #gp.derivation_Tree.context = [ Object().my_self() , Number().my_self() , Boolean().my_self() , String().my_self() ]
     
+   # gp.derivation_Tree.send_context()
+    
+    pass
     
 #_________________________SEMANTIC CHEKING__________________________________
 
