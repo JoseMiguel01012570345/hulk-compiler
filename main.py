@@ -94,9 +94,9 @@ if not Error:
     #print(gd_token)
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
     
-    # gp.derivation_Tree.context = [ Object().my_self() , Number().my_self() , Boolean().my_self() , String().my_self() ]
+    gp.derivation_Tree.context = [ Object().my_self() , Number().my_self() , Boolean().my_self() , String().my_self() ]
     
-    # gp.derivation_Tree.send_context()
+    gp.derivation_Tree.send_context()
     
     pass
     

@@ -304,42 +304,74 @@ class binary_expression:
         def visitor(self):
             return super().visitor()
         
-        def send_context(self):
-            
-            expressions = self.left
-            new_context = [ item for item in self.context ]
-            
-            if expressions.id == 'parameters':
-            
-                    for expression in self.expressions:
+        def retrive_var_context(self,node:ASTNode):
         
-                        # nodes that define new variables , increases context
-                        exp_id =  self.expression_id(expression,new_context)
-                        new_context.append( exp_id )
-            
-            else:
+            if node.id == 'let':
                 
-                exp_id =  self.expression_id(self.left,new_context)
-                new_context.append( exp_id )
+                return { 'id': 'let', 'name': node.left.name }
             
-            self.left.context = new_context
-            self.left.send_context()
-            
-            self.right.context = new_context
-            self.right.send_context()
-            
-            return 
-        
-        def expression_id(self,expression,new_context):
-            
-            if expression.def_node() : 
-                            
-                expression_type = expression.my_self()
-                if any(item for item in new_context if item['id'] == expression_type['id'] and item['name'] == expression_type['name'] ):
-            
-                    raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
+            return None
 
-                return expression_type 
+    def create_context(self,args_AST:list):
+        
+        params_context = []
+        if args_AST == None : return []
+        
+        if type(args_AST) == list:
+            for param in args_AST:
+                
+                var = self.retrive_var_context(param)
+                if var != None:
+                    params_context.append(var)
+            
+        else:
+            arg = self.retrive_var_context(args_AST)
+            params_context.append( arg )
+        
+        return params_context
+
+    def send_context(self):
+        
+        new_context = [ item for item in self.context ]
+        params_context = self.create_context(args_AST= self.left)
+        
+        self.left.context = self.merge_context(params_context,new_context)
+        self.left.send_context()
+    
+        if self.right != None:
+            
+            body_context = self.merge_context(params_context,new_context)
+            
+            self.body.context = body_context
+            self.body.send_context()
+        
+        pass
+    
+    def merge_context(self,contex1,contex2):
+        
+        result_context = [  ]
+        for item in contex2:
+            
+            result_context.append(item)
+        
+        for item in contex1:
+            
+            if self.equal(item,result_context):
+                continue
+            
+            result_context.append(item)
+        
+        return result_context
+        
+    def equal(self,node1,new_context):
+        
+        if node1 == None : return False
+        for item in new_context:
+        
+            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+        
+        return False
+     
         
         pass
 
@@ -987,8 +1019,8 @@ class def_function(AST):
         params_context = []
         if args_AST == None : return []
         
-        if type(args_AST) == list:
-            for param in args_AST:
+        if args_AST.id == 'parameters':
+            for param in args_AST.parameters:
                 
                 var = self.retrive_var_context(param)
                 if var != None:
@@ -1207,9 +1239,9 @@ class type_(AST): # check context
         params_context = []
         if args_AST == None : return []
         
-        if type(args_AST) == list:
+        if args_AST.id == 'params':
        
-            for param in args_AST:
+            for param in args_AST.parameters:
                 
                 var = self.retrive_var_context(param)
                 if var != None:
@@ -1629,6 +1661,9 @@ class block(AST):
                         expression.context = [ item for item in new_context ]
                         expression.send_context()
                         new_context.append(  expression_type )
+                else:
+                    expression.context = [ item for item in new_context ]
+                    
         else:
                 expression = self.expressions
                 
@@ -1643,7 +1678,8 @@ class block(AST):
                         expression.context = [ item for item in new_context ]
                         expression.send_context()
                         new_context.append(  expression_type )
-            
+                
+        
         pass
     
     def equal(self,node1,new_context):
