@@ -94,6 +94,8 @@ if not Error:
     #print(gd_token)
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
     
+    gp.derivation_Tree.send_context()
+    
     
 #_________________________SEMANTIC CHEKING__________________________________
 

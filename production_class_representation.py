@@ -34,11 +34,16 @@ class ASTNode:
         '''
         
         children: list = self.visitor()
-    
+        
+        if children == None : return
+        
         for child in children:
             
             my_context = [ item for item in self.context]
             child.context = my_context
+            child.send_context()
+        
+            pass
         
         pass
     
@@ -304,6 +309,28 @@ class binary_expression:
         
         def visitor(self):
             return super().visitor()
+        
+        def send_context(self):
+            
+            new_context = []
+            if self.left.id == 'parameters':
+                new_context = self.left.parameters
+            
+            else:
+                new_context.append(self.left)    
+            
+            def_stack = []
+            for item in new_context:
+                
+                if item.def_node():
+                    def_stack.append(item)
+                
+                pass
+            
+            self.left.context = def_stack   
+            self.right.context = def_stack    
+            
+            return 
         
         pass
 
@@ -907,8 +934,10 @@ class def_function(AST):
             new_context.append(self.args)    
             
         self.body.context = new_context
-        self.args.context = new_context
+        self.body.send_context()
         
+        self.args.context = new_context
+        self.args.send_context()
         
         pass
     
@@ -1060,8 +1089,13 @@ class type_(AST): # check context
             new_context.append(self.args)    
             
         self.args.context = new_context
+        self.args.send_context()
+        
         self.base.context = new_context
+        self.base.send_context()
+        
         self.body.context = new_context
+        self.body.send_context()
         
         pass
     
@@ -1312,6 +1346,12 @@ class for_(AST):
         
         pass
     
+    def send_context(self):
+        
+        
+    
+        return super().send_context()
+    
     def validator(self,toke_list):
         
         if toke_list[0][0] == 'for':
@@ -1379,8 +1419,7 @@ class block(AST):
     
     def send_context(self):
         
-        new_context = [ item for item in self.expressions ]
-        
+        new_context = [ item  for item in self.context ]
         for expression in self.expressions:
         
             if expression.def_node():
@@ -1388,7 +1427,8 @@ class block(AST):
                 new_context.extend( [ expression ] )
 
             expression.context = [ item for item in new_context ]
-        
+            expression.send_context()
+            
         pass
     
     def validator(self,token_list):
