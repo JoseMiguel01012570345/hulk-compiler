@@ -15,7 +15,6 @@ class ASTNode:
         
         if self.def_node():
             return { 'id': self.id  , 'name': self.name  }
-        
     
     def set_identifier(self,id_:str):  
         
@@ -971,63 +970,86 @@ class def_function(AST):
                         
             elif token_list[0][1].id == 'FunctionCall': 
                 self.simple_form(token_list)
-    
         
     def retrive_var_context(self,node:ASTNode):
         
-        if node.id == ':' and node.left.id == 'var' :
+        if node != None and node.id == ':' and node.left.id == 'var' :
             
             return { 'id': 'var', 'name': node.left.name }
-    
+        
+        elif node != None and node.id == 'var' :
+            return { 'id': 'var', 'name': node.name }
+        
         return None
 
     def create_context(self,args_AST:list):
         
         params_context = []
-        for param in args_AST:
-            
-            var = self.retrive_var_context(param)
-            if var != None:
-                params_context.append(var)
+        if args_AST == None : return []
         
-        params_context
+        if type(args_AST) == list:
+            for param in args_AST:
+                
+                var = self.retrive_var_context(param)
+                if var != None:
+                    params_context.append(var)
+            
+        else:
+            arg = self.retrive_var_context(args_AST)
+            params_context.append( arg )
+        
+        return params_context
 
     def send_context(self):
         
         new_context = [ item for item in self.context ]
-        params_context = self.create_context(args_AST= self.constructor)
+        params_context = self.create_context(args_AST= self.args)
         my_type = self.my_self()
         
-        if any(item for item in new_context if self.equal(my_type,item)):
+        if self.equal(my_type,new_context):
                 
             raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
             
         else:    
             new_context.append(my_type)
         
-        self.args.context = self.merge_context(params_context,new_context)
-        self.args.send_context()
+        if self.args != None:
+            self.args.context = self.merge_context(params_context,new_context)
+            self.args.send_context()
         
-        body_context = self.merge_context(params_context,new_context)
-        
-        self.body.context = body_context
-        self.body.send_context()
+        if self.body != None:
+            
+            body_context = self.merge_context(params_context,new_context)
+            
+            self.body.context = body_context
+            self.body.send_context()
         
         pass
     
     def merge_context(self,contex1,contex2):
         
         result_context = [  ]
+        for item in contex2:
+            
+            result_context.append(item)
+        
         for item in contex1:
             
-            if any( item2 for item2 in contex2 if self.equal(item,item2)):
+            if self.equal(item,result_context):
                 continue
             
             result_context.append(item)
         
         return result_context
         
-        pass
+    def equal(self,node1,new_context):
+        
+        if node1 == None : return False
+        for item in new_context:
+        
+            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+        
+        return False
     
     def function_kw(self,token_list):
         
@@ -1171,22 +1193,32 @@ class type_(AST): # check context
 
     def retrive_var_context(self,node:ASTNode):
         
-        if node.id == ':' and node.left.id == 'var' :
+        if node != None and  node.id == ':' and node.left.id == 'var' :
             
             return { 'id': 'var', 'name': node.left.name }
+        
+        elif node != None and node.id == 'var' :
+            return { 'id': 'var', 'name': node.name }
         
         return None
 
     def create_context(self,args_AST:list):
         
         params_context = []
-        for param in args_AST:
-            
-            var = self.retrive_var_context(param)
-            if var != None:
-                params_context.append(var)
+        if args_AST == None : return []
         
-        params_context
+        if type(args_AST) == list:
+       
+            for param in args_AST:
+                
+                var = self.retrive_var_context(param)
+                if var != None:
+                    params_context.append(var)
+        else: 
+            arg = self.retrive_var_context(args_AST)
+            params_context.append( arg )
+        
+        return params_context
 
     def send_context(self):
         
@@ -1194,42 +1226,55 @@ class type_(AST): # check context
         params_context = self.create_context(args_AST= self.constructor)
         my_type = self.my_self()
         
-        if any(item for item in new_context if self.equal(my_type,item)):
+        if self.equal( my_type , new_context ):
                 
             raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
             
         else:    
             new_context.append(my_type)
         
-        self.args.context = self.merge_context(params_context,new_context)
-        self.args.send_context()
+        if self.constructor != None:
+            self.constructor.context = self.merge_context(params_context,new_context)
+            self.constructor.send_context()
         
-        base_context = self.create_context(args_AST= self.base)
-        self.base.context = base_context
-        self.base.send_context()
+        if self.base != None:
+            base_context = self.create_context(args_AST= self.base)
+            self.base.context = base_context
+            self.base.send_context()
         
-        body_context = self.merge_context(params_context,new_context)
-        
-        self.body.context = body_context
-        self.body.send_context()
+        if self.body != None:
+            body_context = self.merge_context(params_context,new_context)
+            
+            self.body.context = body_context
+            self.body.send_context()
         
         pass
     
     def merge_context(self,contex1,contex2):
         
         result_context = [  ]
+        for item in contex2:
+            
+            result_context.append(item)
+        
         for item in contex1:
             
-            if any( item2 for item2 in contex2 if self.equal(item,item2)):
+            if self.equal(item,result_context):
                 continue
             
             result_context.append(item)
         
         return result_context
     
-    def equal(self,node1,node2):
+    def equal(self,node1,new_context):
         
-        return node1['id'] == node2['id'] and node1['name'] == node2['name'] 
+        if node1 == None : return False
+        for item in new_context:
+        
+            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+        
+        
+        return False
     
     def visitor(self):
         return [ self.constructor , self.base , self.base ]
@@ -1491,9 +1536,6 @@ class for_(AST):
         pass
     
     def send_context(self):
-        
-        
-    
         return super().send_context()
     
     def validator(self,toke_list):
@@ -1571,23 +1613,48 @@ class block(AST):
         
         new_context = [ item for item in self.context ]
         
-        for expression in self.expressions:
-        
-            # nodes that define new variables , increases context
-            if expression.def_node() : 
-                
-                expression_type = expression.my_self()
-                if any(item for item in new_context if item['id'] == expression_type['id'] and item['name'] == expression_type['name'] ):
+        if type(self.expressions) == list:
             
-                    raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
+            for expression in self.expressions:
+            
+                # nodes that define new variables , increases context
+                if expression.def_node() : 
+                    
+                    expression_type = expression.my_self()
+                    if self.equal(expression_type,new_context):
+                
+                        raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
 
-                else:
-                    new_context.append(  expression_type )
+                    else:
+                        expression.context = [ item for item in new_context ]
+                        expression.send_context()
+                        new_context.append(  expression_type )
+        else:
+                expression = self.expressions
+                
+                if expression.def_node() : 
+                    
+                    expression_type = expression.my_self()
+                    if self.equal(expression_type,new_context):
+                
+                        raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
 
-            expression.context = new_context
-            expression.send_context()
+                    else:
+                        expression.context = [ item for item in new_context ]
+                        expression.send_context()
+                        new_context.append(  expression_type )
             
         pass
+    
+    def equal(self,node1,new_context):
+        
+        if node1 == None : return False
+        for item in new_context:
+        
+            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+        
+        
+        return False
     
     def validator(self,token_list):
         
