@@ -51,8 +51,17 @@ class ASTNode:
                 if child == None: continue
                 
                 my_context = [ item for item in self.context]
-                child.context = [ item for item in my_context ]
-                child.send_context()
+                
+                if type(child) == list:
+                    
+                    for little in child:
+                    
+                        little.context = [ item for item in my_context ]
+                        little.send_context()
+                else:
+                        child.context = [ item for item in my_context ]
+                        child.send_context()
+                    
             
                 pass
         else:
@@ -1040,7 +1049,7 @@ class def_function(AST):
         
         if self.equal(my_type,new_context):
                 
-            raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
+            raise Exception(f"\033[1;31;40m; {my_type['name']} already exists  \033[0m;")
             
         else:    
             new_context.append(my_type)
@@ -1260,7 +1269,7 @@ class type_(AST): # check context
         
         if self.equal( my_type , new_context ):
                 
-            raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
+            raise Exception(f"\033[1;31;40m; {my_type['name']} already exists  \033[0m;")
             
         else:    
             new_context.append(my_type)
@@ -1655,7 +1664,7 @@ class block(AST):
                     expression_type = expression.my_self()
                     if self.equal(expression_type,new_context):
                 
-                        raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
+                        raise Exception(f"\033[1;31;40m; {expression_type['name']} already exists  \033[0m;")
 
                     else:
                         expression.context = [ item for item in new_context ]
@@ -1663,6 +1672,7 @@ class block(AST):
                         new_context.append(  expression_type )
                 else:
                     expression.context = [ item for item in new_context ]
+                    expression.send_context()
                     
         else:
                 expression = self.expressions
@@ -1672,7 +1682,7 @@ class block(AST):
                     expression_type = expression.my_self()
                     if self.equal(expression_type,new_context):
                 
-                        raise Exception(f'\033[1;31;40m; {self.name} already exists  \033[0m;')
+                        raise Exception(f"\033[1;31;40m; {expression_type['name']} already exists  \033[0m;")
 
                     else:
                         expression.context = [ item for item in new_context ]

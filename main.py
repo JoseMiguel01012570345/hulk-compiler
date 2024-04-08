@@ -11,6 +11,7 @@ import translator
 import Parser as P
 from os import system
 from build_in_classes import Object,Number,Boolean,String
+from CIL import ASTCilBuilder
 
 def FiltToken(token):
     return len(token.Text) > 0
@@ -97,6 +98,8 @@ if not Error:
     gp.derivation_Tree.context = [ Object().my_self() , Number().my_self() , Boolean().my_self() , String().my_self() ]
     
     gp.derivation_Tree.send_context()
+    
+    AST = ASTCilBuilder(gp.derivation_Tree)
     
     pass
     
