@@ -209,10 +209,10 @@ class function_call( ASTNode): # check context
             
             for child in children:
                 
-                child.context_check(error_list)    
+                if child != None:
+                    child.context_check(error_list)    
                 
                 pass 
-        
         
         return error_list
     
@@ -364,28 +364,36 @@ class binary_expression:
         
         def retrive_var_context(self,node:ASTNode):
         
-            if node.id == '=' and node.left.id == ':':
+            try:
+                if node.id == '=' and node.left.id == ':':
+                    
+                    return { 'id': 'let', 'name': node.left.left.name }
                 
-                return { 'id': 'let', 'name': node.left.left.name }
-            
-            elif node.id == '=' and node.left.id == 'let':
+                elif node.id == '=' and node.left.id == 'let':
+                    
+                    return { 'id': 'let', 'name': node.left.name }
                 
-                return { 'id': 'let', 'name': node.left.name }
-            
-            elif node.id == ':' and node.left.id == 'let':
+                elif node.id == ':' and node.left.id == 'let':
+                    
+                    return { 'id': 'let', 'name': node.left.name }
                 
-                return { 'id': 'let', 'name': node.left.name }
+                elif node.id == 'let':
+                    
+                    return { 'id': 'let', 'name': node.name }
             
-            elif node.id == 'let':
-                
-                return { 'id': 'let', 'name': node.name }
+            except:    
+                return None
             
-            return { 'id': 'let', 'name': '' }
-            
+            return None
 
         def create_context(self,args_AST:list):
             
             params_context = []
+            
+            if args_AST.id == 'in':
+                params_context = [ item for item in self.create_context(args_AST.left) ]    
+                return params_context
+            
             if args_AST == None : return []
             
             if args_AST.id == 'params':
@@ -409,7 +417,7 @@ class binary_expression:
         def send_context(self):
             
             new_context = [ item for item in self.context ]
-            params_context = self.create_context(args_AST= self.left)
+            params_context = self.create_context(args_AST= self)
             
             self.left.context = self.merge_context(params_context,new_context)
             self.left.send_context()
@@ -1843,7 +1851,7 @@ class block(ASTNode):
                 if token_list[0][0] == 'M':
                     self.expressions = token_list[0][1]
                 
-                elif token_list[0][1].id == 'block' : 
+                elif token_list[0][1] != None and  token_list[0][1].id == 'block' : 
                     
                     self.expressions = token_list[0][1].expressions
 

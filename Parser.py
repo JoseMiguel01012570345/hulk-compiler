@@ -343,4 +343,8 @@ class Parser():
         
         AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
         
+        # if AST_node == None:
+            
+        #     return
+        
         return AST_node

@@ -1,7 +1,10 @@
-function Run(x:Number):Number{
-
-    a = 120;
-    tan(a) * 100;
-    cos(x) / sin(x);
+function current(){
 
 }
+function next(){
+    
+}
+    {let iterable = range(0, 10) in
+        while (iterable.next())
+            let x = iterable.current()} , let x =10 in
+                print(x);
