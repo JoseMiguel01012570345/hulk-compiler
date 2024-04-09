@@ -363,18 +363,34 @@ class binary_expression:
         
         def retrive_var_context(self,node:ASTNode):
         
-            if node.id == 'let':
+            if node.id == '=' and node.left.id == ':':
+                
+                return { 'id': 'let', 'name': node.left.left.name }
+            
+            elif node.id == '=' and node.left.id == 'let':
+                
+                return { 'id': 'let', 'name': node.left.name }
+            
+            elif node.id == ':' and node.left.id == 'let':
+                
+                return { 'id': 'let', 'name': node.left.name }
+            
+            elif node.id == 'let':
                 
                 return { 'id': 'let', 'name': node.name }
             
-            return None
+            return { 'id': 'let', 'name': '' }
+            
 
         def create_context(self,args_AST:list):
             
             params_context = []
             if args_AST == None : return []
             
-            if type(args_AST) == list:
+            if args_AST.id == 'params':
+                
+                args_AST = args_AST.parameters
+                
                 for param in args_AST:
                     
                     var = self.retrive_var_context(param)
@@ -445,7 +461,6 @@ class binary_expression:
             
         pass      
     
-    
     class minus(ASTNode):
         
         context = []
@@ -469,8 +484,6 @@ class binary_expression:
 
         pass
     
-        
-    
     class divition(ASTNode):
         
         context = []
@@ -481,9 +494,7 @@ class binary_expression:
             self.right = token_list[2][1]
 
         pass
-    
         
-    
     class _pow(ASTNode):
         
         context = []
@@ -494,9 +505,7 @@ class binary_expression:
             self.right = token_list[2][1]
 
         pass
-    
         
-    
     class per_cent(ASTNode):
         
         context = []        
@@ -507,8 +516,7 @@ class binary_expression:
             self.right = token_list[2][1]
 
         pass
-    
-        
+   
     
     class concatenation(ASTNode):
         
@@ -532,8 +540,6 @@ class binary_expression:
             self.right = token_list[2][1]
 
         pass
-    
-        
    
     class double_dot(ASTNode):
         
@@ -545,8 +551,6 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
-        
-        
     
     class double_dot_equal(ASTNode):
         
@@ -558,8 +562,6 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
-    
-        
     
     class as_(ASTNode):
         
@@ -583,8 +585,6 @@ class binary_expression:
             self.right = token_list[2][1]
             
         pass
-        
-        
     
     class equal(ASTNode):
         
@@ -597,7 +597,6 @@ class binary_expression:
         
         pass
         
-        
     class bigger_than(ASTNode):
         
         context = []
@@ -608,8 +607,6 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
-    
-        
     
     class smaller_than(ASTNode):
         
@@ -622,8 +619,6 @@ class binary_expression:
         
         pass
     
-        
-    
     class bigger_or_equal(ASTNode):
         
         context = []
@@ -634,8 +629,6 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
-    
-        
     
     class smaller_or_equal(ASTNode):
         
@@ -648,8 +641,6 @@ class binary_expression:
         
         pass
     
-        
-    
     class assign(ASTNode):
         
         context = []
@@ -660,7 +651,6 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
-    
         
     class or_(ASTNode):
         
@@ -673,8 +663,6 @@ class binary_expression:
         
         pass
     
-        
-    
     class and_(ASTNode):
         
         context = []
@@ -685,7 +673,6 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
-        
         
     class different(ASTNode):
         
@@ -698,8 +685,6 @@ class binary_expression:
         
         pass
     
-        
-    
     class divide_and_assign(ASTNode):
         
         context = []
@@ -710,7 +695,6 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
-    
         
     class multiply_and_assign(ASTNode):
         
@@ -723,8 +707,6 @@ class binary_expression:
         
         pass
     
-        
-    
     class plus_and_assign(ASTNode):
         
         context = []
@@ -735,8 +717,6 @@ class binary_expression:
             self.right = token_list[2][1]
         
         pass
-    
-        
     
     class minus_and_assign(ASTNode):
         
@@ -824,11 +804,11 @@ class unary_expression:
             if self.name == None:
                 
                 error_type = "variable declaration"
-                error_description = "No inicialization for \033[1;31 mlet \033[0m"
+                error_description = "No inicialization for \033[1;31m let \033[0m"
                 scope = self.context
                 error_list.append((error_type,error_description,scope))
                 
-            self.right.context_check()
+            self.right.context_check(error_list)
             
             return error_list
         
@@ -909,7 +889,7 @@ class variable(ASTNode): # check context
                 return error_list
         
         error_type = "variable undefined"
-        error_description = f"variable {self.name} could not found"
+        error_description = f"variable {self.name} could not be found"
         scope = self.context
         error_list.append({ "type": error_type, "description": error_description, "scope": scope})
         
@@ -1826,6 +1806,7 @@ class block(ASTNode):
                 
                 if token_list[0][0] == 'M':
                     self.expressions = token_list[0][1]
+                
                 elif token_list[0][1].id == 'block' : 
                     
                     self.expressions = token_list[0][1].expressions
@@ -1886,9 +1867,10 @@ class block(ASTNode):
                 if expression.def_node() : 
                     
                     expression_type = expression.my_self()
-                    expression.context = [ item for item in new_context ]
-                    expression.send_context()
                     new_context.append(  expression_type )
+                
+                expression.context = [ item for item in new_context ]
+                expression.send_context()
         
         pass
     

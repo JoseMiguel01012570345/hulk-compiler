@@ -194,11 +194,11 @@ class Parser():
             
         # ----------------------PRINT_STACK-----------------
                         
-        printing_stack = []
-        for item in stack:
-            printing_stack.append(item[0])
+        # printing_stack = []
+        # for item in stack:
+        #     printing_stack.append(item[0])
         
-        print(printing_stack)
+        # print(printing_stack)
         
         # -------------------------------------------------
             
@@ -241,12 +241,12 @@ class Parser():
             
             # --------------------PRINT_STACK-----------------------------
                         
-            printing_stack = []
-            for item in new_stack:
-                printing_stack.append(item[0])
+            # printing_stack = []
+            # for item in new_stack:
+            #     printing_stack.append(item[0])
             
-            printing_stack.append(best_match)
-            print(printing_stack)
+            # printing_stack.append(best_match)
+            # print(printing_stack)
             
             # -------------------------------------------------
             new_stack.append(( best_match , new_derivation_tree ))
