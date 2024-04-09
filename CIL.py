@@ -259,13 +259,15 @@ def ASTNodeCilBuilder(node):
     return builders[node.id](node)
 
 def ASTCilBuilder(ast):
-    cilnode = ASTNodeCilBuildes(ast)
+    cilnode = ASTNodeCilBuilder(ast)
     try:
-        childs = [ASTCilBuilder(child) for child in ast.visitor()]
+        childs = [ASTCilBuilder(child) for child in ast.visitor() if not child == None]
         cilnode._childs = childs
         pass
     except Exception:
-        cilnode._childs = [ASTCilBuilder(ast.visitor())]
+        if not ast.visitor() == None:
+            cilnode._childs = [ASTCilBuilder(ast.visitor())]
+            pass
         pass
     return cilnode
 

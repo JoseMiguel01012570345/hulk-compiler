@@ -12,6 +12,7 @@ import Parser as P
 from os import system
 from build_in_classes import Object,Number,Boolean,String
 from CIL import ASTCilBuilder
+import semantic_errors
 
 def FiltToken(token):
     return len(token.Text) > 0
@@ -82,32 +83,38 @@ if not Error:
     
     my_list = tokens
     
-    # ----------------------------
-    zz=[]
-    for item in my_list:
-        zz.append(item.Text)
+    # ------------PRINTS_TOKEN_SEQUENCE----------------
+    # zz=[]
+    # for item in my_list:
+    #     zz.append(item.Text)
     
-    print(zz)
+    # print(zz)
     # ----------------------------
     
     gd_token= translator.traslator(my_list)
-
+    
     #print(gd_token)
+
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
     
     gp.derivation_Tree.context = [ Object().my_self() , Number().my_self() , Boolean().my_self() , String().my_self() ]
     
-    gp.derivation_Tree.send_context()
-    
-    AST = ASTCilBuilder(gp.derivation_Tree)
-    
-    pass
-    
 #_________________________SEMANTIC CHEKING__________________________________
 
-    # YOUR CODE GOES HERE
+    gp.derivation_Tree.send_context()
+    
+    context_error = semantic_errors.context_errors()
+    
+    error_list = gp.derivation_Tree.context_check([])
+    
+    context_error.add_error(error_list)
+    
+    context_error.print_()
+    
 #_________________________CODE GENERATION__________________________________
 
-    # YOUR CODE GOES HERE
+    
+    #AST = ASTCilBuilder(gp.derivation_Tree)
 
+    pass
 #________________________END_____________________________________________

@@ -2,7 +2,6 @@ from RegExDefinitions import TokenFinitRegEx
 from RegExInterface import State,IRegEx
 import GRAMMAR_PRODUCTIONS as GD
 import DerivationTree as dt
-from production_class_representation import AST
 
 class Parser():
     
@@ -47,7 +46,6 @@ class Parser():
         
         parsed_code = self.gradient_parser(grammar,self._stack,code)
         
-        print(parsed_code)
         if not parsed_code:
             self._error = True
         
@@ -193,13 +191,13 @@ class Parser():
 
     def reduce_stack(self , stack:list , grammar , next_point ):
             
-        # -------------------------------------------------
+        # ----------------------PRINT_STACK-----------------
                         
-        printing_stack = []
-        for item in stack:
-            printing_stack.append(item[0])
+        # printing_stack = []
+        # for item in stack:
+        #     printing_stack.append(item[0])
         
-        print(printing_stack)
+        # print(printing_stack)
         
         # -------------------------------------------------
             
@@ -240,14 +238,14 @@ class Parser():
             
             new_stack = self.remove_item_stack(stack=stack , pop_number= pop_number )
             
-            # -------------------------------------------------
+            # --------------------PRINT_STACK-----------------------------
                         
-            printing_stack = []
-            for item in new_stack:
-                printing_stack.append(item[0])
+            # printing_stack = []
+            # for item in new_stack:
+            #     printing_stack.append(item[0])
             
-            printing_stack.append(best_match)
-            print(printing_stack)
+            # printing_stack.append(best_match)
+            # print(printing_stack)
             
             # -------------------------------------------------
             new_stack.append(( best_match , new_derivation_tree ))
@@ -290,6 +288,7 @@ class Parser():
         if len(stack) == 3 and (stack[1][0] == "E" or stack[1][0] == "b" ):
             
             self.derivation_Tree = stack[1][1]
+            print(" \033[1;31m >\033[1;32m CODE HAS BEEN PARSED :) \033[0m")
             
             return True
 
