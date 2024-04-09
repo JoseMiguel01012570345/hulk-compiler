@@ -10,21 +10,45 @@ class ASTNode:
       
     anotated_type = None
     hash_ = 0
-    
-    def parent_refence(self):
-        
-        children = self.visitor()
-        parent=None
-        
-        for child in children:
-            
-            if type(child) == list:
+    build_in = [
+                {'id': 'let'         , 'name': 'Object' } ,
+                {'id': 'let'         , 'name': 'Number' } ,
+                {'id': 'let'         , 'name': 'String' } ,
+                {'id': 'let'         , 'name': 'Boolean' } ,
+                {'id': 'Type'         , 'name': 'Object' } ,
+                {'id': 'Type'         , 'name': 'Number' } ,
+                {'id': 'Type'         , 'name': 'String' } ,
+                {'id': 'Type'         , 'name': 'Boolean' } ,
+                {'id': 'function_form' , 'name': 'tan' } ,
+                {'id': "function_form" , 'name': 'cot' } ,
+                {'id': "function_form" , 'name': 'sqrt'} ,
+                {'id': "function_form" , 'name': 'sin' } ,
+                {'id': "function_form" , 'name': 'cos' } ,
+                {'id': "function_form" , 'name': 'log' } ,
+                {'id': "function_form" , 'name': 'exp' } ,
+                {'id': "function_form" , 'name': 'rand' } ,
+                {'id': "function_form" , 'name': 'range' } ,
+                {'id': "function_form" , 'name': 'print' } ,
+                {'id': "let"          , 'name': 'e' } ,
+                {'id': "let"          , 'name': 'PI' } ,
+                {'id': "let"          , 'name': 'self' }
                 
-                for x in child:
-                    x.parent = self
+                ]
+    
+    # def parent_refence(self):
         
-            else:
-                child.parent = self
+    #     children = self.visitor()
+    #     parent=None
+        
+    #     for child in children:
+            
+    #         if type(child) == list:
+                
+    #             for x in child:
+    #                 x.parent = self
+        
+    #         else:
+    #             child.parent = self
         
     def my_self(self):
         
@@ -57,34 +81,24 @@ class ASTNode:
         
         children: list = self.visitor()
         
-        if children == None : return
-        
-        if type(children) == list:
-        
-            for child in children:
-                
-                if child == None: continue
-                
-                my_context = [ item for item in self.context]
-                
-                if type(child) == list:
-                    
-                    for little in child:
-                    
-                        little.context = [ item for item in my_context ]
-                        little.send_context()
-                else:
-                        child.context = [ item for item in my_context ]
-                        child.send_context()
-                    
+        for child in children:
             
-                pass
-        else:
+            if child == None: continue
+            
             my_context = [ item for item in self.context]
             
-            if children != None:
-                children.context = [ item for item in my_context ]
-                children.send_context()
+            if type(child) == list:
+                
+                for little in child:
+                
+                    little.context = [ item for item in my_context ]
+                    little.send_context()
+            else:
+                    child.context = [ item for item in my_context ]
+                    child.send_context()
+                
+        
+            pass
         
         pass
     
@@ -92,37 +106,22 @@ class ASTNode:
         
         children = self.visitor()
         
-        if children == None: return error_list
-        
-        if type(list) == list:        
-        
-            for child in children:
-                
-                if type(child) == list:
-                    
-                    for element in child:
-                        
-                        element.context_check(error_list)
-                        
-                    pass
-                
-                else:
-                     child.context_check(error_list)
-                    
-            pass
-        
-        else:
+        for child in children:
             
-            if type(children) == list:
+            if child == None: return error_list
             
-                for element in children:
-                     element.context_check(error_list)
+            if type(child) == list:
+                
+                for element in child:
+                    
+                    element.context_check(error_list)
                     
                 pass
-        
+            
             else:
-                 children.context_check(error_list)
+                    child.context_check(error_list)
                 
+        pass
                 
         return error_list
         
@@ -188,19 +187,19 @@ class function_call( ASTNode): # check context
     
     def context_check(self,error_list):
         
-        exist = False
         for item in self.context:
             
             if item['id'] == 'function_form' and item['name'] == self.name:
-                
-                exist = True
-                break
-        
-        if not exist: 
+                return error_list
             
-            error_type = "Function undefined"
-            error_decription = f"Function {self.name} could not be found"
-            error_list.append((error_type,error_decription))
+        for item in self.build_in:
+        
+            if item['id'] == 'function_form' and item['name'] == self.name:
+                return error_list
+            
+        error_type = "Function undefined"
+        error_decription = f"Function {self.name} could not be found"
+        error_list.append((error_type,error_decription))
         
         children = self.visitor()
         
@@ -749,8 +748,6 @@ class binary_expression:
         
         pass
     
-        
-
 class unary_expression:
     
     '''
@@ -810,12 +807,29 @@ class unary_expression:
                 self.set_identifier('let')
                 self.right = token_list[1][1]
                 
-                try:
-                    self.name = token_list[1][1].left.name
+                try :
+                    
+                    if self.right.id == 'var':
+                        self.name = self.right.name
+
+                    else:
+                        self.name = self.right.left.name
+                
                 except :
-                    print(f" \033[1;31m > \033[1;32m No inicialization for \033[1;31m let \033[0m")
-                    exit()
+                    self.name = None
             
+        def context_check(self, error_list: list):
+        
+            if self.name == None:
+                
+                error_type = "variable declaration"
+                error_description = "No inicialization for \033[1;31 mlet \033[0m"
+                error_list.append((error_type,error_description))
+                
+            self.right.context_check()
+            
+            return error_list
+        
         def visitor(self):
             return [self.right]
 
@@ -882,16 +896,19 @@ class variable(ASTNode): # check context
 
     def context_check(self,error_list):
         
-        exist = False
         for item in self.context:
             
             if item['id'] == 'let' and item['name'] == self.name :
-                exist = True
-                
-        if not exist: 
-            error_type = "variable undefined"
-            error_description = f"variable {self.name} could not found"
-            error_list.append((error_type,error_description))
+                return error_list
+            
+        for item in self.build_in:
+        
+            if item['id'] == 'let' and item['name'] == self.name :
+                return error_list
+        
+        error_type = "variable undefined"
+        error_description = f"variable {self.name} could not found"
+        error_list.append((error_type,error_description))
         
         return error_list
 
@@ -1291,6 +1308,11 @@ class type_(ASTNode): # check context
                 if item['id'] == 'type' and item['name'] == self.name:
                     return []
         
+        for item in self.build_in:
+            
+                if item['id'] == 'type' and item['name'] == self.name:
+                    return []
+        
         error_type = "Inheritence undefined"
         error_description = f"Type {self.parent_name} could not be found"
         error_list.extend((error_type,error_description))
@@ -1457,6 +1479,11 @@ class protocol(ASTNode): # check context
             if item['id'] == 'protocol' and item['name'] == self.parent_name:
                 return []
         
+        for item in self.build_in:
+            
+            if item['id'] == 'protocol' and item['name'] == self.parent_name:
+                return []
+            
         error_type = "Inheritence undefined"
         error_description = f"Type {self.parent_name} could not be found"
         error_list.append((error_type,error_description))
@@ -1598,19 +1625,15 @@ class index(ASTNode): # check context
     
     def context_check(self,error_list:list):
         
-        exist = False
         for item in self.context:
             
             if item.id == 'var' and item.name == self.name : 
                 
-                exist = True
-                break
-    
-            if not exist:
-    
-                error_type = "vector undefined"
-                error_desciption = f"The vector {self.name} could not be found"
-                error_list.append( (error_type,error_desciption) )
+                return error_list
+
+            error_type = "vector undefined"
+            error_desciption = f"The vector {self.name} could not be found"
+            error_list.append( (error_type,error_desciption) )
     
         children = self.visitor()
 
@@ -1708,7 +1731,11 @@ class for_(ASTNode):
             print(f"\033[1;31m > No arguments in for loop")
             exit()
             
-        params_context.append( arg )
+        if self.args.left.id != 'var':
+            print(f"\033[1;31m > \033[1;32m unexpected argument for \'for\' loop ")
+            exit()
+            
+        params_context.append( {'id':'let','name': self.args.left.name } )
     
         return params_context
 
@@ -1864,5 +1891,10 @@ class block(ASTNode):
         return True
     
     def visitor(self):
-        return [self.expressions]
+        
+        if type(self.expressions) == list:
+            return self.expressions
+        
+        else:
+            return [self.expressions]
     

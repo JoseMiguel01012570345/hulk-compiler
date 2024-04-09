@@ -1,29 +1,3 @@
-function tan(x: Number): Number => sin(x) / cos(x);
-function cot(x) => 1 / tan(x);
-function operate(x, y) {
-    print(x + y);
-    print(x - y);
-    print(x * y);
-    print(x / y);
-}
-function fib(n) => if (n == 0 | n == 1) 1 else fib(n-1) + fib(n-2);
-
-function fib(n) => if (n == 0 | n == 1) 1 else fib(n-1) + fib(n-2);
-
-function fact(x) => let f = 1 in for ( let i = 0 in range(1, x+1)) f := f * i;
-
-function gcd(a, b) => while (a > 0)
-        let m = a % b in {
-            b := a;
-            a := m;
-        };
-protocol Hashable {
-    hash(): Number;
-}
-protocol Equatable extends Hashable {
-    equals(other: Object): Boolean;
-}
-protocol Iterable {
-    next() : Boolean;
-    current() : Object;
-}
+    
+    let total =   6 + { print("Total"); 5; };
+    

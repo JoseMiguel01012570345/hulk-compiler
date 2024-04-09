@@ -100,30 +100,6 @@ if not Error:
     
 #_________________________SEMANTIC CHEKING__________________________________
 
-    gp.derivation_Tree.context =[ {'id': 'let'         , 'name': 'Object' } ,
-                                  {'id': 'let'         , 'name': 'Number' } ,
-                                  {'id': 'let'         , 'name': 'String' } ,
-                                  {'id': 'let'         , 'name': 'Boolean' } ,
-                                  {'id': 'Type'         , 'name': 'Object' } ,
-                                  {'id': 'Type'         , 'name': 'Number' } ,
-                                  {'id': 'Type'         , 'name': 'String' } ,
-                                  {'id': 'Type'         , 'name': 'Boolean' } ,
-                                  {'id': 'function_form' , 'name': 'tan' } ,
-                                  {'id': "function_form" , 'name': 'cot' } ,
-                                  {'id': "function_form" , 'name': 'sqrt'} ,
-                                  {'id': "function_form" , 'name': 'sin' } ,
-                                  {'id': "function_form" , 'name': 'cos' } ,
-                                  {'id': "function_form" , 'name': 'log' } ,
-                                  {'id': "function_form" , 'name': 'exp' } ,
-                                  {'id': "function_form" , 'name': 'rand' } ,
-                                  {'id': "function_form" , 'name': 'range' } ,
-                                  {'id': "function_form" , 'name': 'print' } ,
-                                  {'id': "let"          , 'name': 'e' } ,
-                                  {'id': "let"          , 'name': 'PI' } ,
-                                  {'id': "let"          , 'name': 'self' }
-                                  
-                                  ]
-    
     gp.derivation_Tree.send_context()
     
     context_error = semantic_errors.context_errors()

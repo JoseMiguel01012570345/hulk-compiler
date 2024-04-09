@@ -16,6 +16,8 @@ class Parser():
         ["c"],
         ['}'],
         ['.'],
+        [':'],
+        ["let"],
         ['=','+=','-=','/=','*=','--',':=','++','--'],
         ['as'],
         ['^','%','**'],
@@ -23,7 +25,6 @@ class Parser():
         ['+','-'],
         ['>','<','>=','<=','==', '!' ,'is'],
         ['&','|','!'],
-        ["let"],
         ['if'],
         ['elif'],
         ['else'],
@@ -285,7 +286,7 @@ class Parser():
     
     def parsed_code(self,stack):
         
-        if len(stack) == 3 and (stack[1][0] == "E" or stack[1][0] == "b" ):
+        if len(stack) == 3 and (stack[1][0] == "E" or stack[1][0] == "T" ):
             
             self.derivation_Tree = stack[1][1]
             print(" \033[1;31m >\033[1;32m CODE HAS BEEN PARSED :) \033[0m")
