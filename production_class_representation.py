@@ -200,7 +200,8 @@ class function_call( ASTNode): # check context
             
         error_type = "Function undefined"
         error_decription = f"Function {self.name} could not be found"
-        error_list.append((error_type,error_decription))
+        scope = self.context
+        error_list.append({'type': error_type, 'description': error_decription, 'scope':scope})
         
         children = self.visitor()
         
@@ -549,7 +550,38 @@ class binary_expression:
             self.set_identifier(':')
             self.left = token_list[0][1]
             self.right = token_list[2][1]
+    
         
+        def context_check(self, error_list: list):
+            
+            for item in self.context:
+                
+                try:
+                    
+                    if (item['id'] == 'type' or item['id'] == 'protocol') and item['name'] == self.right.name:
+                        return error_list                
+                except:
+                    pass
+
+            try:
+                
+                error_type = "type undefined"
+                error_description = f"type {self.right.name} could not be found"
+                scope = self.context
+                
+                error_list.append({"type":error_type,'description':error_description,'scope':scope})
+            
+            except:
+                
+                error_type = "unexpected expression"
+                error_description = f"unexpected expression at the right side of double dots"
+                scope = self.context
+                
+                error_list.append({"type":error_type,'description':error_description,'scope':scope})
+                
+            
+            return super().context_check(error_list)
+    
         pass
     
     class double_dot_equal(ASTNode):
@@ -787,7 +819,7 @@ class unary_expression:
             
                 self.set_identifier('let')
                 self.right = token_list[1][1]
-                
+                print(self.right)
                 try :
                     
                     if self.right.id == 'var':
@@ -806,8 +838,9 @@ class unary_expression:
                 error_type = "variable declaration"
                 error_description = "No inicialization for \033[1;31m let \033[0m"
                 scope = self.context
-                error_list.append((error_type,error_description,scope))
-                
+                error_list.append({ "type": error_type, "description": error_description, "scope": scope})
+            
+            
             self.right.context_check(error_list)
             
             return error_list
@@ -1038,6 +1071,7 @@ class def_function(ASTNode): # check context
         for item in self.context:
             
             if item['id'] == self.id and item['name'] == self.name:
+                
                 error_type = "Function definition"
                 error_decription = f"The function {self.name} has been already defined"
                 scope = self.context
@@ -1156,7 +1190,7 @@ class def_function(ASTNode): # check context
             
             else:
                 # function f : T b
-                self.body=token_list[5][1]
+                self.body=token_list[4][1]
         
     def simple_form(self,token_list):
         
@@ -1267,7 +1301,7 @@ class type_(ASTNode): # check context
                 error_description = f"The Type {self.name} has been already defined"
                 scope = self.context
                 
-                error_list.append({"type": error_type,"desciption": error_description,"scope": scope})
+                error_list.append({"type": error_type,"description": error_description,"scope": scope})
                 
                 break
                 
@@ -1277,7 +1311,8 @@ class type_(ASTNode): # check context
         
             for child in children:
                 
-                child.context_check(error_list)    
+                if child != None:
+                    child.context_check(error_list)    
                 
                 pass
         
@@ -1454,7 +1489,8 @@ class protocol(ASTNode): # check context
         
             for child in children:
                 
-                child.context_check(error_list)    
+                if child != None:
+                    child.context_check(error_list)    
                 
                 pass
         
@@ -1863,15 +1899,14 @@ class block(ASTNode):
                     
         else:
                 expression = self.expressions
-                
+                expression.context = [ item for item in new_context ]
+                expression.send_context()
+        
                 if expression.def_node() : 
                     
                     expression_type = expression.my_self()
                     new_context.append(  expression_type )
                 
-                expression.context = [ item for item in new_context ]
-                expression.send_context()
-        
         pass
     
     def equal(self,node1,new_context):

@@ -1,8 +1,7 @@
-x =1;
+function Run(x:Number):Number{
 
-    let x = 10, let mod = a % 3 in 
-        print(
-            if (mod == 0) "Magic"
-            elif (mod % 3 == 1) "Woke"
-            else "Dumb"
-        );
+    a = 120;
+    tan(a) * 100;
+    cos(x) / sin(x);
+
+}

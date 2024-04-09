@@ -15,9 +15,13 @@ class context_errors:
         
         if len(self.error_list) == 1:
             
+            type_ = self.error_list[0]['type']
+            description = self.error_list[0]['description']
+            scope = self.error_list[0]['scope']
+            
             print( 
                 
-                f" \033[1;31m >\033[1;32m There is an issue of the type: \033[1;31m {self.error_list[0]['type']} \033[1;32m which says \033[1;31m {self.error_list[0]['description']} \033[1;32m in \033[1;3m {self.error_list[0]['scope']} \033[0;m")
+                f" \033[1;31m >\033[1;32m There is an issue of the type: \033[1;31m {type_} \033[1;32m which says \033[1;31m {description} \033[1;32m in \033[1;3m {scope} \033[0;m")
         
         elif len(self.error_list) > 1 :
             
