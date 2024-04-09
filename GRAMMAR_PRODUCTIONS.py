@@ -83,7 +83,8 @@ IN = [
 For = [
     
     ["E" , [["for","T","$2","B"] , ["for","T","$2","E"], ["for","T","E"]]],
-    ["E", [ ["for","T","$2","b"]]],
+    ["T", [ ["for","T","$2","T"]]],
+    
 ]
 
 conditional = [
@@ -99,7 +100,7 @@ conditional = [
 While = [
     
     ["E" , [["while","T","$2","B"] , ["while","T","$2","E"],["while","T","E"]]],
-    ["E", [ ["while","T","$2","b"]]],
+    ["T", [ ["while","T","$2","T"]]],
 ]
 
 function = [    

@@ -63,6 +63,8 @@ class builder:
     
     def F(self ,toke_list:list):
         
+        if toke_list[0][0] == 'b': return pdr.block(toke_list)
+        
         fc = pdr.function_call(toke_list)
         
         if fc.avaliable : 
@@ -177,13 +179,11 @@ class builder:
             
             self.F(token_list),
             self.P(token_list),
-            self.b(token_list),
             self.B(token_list),
             self.p(token_list),
             self.else_(token_list),
             self.elif_(token_list),
             self.if_(token_list),
-            self.M(token_list),
             self.while_(token_list),
             self.for_(token_list),
             self.indexation(token_list),

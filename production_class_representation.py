@@ -174,6 +174,7 @@ class function_call( ASTNode): # check context
             self.set_identifier('FunctionCall')
             self.name = token_list[0][1].name
             self.args = token_list[1][1]
+                
             self.avaliable = True
         
         pass
@@ -219,7 +220,7 @@ class function_call( ASTNode): # check context
         
     def validator(self, token_list):
         
-        if token_list[0][0] == 'c': return True
+        if token_list[0][0] == 'c' or token_list[0][0] == 'b' : return True
     
 class params( ASTNode):
     
@@ -824,7 +825,8 @@ class unary_expression:
                 
                 error_type = "variable declaration"
                 error_description = "No inicialization for \033[1;31 mlet \033[0m"
-                error_list.append((error_type,error_description))
+                scope = self.context
+                error_list.append((error_type,error_description,scope))
                 
             self.right.context_check()
             
@@ -908,7 +910,8 @@ class variable(ASTNode): # check context
         
         error_type = "variable undefined"
         error_description = f"variable {self.name} could not found"
-        error_list.append((error_type,error_description))
+        scope = self.context
+        error_list.append({ "type": error_type, "description": error_description, "scope": scope})
         
         return error_list
 
@@ -1057,7 +1060,9 @@ class def_function(ASTNode): # check context
             if item['id'] == self.id and item['name'] == self.name:
                 error_type = "Function definition"
                 error_decription = f"The function {self.name} has been already defined"
-                error_list.append((error_type,error_decription))
+                scope = self.context
+                
+                error_list.append({ "type": error_type, "description": error_decription , "scope": scope })
                 
         children = self.visitor()
         
@@ -1280,7 +1285,9 @@ class type_(ASTNode): # check context
                 
                 error_type = "Type definition"
                 error_description = f"The Type {self.name} has been already defined"
-                error_list.append((error_type,error_description))
+                scope = self.context
+                
+                error_list.append({"type": error_type,"desciption": error_description,"scope": scope})
                 
                 break
                 
@@ -1315,7 +1322,9 @@ class type_(ASTNode): # check context
         
         error_type = "Inheritence undefined"
         error_description = f"Type {self.parent_name} could not be found"
-        error_list.extend((error_type,error_description))
+        scope = self.context
+        
+        error_list.extend({ "type": error_type, "description": error_description , "scope":scope })
         
         return error_list
         
@@ -1455,7 +1464,9 @@ class protocol(ASTNode): # check context
                 
                 error_type = "Protocol extention undefined"
                 error_descrption = f"Protocol {self.parent_name} could not be found"
-                error_list.append((error_type,error_descrption))
+                scope = self.context
+                
+                error_list.append({ "type": error_type, "description": error_descrption , "scope":scope})
             
         children = self.visitor()
     
@@ -1486,7 +1497,8 @@ class protocol(ASTNode): # check context
             
         error_type = "Inheritence undefined"
         error_description = f"Type {self.parent_name} could not be found"
-        error_list.append((error_type,error_description))
+        scope = self.context
+        error_list.append({ "type": error_type, "description": error_description , "scope":scope})
         
         return error_list
         
@@ -1633,7 +1645,9 @@ class index(ASTNode): # check context
 
             error_type = "vector undefined"
             error_desciption = f"The vector {self.name} could not be found"
-            error_list.append( (error_type,error_desciption) )
+            scope = self.context
+            
+            error_list.append( {"type":error_type,"description":error_desciption,"scope":scope} )
     
         children = self.visitor()
 
@@ -1812,9 +1826,12 @@ class block(ASTNode):
                 
                 if token_list[0][0] == 'M':
                     self.expressions = token_list[0][1]
-                else: 
+                elif token_list[0][1].id == 'block' : 
+                    
                     self.expressions = token_list[0][1].expressions
 
+                else:
+                    self.expressions = token_list[0][1]
             else:
                 
                 if token_list[0][0] == 'O':
@@ -1872,7 +1889,6 @@ class block(ASTNode):
                     expression.context = [ item for item in new_context ]
                     expression.send_context()
                     new_context.append(  expression_type )
-                
         
         pass
     

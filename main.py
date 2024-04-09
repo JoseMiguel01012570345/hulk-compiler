@@ -100,15 +100,15 @@ if not Error:
     
 #_________________________SEMANTIC CHEKING__________________________________
 
-    gp.derivation_Tree.send_context()
+    # gp.derivation_Tree.send_context()
     
-    context_error = semantic_errors.context_errors()
+    # context_error = semantic_errors.context_errors()
     
-    error_list = gp.derivation_Tree.context_check([])
+    # error_list = gp.derivation_Tree.context_check([])
     
-    context_error.add_error(error_list)
+    # context_error.add_error(error_list)
     
-    context_error.print_()
+    # context_error.print_()
     
 #_________________________CODE GENERATION__________________________________
 
