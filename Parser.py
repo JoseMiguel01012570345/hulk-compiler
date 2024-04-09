@@ -292,6 +292,8 @@ class Parser():
             
             return True
 
+        print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
+        
         return False
     
     def gradient_parser(self,gramar,stack:list , code ):        

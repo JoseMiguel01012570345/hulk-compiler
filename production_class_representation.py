@@ -102,12 +102,12 @@ class ASTNode:
                     
                     for element in child:
                         
-                        error_list =  element.context_check(error_list)
+                        element.context_check(error_list)
                         
                     pass
                 
                 else:
-                    error_list = child.context_check(error_list)
+                     child.context_check(error_list)
                     
             pass
         
@@ -116,12 +116,12 @@ class ASTNode:
             if type(children) == list:
             
                 for element in children:
-                    error_list = element.context_check(error_list)
+                     element.context_check(error_list)
                     
                 pass
         
             else:
-                error_list = children.context_check(error_list)
+                 children.context_check(error_list)
                 
                 
         return error_list
@@ -191,15 +191,15 @@ class function_call( ASTNode): # check context
         exist = False
         for item in self.context:
             
-            if item['id'] == self.id and item['name'] == self.name:
+            if item['id'] == 'function_form' and item['name'] == self.name:
                 
                 exist = True
                 break
         
         if not exist: 
             
-            error_type = "function undefined"
-            error_decription = f"function {self.name} could not be found"
+            error_type = "Function undefined"
+            error_decription = f"Function {self.name} could not be found"
             error_list.append((error_type,error_decription))
         
         children = self.visitor()
@@ -208,7 +208,7 @@ class function_call( ASTNode): # check context
             
             for child in children:
                 
-                error_list = child.context_check(error_list)    
+                child.context_check(error_list)    
                 
                 pass 
         
@@ -361,9 +361,6 @@ class binary_expression:
         
             pass
         
-        def visitor(self):
-            return super().visitor()
-        
         def retrive_var_context(self,node:ASTNode):
         
             if node.id == 'let':
@@ -386,7 +383,9 @@ class binary_expression:
                 
             else:
                 arg = self.retrive_var_context(args_AST)
-                params_context.append( arg )
+                
+                if arg != None:
+                    params_context.append( arg )
             
             return params_context
 
@@ -428,7 +427,8 @@ class binary_expression:
             if node1 == None : return False
             for item in new_context:
             
-                if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+                if node1['id'] == item['id'] and node1['name'] == item['name'] :
+                    return True
             
             return False
      
@@ -445,9 +445,7 @@ class binary_expression:
             
         pass      
     
-        def visitor(self):
-            return super().visitor()    
-  
+    
     class minus(ASTNode):
         
         context = []
@@ -459,8 +457,6 @@ class binary_expression:
 
         pass
     
-        def visitor(self):
-            return super().visitor()
     
     class multiplication(ASTNode):
         
@@ -473,8 +469,7 @@ class binary_expression:
 
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class divition(ASTNode):
         
@@ -487,8 +482,7 @@ class binary_expression:
 
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class _pow(ASTNode):
         
@@ -501,8 +495,7 @@ class binary_expression:
 
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class per_cent(ASTNode):
         
@@ -515,8 +508,7 @@ class binary_expression:
 
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class concatenation(ASTNode):
         
@@ -529,8 +521,7 @@ class binary_expression:
 
         pass
         
-        def visitor(self):
-            return super().visitor()
+        
     class blank_space_concatenation(ASTNode):
         
         context = []
@@ -542,8 +533,7 @@ class binary_expression:
 
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
    
     class double_dot(ASTNode):
         
@@ -556,8 +546,7 @@ class binary_expression:
         
         pass
         
-        def visitor(self):
-            return super().visitor()
+        
     
     class double_dot_equal(ASTNode):
         
@@ -570,8 +559,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class as_(ASTNode):
         
@@ -584,8 +572,7 @@ class binary_expression:
             
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     class is_(ASTNode):
         
         context = []
@@ -597,8 +584,7 @@ class binary_expression:
             
         pass
         
-        def visitor(self):
-            return super().visitor()
+        
     
     class equal(ASTNode):
         
@@ -611,8 +597,7 @@ class binary_expression:
         
         pass
         
-        def visitor(self):
-            return super().visitor()
+        
     class bigger_than(ASTNode):
         
         context = []
@@ -624,8 +609,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class smaller_than(ASTNode):
         
@@ -638,8 +622,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class bigger_or_equal(ASTNode):
         
@@ -652,8 +635,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class smaller_or_equal(ASTNode):
         
@@ -666,8 +648,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class assign(ASTNode):
         
@@ -680,8 +661,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     class or_(ASTNode):
         
         context = []
@@ -693,8 +673,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class and_(ASTNode):
         
@@ -707,8 +686,7 @@ class binary_expression:
         
         pass
         
-        def visitor(self):
-            return super().visitor()
+        
     class different(ASTNode):
         
         context = []
@@ -720,8 +698,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class divide_and_assign(ASTNode):
         
@@ -734,8 +711,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     class multiply_and_assign(ASTNode):
         
         context = []
@@ -747,8 +723,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class plus_and_assign(ASTNode):
         
@@ -761,8 +736,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
     
     class minus_and_assign(ASTNode):
         
@@ -775,8 +749,7 @@ class binary_expression:
         
         pass
     
-        def visitor(self):
-            return super().visitor()
+        
 
 class unary_expression:
     
@@ -825,7 +798,7 @@ class unary_expression:
             pass
         
         def visitor(self):
-            return self.right
+            return [self.right]
         
     class let(ASTNode):
         
@@ -839,11 +812,12 @@ class unary_expression:
                 
                 try:
                     self.name = token_list[1][1].left.name
-                except Exception as e:
-                    raise Exception('no inicialization for let') from e
+                except :
+                    print(f" \033[1;31m > \033[1;32m No inicialization for \033[1;31m let \033[0m")
+                    exit()
             
         def visitor(self):
-            return self.right
+            return [self.right]
 
     class not_(ASTNode):
         
@@ -854,7 +828,7 @@ class unary_expression:
             self.right = token_list[1][1]
             
         def visitor(self):
-            return self.right
+            return [self.right]
     class plus_plus(ASTNode):
         
         context = []    
@@ -864,7 +838,7 @@ class unary_expression:
             self.right = token_list[1][1]
     
         def visitor(self):
-            return self.right
+            return [self.right]
     
     class minus_minus(ASTNode):
         
@@ -875,7 +849,7 @@ class unary_expression:
             self.right = token_list[1][1]
             
         def visitor(self):
-            return self.right
+            return [self.right]
      
 class variable(ASTNode): # check context
     
@@ -904,7 +878,7 @@ class variable(ASTNode): # check context
         except : pass
     
     def visitor(self):
-        return None
+        return [None]
 
     def context_check(self,error_list):
         
@@ -1074,7 +1048,8 @@ class def_function(ASTNode): # check context
             
             for child in children:
                 
-                error_list = child.context_check(error_list)    
+                if child != None:
+                     child.context_check(error_list)    
                 
         return error_list
    
@@ -1094,7 +1069,7 @@ class def_function(ASTNode): # check context
         params_context = []
         if args_AST == None : return []
         
-        if args_AST.id == 'parameters':
+        if args_AST.id == 'params':
             for param in args_AST.parameters:
                 
                 var = self.retrive_var_context(param)
@@ -1112,13 +1087,7 @@ class def_function(ASTNode): # check context
         new_context = [ item for item in self.context ]
         params_context = self.create_context(args_AST= self.args)
         my_type = self.my_self()
-        
-        if self.equal(my_type,new_context):
-                
-            raise Exception(f"\033[1;31;40m; {my_type['name']} already exists  \033[0m;")
-            
-        else:    
-            new_context.append(my_type)
+        new_context.append(my_type)
         
         if self.args != None:
             self.args.context = self.merge_context(params_context,new_context)
@@ -1304,13 +1273,13 @@ class type_(ASTNode): # check context
         
             for child in children:
                 
-                error_list = child.context_check(error_list)    
+                child.context_check(error_list)    
                 
                 pass
         
         if self.parent_name != None:
         
-            error_list = self.check_inheritence()
+            self.check_inheritence()
             pass
         
         return error_list
@@ -1364,8 +1333,9 @@ class type_(ASTNode): # check context
         my_type = self.my_self()
         
         if self.equal( my_type , new_context ):
-                
-            raise Exception(f"\033[1;31;40m; {my_type['name']} already exists  \033[0m;")
+            
+            print(f"\033[1;31m > \033[1;32m The type {my_type['name']} already exists  \033[0m")
+            exit()
             
         else:    
             new_context.append(my_type)
@@ -1471,12 +1441,12 @@ class protocol(ASTNode): # check context
         
             for child in children:
                 
-                error_list = child.context_check(error_list)    
+                child.context_check(error_list)    
                 
                 pass
         
         if self.parent_name != None:
-            error_list = self.check_inheritence()
+            self.check_inheritence(error_list)
             
         return error_list
     
@@ -1579,7 +1549,7 @@ class literal(ASTNode):
             return False
     
     def visitor(self):
-        return None
+        return [None]
     
     pass
 
@@ -1648,7 +1618,7 @@ class index(ASTNode): # check context
             
             for child in children:
                 
-                error_list = child.context_check(error_list)    
+                child.context_check(error_list)    
                 
                 pass
             
@@ -1705,7 +1675,7 @@ class for_(ASTNode):
     '''
     
     avaliable = False
-    condition = None
+    args = None
     body = None
     context = []
     
@@ -1715,13 +1685,10 @@ class for_(ASTNode):
             
             self.avaliable = True            
             self.set_identifier('for')
-            self.condition = token_list[1][1]
+            self.args = token_list[1][1]
             self.body = token_list[2][1]
         
         pass
-    
-    def send_context(self):
-        return super().send_context()
     
     def validator(self,toke_list):
         
@@ -1731,7 +1698,61 @@ class for_(ASTNode):
         return False
     
     def visitor(self):
-        return [ self.condition , self.body ]
+        return [ self.args , self.body ]
+    
+    def create_context(self,args_AST:list):
+        
+        params_context = []
+        
+        if args_AST == None : 
+            print(f"\033[1;31m > No arguments in for loop")
+            exit()
+            
+        params_context.append( arg )
+    
+        return params_context
+
+    def send_context(self):
+        
+        new_context = [ item for item in self.context ]
+        params_context = self.create_context(args_AST= self.args)
+        
+        self.args.context = self.merge_context(params_context,new_context)
+        self.args.send_context()
+        
+        if self.body != None:
+            
+            body_context = self.merge_context(params_context,new_context)
+            
+            self.body.context = body_context
+            self.body.send_context()
+        
+        pass
+    
+    def merge_context(self,contex1,contex2):
+        
+        result_context = [  ]
+        for item in contex2:
+            
+            result_context.append(item)
+        
+        for item in contex1:
+            
+            if self.equal(item,result_context):
+                continue
+            
+            result_context.append(item)
+        
+        return result_context
+        
+    def equal(self,node1,new_context):
+        
+        if node1 == None : return False
+        for item in new_context:
+        
+            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+        
+        return False
 
 class block(ASTNode):
     
@@ -1806,18 +1827,11 @@ class block(ASTNode):
                 if expression.def_node() : 
                     
                     expression_type = expression.my_self()
-                    if self.equal(expression_type,new_context):
+                    expression.context = [ item for item in new_context ]
+                    expression.send_context()
+                    new_context.append(  expression_type )
                 
-                        raise Exception(f"\033[1;31;40m; {expression_type['name']} already exists  \033[0m;")
-
-                    else:
-                        expression.context = [ item for item in new_context ]
-                        expression.send_context()
-                        new_context.append(  expression_type )
                 else:
-                    
-                    # if expression.parent.id == 'type' or expression.parent.id == 'protocol':
-                    #     new_context.append({ 'id' expression})
                     
                     expression.context = [ item for item in new_context ]
                     expression.send_context()
@@ -1828,14 +1842,9 @@ class block(ASTNode):
                 if expression.def_node() : 
                     
                     expression_type = expression.my_self()
-                    if self.equal(expression_type,new_context):
-                
-                        raise Exception(f"\033[1;31;40m; {expression_type['name']} already exists  \033[0m;")
-
-                    else:
-                        expression.context = [ item for item in new_context ]
-                        expression.send_context()
-                        new_context.append(  expression_type )
+                    expression.context = [ item for item in new_context ]
+                    expression.send_context()
+                    new_context.append(  expression_type )
                 
         
         pass
@@ -1855,5 +1864,5 @@ class block(ASTNode):
         return True
     
     def visitor(self):
-        return self.expressions
+        return [self.expressions]
     

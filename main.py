@@ -10,7 +10,6 @@ import GRAMMAR_PRODUCTIONS
 import translator
 import Parser as P
 from os import system
-from build_in_classes import Object,Number,Boolean,String
 from CIL import ASTCilBuilder
 import semantic_errors
 
@@ -96,11 +95,35 @@ if not Error:
     #print(gd_token)
 
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
-    
-    gp.derivation_Tree.context = [ Object().my_self() , Number().my_self() , Boolean().my_self() , String().my_self() ]
+
+    if gp.Error: exit()
     
 #_________________________SEMANTIC CHEKING__________________________________
 
+    gp.derivation_Tree.context =[ {'id': 'let'         , 'name': 'Object' } ,
+                                  {'id': 'let'         , 'name': 'Number' } ,
+                                  {'id': 'let'         , 'name': 'String' } ,
+                                  {'id': 'let'         , 'name': 'Boolean' } ,
+                                  {'id': 'Type'         , 'name': 'Object' } ,
+                                  {'id': 'Type'         , 'name': 'Number' } ,
+                                  {'id': 'Type'         , 'name': 'String' } ,
+                                  {'id': 'Type'         , 'name': 'Boolean' } ,
+                                  {'id': 'function_form' , 'name': 'tan' } ,
+                                  {'id': "function_form" , 'name': 'cot' } ,
+                                  {'id': "function_form" , 'name': 'sqrt'} ,
+                                  {'id': "function_form" , 'name': 'sin' } ,
+                                  {'id': "function_form" , 'name': 'cos' } ,
+                                  {'id': "function_form" , 'name': 'log' } ,
+                                  {'id': "function_form" , 'name': 'exp' } ,
+                                  {'id': "function_form" , 'name': 'rand' } ,
+                                  {'id': "function_form" , 'name': 'range' } ,
+                                  {'id': "function_form" , 'name': 'print' } ,
+                                  {'id': "let"          , 'name': 'e' } ,
+                                  {'id': "let"          , 'name': 'PI' } ,
+                                  {'id': "let"          , 'name': 'self' }
+                                  
+                                  ]
+    
     gp.derivation_Tree.send_context()
     
     context_error = semantic_errors.context_errors()
