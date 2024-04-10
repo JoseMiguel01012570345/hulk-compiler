@@ -15,10 +15,10 @@ class ASTNode:
                 {'id': 'let'         , 'name': 'Number' } ,
                 {'id': 'let'         , 'name': 'String' } ,
                 {'id': 'let'         , 'name': 'Boolean' } ,
-                {'id': 'Type'         , 'name': 'Object' } ,
-                {'id': 'Type'         , 'name': 'Number' } ,
-                {'id': 'Type'         , 'name': 'String' } ,
-                {'id': 'Type'         , 'name': 'Boolean' } ,
+                {'id': 'type'         , 'name': 'Object' } ,
+                {'id': 'type'         , 'name': 'Number' } ,
+                {'id': 'type'         , 'name': 'String' } ,
+                {'id': 'type'         , 'name': 'Boolean' } ,
                 {'id': 'function_form' , 'name': 'tan' } ,
                 {'id': "function_form" , 'name': 'cot' } ,
                 {'id': "function_form" , 'name': 'sqrt'} ,
@@ -34,21 +34,25 @@ class ASTNode:
                 {'id': "let"          , 'name': 'self' }
                 
                 ]
+    parent = None
     
-    # def parent_refence(self):
+    def parent_reference(self):
         
-    #     children = self.visitor()
-    #     parent=None
+        children = self.visitor()
         
-    #     for child in children:
+        for child in children:
             
-    #         if type(child) == list:
+            if type(child) == list:
                 
-    #             for x in child:
-    #                 x.parent = self
+                for x in child:
+                    
+                    if x != None:
+                        x.parent = self
         
-    #         else:
-    #             child.parent = self
+            else:
+                
+                if child != None:
+                    child.parent = self
         
     def my_self(self):
         
@@ -571,6 +575,15 @@ class binary_expression:
                 except:
                     pass
 
+            for item in self.build_in:
+                
+                try:
+                    
+                    if (item['id'] == 'type' or item['id'] == 'protocol') and item['name'] == self.right.name:
+                        return error_list                
+                except:
+                    pass
+
             try:
                 
                 error_type = "type undefined"
@@ -585,10 +598,10 @@ class binary_expression:
                 error_description = f"unexpected expression at the right side of double dots"
                 scope = self.context
                 
-                error_list.append({"type":error_type,'description':error_description,'scope':scope})
+                error_list.append({"type":error_type,"description":error_description,"scope":scope})
                 
             
-            return super().context_check(error_list)
+            return error_list
     
         pass
     
@@ -814,6 +827,21 @@ class unary_expression:
             
             pass
         
+        def context_check(self, error_list: list):
+            
+            for item in self.context:
+            
+                if item['id'] == 'type' and item['name'] == self.right.name:
+                    return error_list
+            
+            error_type = 'undefined type'
+            error_description = f"The type {self.right.name} is not defined or visible for new keyword"
+            scope = self.context
+            
+            error_list.append({'type':error_type,'description':error_description,'scope':scope})
+            
+            return error_list
+        
         def visitor(self):
             return [self.right]
         
@@ -826,7 +854,7 @@ class unary_expression:
             
                 self.set_identifier('let')
                 self.right = token_list[1][1]
-                print(self.right)
+                
                 try :
                     
                     if self.right.id == 'var':
@@ -1325,7 +1353,7 @@ class type_(ASTNode): # check context
         
         if self.parent_name != None:
         
-            self.check_inheritence()
+            self.check_inheritence(error_list)
             pass
         
         return error_list

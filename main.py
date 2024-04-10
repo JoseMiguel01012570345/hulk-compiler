@@ -92,7 +92,7 @@ if not Error:
     
     gd_token= translator.traslator(my_list)
     
-    print(gd_token)
+    # print(gd_token)
 
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
 
@@ -103,6 +103,8 @@ if not Error:
         print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
         exit()
 #_________________________SEMANTIC CHEKING__________________________________
+
+    gp.derivation_Tree.parent_reference()
 
     gp.derivation_Tree.send_context()
     

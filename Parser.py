@@ -194,11 +194,11 @@ class Parser():
             
         # ----------------------PRINT_STACK-----------------
                         
-        printing_stack = []
-        for item in stack:
-            printing_stack.append(item[0])
+        # printing_stack = []
+        # for item in stack:
+        #     printing_stack.append(item[0])
         
-        print(printing_stack)
+        # print(printing_stack)
         
         # -------------------------------------------------
             
@@ -224,14 +224,7 @@ class Parser():
                         new_best_match = self.match(target,prefix)
                         
                         if new_best_match :
-                           
-                            try:
-                                if sub_stack[-2] == 'T' and sub_stack[-1] == 'E' :
-                                    
-                                    print('hello')
-                            except:
-                                pass
-                                           
+                                          
                             best_match = productions[0]
                             
                             pop_number = len(prefix)
@@ -249,12 +242,12 @@ class Parser():
             
             # --------------------PRINT_STACK-----------------------------
                         
-            printing_stack = []
-            for item in new_stack:
-                printing_stack.append(item[0])
+            # printing_stack = []
+            # for item in new_stack:
+            #     printing_stack.append(item[0])
             
-            printing_stack.append(best_match)
-            print(printing_stack)
+            # printing_stack.append(best_match)
+            # print(printing_stack)
             
             # -------------------------------------------------
             new_stack.append(( best_match , new_derivation_tree ))
