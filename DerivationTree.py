@@ -218,7 +218,8 @@ class builder:
         
         for_ = pdr.for_(token_list)
         
-        if for_.avaliable: return for_
+        if for_.avaliable: 
+            return for_
         
         return None
     

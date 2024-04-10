@@ -224,7 +224,14 @@ class Parser():
                         new_best_match = self.match(target,prefix)
                         
                         if new_best_match :
-                            
+                           
+                            try:
+                                if sub_stack[-2] == 'T' and sub_stack[-1] == 'E' :
+                                    
+                                    print('hello')
+                            except:
+                                pass
+                                           
                             best_match = productions[0]
                             
                             pop_number = len(prefix)
@@ -233,8 +240,9 @@ class Parser():
             
         if len(best_match) > 0:
 
+            
             token_list = self.match_derivation_token( stack[ len(stack)- pop_number :] )
-
+            
             new_derivation_tree = self.derivation_tree( best_match , token_list )
             
             new_stack = self.remove_item_stack(stack=stack , pop_number= pop_number )
@@ -286,7 +294,7 @@ class Parser():
     
     def parsed_code(self,stack):
         
-        if len(stack) == 3 and (stack[1][0] == "E" or stack[1][0] == "T" ):
+        if len(stack) == 3 and (stack[1][0] == "E" or stack[1][0] == "b" ):
             
             self.derivation_Tree = stack[1][1]
             print(" \033[1;31m >\033[1;32m CODE HAS BEEN PARSED :) \033[0m")
@@ -340,11 +348,7 @@ class Parser():
         '''
         pattern to follow -> existing tree is child of the new node
         '''
-        
-        AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
-        
-        # if AST_node == None:
             
-        #     return
+        AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
         
         return AST_node

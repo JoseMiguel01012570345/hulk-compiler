@@ -614,7 +614,6 @@ class binary_expression:
             
         pass
     
-        
     class is_(ASTNode):
         
         context = []
@@ -1859,7 +1858,13 @@ class block(ASTNode):
                     self.expressions = token_list[0][1]
             else:
                 
-                if token_list[0][0] == 'O':
+                if token_list[0][0] == 'O' and token_list[0][1] == 'O':
+                    
+                    self.expressions = token_list[0][1]
+                    self.expressions.extend(token_list[1][1])
+                
+                
+                elif token_list[0][0] == 'O':
                     
                     self.expressions = token_list[0][1].expressions
                     
