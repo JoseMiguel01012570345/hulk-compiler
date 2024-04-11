@@ -87,7 +87,9 @@ if not Error:
     # for item in my_list:
     #     zz.append(item.Text)
     
-    # print(zz)
+    # for t in my_list:
+    #     print(t)
+    #     pass
     # ----------------------------
     
     gd_token= translator.traslator(my_list)
@@ -119,7 +121,9 @@ if not Error:
 #_________________________CODE GENERATION__________________________________
 
     
-    #AST = ASTCilBuilder(gp.derivation_Tree)
+    AST = ASTCilBuilder(gp.derivation_Tree)
+    
+    print(AST.Code)
 
     pass
 #________________________END_____________________________________________

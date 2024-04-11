@@ -4,7 +4,12 @@ from IntermediateCodeGeneratorDefinitions import *
 class CilTree:
     
     def __init__(self,node,childs):
-        self._node = node
+        if type(node) == CilTree:
+            self._node = node._node
+            pass
+        else:
+            self._node = node
+            pass
         self._childs = childs
         pass
     
@@ -123,152 +128,130 @@ class CilTree:
 
 ################ CIL NODE-BUILDERS FUNCTIONS #######################
 
-def FunctionCallNodeCilBuilder(node):
-    tree = FunctionInvocationNode(node.name)
-    return CilTree(tree,[])
-
-def ParamsNodeCilBuilder(node):
-    params = []
-    for param in node.parameters:
-        params.append(ParamNode(param))
-        pass
-    return CilTree(ParamsNode(params),[])
-
-def BinaryASTNodeCilBuilder(node):
-    return CilTree(BinaryExpressionNode(node.left,node.right,node.id),[])
-        
-def UnaryASTNodeCilBuilder(node):
-    return CilTree(UnaryExpressionNode(node.right,node.id),[])
-
-def VariableASTNodeCilBuilder(node):
-    return CilTree(AllocateExpression(node.name,128),[])
-
-def ExpressionNodeCilBuilder(node):
-    unary_expressions_id = ['!','++','--','new','let']
+def BinaryExpressionNodeBuilder(node):
     
-    if node.id in unary_expressions_id:
-        return UnaryExpressionNode(node.right,node.id)
-            
-    return BinaryExpressionNode(node.left,node.right,node.id)
-
-def BodyASTNodeCilBuilder(node):
+    left = ExpressionNodeBuilder(node.left)
+    right = ExpressionNodeBuilder(node.right)
     
-    expressions = []
-    for expression in node.expressions:
-        expressions.append(ExpressionNodeCilBuilder(expression))
-        pass
-    
-    return CilTree(BodyNode(expressions),[])
+    return BinaryExpressionNode(left,right,node.id)
 
-def IfASTNodeCilBuilder(node):
-    label = hex(hash(str(node.id) + str(node.condition.Value)))
-    Label = LabelExpression(label)
-    if_node = IfGoToExpression(label,f'!{node.Value}')
-    expressions = []
-    for expression in node.expressions:
-        expressions.append(ExpressionNodeCilBuilder(expression))
-        pass
-    body = BodyNode(expressions)
-    return CilTree(if_node,[CilTree(body,[]),Label])
+def UnaryExpressionNodeBuilder(node):
+    if node.id in ['let','new']:
+        address = ExpressionNodeBuilder(node.right).Value
+        return AllocateExpression(address,128)
+    val = ExpressionNodeBuilder(node.right).Value
+    return UnaryExpressionNode(val,node.id)
 
-def ElifASTNodeCilBuilder(node):
-    return IfASTNodeCilBuilder(node)
+def FunctionCallExpressionNodeBuilder(node):
+    return FunctionInvocationNode(str(hex(hash(node))),node.name)
 
-def ElseASTNodeCilBuilder(node):
-    label = hex(hash(str(node.id) + str(node.condition.Value)))
-    Label = LabelExpression(label)
-    expressions = []
-    for expression in node.body.expressions:
-        expression.append(ExpressionNodeCilBuilder(expression))
-        pass
-    return CilTree(BodyNode([Label].__add__(expressions)),[])
+def VarExpressionNodeBuilder(node):
+    return AllocateExpression(node.name,128)
 
-def DefFunctionASTNodeCilBuilder(node):
-    params = ParamsNodeCilBuilder(node.args)
-    body = BodyNode(node.body)
-    return CilTree(FunctionNode(node.name,body,node.name,params),[])
-    
-def TypeASTNodeCilBuilder(node):
-    attributes = []
-    methods = {}
-    counter = 1
-    for expression in node.body.expressions:
-        if expression.id == '=':
-            attributes.append(ParamNode(expression.left))
-            pass
-        elif expression.id == 'function_form':
-            methods[f'{node.name}_function{counter}'] = DefFunctionASTNodeCilBuilder(expression)
-            counter += 1
-            pass
-        pass
-    
-    return CilTree(TypeNode(node.name,attributes,methods),[])
-
-def ProtocolASTNodeCilBuilder(node):
-    return None
-
-def VectorASTNodeCilBuilder(node):
-    address = str(hex(hash(node)))
-    return CilTree(ArrayExpression(address,128),[])
-
-def LiteralASTNodeCilBuilder(node):
+def LiteralExpressionNodeBuilder(node):
     if type(node.value) == str:
-        return CilTree(DataNode(node.id,node.value),[])
-    return CilTree(ValueNode(node.value),[])
-    
-def IndexingASTNodeCilBuilder(node):
-    return CilTree(GetIndexExpression(str(hex(hash(node))),node.name,node.index),[])
+        return DataNode(node.value,str(hex(hash(node))))
+    return ValueNode(node.value)
 
-def WhileASTNodeCilBuilder(node):
-    label = str(hex(hash(node)))
-    Label = LabelExpression(label)
-    expressions = []
-    for expression in node.expressions:
-        expressions.append(ExpressionNodeCilBuilder(expression))
+def BodyNodeBuilder(node):
+    if type(node) == list:
+        expressions = [ExpressionNodeBuilder(expression) for expression in node]
+        return BodyNode(expressions)
+    return BodyNode([ExpressionNodeBuilder(node)])
+
+def DefFunctionNodeBuilder(node):
+    body = None
+    if type(node.body) == list:
+        body = BodyNodeBuilder(node.body)
         pass
-    
-    expressions = [Label].__add__(expressions)
-    expressions.append(IfGoToExpression(label,node.condition.value))
-    
-    body = BodyNode(expressions)
-    
-    return CilTree(body,[])
+    else:
+        body = BodyNodeBuilder([node.body])
+        pass
+    if type(node.args) == list:
+        return FunctionNode(node.name,body,body.Value,[ParamNode(param.left.name) for param in node.args])
+    if node.args == None:
+        return FunctionNode(node.name,body,body.Value,[])
+    return FunctionNode(node.name,body,body.Value,[ParamNode(node.args.left.name)])
 
-def ForASTNodeCilBuilder(node):
-    return WhileASTNodeCilBuilder(node)
+def LetInNodeBuilder(node):
+    left = ExpressionNodeBuilder(node.left)
+    right = ExpressionNodeBuilder(node.right)
+    body = BodyNode([left,right])
+    return FunctionNode('let',body,body.Value,[])
+
+def ForNodeBuilder(node):
+    body = None
+    if node.body.id == 'block':
+        body = BodyNodeBuilder(node.body.expressions)
+        pass
+    else:
+        body = BodyNodeBuilder(node.body)
+        pass
+    return FunctionNode('for',body,body.Value,[])
+
+def ExpressionNodeBuilder(node):
+    builders = {
+        'FunctionCall' : FunctionCallExpressionNodeBuilder,
+        'var' : VarExpressionNodeBuilder,
+        'literal' : LiteralExpressionNodeBuilder,
+        'function_form' : DefFunctionNodeBuilder,
+        'in' : LetInNodeBuilder,
+        'for' : ForNodeBuilder,
+        'block' : BlockCilBuilder
+        
+    }
+    
+    if list(builders.keys()).count(node.id) > 0:
+        return builders[node.id](node)
+    
+    if node.id in ['!','++','--','new','let']:
+        return UnaryExpressionNodeBuilder(node)
+    return BinaryExpressionNodeBuilder(node)
+
+def BlockCilBuilder(node):
+    expressions = None
+    if type(node.expressions) == list:
+        expressions = [ExpressionNodeBuilder(expression) for expression in node.expressions]
+        pass
+    else:
+        expressions = [ExpressionNodeBuilder(node.expressions)]
+        pass
+    return BodyNode(expressions)
+
+def DefFunctionCilBuilder(node):
+    return CilTree(DefFunctionNodeBuilder(node),[])
 
 def ASTNodeCilBuilder(node):
     builders = {
-        'FunctionCall' : FunctionCallNodeCilBuilder,
-        'params' : ParamsNodeCilBuilder,
-        'var' : VariableASTNodeCilBuilder,
-        'if' : IfASTNodeCilBuilder,
-        'elif' : ElifASTNodeCilBuilder,
-        'else' : ElseASTNodeCilBuilder,
-        'function_form' : DefFunctionASTNodeCilBuilder,
-        'type' : TypeASTNodeCilBuilder,
-        'protocol' : ProtocolASTNodeCilBuilder,
-        'vector' : VectorASTNodeCilBuilder,
-        'literal' : LiteralASTNodeCilBuilder,
-        'index' : IndexingASTNodeCilBuilder,
-        'while' : WhileASTNodeCilBuilder,
-        'for' : ForASTNodeCilBuilder,
-        'block' : BodyASTNodeCilBuilder
+        'block' : BlockCilBuilder,
+        'function_form' : DefFunctionCilBuilder,
     }
     
-    return builders[node.id](node)
+    if list(builders.keys()).count(node.id) == 0:
+        return CilTree(ExpressionNodeBuilder(node),[])
+    
+    return CilTree(builders[node.id](node),[])
 
 def ASTCilBuilder(ast):
     cilnode = ASTNodeCilBuilder(ast)
-    try:
-        childs = [ASTCilBuilder(child) for child in ast.visitor() if not child == None]
-        cilnode._childs = childs
-        pass
-    except Exception:
-        if not ast.visitor() == None:
-            cilnode._childs = [ASTCilBuilder(ast.visitor())]
+    childs = ast.visitor()
+    cils = []
+    if type(childs) == list:
+        for child in childs:
+            if not child == None:
+                cils.append(ASTNodeCilBuilder(child))
+                pass
             pass
         pass
-    return cilnode
+    elif not childs == None:
+        cils.append(ASTNodeCilBuilder(childs))
+        pass
+    trees = []
+    for cil in cils:
+        if type(cil) == CilTree:
+            trees.append(cil)
+            pass
+        pass
+    return CilTree(cilnode,trees)
 
 # ################################COMPROBANDO#######################

@@ -76,6 +76,30 @@ class ParamNode(IDataCodeGenerator):
     
     pass
 
+class ParamsNode(IDataCodeGenerator):
+    
+    def __init__(self,params):
+        self._params = params
+        pass
+    
+    @property
+    def Data(self):
+        return ''
+    
+    @property
+    def Name(self):
+        return ''
+    
+    @property
+    def DataName(self):
+        return ''
+    
+    @property
+    def Template(self):
+        return { 'DATA' : '' , 'TEMPLATE' : '' , 'LOCALS' : '' }
+    
+    pass
+
 class BinaryExpressionNode(IExpressionCodeGenerator):
     
     def __init__(self,left,right,operator):
@@ -320,7 +344,6 @@ class AllocateExpression(IExpressionCodeGenerator):
         }
     
     pass
-
 class GetAttributeExpression(IExpressionCodeGenerator):
     
     def __init__(self,return_address,data,attribute):
@@ -380,7 +403,7 @@ class ArrayExpression(IExpressionCodeGenerator):
     def Template(self):
         return {
             "DATA": "",
-            "TEMPLATE": f"{self.Value} = ARRAY {self._size};",
+            "TEMPLATE": f"{self._address} = ARRAY {self._size};",
             "LOCALS": "",
         }
 
@@ -926,7 +949,7 @@ class LabelExpression(IExpressionCodeGenerator):
 
 class BodyNode(IExpressionCodeGenerator):
     
-    def __init__(self,*expressions):
+    def __init__(self,expressions):
         self._expressions = expressions
         pass
     
@@ -948,6 +971,10 @@ class BodyNode(IExpressionCodeGenerator):
                 pass
             pass
         return LOCALS
+    
+    @property
+    def ExpressionType(self):
+        return ExpressionType.ReturnInstruction
     
     @property
     def Data(self):
@@ -1015,11 +1042,12 @@ class TypeNode(ITypeCodeGenerator):
 
 class FunctionNode(IFunctionCodeGenerator):
     
-    def __init__(self,name,body,return_address,*params):
+    def __init__(self,name,body,return_address,params):
         self._name = name
         self._params = params
         self._body = body
         self._return = return_address
+        self.ExpressionType = IntermediateCodeType.Function
         pass
     
     @property

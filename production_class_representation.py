@@ -1,4 +1,5 @@
 
+from EnumsTokensDefinition import Type
 '''
 NOTE:
 
@@ -29,7 +30,7 @@ class ASTNode:
                 {'id': "function_form" , 'name': 'rand' } ,
                 {'id': "function_form" , 'name': 'range' } ,
                 {'id': "function_form" , 'name': 'print' } ,
-                {'id': "let"          , 'name': 'e' } ,
+                {'id': "let"          , 'name': 'E' } ,
                 {'id': "let"          , 'name': 'PI' } ,
                 {'id': "let"          , 'name': 'self' }
                 
@@ -67,7 +68,7 @@ class ASTNode:
     
     def def_node(self):
         
-        def_node = ['function_form','protocol','type','let','super_class','build_in']
+        def_node = ['function_form','protocol','type','let']
         
         for item in def_node:
             
@@ -112,7 +113,7 @@ class ASTNode:
         
         for child in children:
             
-            if child == None: return error_list
+            if child == None: continue
             
             if type(child) == list:
                 
@@ -1628,7 +1629,13 @@ class literal(ASTNode):
         else:
             self.avaliable = True
             self.set_identifier('literal')
-            self.value = token_list[0][0].Text
+            if token_list[0][0].SelfType == Type.Number:
+                self.value = float(token_list[0][0].Text)
+                pass
+            else:
+                self.value = token_list[0][0].Text
+                pass
+
             
     def validator(self,token_list):
         
