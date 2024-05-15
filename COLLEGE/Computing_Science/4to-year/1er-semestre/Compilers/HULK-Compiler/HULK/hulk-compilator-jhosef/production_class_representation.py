@@ -1,0 +1,1785 @@
+
+from EnumsTokensDefinition import Type
+'''
+NOTE:
+
+token_list is of the form : ( label , ASTNode )
+
+'''
+#____________________________________________________________________________________________>>>>>>>>>>>>>>>>
+
+class ASTNode:
+      
+    build_in = [
+                {'id': 'let'           , 'name': 'Object'  } ,
+                {'id': 'let'           , 'name': 'Number'  } ,
+                {'id': 'let'           , 'name': 'String'  } ,
+                {'id': 'let'           , 'name': 'Boolean' } ,
+                {'id': 'type'          ,'name':  'Object'  } ,
+                {'id': 'type'          ,'name':  'Number'  } ,
+                {'id': 'type'          ,'name':  'String'  } ,
+                {'id': 'type'          ,'name':  'Boolean' } ,
+                {'id': 'function_form' ,'name':  'tan'     } ,
+                {'id': "function_form" ,'name':  'cot'     } ,
+                {'id': "function_form" ,'name':  'sqrt'    } ,
+                {'id': "function_form" ,'name':  'sin'     } ,
+                {'id': "function_form" ,'name':  'cos'     } ,
+                {'id': "function_form" ,'name':  'log'     } ,
+                {'id': "function_form" ,'name':  'exp'     } ,
+                {'id': "function_form" ,'name':  'rand'    } ,
+                {'id': "function_form" ,'name':  'range'   } ,
+                {'id': "function_form" ,'name':  'print'   } ,
+                {'id': "let"           , 'name': 'E'       } ,
+                {'id': "let"           , 'name': 'PI'      } ,
+                {'id': "let"           , 'name': 'self'    }
+                ]
+    anotated_type = None
+    hash_ = 0
+    parent = None
+    derivation = []
+    context = []
+    context_error_desciption = ""
+    context_error_type = ""
+    def_node = False
+    
+    def __init__(self,derivation,identifier, context_error_desciption , context_error_type , definition_node ) -> None:
+        
+        self.set_identifier(identifier)
+        self.derivation_list = derivation
+        self.context_error_desciption = context_error_desciption
+        self.context_error_type = context_error_type
+        self.def_node = definition_node
+        
+        pass
+    
+    def suit_(self,token_list):
+        
+        if not self.validator(token_list=token_list): 
+            return False, None
+        
+        self.builder(token_list)
+        
+        self.parent_reference()
+        
+        return True,self
+    
+    def validator(self,token_list):
+        
+        if len(self.derivation) != len(token_list): return False
+        
+        if self.match( token_list=token_list , derivation=self.derivation ): return True
+        
+        return False
+    
+    def match(self,token_list,derivation):
+        
+        return any(lambda x,token : x != token , derivation , token_list)
+    
+    def parent_reference(self):
+        
+        list_children = self.visitor()
+        
+        for child in list_children:
+            
+            if child != None:
+                child.parent = self
+                
+                pass
+        
+            pass
+        
+    def my_id(self):
+        
+        if self.definition_node():
+            return { 'id': self.id  , 'name': self.name  }
+    
+    def set_identifier(self,id_:str):  
+        
+        self.id = id_
+        
+        return self.id
+    
+    def definition_node(self):
+        return self.def_node
+    
+    def send_context(self): 
+        
+        '''
+        pass the context from one child to another
+        
+        '''
+        
+        children: list = self.visitor()
+        
+        for child in children:
+            
+            if child == None: continue
+            
+            my_context = [ item for item in self.context]
+            
+            if child == list:
+                
+                child.context = [ item for item in my_context ]
+                child.send_context()
+                
+            pass
+        
+        pass
+    
+    def context_check(self,error_list:list):
+        
+        children = self.visitor()
+        
+        for child in children:
+            
+            if child == None: 
+            
+                scope = self.context
+                context_error_desciption = "unexpected none value"
+                error_list.append({ "type": self.context_error_type, "description": context_error_desciption, "scope": scope})
+                
+                continue
+            
+            if any(lambda item : item.id == child.id, self.context ) : continue
+            
+            scope = self.context
+            error_list.append({ "type": self.context_error_type, "description": self.context_error_desciption, "scope": scope})
+                        
+            pass
+                
+        return error_list
+        
+    def visitor(self):
+        
+        '''
+        visitor returns a list of elements you can visit
+        example: 
+        
+            while condition 
+                
+                body
+                
+            "visitor" returns : [ condition , body ]
+        
+        by default "visitor" returns binary operation visitation
+        
+        '''
+        pass
+    
+    def builder(self,token_list): 
+        pass
+    
+    def type_checking(self):
+        pass        
+    
+    def cil_node_code(self):
+        """
+        return CIL codes
+
+        """
+        pass
+
+#____________________________________________________________________________________________>>>>>>>>>>>>>>>>
+
+class function_call( ASTNode): # check context
+
+    '''
+    atributes of this class are:
+    
+    > id
+    > name
+    > args
+    
+    '''
+    context = []
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    def visitor(self):
+        
+        if self.args != None:
+            return self.args
+    
+        return [None]
+        
+    def context_check(self,error_list):
+        
+        for item in self.context:
+            
+            if item['id'] == 'function_form' and item['name'] == self.name:
+                return error_list
+            
+        for item in self.build_in:
+        
+            if item['id'] == 'function_form' and item['name'] == self.name:
+                return error_list
+            
+        error_type = "Function undefined"
+        error_decription = f"Function {self.name} could not be found"
+        scope = self.context
+        error_list.append({'type': error_type, 'description': error_decription, 'scope':scope})
+        
+        children = self.visitor()
+        
+        if type(children) == list:
+            
+            for child in children:
+                
+                if child != None:
+                    child.context_check(error_list)    
+                
+                pass 
+        
+        return error_list
+    
+    def type_checking(self):
+        return super().type_checking()
+    
+    def builder(self,token_list):
+        
+        self.name = token_list[0][1].name
+        self.args = token_list[1][1]
+        
+        pass
+    
+class params( ASTNode):
+    
+    '''
+    atributes of this class are
+    > id : params
+    > parameters
+    
+    '''
+    
+    parameters = []
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+                
+    def visitor(self):
+        return self.parameters
+                            
+    def builder(self, token_list):
+        
+        if self.avaliable and token_list[0][0] == 'p': # if the first token is a param
+            
+            self.parameters = [ item for item in token_list[0][1].parameters ]
+            return
+        
+        param1 = token_list[0][1]
+        new_parameters = []
+        
+        if token_list[2][0] == 'p': #  if second token is a param, unbox param "p"
+            
+            new_parameters = [ item for item in token_list[2][1].parameters ]
+            new_parameters.insert(0,param1)
+            self.parameters = new_parameters
+        else:
+                
+            param2 = token_list[2][1]
+            new_parameters.append(param1)
+            new_parameters.append(param2)
+            self.parameters = new_parameters
+    pass
+
+class binary_opt(ASTNode):
+    
+    left_node = []
+    right_node = []
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    def builder(self, token_list):
+        
+        self.left = token_list[0][1]
+        self.right = token_list[2][1]
+    
+    def visitor(self):
+        return [ self.left , self.right ]
+    
+    pass
+
+class dot(binary_opt):    
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+    pass
+
+
+
+class in_(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+    
+    def retrive_var_context(self,node:ASTNode):
+    
+        try:
+            if node.id == '=' and node.left.id == ':':
+                
+                return { 'id': 'let', 'name': node.left.left.name }
+            
+            elif node.id == '=' and node.left.id == 'let':
+                
+                return { 'id': 'let', 'name': node.left.name }
+            
+            elif node.id == ':' and node.left.id == 'let':
+                
+                return { 'id': 'let', 'name': node.left.name }
+            
+            elif node.id == 'let':
+                
+                return { 'id': 'let', 'name': node.name }
+        
+        except:    
+            return None
+        
+        return None
+
+    def create_context(self,args_AST:list):
+        
+        params_context = []
+        
+        if args_AST.id == 'in':
+            params_context = [ item for item in self.create_context(args_AST.left) ]    
+            return params_context
+        
+        if args_AST == None : return []
+        
+        if args_AST.id == 'params':
+            
+            args_AST = args_AST.parameters
+            
+            for param in args_AST:
+                
+                var = self.retrive_var_context(param)
+                if var != None:
+                    params_context.append(var)
+            
+        else:
+            arg = self.retrive_var_context(args_AST)
+            
+            if arg != None:
+                params_context.append( arg )
+        
+        return params_context
+
+    def send_context(self):
+        
+        new_context = [ item for item in self.context ]
+        params_context = self.create_context(args_AST= self)
+        
+        self.left.context = self.merge_context(params_context,new_context)
+        self.left.send_context()
+    
+        if self.right != None:
+            
+            right_context = self.merge_context(params_context,new_context)
+            
+            self.right.context = right_context
+            self.right.send_context()
+        
+        pass
+    
+    def merge_context(self,context1,context2):
+        
+        result_context = [  ]
+        for item in context2:
+            
+            result_context.append(item)
+        
+        for item in context1:
+            
+            if self.equal(item,result_context):
+                continue
+            
+            result_context.append(item)
+        
+        return result_context
+        
+    def equal(self,node1,new_context):
+    
+        if node1 == None : return False
+        
+        return any( lambda item: node1['id'] == item['id'] and node1['name'] == item['name'] , new_context )
+        
+
+
+class plus(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+        
+class minus(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+    pass
+
+class multiplication(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+
+class divition(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+    pass
+    
+class _pow(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+    pass
+    
+class per_cent(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+
+    pass
+
+class concatenation(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+
+    pass
+      
+class blank_space_concatenation(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+
+    pass
+
+
+
+class double_dot(ASTNode):
+    
+    context = []
+    def __init__(self,token_list):
+        
+        self.set_identifier(':')
+        self.left = token_list[0][1]
+        self.right = token_list[2][1]
+
+    
+    def context_check(self, error_list: list):
+        
+        for item in self.context:
+            
+            try:
+                
+                if (item['id'] == 'type' or item['id'] == 'protocol') and item['name'] == self.right.name:
+                    return error_list                
+            except:
+                pass
+
+        for item in self.build_in:
+            
+            try:
+                
+                if (item['id'] == 'type' or item['id'] == 'protocol') and item['name'] == self.right.name:
+                    return error_list                
+            except:
+                pass
+
+        try:
+            
+            error_type = "type undefined"
+            error_description = f"type {self.right.name} could not be found"
+            scope = self.context
+            
+            error_list.append({"type":error_type,'description':error_description,'scope':scope})
+        
+        except:
+            
+            error_type = "unexpected expression"
+            error_description = f"unexpected expression at the right side of double dots"
+            scope = self.context
+            
+            error_list.append({"type":error_type,"description":error_description,"scope":scope})
+            
+        
+        return error_list
+
+    pass
+
+
+
+class double_dot_equal(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+
+class as_(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+    pass
+
+class is_(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+    pass
+
+class equal(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+    
+class bigger_than(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+
+class smaller_than(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+
+class bigger_or_equal(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+
+class smaller_or_equal(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+
+class assign(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+    
+class or_(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+
+class and_(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+    
+class different(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+
+class divide_and_assign(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+    
+class multiply_and_assign(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+
+class plus_and_assign(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+
+class minus_and_assign(binary_opt):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+    
+    pass
+ 
+ 
+    
+class unary_expression(ASTNode):
+    
+    '''
+    this class selects the kind of binary expression the token_list refers to. Every
+    class in this class has as attributes:
+    
+    > id : the kind of expression it is specified by its symbol
+    > right: right unary member
+    
+    '''
+    right= []
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+    def builder(self, token_list):
+        self.right = token_list[1][1]
+        pass
+    
+    def visitor(self):
+        return [self.right]
+    
+    pass
+    
+class new(unary_expression):
+
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+    def context_check(self, error_list: list):
+        
+        for item in self.context:
+        
+            if (item['id'] == 'type' or item['id'] == 'protocol')  and item['name'] == self.right.name:
+                return error_list
+        
+        error_type = 'undefined type'
+        error_description = f"The type {self.right.name} is not defined or visible for new keyword"
+        scope = self.context
+        
+        error_list.append({'type':error_type,'description':error_description,'scope':scope})
+        
+        return error_list
+    
+    pass
+    
+class let(unary_expression):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+    def context_check(self, error_list: list):
+    
+        if self.right.name == None:
+            
+            error_type = "variable declaration"
+            error_description = "No inicialization for \033[1;31m let \033[0m"
+            scope = self.context
+            error_list.append({ "type": error_type, "description": error_description, "scope": scope})
+            
+            return error_list
+        
+        self.right.context_check(error_list)
+        
+        return error_list
+    
+class not_(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+class plus_plus(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+        
+class minus_minus(ASTNode):
+    
+    def __init__(self, derivation, identifier) -> None:
+        super().__init__(derivation, identifier)
+     
+     
+     
+class variable(ASTNode): # check context
+    
+    '''
+    this class has the attributes:
+    
+    > id : var
+    > name: name of the variable
+    
+    '''
+    
+    avaliable = False
+    context = []
+     
+    def __init__(self,token_list):
+        
+        try:
+            if not token_list[0][0].Type.name == 'Variable' and not token_list[0][0].KeywordType.name == 'Function'  :
+                pass
+            
+            else:
+                self.avaliable = True
+                self.set_identifier('var')
+                self.name=token_list[0][0].Text
+        
+        except : pass
+    
+    def visitor(self):
+        return [None]
+
+    def context_check(self,error_list):
+        
+        for item in self.context:
+            
+            if item['id'] == 'let' and item['name'] == self.name :
+                return error_list
+            
+        for item in self.build_in:
+        
+            if item['id'] == 'let' and item['name'] == self.name :
+                return error_list
+        
+        error_type = "variable undefined"
+        error_description = f"variable {self.name} could not be found"
+        scope = self.context
+        error_list.append({ "type": error_type, "description": error_description, "scope": scope})
+        
+        return error_list
+
+class if_(ASTNode):
+    
+    '''
+    this class has the attributes:
+    
+    > id : if
+    > condition : condition for if statement
+    > body: body of the statement
+    
+    '''
+    
+    avaliable = False
+    context = []
+    def __init__(self,token_list):
+        
+        if token_list[0][0] == 'if': 
+            
+            self.avaliable = True
+            self.set_identifier('if')
+            
+            self.condition = token_list[1][1]
+            self.body = token_list[2][1]
+        
+        pass
+    
+    pass
+
+    def visitor(self):
+        return [ self.condition , self.body ]
+
+class elif_(ASTNode):
+    
+    '''
+    this class has the attributes:
+    
+    > id : elif
+    > condition : condition for elif statement and the condition for the if statement , the condition is a list
+    > body: body of the statement
+    
+    NOTE:
+    
+    The condition is a list that refers to if statement , and has second element has the elif statement
+    
+    '''
+    
+    avaliable = False
+    condition=None
+    context = []
+    
+    def __init__(self,token_list):
+        
+        if (token_list[0][0] == 'if' and token_list[1][0] == 'elif') : 
+            
+            self.avaliable = True
+            self.set_identifier('elif')
+            
+            self.condition = [ token_list[0][1] , token_list[2][1] ]
+            self.body = token_list[3][1]
+        
+        pass
+    
+    def visitor(self):
+        return [ self.condition , self.body  ]
+        
+    pass
+
+class else_(ASTNode):
+    
+    
+    '''
+    this class has the attributes:
+    
+    > id : else
+    > condition : condition for else is the condition for the if statement and condition for the
+                elif statement, the condition is a list that refers to elif
+    > body: body of the statement
+    
+    
+    NOTE:
+    
+    the condition is a list to refers to elif statement , in case it exists , or tho the if statement in worst case
+    
+    '''
+    
+    avaliable = False
+    condition = None
+    context = []
+    
+    def __init__(self,token_list):
+        
+        if token_list[1][0] == 'else' : 
+            
+            self.avaliable = True
+            self.set_identifier('else')
+            
+            self.condition = token_list[0][1]
+            
+            self.body = token_list[2][1]
+        
+        pass
+    
+    pass
+
+    def visitor(self):
+        return [ self.condition , self.body ]
+
+class def_function(ASTNode): # check context
+    
+    '''
+    atributes of this class are:
+    
+    > id : function_form
+    > name: name of the function declared
+    > args
+    > body
+    
+    '''
+    
+    avaliable = False
+    context = []
+    
+    def __init__(self,token_list):
+        
+        self.name = None
+        self.args = None
+        self.body = None
+        
+        if self.validator(token_list):
+            
+            self.avaliable= True
+            self.set_identifier('function_form')
+            
+            if token_list[0][0] == 'function': 
+                self.function_kw(token_list)
+                        
+            elif token_list[0][1].id == 'FunctionCall': 
+                self.simple_form(token_list)
+        
+    def context_check(self,error_list):
+        
+        for item in self.context:
+            
+            if item['id'] == self.id and item['name'] == self.name:
+                
+                error_type = "Function definition"
+                error_decription = f"The function {self.name} has been already defined"
+                scope = self.context
+                
+                error_list.append({ "type": error_type, "description": error_decription , "scope": scope })
+                
+        children = self.visitor()
+        
+        if type(children) == list:
+            
+            for child in children:
+                
+                if child != None:
+                     child.context_check(error_list)    
+                
+        return error_list
+   
+    def retrive_var_context(self,node:ASTNode):
+        
+        if node != None and node.id == ':' and node.left.id == 'var' :
+            
+            return { 'id': 'let', 'name': node.left.name }
+        
+        elif node != None and node.id == 'var' :
+            return { 'id': 'let', 'name': node.name }
+        
+        return None
+
+    def create_context(self,args_AST:list):
+        
+        params_context = []
+        if args_AST == None : return []
+        
+        if args_AST.id == 'params':
+            for param in args_AST.parameters:
+                
+                var = self.retrive_var_context(param)
+                if var != None:
+                    params_context.append(var)
+            
+        else:
+            arg = self.retrive_var_context(args_AST)
+            params_context.append( arg )
+        
+        return params_context
+
+    def send_context(self):
+        
+        new_context = [ item for item in self.context ]
+        params_context = self.create_context(args_AST= self.args)
+        my_type = self.my_id()
+        new_context.append(my_type)
+        
+        if self.args != None:
+            self.args.context = self.merge_context(params_context,new_context)
+            self.args.send_context()
+        
+        if self.body != None:
+            
+            body_context = self.merge_context(params_context,new_context)
+            
+            self.body.context = body_context
+            self.body.send_context()
+        
+        pass
+    
+    def merge_context(self,contex1,contex2):
+        
+        result_context = [  ]
+        for item in contex2:
+            
+            result_context.append(item)
+        
+        for item in contex1:
+            
+            if self.equal(item,result_context):
+                continue
+            
+            result_context.append(item)
+        
+        return result_context
+        
+    def equal(self,node1,new_context):
+        
+        if node1 == None : return False
+        for item in new_context:
+        
+            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+        
+        return False
+    
+    def function_kw(self,token_list):
+        
+        self.name = token_list[1][1].name
+        self.args = token_list[1][1].args
+        
+        if token_list[2][0] == 'b' or token_list[2][0] == 'E':
+        
+            # function f b | function f E
+            self.body = token_list[2][1]
+    
+        
+        if token_list[2][0] == '=>':
+        
+            # function f => E | function f => b
+            self.body = token_list[3][1]
+        
+        elif token_list[2][0] == ':':
+        
+            self.anotated_type = token_list[3][1]
+            
+            if token_list[4][0] == '=>':
+                
+                # function f : T => b | function f : T => E
+                self.body=token_list[5][1]
+            
+            else:
+                # function f : T b
+                self.body=token_list[4][1]
+        
+    def simple_form(self,token_list):
+        
+        self.name = token_list[0][1].name
+        self.args = token_list[0][1].args
+        
+        if token_list[1][0] == ":":
+            
+            # c():T
+            self.anotated_type = token_list[2][1]
+            
+            if len(token_list)>4:
+                
+                # c():T => b
+                self.body = token_list[4][1]
+            
+            elif len(token_list) > 3:
+                
+                # c():T b
+                self.body = token_list[3][1]
+            
+        elif token_list[1][0] == "=>":
+            
+            # c() => E | c() => b
+            self.body = token_list[2][1]
+        
+        else:
+            
+            # c() E | c() b
+            self.body = token_list[1][1]
+
+    def visitor(self):
+        return [ self.args , self.body ]
+
+    def validator(self,token_list):
+        
+        try:
+            if token_list[0][0] == 'function': return True
+            
+            if token_list[0][1].id == 'FunctionCall' and (token_list[1][0] == ':' or token_list[1][0] == '=>' ):
+                return True
+        
+        except:
+            pass
+        
+        return False
+    
+    pass
+
+class type_(ASTNode): # check context
+    
+    '''
+    atributes of this class are:
+    
+    > id : type
+    > name: name of the type
+    > constructor: constructor params
+    > parent_name: the name of the class this class inherits from
+    > base: parents constructor
+    > body
+    
+    '''
+    
+    avaliable = False
+    context = []
+    def __init__(self,token_list):
+        
+        if token_list[0][0] == 'type':
+            
+            self.set_identifier('type')
+            
+            self.avaliable = True
+            
+            self.name = token_list[1][1].name
+            self.body = None
+            self.constructor = None
+            self.anotated_type = self.name
+            
+            if token_list[1][1].id == 'FunctionCall':
+                self.constructor = token_list[1][1].args
+            
+            self.parent_name = None
+            self.base = None
+            
+            if token_list[2][0] == 'inherits' :
+                
+                self.parent_name = token_list[3][1].name
+                
+                if token_list[3][1].id == 'FunctionCall':
+                    self.base = token_list[3][1].args
+                
+                self.body = token_list[4][1]
+            
+                if self.constructor != None and self.base != None:
+                    self.avaliable = True
+                    
+            else:
+                self.body = token_list[2][1]
+        pass
+    
+    def context_check(self,error_list:list):
+        
+        for item in self.context:
+        
+            if item['id'] == 'type' and item['name'] == self.name:
+                
+                error_type = "Type definition"
+                error_description = f"The Type {self.name} has been already defined"
+                scope = self.context
+                
+                error_list.append({"type": error_type,"description": error_description,"scope": scope})
+                
+                break
+                
+        children = self.visitor()
+
+        if type(children) == list:
+        
+            for child in children:
+                
+                if child != None:
+                    child.context_check(error_list)    
+                
+                pass
+        
+        if self.parent_name != None:
+        
+            self.check_inheritence(error_list)
+            pass
+        
+        return error_list
+    
+    def check_inheritence(self,error_list:list):
+        
+        for item in self.context:
+            
+                if item['id'] == 'type' and item['name'] == self.name:
+                    return []
+        
+        for item in self.build_in:
+            
+                if item['id'] == 'type' and item['name'] == self.name:
+                    return []
+        
+        error_type = "Inheritence undefined"
+        error_description = f"Type {self.parent_name} could not be found"
+        scope = self.context
+        
+        error_list.extend({ "type": error_type, "description": error_description , "scope":scope })
+        
+        return error_list
+        
+    def retrive_var_context(self,node:ASTNode):
+        
+        if node != None and  node.id == ':' and node.left.id == 'var' :
+            
+            return { 'id': 'var', 'name': node.left.name }
+        
+        elif node != None and node.id == 'var' :
+            return { 'id': 'var', 'name': node.name }
+        
+        return None
+
+    def create_context(self,args_AST:list):
+        
+        params_context = []
+        if args_AST == None : return []
+        
+        if args_AST.id == 'params':
+       
+            for param in args_AST.parameters:
+                
+                var = self.retrive_var_context(param)
+                if var != None:
+                    params_context.append(var)
+        else: 
+            arg = self.retrive_var_context(args_AST)
+            params_context.append( arg )
+        
+        return params_context
+
+    def send_context(self):
+        
+        new_context = [ item for item in self.context ]
+        params_context = self.create_context(args_AST= self.constructor)
+        my_type = self.my_id()
+        
+        if self.equal( my_type , new_context ):
+            
+            print(f"\033[1;31m > \033[1;32m The type {my_type['name']} already exists  \033[0m")
+            exit()
+            
+        else:    
+            new_context.append(my_type)
+        
+        if self.constructor != None:
+            self.constructor.context = self.merge_context(params_context,new_context)
+            self.constructor.send_context()
+        
+        if self.base != None:
+            base_context = self.create_context(args_AST= self.base)
+            self.base.context = base_context
+            self.base.send_context()
+        
+        if self.body != None:
+            body_context = self.merge_context(params_context,new_context)
+            
+            self.body.context = body_context
+            self.body.send_context()
+        
+        pass
+    
+    def merge_context(self,contex1,contex2):
+        
+        result_context = [  ]
+        for item in contex2:
+            
+            result_context.append(item)
+        
+        for item in contex1:
+            
+            if self.equal(item,result_context):
+                continue
+            
+            result_context.append(item)
+        
+        return result_context
+    
+    def equal(self,node1,new_context):
+        
+        if node1 == None : return False
+        for item in new_context:
+        
+            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+        
+        
+        return False
+    
+    def visitor(self):
+        return [ self.constructor , self.base , self.base ]
+
+class protocol(ASTNode): # check context
+    
+    '''
+    atributes of this class are:
+    
+    > id : protocol
+    > name: name of the type
+    > parent_name: the name of the class this class inherits from
+    > body
+    
+    '''
+    
+    avaliable = False
+    context = []
+    
+    def __init__(self,token_list):
+        
+        if token_list[0][0] == 'protocol':
+            
+            self.avaliable = True
+        
+            self.set_identifier('protocol')
+                
+            self.name = token_list[1][1].name
+            self.body = None
+            self.anotated_type = self.name
+            
+            self.parent_name = None
+        
+            if token_list[2][0] == 'extends' :
+                
+                self.parent_name = token_list[3][1].name
+                self.body = token_list[4][1]
+                    
+            else:
+                self.body = token_list[2][1]
+    
+        pass
+    
+    def context_check(self,error_list):
+        
+        for item in self.context:
+            
+            if item['id'] == 'protocol' and item['name'] == self.name:
+                
+                error_type = "Protocol extention undefined"
+                error_descrption = f"Protocol {self.parent_name} could not be found"
+                scope = self.context
+                
+                error_list.append({ "type": error_type, "description": error_descrption , "scope":scope})
+            
+        children = self.visitor()
+    
+        if type(children) == list:
+        
+            for child in children:
+                
+                if child != None:
+                    child.context_check(error_list)    
+                
+                pass
+        
+        if self.parent_name != None:
+            self.check_inheritence(error_list)
+            
+        return error_list
+    
+    def check_inheritence(self,error_list:list):
+        
+        for item in self.context:
+            
+            if item['id'] == 'protocol' and item['name'] == self.parent_name:
+                return []
+        
+        for item in self.build_in:
+            
+            if item['id'] == 'protocol' and item['name'] == self.parent_name:
+                return []
+            
+        error_type = "Inheritence undefined"
+        error_description = f"Type {self.parent_name} could not be found"
+        scope = self.context
+        error_list.append({ "type": error_type, "description": error_description , "scope":scope})
+        
+        return error_list
+        
+    def visitor(self):
+        return [ self.body ]
+
+class vectors(ASTNode):
+    
+    '''
+    
+    vector forms: 
+    1. [ filter || domain ]
+    2. [ 1,2,3,4, ... ]
+    
+    attributes:
+    
+    > filter_ : the filter of a vector
+    > domain: the domain of a vector
+    
+    '''
+    
+    avaliable = False
+    filter_ = None
+    domain = None
+    context = []
+        
+    def __init__(self,token_list):
+        
+        self.set_identifier('vector')
+        
+        if self.validator(token_list):
+            
+            self.avaliable = True
+
+            self.array_(token_list)
+            
+    def validator(self,token_list):
+        
+        if token_list[0][0] == '[': return True
+        
+        return False
+    
+    def array_(self,token_list):
+        
+        if token_list[1][0] == 'p':
+            
+            self.domain = [ item for item in token_list[1][1].parameters ]
+            
+        elif token_list[1][0] == 'T' :
+            
+            self.filter_ = token_list[1][1]
+            self.domain = token_list[3][1]        
+
+    def visitor(self):
+        return [ self.filter_ , self.domain ]
+
+class literal(ASTNode):
+    
+    '''
+    attributes:
+    
+    > id: literal
+    > value: value of the literal
+    
+    '''
+    
+    value = None
+    avaliable = False
+    context = []
+    
+    def __init__(self,token_list):
+        
+        if self.validator(token_list) :
+            pass
+        
+        else:
+            self.avaliable = True
+            self.set_identifier('literal')
+            if token_list[0][0].SelfType == Type.Number:
+                self.value = float(token_list[0][0].Text)
+                pass
+            else:
+                self.value = token_list[0][0].Text
+                pass
+
+            
+    def validator(self,token_list):
+        
+        try:
+            if token_list[0][0].SelfType == 'Number' or token_list[0][0].SelfType == 'String' or token_list[0][0].SelfType == 'Boolean':
+                return True
+        except:    
+            return False
+    
+    def visitor(self):
+        return [None]
+    
+    pass
+
+class index(ASTNode): # check context
+    
+    '''
+    attributes:
+    
+    > id : index
+    > name: name of the indexation vector
+    > index : index of the vector 
+    
+    '''
+    
+    avaliable = False
+    args = None
+    name = None
+    context = []
+    
+    def __init__(self,token_list):
+        
+        if self.validator(token_list):
+            
+            self.avaliable = True
+            self.set_identifier('index')
+            self.name = token_list[0][1].name
+            self.index = token_list[2][1]      
+        
+        pass
+    
+    def validator(self,token_list):
+        
+        target = ["T","[" , "T" , "]" ]  
+        try:
+            index = 0
+            while index < len(token_list):
+                
+                if token_list[index][0] != target[index]: return False
+                
+                index += 1
+                                
+        except: 
+            return False
+        
+        return True
+    
+    def context_check(self,error_list:list):
+        
+        for item in self.context:
+            
+            if item.id == 'var' and item.name == self.name : 
+                
+                return error_list
+
+            error_type = "vector undefined"
+            error_desciption = f"The vector {self.name} could not be found"
+            scope = self.context
+            
+            error_list.append( {"type":error_type,"description":error_desciption,"scope":scope} )
+    
+        children = self.visitor()
+
+        if type(children) == list:
+            
+            for child in children:
+                
+                child.context_check(error_list)    
+                
+                pass
+            
+        return error_list
+    
+    def visitor(self):
+        return [self.index]
+
+class while_(ASTNode):
+    
+    '''
+    attributes:
+    
+    > id : while
+    > condition : condition of the while loop
+    > body
+    
+    '''
+    
+    avaliable = False
+    condition = None
+    body = None
+    context = []
+    
+    def __init__(self,token_list):
+        
+        if self.validator(token_list):
+            
+            self.avaliable = True
+            self.set_identifier('while')
+            self.condition = token_list[1][1]
+            self.body = token_list[2][1]
+        
+        pass
+    
+    def validator(self,toke_list):
+        
+        if toke_list[0][0] == 'while':
+            return True
+        
+        return False
+    
+    def visitor(self):
+        return [ self.condition , self.body ]
+
+class for_(ASTNode):
+    
+    '''
+    attributes:
+    
+    > id : for
+    > condition : condition of the for loop
+    > body
+    
+    '''
+    
+    avaliable = False
+    args = None
+    body = None
+    context = []
+    
+    def __init__(self,token_list):
+        
+        if self.validator(token_list):
+            
+            self.avaliable = True            
+            self.set_identifier('for')
+            self.args = token_list[1][1]
+            self.body = token_list[2][1]
+        
+        pass
+    
+    def validator(self,toke_list):
+        
+        if toke_list[0][0] == 'for':
+            return True
+        
+        return False
+    
+    def visitor(self):
+        return [ self.args , self.body ]
+    
+    def create_context(self,args_AST:list):
+        
+        params_context = []
+        
+        if args_AST == None : 
+            print(f"\033[1;31m > No arguments in for loop")
+            exit()
+            
+        if self.args.left.id != 'var':
+            print(f"\033[1;31m > \033[1;32m unexpected argument for \'for\' loop ")
+            exit()
+            
+        params_context.append( {'id':'let','name': self.args.left.name } )
+    
+        return params_context
+
+    def send_context(self):
+        
+        new_context = [ item for item in self.context ]
+        params_context = self.create_context(args_AST= self.args)
+        
+        self.args.context = self.merge_context(params_context,new_context)
+        self.args.send_context()
+        
+        if self.body != None:
+            
+            body_context = self.merge_context(params_context,new_context)
+            
+            self.body.context = body_context
+            self.body.send_context()
+        
+        pass
+    
+    def merge_context(self,contex1,contex2):
+        
+        result_context = [  ]
+        for item in contex2:
+            
+            result_context.append(item)
+        
+        for item in contex1:
+            
+            if self.equal(item,result_context):
+                continue
+            
+            result_context.append(item)
+        
+        return result_context
+        
+    def equal(self,node1,new_context):
+        
+        if node1 == None : return False
+        for item in new_context:
+        
+            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+        
+        return False
+
+class block(ASTNode):
+    
+    '''
+    attributes:
+    
+    > id : block
+    > expressions : expressions inside of the block
+    
+    >> solve from left to right
+    
+    '''
+    
+    expressions = [] 
+    avaliable = False
+    context = []
+    
+    def __init__(self,token_list):
+        
+        self.expressions = []
+        self.avaliable = False
+        self.context = []
+        self.set_identifier('block')
+        
+        if self.validator(token_list): 
+            
+            self.avaliable = True
+            
+            if len(token_list) == 1: # if the first token is a param
+                
+                if token_list[0][0] == 'M':
+                    self.expressions = token_list[0][1]
+                
+                elif token_list[0][1] != None and  token_list[0][1].id == 'block' : 
+                    
+                    self.expressions = token_list[0][1].expressions
+
+                else:
+                    self.expressions = token_list[0][1]
+            else:
+                
+                if token_list[0][0] == 'O' and token_list[0][1] == 'O':
+                    
+                    self.expressions = token_list[0][1]
+                    self.expressions.extend(token_list[1][1])
+                
+                
+                elif token_list[0][0] == 'O':
+                    
+                    self.expressions = token_list[0][1].expressions
+                    
+                    if type(self.expressions) == list:
+                        self.expressions.append(token_list[1][1])
+                    
+                    else:
+                        new_expression_set = [self.expressions , token_list[1][1]]
+                        self.expressions = new_expression_set
+                    
+                    pass
+                
+                elif token_list[1][0] == 'O':
+                    
+                    self.expressions.append(token_list[0][1])
+                    
+                    for item in token_list[1][1].expressions:
+                        self.expressions.append(item)
+                    
+                    pass
+                else:
+                    self.expressions.append(token_list[0][1])
+                    self.expressions.append(token_list[1][1])
+    
+    def send_context(self):
+        
+        new_context = [ item for item in self.context ]
+        
+        if type(self.expressions) == list:
+            
+            for expression in self.expressions:
+            
+                # nodes that define new variables , increases context
+                if expression.def_node() : 
+                    
+                    expression_type = expression.my_self()
+                    expression.context = [ item for item in new_context ]
+                    expression.send_context()
+                    new_context.append(  expression_type )
+                
+                else:
+                    
+                    expression.context = [ item for item in new_context ]
+                    expression.send_context()
+                    
+        else:
+                expression = self.expressions
+                expression.context = [ item for item in new_context ]
+                expression.send_context()
+        
+                if expression.def_node() : 
+                    
+                    expression_type = expression.my_self()
+                    new_context.append(  expression_type )
+                
+        pass
+    
+    def equal(self,node1,new_context):
+        
+        if node1 == None : return False
+        for item in new_context:
+        
+            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+        
+        
+        return False
+    
+    def validator(self,token_list):
+        
+        return True
+    
+    def visitor(self):
+        
+        if type(self.expressions) == list:
+            return self.expressions
+        
+        else:
+            return [self.expressions]
+    
