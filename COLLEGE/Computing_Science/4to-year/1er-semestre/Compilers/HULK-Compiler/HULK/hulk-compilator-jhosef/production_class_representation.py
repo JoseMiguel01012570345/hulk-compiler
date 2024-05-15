@@ -38,17 +38,27 @@ class ASTNode:
     parent = None
     derivation = []
     context = []
-    context_error_desciption = ""
-    context_error_type = ""
     def_node = False
+    builder = None
+    visitor = None
+    name = ""
     
-    def __init__(self,derivation,identifier, context_error_desciption , context_error_type , definition_node ) -> None:
+    def __init__(
+        self, grammar= {
+                        
+                        "derivation":"",
+                        "identifier":"" ,
+                        " definition_node?":"" , 
+                        "builder":None , 
+                        "visitor":None
+                    } ) -> None:
         
-        self.set_identifier(identifier)
-        self.derivation_list = derivation
-        self.context_error_desciption = context_error_desciption
-        self.context_error_type = context_error_type
-        self.def_node = definition_node
+        
+        self.set_identifier(grammar["identifier"])
+        self.derivation_list = grammar["derivation"]
+        self.def_node = grammar["definition_node?"]
+        self.builder = grammar["builder"]
+        self.visitor = grammar["visitor"]
         
         pass
     
@@ -98,10 +108,7 @@ class ASTNode:
         self.id = id_
         
         return self.id
-    
-    def definition_node(self):
-        return self.def_node
-    
+     
     def send_context(self): 
         
         '''
@@ -117,10 +124,11 @@ class ASTNode:
             
             my_context = [ item for item in self.context]
             
-            if child == list:
+            if self.def_node: 
+                my_context.append( { "id": self.id , "name":self.name } )
                 
-                child.context = [ item for item in my_context ]
-                child.send_context()
+            child.context = my_context
+            child.send_context()
                 
             pass
         
@@ -130,45 +138,17 @@ class ASTNode:
         
         children = self.visitor()
         
+        if children == None : return error_list
+        
         for child in children:
             
-            if child == None: 
-            
-                scope = self.context
-                context_error_desciption = "unexpected none value"
-                error_list.append({ "type": self.context_error_type, "description": context_error_desciption, "scope": scope})
-                
-                continue
-            
-            if any(lambda item : item.id == child.id, self.context ) : continue
-            
-            scope = self.context
-            error_list.append({ "type": self.context_error_type, "description": self.context_error_desciption, "scope": scope})
+            if child != None:
+                ASTNode(child ).context_check(error_list)
                         
             pass
                 
         return error_list
         
-    def visitor(self):
-        
-        '''
-        visitor returns a list of elements you can visit
-        example: 
-        
-            while condition 
-                
-                body
-                
-            "visitor" returns : [ condition , body ]
-        
-        by default "visitor" returns binary operation visitation
-        
-        '''
-        pass
-    
-    def builder(self,token_list): 
-        pass
-    
     def type_checking(self):
         pass        
     
@@ -179,7 +159,7 @@ class ASTNode:
         """
         pass
 
-#____________________________________________________________________________________________>>>>>>>>>>>>>>>>
+#___________________________________________________AST OF THE GRAMMAR_________________________________________>>>>>>>>>>>>>>>>
 
 class function_call( ASTNode): # check context
 
@@ -191,57 +171,53 @@ class function_call( ASTNode): # check context
     > args
     
     '''
-    context = []
+    name = ""
+    args = []
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
-    def visitor(self):
+    # def visitor(self):
         
-        if self.args != None:
-            return self.args
+    #     if self.args != None:
+    #         return self.args
     
-        return [None]
+    #     return [None]
+    
+    # def builder(self,token_list):
         
+    #     self.name = token_list[0][1].name
+    #     self.args = token_list[1][1]
+        
+    #     pass
+    
     def context_check(self,error_list):
         
         for item in self.context:
             
             if item['id'] == 'function_form' and item['name'] == self.name:
+                
+                super().context_check( error_list= error_list )
                 return error_list
-            
+        
         for item in self.build_in:
         
             if item['id'] == 'function_form' and item['name'] == self.name:
+                
+                super().context_check( error_list= error_list )
                 return error_list
-            
-        error_type = "Function undefined"
-        error_decription = f"Function {self.name} could not be found"
+        
+        error_type = "function undefined"
+        error_decription = f"function {self.name} could not be found"
         scope = self.context
         error_list.append({'type': error_type, 'description': error_decription, 'scope':scope})
         
-        children = self.visitor()
-        
-        if type(children) == list:
-            
-            for child in children:
-                
-                if child != None:
-                    child.context_check(error_list)    
-                
-                pass 
+        super().context_check( error_list= error_list )
         
         return error_list
     
     def type_checking(self):
         return super().type_checking()
-    
-    def builder(self,token_list):
-        
-        self.name = token_list[0][1].name
-        self.args = token_list[1][1]
-        
-        pass
     
 class params( ASTNode):
     
@@ -254,11 +230,9 @@ class params( ASTNode):
     
     parameters = []
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
                 
-    def visitor(self):
-        return self.parameters
                             
     def builder(self, token_list):
         
@@ -283,37 +257,37 @@ class params( ASTNode):
             self.parameters = new_parameters
     pass
 
+#_________________________________________________BINARY EXPRESSIONS___________________________________________>>>>>>>>>>>>>>>>
+
 class binary_opt(ASTNode):
     
     left_node = []
     right_node = []
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
-    def builder(self, token_list):
+    # def builder(self, token_list):
         
-        self.left = token_list[0][1]
-        self.right = token_list[2][1]
+    #     self.left = token_list[0][1]
+    #     self.right = token_list[2][1]
     
-    def visitor(self):
-        return [ self.left , self.right ]
+    # def visitor(self):
+    #     return [ self.left , self.right ]
     
     pass
 
 class dot(binary_opt):    
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
         
     pass
 
-
-
-class in_(ASTNode):
+class in_(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
     
@@ -407,233 +381,198 @@ class in_(ASTNode):
         if node1 == None : return False
         
         return any( lambda item: node1['id'] == item['id'] and node1['name'] == item['name'] , new_context )
-        
+
 
 
 class plus(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
         
-class minus(ASTNode):
+class minus(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
         
     pass
 
-class multiplication(ASTNode):
+class multiplication(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
 
-class divition(ASTNode):
+class divition(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
         
     pass
     
-class _pow(ASTNode):
+class pow_(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
         
     pass
     
-class per_cent(ASTNode):
+class per_cent(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
 
     pass
 
-class concatenation(ASTNode):
+class concatenation(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
-
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     pass
       
-class blank_space_concatenation(ASTNode):
+class blank_space_concatenation(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
 
     pass
 
-
-
-class double_dot(ASTNode):
+class double_dot(binary_opt):
     
-    context = []
-    def __init__(self,token_list):
-        
-        self.set_identifier(':')
-        self.left = token_list[0][1]
-        self.right = token_list[2][1]
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
 
-    
     def context_check(self, error_list: list):
         
         for item in self.context:
             
-            try:
-                
-                if (item['id'] == 'type' or item['id'] == 'protocol') and item['name'] == self.right.name:
-                    return error_list                
-            except:
-                pass
-
+            if (item['id'] == 'type' or item['id'] == 'protocol') and item['name'] == self.right.name:
+                return error_list                
+            
         for item in self.build_in:
             
-            try:
-                
-                if (item['id'] == 'type' or item['id'] == 'protocol') and item['name'] == self.right.name:
-                    return error_list                
-            except:
-                pass
-
-        try:
+            if (item['id'] == 'type' or item['id'] == 'protocol') and item['name'] == self.right.name:
+                return error_list                
             
-            error_type = "type undefined"
-            error_description = f"type {self.right.name} could not be found"
-            scope = self.context
-            
-            error_list.append({"type":error_type,'description':error_description,'scope':scope})
-        
-        except:
-            
-            error_type = "unexpected expression"
-            error_description = f"unexpected expression at the right side of double dots"
-            scope = self.context
-            
-            error_list.append({"type":error_type,"description":error_description,"scope":scope})
-            
-        
         return error_list
 
     pass
 
-
-
 class double_dot_equal(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
 
 class as_(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
         
     pass
 
 class is_(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
         
     pass
 
 class equal(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
     
 class bigger_than(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
 
 class smaller_than(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
 
 class bigger_or_equal(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
 
 class smaller_or_equal(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
 
 class assign(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
     
 class or_(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
 
 class and_(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
     
 class different(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
 
 class divide_and_assign(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
     
 class multiply_and_assign(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
 
 class plus_and_assign(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
 
 class minus_and_assign(binary_opt):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
     pass
  
- 
+#______________________________________________________UNARY EXPRESSIONS_______________________________>>>>>>>>>>>>>>>
     
 class unary_expression(ASTNode):
     
@@ -647,8 +586,8 @@ class unary_expression(ASTNode):
     '''
     right= []
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
         
     def builder(self, token_list):
         self.right = token_list[1][1]
@@ -662,8 +601,8 @@ class unary_expression(ASTNode):
 class new(unary_expression):
 
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
         
     def context_check(self, error_list: list):
         
@@ -684,40 +623,25 @@ class new(unary_expression):
     
 class let(unary_expression):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
-        
-    def context_check(self, error_list: list):
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
     
-        if self.right.name == None:
-            
-            error_type = "variable declaration"
-            error_description = "No inicialization for \033[1;31m let \033[0m"
-            scope = self.context
-            error_list.append({ "type": error_type, "description": error_description, "scope": scope})
-            
-            return error_list
-        
-        self.right.context_check(error_list)
-        
-        return error_list
+class not_(unary_expression):
     
-class not_(ASTNode):
-    
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
         
-class plus_plus(ASTNode):
+class plus_plus(unary_expression):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
         
-class minus_minus(ASTNode):
+class minus_minus(unary_expression):
     
-    def __init__(self, derivation, identifier) -> None:
-        super().__init__(derivation, identifier)
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
      
-     
+#_____________________________________________________________________________________>>>>>>>>>>>>>>>
      
 class variable(ASTNode): # check context
     
@@ -728,25 +652,14 @@ class variable(ASTNode): # check context
     > name: name of the variable
     
     '''
+    def __init__(self, grammar={ "derivation": "","identifier": "var"," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
     
-    avaliable = False
-    context = []
-     
-    def __init__(self,token_list):
-        
-        try:
-            if not token_list[0][0].Type.name == 'Variable' and not token_list[0][0].KeywordType.name == 'Function'  :
-                pass
-            
-            else:
-                self.avaliable = True
-                self.set_identifier('var')
-                self.name=token_list[0][0].Text
-        
-        except : pass
-    
-    def visitor(self):
-        return [None]
+    # def builder(self, token_list):
+    #     self.name=token_list[0][0].Text
+
+    # def visitor(self):
+    #     return [None]
 
     def context_check(self,error_list):
         
@@ -757,8 +670,10 @@ class variable(ASTNode): # check context
             
         for item in self.build_in:
         
-            if item['id'] == 'let' and item['name'] == self.name :
+            if item['id'] == 'let' and item['name'] == self.name : # this variable is E , Pi or self
                 return error_list
+        
+        if self.parent.def_node: return error_list # this variable is being defined
         
         error_type = "variable undefined"
         error_description = f"variable {self.name} could not be found"
@@ -766,6 +681,7 @@ class variable(ASTNode): # check context
         error_list.append({ "type": error_type, "description": error_description, "scope": scope})
         
         return error_list
+
 
 class if_(ASTNode):
     
@@ -777,25 +693,22 @@ class if_(ASTNode):
     > body: body of the statement
     
     '''
+    condition = [] 
+    body = []
     
-    avaliable = False
-    context = []
-    def __init__(self,token_list):
-        
-        if token_list[0][0] == 'if': 
-            
-            self.avaliable = True
-            self.set_identifier('if')
-            
-            self.condition = token_list[1][1]
-            self.body = token_list[2][1]
-        
-        pass
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
     
-    pass
+    # def builder(self,token_list):
+    #     self.condition = token_list[1][1]
+    #     self.body = token_list[2][1]
+    
+    #     pass
+    
+    # pass
 
-    def visitor(self):
-        return [ self.condition , self.body ]
+    # def visitor(self):
+    #     return [ self.condition , self.body ]
 
 class elif_(ASTNode):
     
@@ -811,25 +724,19 @@ class elif_(ASTNode):
     The condition is a list that refers to if statement , and has second element has the elif statement
     
     '''
-    
-    avaliable = False
     condition=None
-    context = []
+    body = None
     
-    def __init__(self,token_list):
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
         
-        if (token_list[0][0] == 'if' and token_list[1][0] == 'elif') : 
-            
-            self.avaliable = True
-            self.set_identifier('elif')
-            
-            self.condition = [ token_list[0][1] , token_list[2][1] ]
-            self.body = token_list[3][1]
-        
-        pass
+    # def builder(self,token_list):
     
-    def visitor(self):
-        return [ self.condition , self.body  ]
+    #     self.condition = [ token_list[0][1] , token_list[2][1] ]
+    #     self.body = token_list[3][1]
+    
+    # def visitor(self):
+    #     return [ self.condition , self.body  ]
         
     pass
 
@@ -851,27 +758,19 @@ class else_(ASTNode):
     
     '''
     
-    avaliable = False
     condition = None
-    context = []
+    body = None
     
-    def __init__(self,token_list):
-        
-        if token_list[1][0] == 'else' : 
-            
-            self.avaliable = True
-            self.set_identifier('else')
-            
-            self.condition = token_list[0][1]
-            
-            self.body = token_list[2][1]
-        
-        pass
-    
-    pass
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
 
-    def visitor(self):
-        return [ self.condition , self.body ]
+    # def builder(self,token_list):
+    
+    #     self.condition = token_list[0][1]
+    #     self.body = token_list[2][1]
+    
+    # def visitor(self):
+    #     return [ self.condition , self.body ]
 
 class def_function(ASTNode): # check context
     
@@ -885,26 +784,13 @@ class def_function(ASTNode): # check context
     
     '''
     
-    avaliable = False
-    context = []
+    name = None
+    args = None
+    body = None
+        
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)    
     
-    def __init__(self,token_list):
-        
-        self.name = None
-        self.args = None
-        self.body = None
-        
-        if self.validator(token_list):
-            
-            self.avaliable= True
-            self.set_identifier('function_form')
-            
-            if token_list[0][0] == 'function': 
-                self.function_kw(token_list)
-                        
-            elif token_list[0][1].id == 'FunctionCall': 
-                self.simple_form(token_list)
-        
     def context_check(self,error_list):
         
         for item in self.context:
@@ -916,15 +802,8 @@ class def_function(ASTNode): # check context
                 scope = self.context
                 
                 error_list.append({ "type": error_type, "description": error_decription , "scope": scope })
-                
-        children = self.visitor()
         
-        if type(children) == list:
-            
-            for child in children:
-                
-                if child != None:
-                     child.context_check(error_list)    
+        super().context_check()
                 
         return error_list
    
@@ -953,7 +832,8 @@ class def_function(ASTNode): # check context
             
         else:
             arg = self.retrive_var_context(args_AST)
-            params_context.append( arg )
+            if var != None:
+                    params_context.append(arg)
         
         return params_context
 
@@ -962,12 +842,12 @@ class def_function(ASTNode): # check context
         new_context = [ item for item in self.context ]
         params_context = self.create_context(args_AST= self.args)
         my_type = self.my_id()
-        new_context.append(my_type)
         
         if self.args != None:
             self.args.context = self.merge_context(params_context,new_context)
             self.args.send_context()
         
+        new_context.append(my_type)
         if self.body != None:
             
             body_context = self.merge_context(params_context,new_context)
@@ -977,14 +857,14 @@ class def_function(ASTNode): # check context
         
         pass
     
-    def merge_context(self,contex1,contex2):
+    def merge_context(self,context1,context2):
         
         result_context = [  ]
-        for item in contex2:
+        for item in context2:
             
             result_context.append(item)
         
-        for item in contex1:
+        for item in context1:
             
             if self.equal(item,result_context):
                 continue
@@ -996,86 +876,76 @@ class def_function(ASTNode): # check context
     def equal(self,node1,new_context):
         
         if node1 == None : return False
-        for item in new_context:
-        
-            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
-        
-        return False
+        return any(lambda node: node['id'] == node1['id'] and node['name'] == node1['name'],new_context)
     
-    def function_kw(self,token_list):
+    # def builder(self,token_list):
+    #     if token_list[0][0] == 'function': 
+    #         self.function_kw(token_list)
+                    
+    #     elif token_list[0][1].id == 'FunctionCall': 
+    #         self.simple_form(token_list)
+    
+    # def function_kw(self,token_list):
         
-        self.name = token_list[1][1].name
-        self.args = token_list[1][1].args
+    #     self.name = token_list[1][1].name
+    #     self.args = token_list[1][1].args
         
-        if token_list[2][0] == 'b' or token_list[2][0] == 'E':
+    #     if token_list[2][0] == 'b' or token_list[2][0] == 'E':
         
-            # function f b | function f E
-            self.body = token_list[2][1]
+    #         # function f b | function f E
+    #         self.body = token_list[2][1]
     
         
-        if token_list[2][0] == '=>':
+    #     if token_list[2][0] == '=>':
         
-            # function f => E | function f => b
-            self.body = token_list[3][1]
+    #         # function f => E | function f => b
+    #         self.body = token_list[3][1]
         
-        elif token_list[2][0] == ':':
+    #     elif token_list[2][0] == ':':
         
-            self.anotated_type = token_list[3][1]
+    #         self.anotated_type = token_list[3][1]
             
-            if token_list[4][0] == '=>':
+    #         if token_list[4][0] == '=>':
                 
-                # function f : T => b | function f : T => E
-                self.body=token_list[5][1]
+    #             # function f : T => b | function f : T => E
+    #             self.body=token_list[5][1]
             
-            else:
-                # function f : T b
-                self.body=token_list[4][1]
+    #         else:
+    #             # function f : T b
+    #             self.body=token_list[4][1]
         
-    def simple_form(self,token_list):
+    # def simple_form(self,token_list):
         
-        self.name = token_list[0][1].name
-        self.args = token_list[0][1].args
+    #     self.name = token_list[0][1].name
+    #     self.args = token_list[0][1].args
         
-        if token_list[1][0] == ":":
+    #     if token_list[1][0] == ":":
             
-            # c():T
-            self.anotated_type = token_list[2][1]
+    #         # c():T
+    #         self.anotated_type = token_list[2][1]
             
-            if len(token_list)>4:
+    #         if len(token_list)>4:
                 
-                # c():T => b
-                self.body = token_list[4][1]
+    #             # c():T => b
+    #             self.body = token_list[4][1]
             
-            elif len(token_list) > 3:
+    #         elif len(token_list) > 3:
                 
-                # c():T b
-                self.body = token_list[3][1]
+    #             # c():T b
+    #             self.body = token_list[3][1]
             
-        elif token_list[1][0] == "=>":
+    #     elif token_list[1][0] == "=>":
             
-            # c() => E | c() => b
-            self.body = token_list[2][1]
+    #         # c() => E | c() => b
+    #         self.body = token_list[2][1]
         
-        else:
+    #     else:
             
-            # c() E | c() b
-            self.body = token_list[1][1]
+    #         # c() E | c() b
+    #         self.body = token_list[1][1]
 
-    def visitor(self):
-        return [ self.args , self.body ]
-
-    def validator(self,token_list):
-        
-        try:
-            if token_list[0][0] == 'function': return True
-            
-            if token_list[0][1].id == 'FunctionCall' and (token_list[1][0] == ':' or token_list[1][0] == '=>' ):
-                return True
-        
-        except:
-            pass
-        
-        return False
+    # def visitor(self):
+    #     return [ self.args , self.body ]
     
     pass
 
@@ -1093,42 +963,8 @@ class type_(ASTNode): # check context
     
     '''
     
-    avaliable = False
-    context = []
-    def __init__(self,token_list):
-        
-        if token_list[0][0] == 'type':
-            
-            self.set_identifier('type')
-            
-            self.avaliable = True
-            
-            self.name = token_list[1][1].name
-            self.body = None
-            self.constructor = None
-            self.anotated_type = self.name
-            
-            if token_list[1][1].id == 'FunctionCall':
-                self.constructor = token_list[1][1].args
-            
-            self.parent_name = None
-            self.base = None
-            
-            if token_list[2][0] == 'inherits' :
-                
-                self.parent_name = token_list[3][1].name
-                
-                if token_list[3][1].id == 'FunctionCall':
-                    self.base = token_list[3][1].args
-                
-                self.body = token_list[4][1]
-            
-                if self.constructor != None and self.base != None:
-                    self.avaliable = True
-                    
-            else:
-                self.body = token_list[2][1]
-        pass
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
     
     def context_check(self,error_list:list):
         
@@ -1144,21 +980,12 @@ class type_(ASTNode): # check context
                 
                 break
                 
-        children = self.visitor()
-
-        if type(children) == list:
-        
-            for child in children:
-                
-                if child != None:
-                    child.context_check(error_list)    
-                
-                pass
-        
         if self.parent_name != None:
         
             self.check_inheritence(error_list)
             pass
+        
+        super().context_check()
         
         return error_list
     
@@ -1166,16 +993,16 @@ class type_(ASTNode): # check context
         
         for item in self.context:
             
-                if item['id'] == 'type' and item['name'] == self.name:
-                    return []
+                if (item['id'] == 'type' or item['id'] == 'protocol')  and item['name'] == self.name:
+                    return
         
         for item in self.build_in:
             
                 if item['id'] == 'type' and item['name'] == self.name:
-                    return []
+                    return
         
         error_type = "Inheritence undefined"
-        error_description = f"Type {self.parent_name} could not be found"
+        error_description = f"name {self.parent_name} could not be found"
         scope = self.context
         
         error_list.extend({ "type": error_type, "description": error_description , "scope":scope })
@@ -1268,8 +1095,35 @@ class type_(ASTNode): # check context
         
         return False
     
-    def visitor(self):
-        return [ self.constructor , self.base , self.base ]
+    # def builder(self,token_list):
+        
+    #     self.name = token_list[1][1].name
+    #     self.body = None
+    #     self.constructor = None
+    #     self.anotated_type = self.name
+        
+    #     if token_list[1][1].id == 'FunctionCall':
+    #         self.constructor = token_list[1][1].args
+        
+    #     self.parent_name = None
+    #     self.base = None
+        
+    #     if token_list[2][0] == 'inherits' :
+            
+    #         self.parent_name = token_list[3][1].name
+            
+    #         if token_list[3][1].id == 'FunctionCall':
+    #             self.base = token_list[3][1].args
+            
+    #         self.body = token_list[4][1]
+                
+    #     else:
+    #         self.body = token_list[2][1]
+        
+    #     pass
+    
+    # def visitor(self):
+    #     return [ self.constructor , self.base , self.base ]
 
 class protocol(ASTNode): # check context
     
@@ -1282,33 +1136,8 @@ class protocol(ASTNode): # check context
     > body
     
     '''
-    
-    avaliable = False
-    context = []
-    
-    def __init__(self,token_list):
-        
-        if token_list[0][0] == 'protocol':
-            
-            self.avaliable = True
-        
-            self.set_identifier('protocol')
-                
-            self.name = token_list[1][1].name
-            self.body = None
-            self.anotated_type = self.name
-            
-            self.parent_name = None
-        
-            if token_list[2][0] == 'extends' :
-                
-                self.parent_name = token_list[3][1].name
-                self.body = token_list[4][1]
-                    
-            else:
-                self.body = token_list[2][1]
-    
-        pass
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
     
     def context_check(self,error_list):
         
@@ -1316,26 +1145,18 @@ class protocol(ASTNode): # check context
             
             if item['id'] == 'protocol' and item['name'] == self.name:
                 
-                error_type = "Protocol extention undefined"
-                error_descrption = f"Protocol {self.parent_name} could not be found"
+                error_type = "protocol definition"
+                error_descrption = f"protocol {self.parent_name} already defined"
                 scope = self.context
                 
                 error_list.append({ "type": error_type, "description": error_descrption , "scope":scope})
             
-        children = self.visitor()
-    
-        if type(children) == list:
-        
-            for child in children:
-                
-                if child != None:
-                    child.context_check(error_list)    
-                
-                pass
         
         if self.parent_name != None:
             self.check_inheritence(error_list)
             
+        super().context_checker()
+        
         return error_list
     
     def check_inheritence(self,error_list:list):
@@ -1343,22 +1164,37 @@ class protocol(ASTNode): # check context
         for item in self.context:
             
             if item['id'] == 'protocol' and item['name'] == self.parent_name:
-                return []
+                return
         
         for item in self.build_in:
             
             if item['id'] == 'protocol' and item['name'] == self.parent_name:
-                return []
+                return
             
-        error_type = "Inheritence undefined"
-        error_description = f"Type {self.parent_name} could not be found"
+        error_type = "extension undefined"
+        error_description = f"name {self.parent_name} could not be found"
         scope = self.context
         error_list.append({ "type": error_type, "description": error_description , "scope":scope})
         
         return error_list
         
-    def visitor(self):
-        return [ self.body ]
+    # def builder(self,token_list):
+    #         self.name = token_list[1][1].name
+    #         self.body = None
+    #         self.anotated_type = self.name
+            
+    #         self.parent_name = None
+        
+    #         if token_list[2][0] == 'extends' :
+                
+    #             self.parent_name = token_list[3][1].name
+    #             self.body = token_list[4][1]
+                    
+    #         else:
+    #             self.body = token_list[2][1]
+                
+    # def visitor(self):
+    #     return [ self.body ]
 
 class vectors(ASTNode):
     
