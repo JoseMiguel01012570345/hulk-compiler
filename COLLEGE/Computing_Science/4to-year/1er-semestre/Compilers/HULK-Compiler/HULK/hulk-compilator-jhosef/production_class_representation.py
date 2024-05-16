@@ -1,5 +1,4 @@
 
-from EnumsTokensDefinition import Type
 '''
 NOTE:
 
@@ -42,6 +41,8 @@ class ASTNode:
     builder = None
     visitor = None
     name = ""
+    type_ = ""
+    self_ = ""
     
     def __init__(
         self, grammar= {
@@ -148,7 +149,10 @@ class ASTNode:
             pass
                 
         return error_list
-        
+    
+    def infer_type(self,error_list:list):
+        pass
+      
     def type_checking(self):
         pass        
     
@@ -277,12 +281,58 @@ class binary_opt(ASTNode):
     
     pass
 
-class dot(binary_opt):    
+class dot(binary_opt):# the context of the left side is passed to the context of the right side
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    def context_check(self, error_list: list):
         
-    pass
+        left_id = self.left_node.id
+        
+        if self.left_node.__dict__["name"] == None:
+            ## error
+            
+            error_type = ""
+            error_description = ""
+            error_list.append({ "type":error_type , "description":error_description })
+            
+            return error_list
+            
+        
+        left_name = self.left_node.name
+        
+        
+        
+        
+        pass
+    
+    def check_right_side_context(self, type_name , attr_name , attr_id ):
+        
+        
+        
+        found_attr = False
+        parent_node = self
+
+        while not found_attr:
+            
+            if ASTNode(parent_node).__dict__["parent"] != None:
+                parent_node = ASTNode(parent_node).parent
+            
+            else:
+                return False
+            
+            if parent_node.__dict__["name"]:
+                found_attr = type_name == parent_node.__dict__["name"]
+            
+        pass
+    
+        for item in type_(parent_node).body:
+            
+            if ASTNode(item).id == attr_id and ASTNode(item).__dict__["name"] == attr_name:
+                return True
+        
+        return False
 
 class in_(binary_opt):
     
@@ -295,19 +345,15 @@ class in_(binary_opt):
     
         try:
             if node.id == '=' and node.left.id == ':':
-                
                 return { 'id': 'let', 'name': node.left.left.name }
             
             elif node.id == '=' and node.left.id == 'let':
-                
                 return { 'id': 'let', 'name': node.left.name }
             
             elif node.id == ':' and node.left.id == 'let':
-                
                 return { 'id': 'let', 'name': node.left.name }
             
             elif node.id == 'let':
-                
                 return { 'id': 'let', 'name': node.name }
         
         except:    
@@ -322,8 +368,6 @@ class in_(binary_opt):
         if args_AST.id == 'in':
             params_context = [ item for item in self.create_context(args_AST.left) ]    
             return params_context
-        
-        if args_AST == None : return []
         
         if args_AST.id == 'params':
             
@@ -350,13 +394,11 @@ class in_(binary_opt):
         
         self.left.context = self.merge_context(params_context,new_context)
         self.left.send_context()
-    
-        if self.right != None:
-            
-            right_context = self.merge_context(params_context,new_context)
-            
-            self.right.context = right_context
-            self.right.send_context()
+        
+        right_context = self.merge_context(params_context,new_context)
+        
+        self.right.context = right_context
+        self.right.send_context()
         
         pass
     
@@ -381,8 +423,6 @@ class in_(binary_opt):
         if node1 == None : return False
         
         return any( lambda item: node1['id'] == item['id'] and node1['name'] == item['name'] , new_context )
-
-
 
 class plus(binary_opt):
     
@@ -439,7 +479,7 @@ class blank_space_concatenation(binary_opt):
 
     pass
 
-class double_dot(binary_opt):
+class double_dot(binary_opt): # the context of the right side is passed to the context of the left side
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -460,7 +500,7 @@ class double_dot(binary_opt):
 
     pass
 
-class double_dot_equal(binary_opt):
+class double_dot_equal(binary_opt): # the context of the right side is passed to the context of the left side
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -481,12 +521,23 @@ class is_(binary_opt):
         
     pass
 
-class equal(binary_opt):
+class equal(binary_opt): # the context of the right side is passed to the context of the left side
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    pass
+    def infer_type(self,error_list:list):
+        
+        if self.left_node.id != "let":
+            
+            error_type = "assignment"
+            error_description = "unexpected use of \"=\" , you only can use \"=\" with let statement"
+            error_list.append( { "type": error_type , "description": error_description } )
+            return error_list
+        
+        variable(unary_expression(self.left_node).right).type_ = ASTNode(self.right_node).type_
+    
+        return error_list
     
 class bigger_than(binary_opt):
     
@@ -681,7 +732,6 @@ class variable(ASTNode): # check context
         error_list.append({ "type": error_type, "description": error_description, "scope": scope})
         
         return error_list
-
 
 class if_(ASTNode):
     
@@ -962,6 +1012,11 @@ class type_(ASTNode): # check context
     > body
     
     '''
+    body = []
+    constructor = []
+    base = []
+    name = ""
+    id = ""
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
@@ -1200,7 +1255,7 @@ class vectors(ASTNode):
     
     '''
     
-    vector forms: 
+    vector form: 
     1. [ filter || domain ]
     2. [ 1,2,3,4, ... ]
     
@@ -1210,41 +1265,27 @@ class vectors(ASTNode):
     > domain: the domain of a vector
     
     '''
-    
-    avaliable = False
+
     filter_ = None
     domain = None
-    context = []
         
-    def __init__(self,token_list):
-        
-        self.set_identifier('vector')
-        
-        if self.validator(token_list):
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
             
-            self.avaliable = True
-
-            self.array_(token_list)
-            
-    def validator(self,token_list):
-        
-        if token_list[0][0] == '[': return True
-        
-        return False
     
-    def array_(self,token_list):
+    # def builder(self,token_list):
         
-        if token_list[1][0] == 'p':
+    #     if token_list[1][0] == 'p':
             
-            self.domain = [ item for item in token_list[1][1].parameters ]
+    #         self.domain = [ item for item in token_list[1][1].parameters ]
             
-        elif token_list[1][0] == 'T' :
+    #     elif token_list[1][0] == 'T' :
             
-            self.filter_ = token_list[1][1]
-            self.domain = token_list[3][1]        
+    #         self.filter_ = token_list[1][1]
+    #         self.domain = token_list[3][1]        
 
-    def visitor(self):
-        return [ self.filter_ , self.domain ]
+    # def visitor(self):
+    #     return [ self.filter_ , self.domain ]
 
 class literal(ASTNode):
     
@@ -1257,35 +1298,27 @@ class literal(ASTNode):
     '''
     
     value = None
-    avaliable = False
-    context = []
     
-    def __init__(self,token_list):
-        
-        if self.validator(token_list) :
-            pass
-        
-        else:
-            self.avaliable = True
-            self.set_identifier('literal')
-            if token_list[0][0].SelfType == Type.Number:
-                self.value = float(token_list[0][0].Text)
-                pass
-            else:
-                self.value = token_list[0][0].Text
-                pass
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+    
+    # def builder(self,token_list):
 
-            
-    def validator(self,token_list):
+    #     try:
+    #         if token_list[0][0].SelfType == 'Number' or token_list[0][0].SelfType == 'String' or token_list[0][0].SelfType == 'Boolean':
+    #            pass 
+    #     except:    
+    #         return False
         
-        try:
-            if token_list[0][0].SelfType == 'Number' or token_list[0][0].SelfType == 'String' or token_list[0][0].SelfType == 'Boolean':
-                return True
-        except:    
-            return False
-    
-    def visitor(self):
-        return [None]
+    #     if token_list[0][0].SelfType == Type.Number:
+    #         self.value = float(token_list[0][0].Text)
+    #         pass
+    #     else:
+    #         self.value = token_list[0][0].Text
+    #         pass
+
+    # def visitor(self):
+    #     return [None]
     
     pass
 
@@ -1300,38 +1333,12 @@ class index(ASTNode): # check context
     
     '''
     
-    avaliable = False
     args = None
     name = None
-    context = []
     
-    def __init__(self,token_list):
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
         
-        if self.validator(token_list):
-            
-            self.avaliable = True
-            self.set_identifier('index')
-            self.name = token_list[0][1].name
-            self.index = token_list[2][1]      
-        
-        pass
-    
-    def validator(self,token_list):
-        
-        target = ["T","[" , "T" , "]" ]  
-        try:
-            index = 0
-            while index < len(token_list):
-                
-                if token_list[index][0] != target[index]: return False
-                
-                index += 1
-                                
-        except: 
-            return False
-        
-        return True
-    
     def context_check(self,error_list:list):
         
         for item in self.context:
@@ -1346,20 +1353,18 @@ class index(ASTNode): # check context
             
             error_list.append( {"type":error_type,"description":error_desciption,"scope":scope} )
     
-        children = self.visitor()
-
-        if type(children) == list:
-            
-            for child in children:
-                
-                child.context_check(error_list)    
-                
-                pass
+        super().context_check()
             
         return error_list
     
-    def visitor(self):
-        return [self.index]
+    # def builder(self,token_list):
+        
+    #     self.name = token_list[0][1].name
+    #     self.index = token_list[2][1]      
+        
+    #     pass
+    # def visitor(self):
+    #     return [self.index]
 
 class while_(ASTNode):
     
@@ -1372,31 +1377,19 @@ class while_(ASTNode):
     
     '''
     
-    avaliable = False
     condition = None
     body = None
-    context = []
     
-    def __init__(self,token_list):
-        
-        if self.validator(token_list):
-            
-            self.avaliable = True
-            self.set_identifier('while')
-            self.condition = token_list[1][1]
-            self.body = token_list[2][1]
-        
-        pass
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
     
-    def validator(self,toke_list):
+    # def builder(self,token_list):
         
-        if toke_list[0][0] == 'while':
-            return True
-        
-        return False
+    #     self.condition = token_list[1][1]
+    #     self.body = token_list[2][1]
     
-    def visitor(self):
-        return [ self.condition , self.body ]
+    # def visitor(self):
+    #     return [ self.condition , self.body ]
 
 class for_(ASTNode):
     
@@ -1409,45 +1402,26 @@ class for_(ASTNode):
     
     '''
     
-    avaliable = False
     args = None
     body = None
-    context = []
     
-    def __init__(self,token_list):
-        
-        if self.validator(token_list):
-            
-            self.avaliable = True            
-            self.set_identifier('for')
-            self.args = token_list[1][1]
-            self.body = token_list[2][1]
-        
-        pass
-    
-    def validator(self,toke_list):
-        
-        if toke_list[0][0] == 'for':
-            return True
-        
-        return False
-    
-    def visitor(self):
-        return [ self.args , self.body ]
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
     
     def create_context(self,args_AST:list):
         
         params_context = []
         
         if args_AST == None : 
-            print(f"\033[1;31m > No arguments in for loop")
-            exit()
-            
+            print(f"\033[1;31m > no arguments in for loop")
+            params_context.append( {'id':'let','name': "" } )
+        
         if self.args.left.id != 'var':
-            print(f"\033[1;31m > \033[1;32m unexpected argument for \'for\' loop ")
-            exit()
+            print(f"\033[1;31m > \033[1;32m unexpected argument in \'for\' loop ")
+            params_context.append( {'id':'let','name': "" } )
             
-        params_context.append( {'id':'let','name': self.args.left.name } )
+        else:    
+            params_context.append( {'id':'let','name': self.args.left.name } )
     
         return params_context
 
@@ -1472,7 +1446,6 @@ class for_(ASTNode):
         
         result_context = [  ]
         for item in contex2:
-            
             result_context.append(item)
         
         for item in contex1:
@@ -1487,12 +1460,19 @@ class for_(ASTNode):
     def equal(self,node1,new_context):
         
         if node1 == None : return False
-        for item in new_context:
         
-            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
+        return any( lambda item: node1['id'] == item['id'] and node1['name'] == item['name'], new_context)
+    
+    # def builder(self,token_list):
         
-        return False
-
+    #     self.args = token_list[1][1]
+    #     self.body = token_list[2][1]
+        
+    #     pass
+    
+    # def visitor(self):
+    #     return [ self.args , self.body ]
+    
 class block(ASTNode):
     
     '''
@@ -1506,116 +1486,63 @@ class block(ASTNode):
     '''
     
     expressions = [] 
-    avaliable = False
-    context = []
     
-    def __init__(self,token_list):
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+    
+    # def build(self,token_list):
         
-        self.expressions = []
-        self.avaliable = False
-        self.context = []
-        self.set_identifier('block')
+    #     self.expressions = []
         
-        if self.validator(token_list): 
+    #     if len(token_list) == 1: # if the first token is a param
             
-            self.avaliable = True
+    #         if token_list[0][0] == 'M':
+    #             self.expressions = token_list[0][1]
             
-            if len(token_list) == 1: # if the first token is a param
+    #         elif token_list[0][1] != None and  token_list[0][1].id == 'block' : 
                 
-                if token_list[0][0] == 'M':
-                    self.expressions = token_list[0][1]
-                
-                elif token_list[0][1] != None and  token_list[0][1].id == 'block' : 
-                    
-                    self.expressions = token_list[0][1].expressions
+    #             self.expressions = token_list[0][1].expressions
 
-                else:
-                    self.expressions = token_list[0][1]
-            else:
-                
-                if token_list[0][0] == 'O' and token_list[0][1] == 'O':
-                    
-                    self.expressions = token_list[0][1]
-                    self.expressions.extend(token_list[1][1])
-                
-                
-                elif token_list[0][0] == 'O':
-                    
-                    self.expressions = token_list[0][1].expressions
-                    
-                    if type(self.expressions) == list:
-                        self.expressions.append(token_list[1][1])
-                    
-                    else:
-                        new_expression_set = [self.expressions , token_list[1][1]]
-                        self.expressions = new_expression_set
-                    
-                    pass
-                
-                elif token_list[1][0] == 'O':
-                    
-                    self.expressions.append(token_list[0][1])
-                    
-                    for item in token_list[1][1].expressions:
-                        self.expressions.append(item)
-                    
-                    pass
-                else:
-                    self.expressions.append(token_list[0][1])
-                    self.expressions.append(token_list[1][1])
-    
-    def send_context(self):
-        
-        new_context = [ item for item in self.context ]
-        
-        if type(self.expressions) == list:
+    #         else:
+    #             self.expressions = token_list[0][1]
+    #     else:
             
-            for expression in self.expressions:
+    #         if token_list[0][0] == 'O' and token_list[0][1] == 'O':
+                
+    #             self.expressions = token_list[0][1]
+    #             self.expressions.extend(token_list[1][1])
             
-                # nodes that define new variables , increases context
-                if expression.def_node() : 
-                    
-                    expression_type = expression.my_self()
-                    expression.context = [ item for item in new_context ]
-                    expression.send_context()
-                    new_context.append(  expression_type )
+            
+    #         elif token_list[0][0] == 'O':
                 
-                else:
-                    
-                    expression.context = [ item for item in new_context ]
-                    expression.send_context()
-                    
-        else:
-                expression = self.expressions
-                expression.context = [ item for item in new_context ]
-                expression.send_context()
-        
-                if expression.def_node() : 
-                    
-                    expression_type = expression.my_self()
-                    new_context.append(  expression_type )
+    #             self.expressions = token_list[0][1].expressions
                 
-        pass
+    #             if type(self.expressions) == list:
+    #                 self.expressions.append(token_list[1][1])
+                
+    #             else:
+    #                 new_expression_set = [self.expressions , token_list[1][1]]
+    #                 self.expressions = new_expression_set
+                
+    #             pass
+            
+    #         elif token_list[1][0] == 'O':
+                
+    #             self.expressions.append(token_list[0][1])
+                
+    #             for item in token_list[1][1].expressions:
+    #                 self.expressions.append(item)
+                
+    #             pass
+    #         else:
+    #             self.expressions.append(token_list[0][1])
+    #             self.expressions.append(token_list[1][1])
     
-    def equal(self,node1,new_context):
+    # def visitor(self):
         
-        if node1 == None : return False
-        for item in new_context:
+    #     if type(self.expressions) == list:
+    #         return self.expressions
         
-            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
-        
-        
-        return False
-    
-    def validator(self,token_list):
-        
-        return True
-    
-    def visitor(self):
-        
-        if type(self.expressions) == list:
-            return self.expressions
-        
-        else:
-            return [self.expressions]
+    #     else:
+    #         return [self.expressions]
     
