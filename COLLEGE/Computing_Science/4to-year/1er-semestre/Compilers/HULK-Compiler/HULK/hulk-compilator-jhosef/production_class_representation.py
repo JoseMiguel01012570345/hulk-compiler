@@ -109,47 +109,58 @@ class ASTNode:
         self.id = id_
         
         return self.id
-     
-    def send_context(self): 
-        
-        '''
-        pass the context from one child to another
-        
-        '''
-        
-        children: list = self.visitor()
-        
-        for child in children:
-            
-            if child == None: continue
-            
-            my_context = [ item for item in self.context]
-            
-            if self.def_node: 
-                my_context.append( { "id": self.id , "name":self.name } )
-                
-            child.context = my_context
-            child.send_context()
-                
-            pass
-        
-        pass
     
-    def context_check(self,error_list:list):
+    def check_children(self,error_list):
         
-        children = self.visitor()
-        
-        if children == None : return error_list
-        
-        for child in children:
+        children = self.visitor()    
             
-            if child != None:
-                ASTNode(child ).context_check(error_list)
-                        
-            pass
+        for child in children:
                 
+            if child != None:
+                ASTNode(child).context_check(error_list)    
+    
+    def context_checker(self, node_id , error_list:list , error_type , error_description, allow_apparence , name ,type_name= None):
+        
+        # falta determinar que nodos hacen este analisis, porque no todos los nodos deben hacerlo, en especial nodos como "varibles" y declaracion de: "funciones" , "types" , "protocols" y "let"
+        node_exists = self.search_in_ast( name , node_id, type_name=type_name )
+        
+        if node_exists and allow_apparence:
+        
+            self.check_children(error_list)
+            pass    
+        
+        else:
+            
+            error_ = { "type" : error_type , "description" : error_description }
+            error_list.append(error_)
+        
         return error_list
     
+    def search_in_ast(self , attr_name , attr_id , type_name= None ) -> bool:
+        
+        parent_node = self
+
+        while True:
+            
+            if ASTNode(parent_node).__dict__["parent"] != None:
+            
+                parent_node = ASTNode(parent_node).parent
+                
+                if type_name != None:
+                    
+                    if parent_node.__dict__["name"] == None : 
+                        continue
+                    if parent_node.name != type_name:
+                        continue
+                    
+                for item in type_(parent_node).body:
+            
+                    if ASTNode(item).id == attr_id and ASTNode(item).__dict__["name"] == attr_name:
+                        return True
+            
+            else:
+                return False
+        
     def infer_type(self,error_list:list):
         pass
       
@@ -302,7 +313,7 @@ class dot(binary_opt):# the context of the left side is passed to the context of
         
         left_name = self.left_node.name
         
-        
+        # completar el metodo , este debe buscar en left_node lo que esta en rigth_node
         
         
         pass
