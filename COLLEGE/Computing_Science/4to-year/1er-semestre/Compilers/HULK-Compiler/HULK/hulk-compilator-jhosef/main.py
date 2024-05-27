@@ -7,7 +7,6 @@ from ExpressionDefinitions import NumberExpression,StringExpression,BooleanExpre
 from VariableDefinitions import NumberVariable,StringVariable,BooleanVariable
 from LiteralDefinitions import NumberLiteral,StringLiteral,BooleanLiteral
 import GRAMMAR_PRODUCTIONS
-import translator
 import Parser as P
 from os import system
 from CIL import ASTCilBuilder
@@ -62,6 +61,7 @@ lexer.LoadCode(code)
 # check for lexical errors
 Error = False
 my_list =[]
+
 for state in lexer.LexicalAnalisys(lexer.Tokenize(),FiltToken):
     
     my_list = my_list.__add__(state.TokensSequence)
@@ -82,7 +82,7 @@ if not Error:
     
     my_list = tokens
     
-    # ------------PRINTS_TOKEN_SEQUENCE----------------
+    #------------PRINTS_TOKEN_SEQUENCE----------------
     # zz=[]
     # for item in my_list:
     #     zz.append(item.Text)
@@ -90,40 +90,33 @@ if not Error:
     # for t in my_list:
     #     print(t)
     #     pass
-    # ----------------------------
+    #----------------------------
     
-    gd_token= translator.traslator(my_list)
-    
-    # print(gd_token)
+    gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar , my_list )
 
-    gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
-
-    if gp.Error : exit()
-    
-    elif gp.derivation_Tree == None: 
+    if gp.derivation_Tree == None: 
         
         print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
-        exit()
 #_________________________SEMANTIC CHEKING__________________________________
 
-    gp.derivation_Tree.parent_reference()
+    # gp.derivation_Tree.parent_reference()
 
-    gp.derivation_Tree.send_context()
+    # gp.derivation_Tree.send_context()
     
-    context_error = semantic_errors.context_errors()
+    # context_error = semantic_errors.context_errors()
     
-    error_list = gp.derivation_Tree.context_check([])
+    # error_list = gp.derivation_Tree.context_check([])
     
-    context_error.add_error(error_list)
+    # context_error.add_error(error_list)
     
-    context_error.print_()
+    # context_error.print_()
     
 #_________________________CODE GENERATION__________________________________
 
     
-    AST = ASTCilBuilder(gp.derivation_Tree)
+    # AST = ASTCilBuilder(gp.derivation_Tree)
     
-    print(AST.Code)
+    # print(AST.Code)
 
     pass
 #________________________END_____________________________________________
