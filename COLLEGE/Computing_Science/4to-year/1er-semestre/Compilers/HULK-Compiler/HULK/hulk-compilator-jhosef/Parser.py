@@ -25,10 +25,10 @@ class Parser:
         
         self.parser_table = parser_table
         
-        # i=0
-        # for element in parser_table:
-        #     print(f"I{i}={element}")
-        #     i+=1
+        i=0
+        for element in parser_table:
+            print(f"I{i}={element}")
+            i+=1
         
         ok = self.parse_input(code=code)
         
@@ -45,6 +45,7 @@ class Parser:
             
             "E",
             "A",
+            "X",
         ]
     
     terminals= [
@@ -52,13 +53,13 @@ class Parser:
             "+" ,
             "=" ,
             "i" ,
-            "$"
+            "$" , 
         ]
     
     grammar = [
         
         [ "S" ,  [ "E" ] ] ,
-        [ "E" ,  ["A","=","A"] ] ,
+        [ "E" ,  ["A", "X" , "=","A"] ] ,
         [ "E" ,  ["i"] ] ,
         [ "A" ,  ["i","+","A"] ] ,
         [ "A" ,  ["i"] ] ,
@@ -73,13 +74,14 @@ class Parser:
     def Error(self):
         return self._error
     
-    def non_terminal_first(self , alpha , visited:list=[]):
+    def non_terminal_first(self , alpha , visited:list=[] ):
         
         if self.contains(alpha,self.terminals):
             return alpha
         
         visited.append(alpha)
         
+        terminal = ""
         for p in self.grammar:
             
             if p[0] == alpha:
@@ -92,11 +94,15 @@ class Parser:
                     if visited.__contains__(p[1][0]):
                         continue
                     
-                    self.non_termina_first(p[1][0],visited)    
+                    if len(p[1][0]) != 0:
+                    
+                        terminal = self.non_termina_first( p[1][0] , visited )
+                    
+                        if terminal != "":
+                            return terminal
         
-        print(f"circular dependecy in non-terminal {alpha}")
-        exit()    
-
+        return ""
+        
     def first(self , derivation:list , pivote: int ,look_ahead="$"):
         
         beta = derivation[pivote + 1:]
@@ -114,7 +120,12 @@ class Parser:
             
             return look_ahead,b
         
-        return self.non_terminal_first(derivation[pivote + 2]) , b 
+        non_terminal_first = self.non_terminal_first(derivation[pivote + 2])
+        
+        if non_terminal_first == "":
+            return look_ahead , b
+        
+        return non_terminal_first,b
         
     def in_stack( self , stack , my_derivation ) -> bool:
         
@@ -186,7 +197,7 @@ class Parser:
             
             derivation = i0[i]["production"]
             
-            look_ahead , key_stone = self.first( derivation[1] , pivote=-1 )
+            look_ahead , key_stone = self.first( derivation[1] , pivote=-1 ,look_ahead=i0[i]["look_ahead"] )
                 
             if key_stone == "": 
                 i+=1
@@ -274,8 +285,8 @@ class Parser:
                     if self.in_stack(sub_state,derivation): count+=1
                 
             if count == len(state):
-                print(f"GOTO(I{ actual_state },{item}):")
-                print(f"\033[1;31m state I{i} is repeated \033[0m")
+                # print(f"GOTO(I{ actual_state },{item}):")
+                # print(f"\033[1;31m state I{i} is repeated \033[0m")
                 return True
             
             i+=1
@@ -364,6 +375,5 @@ class Parser:
         
         pass
 
-
 system("cls")
-p = Parser(None,[ "i" , "+" , "i" , "$"])
+p = Parser(None,[ "i" , "=" , "i" , "$"])
