@@ -92,6 +92,10 @@ type C inherits A {
     print(tan(PI) ** 2 + cot(PI) ** 2);
 
     let msg = "Hello World" in print(msg);
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 0b02f74 (fuck)
     let number = 42, text = "The meaning of life is" in
         print(text @ number);
     let number = 42 in

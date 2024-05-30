@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -194,3 +195,6 @@ type C inherits A {
     let x : Hashable = new Person() in print(x.hash());
     let x : Hashable = new Point(0,0) in print(x.hash()); 
 }
+=======
+i + ( i + i ) $
+>>>>>>> 0b02f74 (fuck)
