@@ -1,6 +1,6 @@
 # from RegExDefinitions import TokenFinitRegEx
 # from RegExInterface import State,IRegEx
-# import GRAMMAR_PRODUCTIONS as GD
+import GRAMMAR_PRODUCTIONS as GD
 # import DerivationTree as dt
 
 from os import system
@@ -12,11 +12,13 @@ class Parser:
 
     """
     parser_table = []
+    terminals = GD.terminals
+    non_terminals = GD.non_terminals
+    
     def __init__(self,grammar,code ):
 
         self._grammar = grammar
         self._error = None
-        self._match = False
         self.derivation_Tree = None
         
         i0 = self.I0()
@@ -39,37 +41,11 @@ class Parser:
             print(f"\033[1;32m {ok} \033[0m")
         
         pass
-        
-    non_terminals = [
-            
-            
-            "E",
-            "A",
-            "X",
-        ]
-    
-    terminals= [
-        
-            "+" ,
-            "=" ,
-            "i" ,
-            "$" , 
-        ]
-    
-    grammar = [
-        
-        [ "S" ,  [ "E" ] ] ,
-        [ "E" ,  ["A", "X" , "=","A"] ] ,
-        [ "E" ,  ["i"] ] ,
-        [ "A" ,  ["i","+","A"] ] ,
-        [ "A" ,  ["i"] ] ,
-        
-     ]
     
     def contains(self , my_token , dic: list):
         
         return dic.__contains__(my_token)
-            
+        
     @property
     def Error(self):
         return self._error
@@ -82,24 +58,27 @@ class Parser:
         visited.append(alpha)
         
         terminal = ""
-        for p in self.grammar:
-            
-            if p[0] == alpha:
-            
-                if self.contains( p[1][0] , self.terminals ):
-                    return p[1][0]
-            
-                else:
-                    
-                    if visited.__contains__(p[1][0]):
-                        continue
-                    
-                    if len(p[1][0]) != 0:
-                    
-                        terminal = self.non_termina_first( p[1][0] , visited )
-                    
-                        if terminal != "":
-                            return terminal
+        
+        for feature in self._grammar:
+        
+            for p in feature:
+                
+                if p[0] == alpha:
+                
+                    if self.contains( p[1][0] , self.terminals ):
+                        return p[1][0]
+                
+                    else:
+                        
+                        if visited.__contains__(p[1][0]):
+                            continue
+                        
+                        if len(p[1][0]) != 0:
+                        
+                            terminal = self.non_termina_first( p[1][0] , visited )
+                        
+                            if terminal != "":
+                                return terminal
         
         return ""
         
@@ -180,11 +159,11 @@ class Parser:
     
     def I0(self):
         
-        i = 0
+        i = 1
         key_stone = ""
         look_ahead = ""
         
-        i0 = [ { "production": self.grammar[0] , "look_ahead": "$" , "pivote": -1 } ]
+        i0 = [ { "production": ["S" , ["E"]] , "look_ahead": "$" , "pivote": -1 } ]
         key_stone = "E"
         look_ahead = "$"
         
@@ -192,8 +171,7 @@ class Parser:
             
             self.build_state(state=i0,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
             
-            i+=1
-            if i == len(i0): break
+            if i >= len(i0): break
             
             derivation = i0[i]["production"]
             
@@ -205,18 +183,21 @@ class Parser:
             
             i+=1
         
-        # self.print_state(state_number=0,state=i0)
+        self.print_state(state_number=0,state=i0)
         return i0
     
     def build_state( self , state:list , key_stone , look_ahead , pivote= -1):
         
-        grammar = self.grammar
+        grammar = self._grammar
         new_stack = []
-        for productions in grammar:
+        
+        for feature in grammar:
             
-            production= { "production": productions , "look_ahead" : look_ahead , "pivote":pivote}
-            if productions[0] == key_stone and not self.in_stack( state , production ) :
-                state.append( production )
+            for productions in feature:
+            
+                production= { "production": productions , "look_ahead" : look_ahead , "pivote":pivote}
+                if productions[0] == key_stone and not self.in_stack( state , production ) :
+                    state.append( production )
                 
         return new_stack
     
@@ -317,8 +298,8 @@ class Parser:
                     states_created += 1
                     stack_state.append(state) 
                     
-                    # print(f"GOTO(I{current_state},{item}):")
-                    # self.print_state(state_number=len(stack_state)-1,state=state)
+                    print(f"GOTO(I{current_state},{item}):")
+                    self.print_state(state_number=len(stack_state)-1,state=state)
                 
                 pass
             
@@ -329,14 +310,15 @@ class Parser:
         return parser_table
 
     def parse_input(self,code) -> bool:
-
+        # system("cls")
+        symbols = []
         state = [0]
         tree = []
         
         k = 0
         while k < len(code):
             
-            item = code[k]
+            item = code[k].Text
             
             result =""
             
@@ -349,6 +331,10 @@ class Parser:
             if type(result) == int: # shift
                 
                 state.append(result)
+                
+                symbols.append(item)
+                print(symbols , f"state={state[-1]}" )
+                
                 pass
             
             elif type(result) == list: # reduce
@@ -356,11 +342,18 @@ class Parser:
                 i = 0
                 while i < len(result[1]):
                     state.pop()
+                    symbols.pop()
                     i += 1
+                    
+                    print(symbols, f"state={state[-1]}")
+                    
                 
                 key_stone = result[0]
                 last_state_number = state[-1]
                 state.append( self.parser_table[ last_state_number ][ key_stone ] )
+                
+                symbols.append(key_stone)
+                print(symbols, f"state={state[-1]}" )
                 
                 continue  
                 
@@ -374,6 +367,3 @@ class Parser:
             k +=1
         
         pass
-
-system("cls")
-p = Parser(None,[ "i" , "=" , "i" , "$"])

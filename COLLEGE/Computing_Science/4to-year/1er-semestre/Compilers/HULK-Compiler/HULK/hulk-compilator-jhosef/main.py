@@ -92,11 +92,12 @@ if not Error:
     #     pass
     #----------------------------
     
-    gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar , my_list )
+    gp =P.Parser(GRAMMAR_PRODUCTIONS.grammar , my_list )
 
-    if gp.derivation_Tree == None: 
+    # if gp.derivation_Tree == None: 
         
-        print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
+    #     print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
+
 #_________________________SEMANTIC CHEKING__________________________________
 
     # gp.derivation_Tree.parent_reference()

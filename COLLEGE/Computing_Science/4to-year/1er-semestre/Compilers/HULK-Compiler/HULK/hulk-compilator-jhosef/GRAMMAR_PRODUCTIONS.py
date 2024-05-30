@@ -1,81 +1,126 @@
 
-function_caLL = [
-    [ "",[ [] , [] ] ]
-]
+# function_caLL = [
+#     [ "",[ [] , [] ] ]
+# ]
 
-strings = [
+# strings = [
     
-    [ "",[ [] , [] ] ]
-]
+#     [ "",[ [] , [] ] ]
+# ]
 
-expression_block = [
+# expression_block = [
     
-    [ "",[ [] , [] ] ]
+#     [ "",[ [] , [] ] ]
     
-]
+# ]
 
-literals = [
+# literals = [
 
-    [ "",[ [] , [] ] ]
+#     [ "",[ [] , [] ] ]
 
-]
+# ]
 
-booleans = [
+# booleans = [
     
-    [ "",[ [] , [] ] ]
-]
+#     [ "",[ [] , [] ] ]
+# ]
+
+# IN = [
+    
+#     [ "",[ [] , [] ] ]
+       
+# ]
+
+# For = [
+    
+#     [ "",[ [] , [] ] ]  
+    
+# ]
+
+# conditional = [
+    
+#     [ "",[ [] , [] ] ]
+    
+# ]
+
+# While = [
+    
+#     [ "",[ [] , [] ] ]
+# ]
+
+# function = [    
+ 
+#     [ "",[ [] , [] ] ]
+# ]
+
+# types = [
+    
+#     [ "",[ [] , [] ] ]
+# ]
+
+# protocols = [
+
+#     [ "",[ [] , [] ] ]
+    
+# ]
+
+# vector = [
+    
+#     [ "",[ [] , [] ] ]
+# ]
 
 numbers = [
     
+    # minus
+    # ["E" , [ "A", "-" , "A" ]],
+    # ["A" , [ "i" , "-" , "i" ]],
+    # ["A" , [ "A" , "-" , "i" ]],
     
+    # ["A" , [ "i" ]],
+    
+    # # sum
+    # ["E" , [ "A", "+" , "A" ]],
+    # ["A" , [ "i" , "+" , "i" ]],
+    # ["A" , [ "A" , "+" , "i" ]],
+    
+    # # backets
+    
+    # ["E" , [ "(" , "A" , ")" ]],
+    
+    # ["E",["A"]]
+    
+    ["E",["(","E",")"]],
+    ["E",["T"]],
+    ["T",["i" ,"+" ,"T"]],
+    ["T",["i"]],
+    
+    # ["E",["A","=","A"]],
+    # ["E",["i"]],
+    # ["A",["i","+","A"]],
+    # ["A",["i"]]
 
 ]
 
-IN = [
+non_terminals = [
     
-    [ "",[ [] , [] ] ]
-       
-]
+        "T",
+        "E",
+                            
+        ]
 
-For = [
-    
-    [ "",[ [] , [] ] ]  
-    
-]
+terminals= [
 
-conditional = [
-    
-    [ "",[ [] , [] ] ]
-    
-]
+            "+" ,
+            "i" ,
+            "(" ,
+            ")" ,
+            "$" , 
+            
+        ]
 
-While = [
-    
-    [ "",[ [] , [] ] ]
-]
-
-function = [    
- 
-    [ "",[ [] , [] ] ]
-]
-
-types = [
-    
-    [ "",[ [] , [] ] ]
-]
-
-protocols = [
-
-    [ "",[ [] , [] ] ]
-    
-]
-
-vector = [
-    
-    [ "",[ [] , [] ] ]
-]
-
-gramar =[ vector , protocols , types , function , While , conditional , 
-         For , IN , numbers , booleans , literals , expression_block , 
-         strings , function_caLL
+grammar =[ 
+          numbers,
+        #   vector , protocols , types , function , While , conditional , 
+        #  For , IN  , booleans , literals , expression_block , 
+        #  strings , function_caLL
         ]
