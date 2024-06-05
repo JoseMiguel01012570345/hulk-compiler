@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -202,3 +203,6 @@ i + ( i + i ) $
 =======
  ((((((( ( i ) )))))))  $
 >>>>>>> 9c513df (parser bug fixed at repeated states)
+=======
+ ((((((( ( i + i ) )))))))  $
+>>>>>>> 31c5d2d (moving out verbose info)
