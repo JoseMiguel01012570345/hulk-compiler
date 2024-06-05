@@ -27,10 +27,10 @@ class Parser:
         
         self.parser_table = parser_table
         
-        i=0
-        for element in parser_table:
-            print(f"I{i}={element}")
-            i+=1
+        # i=0
+        # for element in parser_table:
+        #     print(f"I{i}={element}")
+        #     i+=1
         
         ok = self.parse_input(code=code)
         
@@ -182,7 +182,7 @@ class Parser:
             
             i+=1
         
-        self.print_state(state_number=0,state=i0)
+        # self.print_state(state_number=0,state=i0)
         return i0
     
     def build_state( self , state:list , key_stone , look_ahead , pivote= -1):
@@ -264,8 +264,8 @@ class Parser:
                     if self.in_stack(sub_state,derivation): count+=1
             
             if count == len(state) and len(state) != 0 :
-                print(f"GOTO(I{ actual_state },{item}):")
-                print(f"\033[1;31m state I{i} is repeated \033[0m")
+                # print(f"GOTO(I{ actual_state },{item}):")
+                # print(f"\033[1;31m state I{i} is repeated \033[0m")
                 return True,i
             
             i+=1
@@ -288,8 +288,7 @@ class Parser:
             my_row =self.fill_row(T_U_N)
             
             for item in T_U_N:
-                if current_state == 5 and item == "T":
-                    print()       
+                
                 state,my_row = self.GOTO( stack_state[current_state] , item , states_created , my_row )
                 
                 calculated,index = self.calculated_state( state=state, stack_state=stack_state ,item=item ,actual_state=states_created)
@@ -299,8 +298,8 @@ class Parser:
                     states_created += 1
                     stack_state.append(state) 
                     
-                    print(f"GOTO(I{current_state},{item}):")
-                    self.print_state(state_number=len(stack_state)-1,state=state)
+                    # print(f"GOTO(I{current_state},{item}):")
+                    # self.print_state(state_number=len(stack_state)-1,state=state)
                 
                 elif calculated:
                                         
