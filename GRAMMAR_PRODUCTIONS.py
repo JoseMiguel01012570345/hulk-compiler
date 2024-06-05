@@ -115,14 +115,9 @@ literals = [
 
 numbers = [
     
-    # minus
-    ["E" , [ "A", "-" , "A" ]],
-    ["A" , [ "i" , "-" , "i" ]],
-    ["A" , [ "A" , "-" , "i" ]],
-    
-    ["A" , [ "i" ]],
     
     # sum
+<<<<<<< HEAD
     ["E" , [ "A", "+" , "A" ]],
     ["A" , [ "i" , "+" , "i" ]],
     ["A" , [ "A" , "+" , "i" ]],
@@ -141,6 +136,14 @@ numbers = [
     ["E",["(","A",")"]],
 >>>>>>> 31c5d2d (moving out verbose info)
 
+=======
+    ["E" , [ "A" ]],
+    ["E",["(","A",")"]],
+    ["A",["(","A",")"]],
+    ["A",["E","+","A"]],
+    ["A",["i"]],
+    
+>>>>>>> a54ff54 (first grammar made)
 ]
 
 booleans = [
@@ -208,8 +211,12 @@ numbers = [
 terminals= [
             
             "+",
+<<<<<<< HEAD
             "-",
 >>>>>>> 31c5d2d (moving out verbose info)
+=======
+            
+>>>>>>> a54ff54 (first grammar made)
             "i" ,
             "(" ,
             ")" ,
