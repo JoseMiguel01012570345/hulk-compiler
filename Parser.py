@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 from RegExDefinitions import TokenFinitRegEx
 from RegExInterface import State,IRegEx
+=======
+
+>>>>>>> 344c94b (all on board)
 import GRAMMAR_PRODUCTIONS as GD
 import DerivationTree as dt
 
@@ -40,7 +44,7 @@ class Parser():
     def __init__(self , code="" ):
 
         self._grammar = GD.grammar
-        code=["i","+","i","$"]
+        # code=["i","+","i" , "*" , "i","$"]
         self._error = None
         self._match = False
         self._stack = []
@@ -271,7 +275,7 @@ class Parser():
             
             i+=1
         
-        self.print_state(state_number=0,state=i0)
+        # self.print_state(state_number=0,state=i0)
         return i0
     
     def build_state( self , state:list , key_stone , look_ahead , pivote= -1):
@@ -555,8 +559,8 @@ class Parser():
                     states_created += 1
                     stack_state.append(state) 
                     
-                    print(f"GOTO(I{current_state},{item}):")
-                    self.print_state(state_number=len(stack_state)-1,state=state)
+                    # print(f"GOTO(I{current_state},{item}):")
+                    # self.print_state(state_number=len(stack_state)-1,state=state)
                 
                 elif calculated:
                                         
@@ -577,12 +581,17 @@ class Parser():
         '''
             
 <<<<<<< HEAD
+<<<<<<< HEAD
         AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
         
         return AST_node
 =======
             # item = code[k].Text
             item = code[k]
+=======
+            item = code[k].Text
+            # item = code[k]
+>>>>>>> 344c94b (all on board)
             
             result =""
             
@@ -632,5 +641,9 @@ class Parser():
         
         pass
 
+<<<<<<< HEAD
 p = Parser()
 >>>>>>> 5798f64 (another fix to the parser)
+=======
+# p = Parser()
+>>>>>>> 344c94b (all on board)

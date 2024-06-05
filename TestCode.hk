@@ -32,6 +32,7 @@ type Range(min:Number, max:Number) {
     max = max;
     current = min - 1;
 
+<<<<<<< HEAD
     next(): Boolean => (self.current := self.current + 1) < self.max;
     current(): Number => self.current;
 }
@@ -217,3 +218,7 @@ i + ( i + i ) $
 i +  i $
  
 >>>>>>> 5798f64 (another fix to the parser)
+=======
+(i) *  (i + i) $
+ 
+>>>>>>> 344c94b (all on board)
