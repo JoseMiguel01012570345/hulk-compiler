@@ -1,5 +1,4 @@
-# from RegExDefinitions import TokenFinitRegEx
-# from RegExInterface import State,IRegEx
+
 import GRAMMAR_PRODUCTIONS as GD
 # import DerivationTree as dt
 
@@ -18,7 +17,7 @@ class Parser:
     def __init__(self , code="" ):
 
         self._grammar = GD.grammar
-        code=["i","+","i","$"]
+        # code=["i","+","i" , "*" , "i","$"]
         self._error = None
         self.derivation_Tree = None
         
@@ -185,7 +184,7 @@ class Parser:
             
             i+=1
         
-        self.print_state(state_number=0,state=i0)
+        # self.print_state(state_number=0,state=i0)
         return i0
     
     def build_state( self , state:list , key_stone , look_ahead , pivote= -1):
@@ -318,8 +317,8 @@ class Parser:
                     states_created += 1
                     stack_state.append(state) 
                     
-                    print(f"GOTO(I{current_state},{item}):")
-                    self.print_state(state_number=len(stack_state)-1,state=state)
+                    # print(f"GOTO(I{current_state},{item}):")
+                    # self.print_state(state_number=len(stack_state)-1,state=state)
                 
                 elif calculated:
                                         
@@ -341,8 +340,8 @@ class Parser:
         k = 0
         while k < len(code):
             
-            # item = code[k].Text
-            item = code[k]
+            item = code[k].Text
+            # item = code[k]
             
             result =""
             
@@ -392,4 +391,4 @@ class Parser:
         
         pass
 
-p = Parser()
+# p = Parser()
