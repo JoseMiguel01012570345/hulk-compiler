@@ -27,10 +27,10 @@ class Parser:
         
         self.parser_table = parser_table
         
-        # i=0
-        # for element in parser_table:
-        #     print(f"I{i}={element}")
-        #     i+=1
+        i=0
+        for element in parser_table:
+            print(f"I{i}={element}")
+            i+=1
         
         ok = self.parse_input(code=code)
         
@@ -182,7 +182,7 @@ class Parser:
             
             i+=1
         
-        # self.print_state(state_number=0,state=i0)
+        self.print_state(state_number=0,state=i0)
         return i0
     
     def build_state( self , state:list , key_stone , look_ahead , pivote= -1):
@@ -298,8 +298,8 @@ class Parser:
                     states_created += 1
                     stack_state.append(state) 
                     
-                    # print(f"GOTO(I{current_state},{item}):")
-                    # self.print_state(state_number=len(stack_state)-1,state=state)
+                    print(f"GOTO(I{current_state},{item}):")
+                    self.print_state(state_number=len(stack_state)-1,state=state)
                 
                 elif calculated:
                                         
