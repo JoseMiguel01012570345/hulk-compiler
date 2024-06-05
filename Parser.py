@@ -96,7 +96,6 @@ class Parser:
             return b , ""
         
         if pivote + 2 >= len(derivation):
-            
             return look_ahead,b
         
         non_terminal_first = self.non_terminal_first(derivation[pivote + 2])
@@ -231,7 +230,6 @@ class Parser:
                     if state[i]["production"][0] == "S":
                         my_row[item] = "OK"
                      
-                
                 i+=1
                 continue
             
@@ -264,15 +262,15 @@ class Parser:
                 
                 for derivation in state:
                     if self.in_stack(sub_state,derivation): count+=1
-                
-            if count == len(state):
-                # print(f"GOTO(I{ actual_state },{item}):")
-                # print(f"\033[1;31m state I{i} is repeated \033[0m")
-                return True
+            
+            if count == len(state) and len(state) != 0 :
+                print(f"GOTO(I{ actual_state },{item}):")
+                print(f"\033[1;31m state I{i} is repeated \033[0m")
+                return True,i
             
             i+=1
         
-        return False
+        return False,i
 
     def automaton(self,i0):
         
@@ -290,10 +288,13 @@ class Parser:
             my_row =self.fill_row(T_U_N)
             
             for item in T_U_N:
-                                
+                if current_state == 5 and item == "T":
+                    print()       
                 state,my_row = self.GOTO( stack_state[current_state] , item , states_created , my_row )
                 
-                if len(state) !=0  and not self.calculated_state( state=state, stack_state=stack_state ,item=item ,actual_state=states_created):
+                calculated,index = self.calculated_state( state=state, stack_state=stack_state ,item=item ,actual_state=states_created)
+                
+                if len(state) !=0  and not calculated :
                     
                     states_created += 1
                     stack_state.append(state) 
@@ -301,8 +302,11 @@ class Parser:
                     print(f"GOTO(I{current_state},{item}):")
                     self.print_state(state_number=len(stack_state)-1,state=state)
                 
-                pass
-            
+                elif calculated:
+                                        
+                    my_row[item] = index                    
+                    pass
+                    
             parser_table.append(my_row)
             current_state += 1
             pass
