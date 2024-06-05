@@ -109,10 +109,32 @@ class Parser():
         if any( pointer == item for item in ['[','(','{'] ) or any( pivote == item for item in ['[','(','{'] ) :
             return -1
         
+<<<<<<< HEAD
         for operators in self.operator_procedence:
             
             if list(operators).__contains__(pivote) and list(operators).__contains__(pointer):
                 return 0
+=======
+        b = beta[0]
+        
+        # check if b is a terminal , otherwise we check the non-terminals
+        if self.contains( b , self.terminals ):
+            return b , ""
+        
+        if pivote + 2 >= len(derivation):
+            return look_ahead,b
+        
+        non_terminal_first = self.non_terminal_first(derivation[pivote + 2])
+        
+        if non_terminal_first == "":
+            return look_ahead , b
+        
+        return non_terminal_first,b
+        
+    def in_stack( self , stack , my_derivation ) -> bool:
+        
+        for derivation in stack:
+>>>>>>> 9c513df (parser bug fixed at repeated states)
             
             if list(operators).__contains__(pivote) and not list(operators).__contains__(pointer):
                 return 1
@@ -179,12 +201,147 @@ class Parser():
         
         return True
     
+<<<<<<< HEAD
     def remove_item_stack(self , stack:list ,pop_number):
+=======
+    def print_state(self, state_number , state):
+        
+        print( f"\033[1;32m I{state_number} \033[0m" , "=\033[1;33m { \033[0m")    
+        for dic in state:
+
+            self.print_production(dic["production"],dic["look_ahead"],dic["pivote"])
+
+            pass
+        
+        print("\033[1;33m } \033[0m")
+        
+        pass
+    
+    def print_production(self,production,look_ahead,pivote):
+        
+        s=""
+        for item in production[1]:
+            s +=  item + " "
+        
+        print("\033[1m" , production[0] , "->" , s , f", c=\"{look_ahead}\"" , ", pivote:" , pivote , "\033[0m" )
+        
+        pass
+    
+    def I0(self):
+        
+        i = 1
+        key_stone = ""
+        look_ahead = ""
+        
+        i0 = [ { "production": ["S" , ["E"]] , "look_ahead": "$" , "pivote": -1 } ]
+        key_stone = "E"
+        look_ahead = "$"
+        
+        while True:
+            
+            self.build_state(state=i0,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
+            
+            if i >= len(i0): break
+            
+            derivation = i0[i]["production"]
+            
+            look_ahead , key_stone = self.first( derivation[1] , pivote=-1 ,look_ahead=i0[i]["look_ahead"] )
+                
+            if key_stone == "": 
+                i+=1
+                continue
+            
+            i+=1
+        
+        self.print_state(state_number=0,state=i0)
+        return i0
+    
+    def build_state( self , state:list , key_stone , look_ahead , pivote= -1):
+        
+        grammar = self._grammar
+        new_stack = []
+        
+        for feature in grammar:
+            
+            for productions in feature:
+            
+                production= { "production": productions , "look_ahead" : look_ahead , "pivote":pivote}
+                if productions[0] == key_stone and not self.in_stack( state , production ) :
+                    state.append( production )
+                
+        return new_stack
+    
+    def fill_row(self,row):
+        
+        my_row={}
+        
+        for item in row:
+            my_row[item] = "*"
+        
+        return my_row
+    
+    def GOTO( self , state=None , item=None , state_number=0, my_row={} ):
+        
+        i = 0
+        key_stone = ""
+        look_ahead = ""
+        new_state = []
+        
+        while i < len(state):
+            
+            right_derivation_side = state[i]["production"][1]
+            
+            derivation_pivote= state[i]["pivote"]
+            
+            if  derivation_pivote + 1 >= len(right_derivation_side) or \
+                right_derivation_side[ derivation_pivote + 1] != item:
+                
+                if state[i]["pivote"] == len(state[i]["production"][1]) -1 and state[i]["look_ahead"] == item :
+                    my_row[item] = state[i]["production"]
+                    if state[i]["production"][0] == "S":
+                        my_row[item] = "OK"
+                     
+                i+=1
+                continue
+            
+            new_state.append( {
+                "production":state[i]["production"] ,
+                "look_ahead":state[i]["look_ahead"] ,
+                "pivote":state[i]["pivote"] + 1 } )
+            
+            my_row[item] = state_number + 1
+            
+            look_ahead , key_stone = self.first( right_derivation_side , pivote=new_state[-1]["pivote"] ,look_ahead=new_state[-1]["look_ahead"] )
+            
+            if key_stone == "": 
+                i+=1
+                continue
+            
+            self.build_state( state=new_state, key_stone=key_stone , look_ahead=look_ahead , pivote=-1 ) 
+            
+            i+=1
+        
+        return new_state , my_row
+
+    def calculated_state(self, state , stack_state ,item , actual_state )->bool:
+>>>>>>> 9c513df (parser bug fixed at repeated states)
         
         i=0
         while i < pop_number:
             
+<<<<<<< HEAD
             stack.pop()
+=======
+            if len(sub_state) == len(state):
+                
+                for derivation in state:
+                    if self.in_stack(sub_state,derivation): count+=1
+            
+            if count == len(state) and len(state) != 0 :
+                print(f"GOTO(I{ actual_state },{item}):")
+                print(f"\033[1;31m state I{i} is repeated \033[0m")
+                return True,i
+>>>>>>> 9c513df (parser bug fixed at repeated states)
             
             i +=1
         
@@ -296,6 +453,7 @@ class Parser():
 
         print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
         
+<<<<<<< HEAD
         return False
     
     def gradient_parser(self,gramar,stack:list , code ):        
@@ -333,6 +491,48 @@ class Parser():
             stack.append( code[index_pointer] )
             
             index_pointer += 1
+=======
+        return False,i
+
+    def automaton(self,i0):
+        
+        T_U_N =  [ item for item in self.terminals]
+        T_U_N.extend(self.non_terminals)
+        
+        parser_table=[]
+        
+        stack_state = [i0]
+        
+        current_state=0
+        states_created = 0
+        while current_state < len(stack_state):
+            
+            my_row =self.fill_row(T_U_N)
+            
+            for item in T_U_N:
+                if current_state == 5 and item == "T":
+                    print()       
+                state,my_row = self.GOTO( stack_state[current_state] , item , states_created , my_row )
+                
+                calculated,index = self.calculated_state( state=state, stack_state=stack_state ,item=item ,actual_state=states_created)
+                
+                if len(state) !=0  and not calculated :
+                    
+                    states_created += 1
+                    stack_state.append(state) 
+                    
+                    print(f"GOTO(I{current_state},{item}):")
+                    self.print_state(state_number=len(stack_state)-1,state=state)
+                
+                elif calculated:
+                                        
+                    my_row[item] = index                    
+                    pass
+                    
+            parser_table.append(my_row)
+            current_state += 1
+            pass
+>>>>>>> 9c513df (parser bug fixed at repeated states)
         
         return self.parsed_code(stack)
     

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -198,3 +199,6 @@ type C inherits A {
 =======
 i + ( i + i ) $
 >>>>>>> 0b02f74 (fuck)
+=======
+ ((((((( ( i ) )))))))  $
+>>>>>>> 9c513df (parser bug fixed at repeated states)
