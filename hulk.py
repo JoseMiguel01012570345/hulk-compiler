@@ -92,9 +92,13 @@ if not Error:
     #     pass
     # ----------------------------
     
+<<<<<<< HEAD
     gd_token= translator.traslator(my_list)
     
     # print(gd_token)
+=======
+    gp =P.Parser( my_list )
+>>>>>>> 5798f64 (another fix to the parser)
 
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
 

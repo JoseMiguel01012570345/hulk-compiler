@@ -140,7 +140,7 @@ numbers = [
     ["E" , [ "A" ]],
     ["E",["(","A",")"]],
     ["A",["(","A",")"]],
-    ["A",["E","+","A"]],
+    ["A",["A","+","E"]],
     ["A",["i"]],
     
 >>>>>>> a54ff54 (first grammar made)
@@ -212,11 +212,15 @@ terminals= [
             
             "+",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "-",
 >>>>>>> 31c5d2d (moving out verbose info)
 =======
             
 >>>>>>> a54ff54 (first grammar made)
+=======
+            "*",
+>>>>>>> 5798f64 (another fix to the parser)
             "i" ,
             "(" ,
             ")" ,

@@ -37,9 +37,10 @@ class Parser():
         ["$1","$3"],
     ]
     
-    def __init__(self,grammar,code ):
+    def __init__(self , code="" ):
 
-        self._grammar = grammar
+        self._grammar = GD.grammar
+        code=["i","+","i","$"]
         self._error = None
         self._match = False
         self._stack = []
@@ -252,9 +253,9 @@ class Parser():
         key_stone = "E"
         look_ahead = "$"
         
+        self.build_state(state=i0,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
+        
         while True:
-            
-            self.build_state(state=i0,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
             
             if i >= len(i0): break
             
@@ -265,6 +266,8 @@ class Parser():
             if key_stone == "": 
                 i+=1
                 continue
+            
+            self.build_state(state=i0,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
             
             i+=1
         
@@ -333,6 +336,23 @@ class Parser():
                 continue
             
             self.build_state( state=new_state, key_stone=key_stone , look_ahead=look_ahead , pivote=-1 ) 
+            
+            i+=1
+        
+        i=0
+        while True:
+            
+            if i >= len(new_state): break
+            
+            derivation = new_state[i]["production"]
+            
+            look_ahead , key_stone = self.first( derivation[1] , pivote=-1 ,look_ahead=new_state[i]["look_ahead"] )
+                
+            if key_stone == "": 
+                i+=1
+                continue
+            
+            self.build_state(state=new_state,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
             
             i+=1
         
@@ -556,6 +576,61 @@ class Parser():
         pattern to follow -> existing tree is child of the new node
         '''
             
+<<<<<<< HEAD
         AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
         
         return AST_node
+=======
+            # item = code[k].Text
+            item = code[k]
+            
+            result =""
+            
+            if dict(self.parser_table[ state[-1] ]).__contains__( item ) : 
+                result = self.parser_table[ state[-1] ][item]
+            else:
+                print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
+                return False
+
+            if type(result) == int: # shift
+                
+                state.append(result)
+                
+                symbols.append(item)
+                print(symbols , f"state={state[-1]}" )
+                
+                pass
+            
+            elif type(result) == list: # reduce
+                
+                i = 0
+                while i < len(result[1]):
+                    state.pop()
+                    symbols.pop()
+                    i += 1
+                    
+                    print(symbols, f"state={state[-1]}")
+                    
+                
+                key_stone = result[0]
+                last_state_number = state[-1]
+                state.append( self.parser_table[ last_state_number ][ key_stone ] )
+                
+                symbols.append(key_stone)
+                print(symbols, f"state={state[-1]}" )
+                
+                continue  
+                
+            elif result == "OK":
+                return True
+            
+            else:
+                print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
+                return False
+            
+            k +=1
+        
+        pass
+
+p = Parser()
+>>>>>>> 5798f64 (another fix to the parser)

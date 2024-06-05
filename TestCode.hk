@@ -209,6 +209,11 @@ i + ( i + i ) $
 >>>>>>> 31c5d2d (moving out verbose info)
 =======
 
+<<<<<<< HEAD
 (i) + ( (i) ) + i $
  
 >>>>>>> a54ff54 (first grammar made)
+=======
+i +  i $
+ 
+>>>>>>> 5798f64 (another fix to the parser)
