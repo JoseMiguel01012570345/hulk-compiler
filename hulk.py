@@ -92,7 +92,7 @@ if not Error:
     #     pass
     #----------------------------
     
-    gp =P.Parser(GRAMMAR_PRODUCTIONS.grammar , my_list )
+    gp =P.Parser( my_list )
 
     # if gp.derivation_Tree == None: 
         

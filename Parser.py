@@ -15,9 +15,10 @@ class Parser:
     terminals = GD.terminals
     non_terminals = GD.non_terminals
     
-    def __init__(self,grammar,code ):
+    def __init__(self , code="" ):
 
-        self._grammar = grammar
+        self._grammar = GD.grammar
+        code=["i","+","i","$"]
         self._error = None
         self.derivation_Tree = None
         
@@ -166,9 +167,9 @@ class Parser:
         key_stone = "E"
         look_ahead = "$"
         
+        self.build_state(state=i0,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
+        
         while True:
-            
-            self.build_state(state=i0,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
             
             if i >= len(i0): break
             
@@ -179,6 +180,8 @@ class Parser:
             if key_stone == "": 
                 i+=1
                 continue
+            
+            self.build_state(state=i0,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
             
             i+=1
         
@@ -247,6 +250,23 @@ class Parser:
                 continue
             
             self.build_state( state=new_state, key_stone=key_stone , look_ahead=look_ahead , pivote=-1 ) 
+            
+            i+=1
+        
+        i=0
+        while True:
+            
+            if i >= len(new_state): break
+            
+            derivation = new_state[i]["production"]
+            
+            look_ahead , key_stone = self.first( derivation[1] , pivote=-1 ,look_ahead=new_state[i]["look_ahead"] )
+                
+            if key_stone == "": 
+                i+=1
+                continue
+            
+            self.build_state(state=new_state,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
             
             i+=1
         
@@ -321,7 +341,8 @@ class Parser:
         k = 0
         while k < len(code):
             
-            item = code[k].Text
+            # item = code[k].Text
+            item = code[k]
             
             result =""
             
@@ -370,3 +391,5 @@ class Parser:
             k +=1
         
         pass
+
+p = Parser()
