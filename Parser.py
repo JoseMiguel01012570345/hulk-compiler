@@ -21,16 +21,19 @@ class Parser:
         self._error = None
         self.derivation_Tree = None
         
-        i0 = self.I0()
+        printing=0
         
-        parser_table = self.automaton(i0=i0)
+        i0 = self.I0(printing=printing)
+        
+        parser_table = self.automaton(i0=i0,printing=printing)
         
         self.parser_table = parser_table
         
-        i=0
-        for element in parser_table:
-            print(f"I{i}={element}")
-            i+=1
+        if printing:
+            i=0
+            for element in parser_table:
+                print(f"I{i}={element}")
+                i+=1
         
         ok = self.parse_input(code=code)
         
@@ -156,7 +159,7 @@ class Parser:
         
         pass
     
-    def I0(self):
+    def I0(self,printing=True):
         
         i = 1
         key_stone = ""
@@ -184,7 +187,9 @@ class Parser:
             
             i+=1
         
-        # self.print_state(state_number=0,state=i0)
+        if printing:
+            self.print_state(state_number=0,state=i0)
+        
         return i0
     
     def build_state( self , state:list , key_stone , look_ahead , pivote= -1):
@@ -218,6 +223,7 @@ class Parser:
         look_ahead = ""
         new_state = []
         found = False
+        error = False
         
         while i < len(state):
             
@@ -228,9 +234,13 @@ class Parser:
             if  derivation_pivote + 1 >= len(right_derivation_side) or \
                 right_derivation_side[ derivation_pivote + 1] != item:
                 
-                if not found and state[i]["pivote"] == len(state[i]["production"][1]) -1 and state[i]["look_ahead"] == item :
-                    my_row[item] = state[i]["production"]
+                if  state[i]["pivote"] == len(state[i]["production"][1]) -1 and state[i]["look_ahead"] == item :
+                    
+                    if found:
+                        error = True
+                    
                     found = True
+                    my_row[item] = state[i]["production"]
                     if state[i]["production"][0] == "S":
                         my_row[item] = "OK"
                      
@@ -250,28 +260,29 @@ class Parser:
                 i+=1
                 continue
             
+            j = len(new_state)
+            
             self.build_state( state=new_state, key_stone=key_stone , look_ahead=look_ahead , pivote=-1 ) 
             
-            i+=1
-        
-        i=0
-        while True:
+            while True:
             
-            if i >= len(new_state): break
-            
-            derivation = new_state[i]["production"]
-            
-            look_ahead , key_stone = self.first( derivation[1] , pivote=-1 ,look_ahead=new_state[i]["look_ahead"] )
+                if j >= len(new_state): break
                 
-            if key_stone == "": 
-                i+=1
-                continue
-            
-            self.build_state(state=new_state,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
+                derivation = new_state[j]["production"]
+                
+                look_ahead , key_stone = self.first( derivation[1] , pivote=-1 ,look_ahead=new_state[j]["look_ahead"] )
+                    
+                if key_stone == "": 
+                    j+=1
+                    continue
+                
+                self.build_state(state=new_state,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
+                
+                j+=1
             
             i+=1
         
-        return new_state , my_row
+        return new_state , my_row , error
 
     def calculated_state(self, state , stack_state ,item , actual_state )->bool:
         
@@ -293,7 +304,7 @@ class Parser:
         
         return False,i
 
-    def automaton(self,i0):
+    def automaton(self,i0 , printing=True):
         
         T_U_N =  [ item for item in self.terminals]
         T_U_N.extend(self.non_terminals)
@@ -310,7 +321,19 @@ class Parser:
             
             for item in T_U_N:
                 
-                state,my_row = self.GOTO( stack_state[current_state] , item , states_created , my_row )
+                state,my_row,error = self.GOTO( stack_state[current_state] , item , states_created , my_row )
+                
+                if error:
+                    
+                    if printing:
+                        print(f"GOTO(I{current_state},{item}):")
+                        self.print_state(state_number=len(stack_state)-1,state=state)
+                        print("grammar is not LR(1)")
+                        exit()
+                    
+                    else:
+                        print("grammar is not LR(1)")
+                        exit()
                 
                 calculated,index = self.calculated_state( state=state, stack_state=stack_state ,item=item ,actual_state=states_created)
                 
@@ -319,14 +342,16 @@ class Parser:
                     states_created += 1
                     stack_state.append(state) 
                     
-                    # print(f"GOTO(I{current_state},{item}):")
-                    # self.print_state(state_number=len(stack_state)-1,state=state)
+                    if printing:
+                        print(f"GOTO(I{current_state},{item}):")
+                        self.print_state(state_number=len(stack_state)-1,state=state)
+                        # input()
                 
                 elif calculated:
                                         
                     my_row[item] = index                    
                     pass
-                    
+
             parser_table.append(my_row)
             current_state += 1
             pass
@@ -349,6 +374,11 @@ class Parser:
             
             if dict(self.parser_table[ state[-1] ]).__contains__( item ) : 
                 result = self.parser_table[ state[-1] ][item]
+                
+                if result == "*":
+                    print("invalid string")    
+                    return False
+            
             else:
                 print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
                 return False
@@ -375,6 +405,11 @@ class Parser:
                 
                 key_stone = result[0]
                 last_state_number = state[-1]
+                
+                if self.parser_table[ last_state_number ][ key_stone ] == "*":
+                    print("invalid string")    
+                    return False
+                
                 state.append( self.parser_table[ last_state_number ][ key_stone ] )
                 
                 symbols.append(key_stone)
