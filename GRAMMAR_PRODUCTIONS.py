@@ -115,8 +115,8 @@ literals = [
 
 numbers = [
     
-    ["E",["T","+","E"]],
-    ["E",["T","-","E"]],
+    ["E",["E","+","T"]],
+    ["E",["E","-","T"]],
     ["E",["T"]],
     
 <<<<<<< HEAD
@@ -150,14 +150,20 @@ numbers = [
 =======
     ["T",["T","*","F"]],
     ["T",["T","/","F"]],
-    ["T",["T","%","F"]],
     ["T",["F"]],
     
     ["F",["(","E",")"]],
     ["F",["i"]]
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
     
+<<<<<<< HEAD
 >>>>>>> a54ff54 (first grammar made)
+=======
+    # ["E",["A","X","=","X"]],
+    # ["A",["let"]],
+    # ["X",["i"]],
+    
+>>>>>>> 20b2c73 (perfect)
 ]
 
 booleans = [
@@ -206,6 +212,8 @@ booleans = [
         "E",
         "F",
         "T",
+        # "A",
+        # "X"
                            
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
 ]
@@ -231,7 +239,9 @@ numbers = [
 =======
 terminals= [
             
+            # "let",       
             "+",
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -245,11 +255,14 @@ terminals= [
 >>>>>>> 5798f64 (another fix to the parser)
 =======
             "%",
+=======
+>>>>>>> 20b2c73 (perfect)
             "-",
             "*",
             "/",
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
             "i" ,
+            # "=" ,
             "(" ,
             ")" ,
             "$" , 

@@ -2,6 +2,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -227,3 +228,6 @@ i +  i $
 i - i + i + i + i + i - i $
  
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
+=======
+ i + i + i * i $
+>>>>>>> 20b2c73 (perfect)
