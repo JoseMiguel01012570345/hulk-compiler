@@ -115,7 +115,11 @@ literals = [
 
 numbers = [
     
+    ["E",["T","+","E"]],
+    ["E",["T","-","E"]],
+    ["E",["T"]],
     
+<<<<<<< HEAD
     # sum
 <<<<<<< HEAD
     ["E" , [ "A", "+" , "A" ]],
@@ -143,12 +147,22 @@ numbers = [
     ["A",["A","+","E"]],
     ["E",["A","*","E"]],
     ["A",["i"]],
+=======
+    ["T",["T","*","F"]],
+    ["T",["T","/","F"]],
+    ["T",["T","%","F"]],
+    ["T",["F"]],
+    
+    ["F",["(","E",")"]],
+    ["F",["i"]]
+>>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
     
 >>>>>>> a54ff54 (first grammar made)
 ]
 
 booleans = [
     
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     ["T" , [["T","&","T"] , ["F","&","T"] ,  ["T","|","T"]  , ["F","|","T"]  , ["T","!=","T"] , ["F","!=","T"] , 
@@ -188,6 +202,12 @@ booleans = [
         "E",
                             
 >>>>>>> 9c513df (parser bug fixed at repeated states)
+=======
+        "E",
+        "F",
+        "T",
+                           
+>>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
 ]
 
 <<<<<<< HEAD
@@ -214,6 +234,7 @@ terminals= [
             "+",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             "-",
 >>>>>>> 31c5d2d (moving out verbose info)
 =======
@@ -222,6 +243,12 @@ terminals= [
 =======
             "*",
 >>>>>>> 5798f64 (another fix to the parser)
+=======
+            "%",
+            "-",
+            "*",
+            "/",
+>>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
             "i" ,
             "(" ,
             ")" ,

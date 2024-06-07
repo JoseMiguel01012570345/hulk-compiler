@@ -116,7 +116,28 @@ class Parser():
         
         if pointer == "(" and ( pivote == ")" ) : return -1
         
+<<<<<<< HEAD
         if pointer == "{" and ( pivote == "}" ): return -1
+=======
+            for p in feature:
+                
+                if p[0] == alpha:
+                
+                    if self.contains( p[1][0] , self.terminals ):
+                        return p[1][0]
+                
+                    else:
+                        
+                        if visited.__contains__(p[1][0]):
+                            continue
+                        
+                        if len(p[1][0]) != 0:
+                        
+                            terminal = self.non_terminal_first( p[1][0] , visited )
+                        
+                            if terminal != "":
+                                return terminal
+>>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
         
         if pointer == "[" and ( pivote == "]"): return -1
         
@@ -308,6 +329,7 @@ class Parser():
         key_stone = ""
         look_ahead = ""
         new_state = []
+        found = False
         
         while i < len(state):
             
@@ -318,8 +340,9 @@ class Parser():
             if  derivation_pivote + 1 >= len(right_derivation_side) or \
                 right_derivation_side[ derivation_pivote + 1] != item:
                 
-                if state[i]["pivote"] == len(state[i]["production"][1]) -1 and state[i]["look_ahead"] == item :
+                if not found and state[i]["pivote"] == len(state[i]["production"][1]) -1 and state[i]["look_ahead"] == item :
                     my_row[item] = state[i]["production"]
+                    found = True
                     if state[i]["production"][0] == "S":
                         my_row[item] = "OK"
                      
