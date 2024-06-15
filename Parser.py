@@ -60,6 +60,7 @@ class Parser:
         
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         parsed_code = self.gradient_parser(grammar,self._stack,code)
         
 <<<<<<< HEAD
@@ -71,6 +72,9 @@ class Parser:
 =======
         printing=1
 >>>>>>> b1116a1 (AST almost integrated to parser)
+=======
+        printing=0
+>>>>>>> c1b5cd8 (parser-ast integrated)
         
         i0 = self.I0(printing=printing)
         
@@ -696,19 +700,33 @@ class Parser:
                 symbols.append(item)
                 print(symbols , f"state={state[-1]}" )
                 
+                tree.append(item)
+                
                 pass
             
             elif type(result) == tuple: # reduce
                 
                 i = 0
+                token_list = []
+                
                 while i < len(result[0][1]):
                     state.pop()
-                    symbols.pop()
-                    i += 1
                     
+                    token = tree[-1]
+                    
+                    token_list.insert(0,token)
+                    
+                    symbols.pop()
+                    tree.pop()
+                    i += 1
+                
                     print(symbols, f"state={state[-1]}")
                     
+                print("token_list:",token_list)
                 
+                ast_initialized = result[1].ignition(token_list=token_list)
+                tree.append(ast_initialized)
+                    
                 key_stone = result[0][0]
                 last_state_number = state[-1]
                 
@@ -719,7 +737,7 @@ class Parser:
                 state.append( self.parser_table[ last_state_number ][ key_stone ] )
                 
                 symbols.append(key_stone)
-                print(symbols, f"state={state[-1]}" )
+                # print(symbols, f"state={state[-1]}" )
                 
                 continue  
                 
