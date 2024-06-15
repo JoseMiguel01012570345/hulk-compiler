@@ -59,7 +59,7 @@ class ASTNode:
         
         children = self.visitor(self)
         
-        if len(children) == 1:
+        if len(children) == 1 and children[0] != None:
             self = children[0]
             self.ast_reducer()
         
@@ -76,7 +76,7 @@ class ASTNode:
             
         self.parent_reference()
         
-        pass
+        return self
     
     def parent_reference(self):
         

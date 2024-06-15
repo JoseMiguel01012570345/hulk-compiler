@@ -21,7 +21,7 @@ class Parser:
         self._error = None
         self.derivation_Tree = None
         
-        printing=1
+        printing=0
         
         i0 = self.I0(printing=printing)
         
@@ -393,19 +393,33 @@ class Parser:
                 symbols.append(item)
                 print(symbols , f"state={state[-1]}" )
                 
+                tree.append(item)
+                
                 pass
             
             elif type(result) == tuple: # reduce
                 
                 i = 0
+                token_list = []
+                
                 while i < len(result[0][1]):
                     state.pop()
-                    symbols.pop()
-                    i += 1
                     
+                    token = tree[-1]
+                    
+                    token_list.insert(0,token)
+                    
+                    symbols.pop()
+                    tree.pop()
+                    i += 1
+                
                     print(symbols, f"state={state[-1]}")
                     
+                print("token_list:",token_list)
                 
+                ast_initialized = result[1].ignition(token_list=token_list)
+                tree.append(ast_initialized)
+                    
                 key_stone = result[0][0]
                 last_state_number = state[-1]
                 
@@ -416,7 +430,7 @@ class Parser:
                 state.append( self.parser_table[ last_state_number ][ key_stone ] )
                 
                 symbols.append(key_stone)
-                print(symbols, f"state={state[-1]}" )
+                # print(symbols, f"state={state[-1]}" )
                 
                 continue  
                 

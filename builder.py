@@ -1,18 +1,18 @@
 def plus(token_list):
-    pass
+    return [ ( "left_node" , token_list[0] ) , ( "right_node" , token_list[2] ) ]
 
 def minus(token_list):
-    pass
-
+    return [ ( "left_node" , token_list[0] ) , ( "right_node" , token_list[2] ) ]
+    
 def multiplier(token_list):
-    pass
+    return [ ( "left_node" , token_list[0] ) , ( "right_node" , token_list[2] ) ]
 
 def divition(token_list):
-    pass
-
+    return [ ( "left_node" , token_list[0] ) , ( "right_node" , token_list[2] ) ]
+    
 def var(token_list):
-    pass
-
+    return [ ( "name" , token_list[0] ) ]
+    
 def brackets(token_list):
     return [("expression",token_list[1])]
 

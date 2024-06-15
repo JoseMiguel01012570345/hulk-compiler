@@ -7,7 +7,7 @@ def var(self:pcr.variable):
     return [None]
 
 def brackets(self:pcr.ASTNode):
-    return self.expression
+    return [self.expression]
 
 def replacement(self:pcr.ASTNode):
-    return self.replacement
+    return [self.replacement]
