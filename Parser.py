@@ -17,7 +17,7 @@ class Parser:
     def __init__(self , code="" ):
 
         self._grammar = GD.grammar
-        # code=["i","+","i" , "*" , "i","$"]
+    
         self._error = None
         self.derivation_Tree = None
         
@@ -359,7 +359,7 @@ class Parser:
         return parser_table
 
     def parse_input(self,code) -> bool:
-        # system("cls")
+    
         symbols = []
         state = [0]
         tree = []
@@ -368,7 +368,6 @@ class Parser:
         while k < len(code):
             
             item = code[k].Text
-            # item = code[k]
             
             result =""
             
@@ -427,5 +426,3 @@ class Parser:
             k +=1
         
         pass
-
-# p = Parser()
