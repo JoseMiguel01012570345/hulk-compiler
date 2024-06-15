@@ -48,39 +48,39 @@ class ASTNode:
                     } ) -> None:
         
         self.set_identifier(grammar["identifier"])
-        self.derivation_list = grammar["derivation"]
+        self.derivation = grammar["derivation"]
         self.def_node = grammar["definition_node?"]
         self.builder = grammar["builder"]
         self.visitor = grammar["visitor"]
         
         pass
     
-    def suit_(self,token_list):
+    def ast_reducer(self):
         
-        if not self.validator(token_list=token_list): 
-            return False, None
+        children = self.visitor(self)
         
-        self.builder(token_list)
+        if len(children) == 1:
+            self = children[0]
+            self.ast_reducer()
         
+        pass
+    
+    def ignition(self,token_list):
+        
+        attributes = self.builder(token_list)
+        
+        for property in attributes: # property: ( property_name , property_value)
+            self.__dict__[property[0]] = property[1]
+        
+        self.ast_reducer()
+            
         self.parent_reference()
         
-        return True,self
-    
-    def validator(self,token_list):
-        
-        if len(self.derivation) != len(token_list): return False
-        
-        if self.match( token_list=token_list , derivation=self.derivation ): return True
-        
-        return False
-    
-    def match(self,token_list,derivation):
-        
-        return any(lambda x,token : x != token , derivation , token_list)
+        pass
     
     def parent_reference(self):
         
-        list_children = self.visitor()
+        list_children = self.visitor(self)
         
         for child in list_children:
             
@@ -104,7 +104,7 @@ class ASTNode:
     
     def check_children(self,error_list):
         
-        children = self.visitor()    
+        children = self.visitor(self)    
             
         for child in children:
                 

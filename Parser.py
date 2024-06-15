@@ -1,8 +1,8 @@
 
 import GRAMMAR_PRODUCTIONS as GD
-# import DerivationTree as dt
-
-from os import system
+import production_class_representation as pcr
+import builder as B
+import visitor as V
 
 class Parser:
     
@@ -21,7 +21,7 @@ class Parser:
         self._error = None
         self.derivation_Tree = None
         
-        printing=0
+        printing=1
         
         i0 = self.I0(printing=printing)
         
@@ -165,7 +165,9 @@ class Parser:
         key_stone = ""
         look_ahead = ""
         
-        i0 = [ { "production": ["S" , ["E"]] , "look_ahead": "$" , "pivote": -1 } ]
+        AST = pcr.ASTNode({  "derivation": ["S",["E"]] , "identifier": "S->E" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+        
+        i0 = [ { "production": ["S" , ["E"]] , "look_ahead": "$" , "pivote": -1 ,"AST":AST } ]
         key_stone = "E"
         look_ahead = "$"
         
@@ -195,17 +197,17 @@ class Parser:
     def build_state( self , state:list , key_stone , look_ahead , pivote= -1):
         
         grammar = self._grammar
-        new_stack = []
         
         for feature in grammar:
             
             for productions in feature:
             
-                production= { "production": productions , "look_ahead" : look_ahead , "pivote":pivote}
-                if productions[0] == key_stone and not self.in_stack( state , production ) :
-                    state.append( production )
+                production= { "production": productions.derivation , "look_ahead" : look_ahead , "pivote":pivote , "AST": productions }
                 
-        return new_stack
+                if production["production"][0] == key_stone and not self.in_stack( state , production ) :
+                    state.append( production )
+                    
+        pass
     
     def fill_row(self,row):
         
@@ -240,7 +242,7 @@ class Parser:
                         error = True
                     
                     found = True
-                    my_row[item] = state[i]["production"]
+                    my_row[item] = (state[i]["production"],state[i]["AST"])
                     if state[i]["production"][0] == "S":
                         my_row[item] = "OK"
                      
@@ -250,7 +252,9 @@ class Parser:
             new_state.append( {
                 "production":state[i]["production"] ,
                 "look_ahead":state[i]["look_ahead"] ,
-                "pivote":state[i]["pivote"] + 1 } )
+                "pivote":state[i]["pivote"] + 1 ,
+                "AST": state[i]["AST"]
+                } )
             
             my_row[item] = state_number + 1
             
@@ -315,6 +319,7 @@ class Parser:
         
         current_state=0
         states_created = 0
+    
         while current_state < len(stack_state):
             
             my_row =self.fill_row(T_U_N)
@@ -345,7 +350,6 @@ class Parser:
                     if printing:
                         print(f"GOTO(I{current_state},{item}):")
                         self.print_state(state_number=len(stack_state)-1,state=state)
-                        # input()
                 
                 elif calculated:
                                         
@@ -391,10 +395,10 @@ class Parser:
                 
                 pass
             
-            elif type(result) == list: # reduce
+            elif type(result) == tuple: # reduce
                 
                 i = 0
-                while i < len(result[1]):
+                while i < len(result[0][1]):
                     state.pop()
                     symbols.pop()
                     i += 1
@@ -402,7 +406,7 @@ class Parser:
                     print(symbols, f"state={state[-1]}")
                     
                 
-                key_stone = result[0]
+                key_stone = result[0][0]
                 last_state_number = state[-1]
                 
                 if self.parser_table[ last_state_number ][ key_stone ] == "*":

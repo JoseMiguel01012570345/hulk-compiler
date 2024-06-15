@@ -1,3 +1,6 @@
+import builder as B
+import production_class_representation as pcr
+import visitor as V
 
 # function_caLL = [
 #     [ "",[ [] , [] ] ]
@@ -71,20 +74,27 @@
 
 numbers = [
     
-    ["E",["E","+","T"]],
-    ["E",["E","-","T"]],
-    ["E",["T"]],
+    # ( ["E",["E","+","T"]] , None ),
+    # ( ["E",["E","-","T"]] , None ),
+    # ( ["E",["T"]] , None ),
     
-    ["T",["T","*","F"]],
-    ["T",["T","/","F"]],
-    ["T",["F"]],
+    # ( ["T",["T","*","F"]] , None ),
+    # ( ["T",["T","/","F"]] , None ),
+    # ( ["T",["F"]] , None ),
     
-    ["F",["(","E",")"]],
-    ["F",["i"]]
+    # ( ["F",["(","E",")"]] , None ),
+    # ( ["F",["i"]] , None )
     
-    # ["E",["A","X","=","X"]],
-    # ["A",["let"]],
-    # ["X",["i"]],
+    pcr.plus({ "derivation" : ["E",["E","+","T"]] , "identifier": "+" ,"definition_node?": False ,"builder": B.plus  , "visitor": V.binary_opt } ),
+    pcr.minus({ "derivation": ["E",["E","-","T"]] , "identifier": "-" ,"definition_node?": False ,"builder": B.minus , "visitor": V.binary_opt } ),
+    pcr.ASTNode({  "derivation": ["E",["T"]] , "identifier": "E->T" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+    
+    pcr.multiplication({ "derivation": ["T",["T","*","F"]] , "identifier": "*" , "definition_node?": False  , "builder": B.multiplier, "visitor": V.binary_opt } ),
+    pcr.divition({ "derivation": ["T",["T","/","F"]] , "identifier": "/" , "definition_node?": False  , "builder": B.divition, "visitor": V.binary_opt } ),
+    pcr.ASTNode({  "derivation": ["T",["F"]] , "identifier": "T->F" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+    
+    pcr.variable({ "derivation": ["F",["i"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.binary_opt } ),
+    pcr.ASTNode({  "derivation": ["F",["(","E",")"]] , "identifier": "brackets" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ),
     
 ]
 
@@ -93,20 +103,16 @@ non_terminals = [
         "E",
         "F",
         "T",
-        # "A",
-        # "X"
                            
 ]
 
 terminals= [
-            
-            # "let",       
+
             "+",
             "-",
             "*",
             "/",
             "i" ,
-            # "=" ,
             "(" ,
             ")" ,
             "$" , 
