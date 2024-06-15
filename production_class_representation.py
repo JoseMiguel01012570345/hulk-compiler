@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 from EnumsTokensDefinition import Type
 '''
@@ -6,6 +7,9 @@ NOTE:
 token_list is of the form : ( label , ASTNode )
 
 '''
+=======
+#____________________________________________________________________________________________>>>>>>>>>>>>>>>>
+>>>>>>> c5c76dc (refactoring)
 
 class ASTNode:
       
@@ -36,6 +40,58 @@ class ASTNode:
                 
                 ]
     parent = None
+<<<<<<< HEAD
+=======
+    derivation = []
+    context = []
+    def_node = False
+    builder = None
+    visitor = None
+    name = ""
+    type_ = ""
+    self_ = ""
+    
+    def __init__(
+        self, grammar= {
+                        
+                        "derivation":"",
+                        "identifier":"" ,
+                        "definition_node?":"" , 
+                        "builder":None , 
+                        "visitor":None
+                    } ) -> None:
+        
+        self.set_identifier(grammar["identifier"])
+        self.derivation_list = grammar["derivation"]
+        self.def_node = grammar["definition_node?"]
+        self.builder = grammar["builder"]
+        self.visitor = grammar["visitor"]
+        
+        pass
+    
+    def suit_(self,token_list):
+        
+        if not self.validator(token_list=token_list): 
+            return False, None
+        
+        self.builder(token_list)
+        
+        self.parent_reference()
+        
+        return True,self
+    
+    def validator(self,token_list):
+        
+        if len(self.derivation) != len(token_list): return False
+        
+        if self.match( token_list=token_list , derivation=self.derivation ): return True
+        
+        return False
+    
+    def match(self,token_list,derivation):
+        
+        return any(lambda x,token : x != token , derivation , token_list)
+>>>>>>> c5c76dc (refactoring)
     
     def parent_reference(self):
         
@@ -172,6 +228,7 @@ class function_call( ASTNode): # check context
     context = []
     avaliable = False
     
+<<<<<<< HEAD
     def __init__( self, token_list ):
         
         if self.validator(token_list):
@@ -191,6 +248,8 @@ class function_call( ASTNode): # check context
     
         else: return [self.args]
     
+=======
+>>>>>>> c5c76dc (refactoring)
     def context_check(self,error_list):
         
         for item in self.context:
@@ -242,6 +301,7 @@ class params( ASTNode):
     avaliable = False
     context = []
     
+<<<<<<< HEAD
     def __init__(self,token_list):
         
         self.set_identifier('params')
@@ -262,6 +322,63 @@ class params( ASTNode):
                 new_parameters = [ item for item in token_list[2][1].parameters ]
                 new_parameters.insert(0,param1)
                 self.parameters = new_parameters
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+                
+    pass
+
+#_________________________________________________BINARY EXPRESSIONS___________________________________________>>>>>>>>>>>>>>>>
+
+class binary_opt(ASTNode):
+    
+    left_node = []
+    right_node = []
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+    
+    pass
+
+class dot(binary_opt):# the context of the left side is passed to the context of the right side
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+    
+    def context_check(self, error_list: list):
+        
+        left_id = self.left_node.id
+        
+        if self.left_node.__dict__["name"] == None:
+            ## error
+            
+            error_type = ""
+            error_description = ""
+            error_list.append({ "type":error_type , "description":error_description })
+            
+            return error_list
+            
+        
+        left_name = self.left_node.name
+        
+        # completar el metodo , este debe buscar en left_node lo que esta en rigth_node
+        
+        
+        pass
+    
+    def check_right_side_context(self, type_name , attr_name , attr_id ):
+        
+        
+        
+        found_attr = False
+        parent_node = self
+
+        while not found_attr:
+            
+            if ASTNode(parent_node).__dict__["parent"] != None:
+                parent_node = ASTNode(parent_node).parent
+            
+>>>>>>> c5c76dc (refactoring)
             else:
                     
                 param2 = token_list[2][1]
@@ -926,6 +1043,7 @@ class variable(ASTNode): # check context
     
     '''
     
+<<<<<<< HEAD
     avaliable = False
     context = []
      
@@ -945,6 +1063,8 @@ class variable(ASTNode): # check context
     def visitor(self):
         return [None]
 
+=======
+>>>>>>> c5c76dc (refactoring)
     def context_check(self,error_list):
         
         for item in self.context:
@@ -975,6 +1095,7 @@ class if_(ASTNode):
     
     '''
     
+<<<<<<< HEAD
     avaliable = False
     context = []
     def __init__(self,token_list):
@@ -993,6 +1114,10 @@ class if_(ASTNode):
 
     def visitor(self):
         return [ self.condition , self.body ]
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+>>>>>>> c5c76dc (refactoring)
 
 class elif_(ASTNode):
     
@@ -1015,6 +1140,7 @@ class elif_(ASTNode):
     
     def __init__(self,token_list):
         
+<<<<<<< HEAD
         if (token_list[0][0] == 'if' and token_list[1][0] == 'elif') : 
             
             self.avaliable = True
@@ -1028,6 +1154,8 @@ class elif_(ASTNode):
     def visitor(self):
         return [ self.condition , self.body  ]
         
+=======
+>>>>>>> c5c76dc (refactoring)
     pass
 
 class else_(ASTNode):
@@ -1067,9 +1195,12 @@ class else_(ASTNode):
     
     pass
 
+<<<<<<< HEAD
     def visitor(self):
         return [ self.condition , self.body ]
 
+=======
+>>>>>>> c5c76dc (refactoring)
 class def_function(ASTNode): # check context
     
     '''
@@ -1193,6 +1324,7 @@ class def_function(ASTNode): # check context
     def equal(self,node1,new_context):
         
         if node1 == None : return False
+<<<<<<< HEAD
         for item in new_context:
         
             if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
@@ -1274,6 +1406,10 @@ class def_function(ASTNode): # check context
         
         return False
     
+=======
+        return any(lambda node: node['id'] == node1['id'] and node['name'] == node1['name'],new_context)
+
+>>>>>>> c5c76dc (refactoring)
     pass
 
 class type_(ASTNode): # check context
@@ -1465,9 +1601,12 @@ class type_(ASTNode): # check context
         
         return False
     
+<<<<<<< HEAD
     def visitor(self):
         return [ self.constructor , self.base , self.base ]
 
+=======
+>>>>>>> c5c76dc (refactoring)
 class protocol(ASTNode): # check context
     
     '''
@@ -1553,10 +1692,14 @@ class protocol(ASTNode): # check context
         error_list.append({ "type": error_type, "description": error_description , "scope":scope})
         
         return error_list
+<<<<<<< HEAD
         
     def visitor(self):
         return [ self.body ]
 
+=======
+    
+>>>>>>> c5c76dc (refactoring)
 class vectors(ASTNode):
     
     '''
@@ -1577,6 +1720,7 @@ class vectors(ASTNode):
     domain = None
     context = []
         
+<<<<<<< HEAD
     def __init__(self,token_list):
         
         self.set_identifier('vector')
@@ -1607,6 +1751,11 @@ class vectors(ASTNode):
     def visitor(self):
         return [ self.filter_ , self.domain ]
 
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+            
+>>>>>>> c5c76dc (refactoring)
 class literal(ASTNode):
     
     '''
@@ -1621,6 +1770,7 @@ class literal(ASTNode):
     avaliable = False
     context = []
     
+<<<<<<< HEAD
     def __init__(self,token_list):
         
         if self.validator(token_list) :
@@ -1647,6 +1797,10 @@ class literal(ASTNode):
     
     def visitor(self):
         return [None]
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+>>>>>>> c5c76dc (refactoring)
     
     pass
 
@@ -1719,8 +1873,11 @@ class index(ASTNode): # check context
             
         return error_list
     
+<<<<<<< HEAD
     def visitor(self):
         return [self.index]
+=======
+>>>>>>> c5c76dc (refactoring)
 class while_(ASTNode):
     
     '''
@@ -1737,6 +1894,7 @@ class while_(ASTNode):
     body = None
     context = []
     
+<<<<<<< HEAD
     def __init__(self,token_list):
         
         if self.validator(token_list):
@@ -1758,6 +1916,11 @@ class while_(ASTNode):
     def visitor(self):
         return [ self.condition , self.body ]
 
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+    
+>>>>>>> c5c76dc (refactoring)
 class for_(ASTNode):
     
     '''
@@ -1849,10 +2012,15 @@ class for_(ASTNode):
         if node1 == None : return False
         for item in new_context:
         
+<<<<<<< HEAD
             if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
         
         return False
 
+=======
+        return any( lambda item: node1['id'] == item['id'] and node1['name'] == item['name'], new_context)
+      
+>>>>>>> c5c76dc (refactoring)
 class block(ASTNode):
     
     '''
@@ -1869,6 +2037,7 @@ class block(ASTNode):
     avaliable = False
     context = []
     
+<<<<<<< HEAD
     def __init__(self,token_list):
         
         self.expressions = []
@@ -1978,4 +2147,8 @@ class block(ASTNode):
         
         else:
             return [self.expressions]
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+>>>>>>> c5c76dc (refactoring)
     

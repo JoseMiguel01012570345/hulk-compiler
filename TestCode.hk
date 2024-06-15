@@ -3,6 +3,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -231,3 +232,6 @@ i - i + i + i + i + i - i $
 =======
  i + i + i * i $
 >>>>>>> 20b2c73 (perfect)
+=======
+i + i  * i + i $
+>>>>>>> c5c76dc (refactoring)

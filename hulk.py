@@ -78,7 +78,7 @@ for state in lexer.LexicalAnalisys(lexer.Tokenize(),FiltToken):
 # go to parse
 if not Error:
     
-    tokens = [token for token in my_list if token.Text != '\n' and token.Text != ' ']
+    tokens = [ token for token in my_list if token.Text != '\n' and token.Text != ' ']
     
     my_list = tokens
     

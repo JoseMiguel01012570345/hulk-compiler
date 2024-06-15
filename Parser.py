@@ -44,7 +44,7 @@ class Parser():
     def __init__(self , code="" ):
 
         self._grammar = GD.grammar
-        # code=["i","+","i" , "*" , "i","$"]
+    
         self._error = None
         self._match = False
         self._stack = []
@@ -626,9 +626,19 @@ class Parser():
             pass
 >>>>>>> 9c513df (parser bug fixed at repeated states)
         
+<<<<<<< HEAD
         return self.parsed_code(stack)
     
     def derivation_tree(self, label , token_list):
+=======
+        return parser_table
+
+    def parse_input(self,code) -> bool:
+    
+        symbols = []
+        state = [0]
+        tree = []
+>>>>>>> c5c76dc (refactoring)
         
         '''
         pattern to follow -> existing tree is child of the new node
@@ -644,8 +654,11 @@ class Parser():
             item = code[k]
 =======
             item = code[k].Text
+<<<<<<< HEAD
             # item = code[k]
 >>>>>>> 344c94b (all on board)
+=======
+>>>>>>> c5c76dc (refactoring)
             
             result =""
             
@@ -704,6 +717,7 @@ class Parser():
             k +=1
         
         pass
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 p = Parser()
@@ -711,3 +725,5 @@ p = Parser()
 =======
 # p = Parser()
 >>>>>>> 344c94b (all on board)
+=======
+>>>>>>> c5c76dc (refactoring)
