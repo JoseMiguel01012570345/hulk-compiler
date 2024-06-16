@@ -3,6 +3,7 @@ import GRAMMAR_PRODUCTIONS as GD
 import production_class_representation as pcr
 import builder as B
 import visitor as V
+import copy
 
 class Parser:
     
@@ -414,10 +415,10 @@ class Parser:
                     i += 1
                 
                     print(symbols, f"state={state[-1]}")
-                    
-                print("token_list:",token_list)
                 
-                ast_initialized = result[1].ignition(token_list=token_list)
+                ast = copy.deepcopy(result[1])
+                
+                ast_initialized = ast.ignition(token_list=token_list)
                 tree.append(ast_initialized)
                     
                 key_stone = result[0][0]
@@ -430,7 +431,7 @@ class Parser:
                 state.append( self.parser_table[ last_state_number ][ key_stone ] )
                 
                 symbols.append(key_stone)
-                # print(symbols, f"state={state[-1]}" )
+                print(symbols, f"state={state[-1]}" )
                 
                 continue  
                 

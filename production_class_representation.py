@@ -55,16 +55,15 @@ class ASTNode:
         
         pass
     
-    def ast_reducer(self):
+    def ast_reducer(self, ast_node ):
         
         children = self.visitor(self)
         
         if len(children) == 1 and children[0] != None:
-            self = children[0]
-            self.ast_reducer()
+            return children[0],False
         
-        pass
-    
+        return self,True
+            
     def ignition(self,token_list):
         
         attributes = self.builder(token_list)
@@ -72,11 +71,12 @@ class ASTNode:
         for property in attributes: # property: ( property_name , property_value)
             self.__dict__[property[0]] = property[1]
         
-        self.ast_reducer()
-            
-        self.parent_reference()
+        ast_node, is_self = self.ast_reducer(self)
         
-        return self
+        if is_self:
+            self.parent_reference()
+        
+        return ast_node
     
     def parent_reference(self):
         
