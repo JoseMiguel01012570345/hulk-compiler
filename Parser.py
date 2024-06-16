@@ -36,13 +36,15 @@ class Parser:
                 print(f"I{i}={element}")
                 i+=1
         
-        ok = self.parse_input(code=code)
+        ok , tree = self.parse_input(code=code)
+        
         
         if not ok:
             self._error = True
         
         else:
             print(f"\033[1;32m {ok} \033[0m")
+            self.tree = tree
         
         pass
     
@@ -436,7 +438,7 @@ class Parser:
                 continue  
                 
             elif result == "OK":
-                return True
+                return True , tree[0]
             
             else:
                 print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")

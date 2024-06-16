@@ -1,4 +1,4 @@
-#____________________________________________________________________________________________>>>>>>>>>>>>>>>>
+import copy
 
 class ASTNode:
       
@@ -55,9 +55,12 @@ class ASTNode:
         
         pass
     
-    def ast_reducer(self, ast_node ):
+    def visitor_ast(self):
+        return self.visitor(self)
+    
+    def ast_reducer(self):
         
-        children = self.visitor(self)
+        children = self.visitor_ast()
         
         if len(children) == 1 and children[0] != None:
             return children[0],False
@@ -71,7 +74,7 @@ class ASTNode:
         for property in attributes: # property: ( property_name , property_value)
             self.__dict__[property[0]] = property[1]
         
-        ast_node, is_self = self.ast_reducer(self)
+        ast_node, is_self = self.ast_reducer()
         
         if is_self:
             self.parent_reference()
@@ -80,7 +83,7 @@ class ASTNode:
     
     def parent_reference(self):
         
-        list_children = self.visitor(self)
+        list_children = self.visitor_ast()
         
         for child in list_children:
             
@@ -102,56 +105,67 @@ class ASTNode:
         
         return self.id
     
-    def check_children(self,error_list):
+    def check_context(self,error_list):
         
         children = self.visitor(self)    
             
-        for child in children:
+        if self.id == "var": # check if I am a variable
+            
+            error_type = "variable declaration"
+            error_description = "variable used before declared"
+            
+            self.context_checker( node_id= self.id , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name )    
+        
+        elif self.def_node: # check if I am a definition node
+            
+            error_type = "definition error"
+            error_description = f" {child.id} {child.name} already defined"
+            
+            self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name )    
+        
+        for child in children: # otherwise , check children
                 
             if child != None:
-                ASTNode(child).context_check(error_list)    
+                
+                child.check_context(error_list)
+        
+                pass
+            
+            pass
+        
+        pass        
     
-    def context_checker(self, node_id , error_list:list , error_type , error_description, allow_apparence , name ,type_name= None):
+    def context_checker(self, node_id , error_list:list , error_type , error_description , name , type_name=None ):
         
-        # falta determinar que nodos hacen este analisis, porque no todos los nodos deben hacerlo, en especial nodos como "varibles" y declaracion de: "funciones" , "types" , "protocols" y "let"
-        node_exists = self.search_in_ast( name , node_id, type_name=type_name )
+        allow_apparence = True
         
-        if node_exists and allow_apparence:
+        if self.def_node:
+            allow_apparence = False
         
-            self.check_children(error_list)
-            pass    
+        node_existence = self.search_in_ast( attr_name=name , attr_id=node_id, type_protocol_name=type_name ,parent_node=self.parent )
         
-        else:
+        if node_existence and allow_apparence or not( node_existence and allow_apparence ) : 
+            return 
+        
+        else: # if node does not exits and should exist , report an error. If exit and it shouldn't ,  report an error
             
             error_ = { "type" : error_type , "description" : error_description }
             error_list.append(error_)
         
         return error_list
     
-    def search_in_ast(self , attr_name , attr_id , type_name= None ) -> bool:
+    def search_in_ast(self , attr_name , attr_id , type_protocol_name= None , parent_node=None, parent_number=0) -> bool: # search for a feature in ast
+    
+        '''
+        code:
         
-        parent_node = self
-
-        while True:
-            
-            if ASTNode(parent_node).__dict__["parent"] != None:
-            
-                parent_node = ASTNode(parent_node).parent
-                
-                if type_name != None:
-                    
-                    if parent_node.__dict__["name"] == None : 
-                        continue
-                    if parent_node.name != type_name:
-                        continue
-                    
-                for item in type_(parent_node).body:
-            
-                    if ASTNode(item).id == attr_id and ASTNode(item).__dict__["name"] == attr_name:
-                        return True
-            
-            else:
-                return False
+        1) Check for the children of the parent except for the actual child
+        2) if a type or protocol name is declared , we have to focus search on such node ,
+            otherwie we check for node existence out of a specific node in it's range of view
+         
+        '''
+        
+        pass    
         
     def infer_type(self,error_list:list):
         pass
@@ -1238,4 +1252,3 @@ class block(ASTNode):
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
-    

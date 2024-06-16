@@ -11,3 +11,4 @@ def brackets(self:pcr.ASTNode):
 
 def replacement(self:pcr.ASTNode):
     return [self.replacement]
+

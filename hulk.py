@@ -94,19 +94,16 @@ if not Error:
     
     gp =P.Parser( my_list )
 
-    # if gp.derivation_Tree == None: 
+    ast = gp.tree
+    if ast == None: 
         
-    #     print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
+        print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
 
 #_________________________SEMANTIC CHEKING__________________________________
 
-    # gp.derivation_Tree.parent_reference()
-
-    # gp.derivation_Tree.send_context()
+    context_error = semantic_errors.context_errors()
     
-    # context_error = semantic_errors.context_errors()
-    
-    # error_list = gp.derivation_Tree.context_check([])
+    # error_list = ast.context_check([])
     
     # context_error.add_error(error_list)
     
