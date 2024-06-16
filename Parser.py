@@ -90,12 +90,20 @@ class Parser:
                 print(f"I{i}={element}")
                 i+=1
         
-        ok = self.parse_input(code=code)
+        ok , tree = self.parse_input(code=code)
+        
         
         if not ok:
 >>>>>>> 31c5d2d (moving out verbose info)
             self._error = True
         
+<<<<<<< HEAD
+=======
+        else:
+            print(f"\033[1;32m {ok} \033[0m")
+            self.tree = tree
+        
+>>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
         pass
     
     @property
@@ -743,7 +751,7 @@ class Parser:
                 continue  
                 
             elif result == "OK":
-                return True
+                return True , tree[0]
             
             else:
                 print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")

@@ -100,6 +100,7 @@ if not Error:
     gp =P.Parser( my_list )
 >>>>>>> 5798f64 (another fix to the parser)
 
+<<<<<<< HEAD
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
 
     if gp.Error : exit()
@@ -117,6 +118,18 @@ if not Error:
     context_error = semantic_errors.context_errors()
     
     error_list = gp.derivation_Tree.context_check([])
+=======
+    ast = gp.tree
+    if ast == None: 
+        
+        print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
+
+#_________________________SEMANTIC CHEKING__________________________________
+
+    context_error = semantic_errors.context_errors()
+    
+    # error_list = ast.context_check([])
+>>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
     
     context_error.add_error(error_list)
     

@@ -18,3 +18,4 @@ def brackets(token_list):
 
 def replacement(token_list):
     return [( "replacement" , token_list[0])]
+
