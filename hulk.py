@@ -103,11 +103,13 @@ if not Error:
 
     context_error = semantic_errors.context_errors()
     
-    # error_list = ast.context_check([])
+    error_list = []
     
-    # context_error.add_error(error_list)
+    ast.check_context(error_list)
     
-    # context_error.print_()
+    context_error.add_error(error_list)
+    
+    context_error.print_()
     
 #_________________________CODE GENERATION__________________________________
 
