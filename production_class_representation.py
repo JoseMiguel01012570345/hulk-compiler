@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 from EnumsTokensDefinition import Type
 '''
@@ -14,6 +15,8 @@ token_list is of the form : ( label , ASTNode )
 =======
 import copy
 >>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
+=======
+>>>>>>> 9d5529b (context checking has passed a few tests)
 
 class ASTNode:
       
@@ -236,16 +239,32 @@ class ASTNode:
             error_type = "variable declaration"
             error_description = "variable used before declared"
             
-            self.context_checker( node_id= self.id , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name )    
+            int_max =  2**63 - 1
+            
+            if self.parent.id == "params": 
+                
+                # if parent are parameter , it means that the actual node is contained into
+                # a function call or a def function or a type definition or a protocol definition,
+                # so we have to desambiguate
+                
+                if self.parent.parent.def_node: # the parent of the params is a def function or a def type or a def protocol
+                    
+                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=1 )    
+                
+                else: # the parent of the params is a function call
+                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max )    
+                
+            else: # the node is not contained in params
+                self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max )    
         
         elif self.def_node: # check if I am a definition node
             
             error_type = "definition error"
             error_description = f" {child.id} {child.name} already defined"
             
-            self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name )    
+            self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=1 )    
         
-        for child in children: # otherwise , check children
+        for child in children: # check children
                 
             if child != None:
                 
@@ -257,37 +276,63 @@ class ASTNode:
         
         pass        
     
-    def context_checker(self, node_id , error_list:list , error_type , error_description , name , type_name=None ):
+    def context_checker( self, node_id , error_list:list , error_type , error_description , name , type_name=None , h=0 ):
         
         allow_apparence = True
         
         if self.def_node:
             allow_apparence = False
         
-        node_existence = self.search_in_ast( attr_name=name , attr_id=node_id, type_protocol_name=type_name ,parent_node=self.parent )
+        node_existence = self.search_in_ast( attr_name=name , attr_id=node_id , type_protocol_name=type_name , h=h )
         
-        if node_existence and allow_apparence or not( node_existence and allow_apparence ) : 
-            return 
+        if allow_apparence and node_existence == 2:
+            return error_list
         
-        else: # if node does not exits and should exist , report an error. If exit and it shouldn't ,  report an error
-            
-            error_ = { "type" : error_type , "description" : error_description }
-            error_list.append(error_)
+        if not allow_apparence and node_existence == 1:
+            return error_list
+        
+        # if node does not exits and should exist , report an error. If exit and it shouldn't ,  report an error
+        error_ = { "type" : error_type , "description" : error_description }
+        error_list.append(error_)
         
         return error_list
     
-    def search_in_ast(self , attr_name , attr_id , type_protocol_name= None , parent_node=None, parent_number=0) -> bool: # search for a feature in ast
+    def search_in_ast(self , attr_name , attr_id , type_protocol_name= None , n=0 , h=0 ) -> int: # return the number of features in ast
     
-        '''
-        code:
+        parent = self.parent
         
-        1) Check for the children of the parent except for the actual child
-        2) if a type or protocol name is declared , we have to focus search on such node ,
-            otherwie we check for node existence out of a specific node in it's range of view
-         
-        '''
+        while parent != None or h == -1 :
         
-        pass    
+            for child in parent.visitor_ast(): 
+                
+                if child == None : continue
+                
+                if type_protocol_name == None: # pass over child if type_protocol_name is not defined
+                    
+                   if child.__dict__.__contains__("name") and child.name == attr_name and child.id == attr_id:
+                        
+                        n+=1
+                       
+                        pass
+                
+                # if type_protocol_name is defined , then search in types or protocols
+                elif child.__dict__.__contains__("name") and type_protocol_name == child.name and ( child.id == "type" or child.id == "protocol") :
+                    
+                    type_protocol_block = child.visitor_ast()
+                    
+                    for filds in type_protocol_block:
+                        
+                        if filds.__dict__.__contains__("name") and filds["name"] == attr_name and filds.id == attr_id:
+                            
+                            n +=1
+                            
+                            pass    
+                
+                    
+            parent = parent.parent
+            h -= 1
+        
+        return n
         
     def infer_type(self,error_list:list):
 >>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)

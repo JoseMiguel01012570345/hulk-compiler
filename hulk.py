@@ -128,11 +128,20 @@ if not Error:
 
     context_error = semantic_errors.context_errors()
     
+<<<<<<< HEAD
     # error_list = ast.context_check([])
 >>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
     
     context_error.add_error(error_list)
     
+=======
+    error_list = []
+    
+    ast.check_context(error_list)
+    
+    context_error.add_error(error_list)
+    
+>>>>>>> 9d5529b (context checking has passed a few tests)
     context_error.print_()
     
 #_________________________CODE GENERATION__________________________________
