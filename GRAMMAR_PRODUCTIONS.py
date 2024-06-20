@@ -41,6 +41,7 @@ expression_block = [
     ["E",  [["T" ,".","b"] ]]
 ]
 
+<<<<<<< HEAD
 literals = [
 
 <<<<<<< HEAD
@@ -67,6 +68,8 @@ literals = [
 
 # ]
 
+=======
+>>>>>>> 3c71142 (asigment and variable declaration , ok)
 # booleans = [
     
 #     [ "",[ [] , [] ] ]
@@ -116,8 +119,21 @@ literals = [
 #     [ "",[ [] , [] ] ]
 # ]
 
+variable = [
+    
+    pcr.variable({  "derivation": ["A",["F", "=" , "E" ]] , "identifier": "var" , "definition_node?": False ,"builder": B.re_asigment , "visitor": V.var } ) ,
+    
+]
+
+let = [
+
+    # A -> let F = X
+    pcr.let({  "derivation": ["A",["let","F", "=" , "E" ]] , "identifier": "let" , "definition_node?": True ,"builder": B.let , "visitor": V.let } ) ,
+]
+
 numbers = [
     
+<<<<<<< HEAD
 <<<<<<< HEAD
     # ( ["E",["E","+","T"]] , None ),
     # ( ["E",["E","-","T"]] , None ),
@@ -179,12 +195,16 @@ numbers = [
     # E -> E + T
 >>>>>>> f0e66da (formated productions)
     pcr.plus({ "derivation" : ["E",["E","+","T"]] , "identifier": "+" ,"definition_node?": False ,"builder": B.plus  , "visitor": V.binary_opt } ),
+=======
+    # X -> X + T
+    pcr.plus({ "derivation" : ["X",["X","+","T"]] , "identifier": "+" ,"definition_node?": False ,"builder": B.plus  , "visitor": V.binary_opt } ),
+>>>>>>> 3c71142 (asigment and variable declaration , ok)
     
-    # E -> E - T
-    pcr.minus({ "derivation": ["E",["E","-","T"]] , "identifier": "-" ,"definition_node?": False ,"builder": B.minus , "visitor": V.binary_opt } ),
+    # X -> X - T
+    pcr.minus({ "derivation": ["X",["X","-","T"]] , "identifier": "-" ,"definition_node?": False ,"builder": B.minus , "visitor": V.binary_opt } ),
     
-    # E -> T
-    pcr.ASTNode({  "derivation": ["E",["T"]] , "identifier": "E->T" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+    # X -> T
+    pcr.ASTNode({  "derivation": ["X",["T"]] , "identifier": "E->T" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
     
     # T-> T * F
     pcr.multiplication({ "derivation": ["T",["T","*","F"]] , "identifier": "*" , "definition_node?": False  , "builder": B.multiplier, "visitor": V.binary_opt } ),
@@ -197,9 +217,27 @@ numbers = [
     
     # F -> i
     pcr.variable({ "derivation": ["F",["i"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
+<<<<<<< HEAD
     # F -> ( E )
     pcr.ASTNode({  "derivation": ["F",["(","E",")"]] , "identifier": "brackets" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ),
 >>>>>>> b1116a1 (AST almost integrated to parser)
+=======
+    
+    # F -> ( X )
+    pcr.ASTNode({  "derivation": ["F",["(","X",")"]] , "identifier": "brackets" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ),
+    
+    # E -> A
+    pcr.ASTNode({  "derivation": ["E",["A" ]] , "identifier": "E-> A" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    
+    # E -> T ;
+    pcr.ASTNode({  "derivation": ["E",["T",";" ]] , "identifier": "E-> T ;" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    
+    # E -> F ;
+    pcr.ASTNode({  "derivation": ["E",["F",";" ]] , "identifier": "E-> F ;" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    
+    # E -> X ;
+    pcr.ASTNode({  "derivation": ["E",["X",";" ]] , "identifier": "E-> X ;" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+>>>>>>> 3c71142 (asigment and variable declaration , ok)
     
 >>>>>>> 20b2c73 (perfect)
 ]
@@ -248,8 +286,10 @@ booleans = [
 >>>>>>> 9c513df (parser bug fixed at repeated states)
 =======
         "E",
+        "X",
         "F",
         "T",
+        "A",
                            
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
 ]
@@ -274,7 +314,10 @@ numbers = [
 =======
 =======
 terminals= [
-
+            
+            "let",
+            "=",
+            ";",
             "+",
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -304,6 +347,7 @@ terminals= [
         ]
 >>>>>>> 9c513df (parser bug fixed at repeated states)
 
+<<<<<<< HEAD
 IN = [
     
     ["p",[["p","$2"]]],
@@ -364,4 +408,11 @@ vector = [
 gramar =[ vector , protocols , types , function , While , conditional , 
          For , IN , numbers , booleans , literals , expression_block , 
          strings , function_caLL
+=======
+grammar =[ 
+          numbers, let, variable,
+        #  For , IN  , booleans  , expression_block , 
+        #   vector , protocols , types , function , While , conditional , 
+        #  strings , function_caLL
+>>>>>>> 3c71142 (asigment and variable declaration , ok)
         ]

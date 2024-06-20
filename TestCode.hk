@@ -5,6 +5,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -239,3 +240,6 @@ i + i  * i + i $
 =======
 i + i + (i  / i) + i - i $
 >>>>>>> 9d5529b (context checking has passed a few tests)
+=======
+i = i + i + ( i  / i ) + i - i ; $ 
+>>>>>>> 3c71142 (asigment and variable declaration , ok)

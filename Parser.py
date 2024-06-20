@@ -91,7 +91,7 @@ class Parser:
                 i+=1
         
         ok , tree = self.parse_input(code=code)
-        
+        self.tree = tree
         
         if not ok:
 >>>>>>> 31c5d2d (moving out verbose info)
@@ -101,7 +101,6 @@ class Parser:
 =======
         else:
             print(f"\033[1;32m {ok} \033[0m")
-            self.tree = tree
         
 >>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
         pass
@@ -155,19 +154,21 @@ class Parser:
 =======
             for p in feature:
                 
-                if p[0] == alpha:
+                derivation = p.derivation
+                        
+                if derivation[0] == alpha:
                 
-                    if self.contains( p[1][0] , self.terminals ):
-                        return p[1][0]
+                    if self.contains( derivation[1][0] , self.terminals ):
+                        return derivation[1][0]
                 
                     else:
                         
-                        if visited.__contains__(p[1][0]):
+                        if visited.__contains__(derivation[1][0]):
                             continue
                         
-                        if len(p[1][0]) != 0:
+                        if len(derivation[1][0]) != 0:
                         
-                            terminal = self.non_terminal_first( p[1][0] , visited )
+                            terminal = self.non_terminal_first( derivation[1][0] , visited )
                         
                             if terminal != "":
                                 return terminal
@@ -675,6 +676,7 @@ class Parser:
             
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
         
         return AST_node
@@ -688,25 +690,28 @@ class Parser:
 >>>>>>> 344c94b (all on board)
 =======
 >>>>>>> c5c76dc (refactoring)
+=======
+            item = code[k]
+>>>>>>> 3c71142 (asigment and variable declaration , ok)
             
             result =""
             
-            if dict(self.parser_table[ state[-1] ]).__contains__( item ) : 
-                result = self.parser_table[ state[-1] ][item]
+            if dict(self.parser_table[ state[-1] ]).__contains__( item.Text ) : 
+                result = self.parser_table[ state[-1] ][ item.Text ]
                 
                 if result == "*":
                     print("invalid string")    
-                    return False
+                    return False , None
             
             else:
                 print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
-                return False
+                return False , None
 
             if type(result) == int: # shift
                 
                 state.append(result)
                 
-                symbols.append(item)
+                symbols.append(item.Text)
                 print(symbols , f"state={state[-1]}" )
                 
                 tree.append(item)
@@ -741,7 +746,7 @@ class Parser:
                 
                 if self.parser_table[ last_state_number ][ key_stone ] == "*":
                     print("invalid string")    
-                    return False
+                    return False , None
                 
                 state.append( self.parser_table[ last_state_number ][ key_stone ] )
                 
@@ -755,7 +760,7 @@ class Parser:
             
             else:
                 print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
-                return False
+                return False , None
             
             k +=1
         

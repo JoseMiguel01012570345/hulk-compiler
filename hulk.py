@@ -123,6 +123,7 @@ if not Error:
     if ast == None: 
         
         print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
+        exit()
 
 #_________________________SEMANTIC CHEKING__________________________________
 
