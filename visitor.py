@@ -4,7 +4,7 @@ def binary_opt(self:pcr.binary_opt):
     return [ self.left_node , self.right_node ]
 
 def var(self:pcr.variable):
-    return [None]
+    return [ None , self.value ]
 
 def brackets(self:pcr.ASTNode):
     return [self.expression]
@@ -12,3 +12,5 @@ def brackets(self:pcr.ASTNode):
 def replacement(self:pcr.ASTNode):
     return [self.replacement]
 
+def let( self: pcr.ASTNode ):
+    return [ self.name ,  self.value ]

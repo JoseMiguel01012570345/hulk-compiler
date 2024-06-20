@@ -115,13 +115,13 @@ class ASTNode:
             
             int_max =  2**63 - 1
             
-            if self.parent.id == "params": 
+            if self.parent != None and self.parent.id == "params": 
                 
                 # if parent are parameter , it means that the actual node is contained into
                 # a function call or a def function or a type definition or a protocol definition,
                 # so we have to desambiguate
                 
-                if self.parent.parent.def_node: # the parent of the params is a def function or a def type or a def protocol
+                if self.parent != None and self.parent.parent != None and self.parent.parent.def_node: # the parent of the params is a def function or a def type or a def protocol
                     
                     self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=1 )    
                 
