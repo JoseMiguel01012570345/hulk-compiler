@@ -14,3 +14,6 @@ def replacement(self:pcr.ASTNode):
 
 def let( self: pcr.ASTNode ):
     return [ self.name ,  self.value ]
+
+def block( self: pcr.ASTNode ):
+    return [ None , self.expressions ]

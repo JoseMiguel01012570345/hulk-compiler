@@ -1,4 +1,5 @@
 from EnumsTokensDefinition import TokenType,Type
+import production_class_representation as pcr
 
 def plus(token_list):
     return [ ( "left_node" , token_list[0] ) , ( "right_node" , token_list[2] ) ]
@@ -33,3 +34,16 @@ def literal(token_list):
 
 def re_asigment(token_list):    
     return [ ( "name" , token_list[0].name ) , ("value", token_list[-1] ) ] 
+
+def block(token_list):
+    
+    if not  token_list[0].__dict__.__contains__("id")  :
+        return [ ( "expressions" , [token_list[1]] ) ]
+    
+    else:
+        
+        token_list[0].expressions.append(token_list[-1])
+        
+        return [ ( "expressions" , token_list[0]  ) ]
+        
+    

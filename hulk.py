@@ -51,13 +51,18 @@ recognizers = {
 # start lexer with defined rules
 
 lexer = Lexer(recognizers)
+lexer1 = Lexer(recognizers)
+lexer1.LoadCode("$\n")
 
 system("cls")
 
 # load code
 reader = open('TestCode.hk','r')
 code = reader.read()
+
 lexer.LoadCode(code)
+
+# print(code)
 
 # check for lexical errors
 Error = False
@@ -75,6 +80,7 @@ for state in lexer.LexicalAnalisys(lexer.Tokenize(),FiltToken):
     pass
 
 #__________________PARSER__________________________________________
+
 # go to parse
 if not Error:
     
@@ -82,13 +88,17 @@ if not Error:
     
     my_list = tokens
     
+<<<<<<< HEAD
     # ------------PRINTS_TOKEN_SEQUENCE----------------
     # zz=[]
     # for item in my_list:
     #     zz.append(item.Text)
     
+=======
+    #------------PRINTS_TOKEN_SEQUENCE----------------
+>>>>>>> d3a2291 (blocks made)
     # for t in my_list:
-    #     print(t)
+    #     print(t.Text)
     #     pass
     # ----------------------------
     

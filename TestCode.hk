@@ -6,6 +6,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -243,3 +244,6 @@ i + i + (i  / i) + i - i $
 =======
 i = i + i + ( i  / i ) + i - i ; $ 
 >>>>>>> 3c71142 (asigment and variable declaration , ok)
+=======
+{ let a = 0 ;  a = 10 ; } $
+>>>>>>> d3a2291 (blocks made)

@@ -3,6 +3,7 @@ import production_class_representation as pcr
 import visitor as V
 
 function_caLL = [
+<<<<<<< HEAD
     ["F",[ ["c","P"] , ["c","N" ] , ["c","T"] ] ],
     ["P",[["(","p",")"]]],
     ["T",[["F"]],],
@@ -71,53 +72,50 @@ literals = [
 =======
 >>>>>>> 3c71142 (asigment and variable declaration , ok)
 # booleans = [
-    
-#     [ "",[ [] , [] ] ]
-# ]
+=======
 
-# IN = [
+]
+
+strings = [
     
-#     [ "",[ [] , [] ] ]
+]
+
+booleans = [
+>>>>>>> d3a2291 (blocks made)
+    
+]
+
+IN = [
        
-# ]
+]
 
-# For = [
-    
-#     [ "",[ [] , [] ] ]  
-    
-# ]
+For = [
+        
+]
 
-# conditional = [
-    
-#     [ "",[ [] , [] ] ]
-    
-# ]
+conditional = [
+        
+]
 
-# While = [
+While = [
+
+]
+
+function = [    
+
+]
+
+types = [
+
+]
+
+protocols = [
     
-#     [ "",[ [] , [] ] ]
-# ]
+]
 
-# function = [    
- 
-#     [ "",[ [] , [] ] ]
-# ]
+vector = [
 
-# types = [
-    
-#     [ "",[ [] , [] ] ]
-# ]
-
-# protocols = [
-
-#     [ "",[ [] , [] ] ]
-    
-# ]
-
-# vector = [
-    
-#     [ "",[ [] , [] ] ]
-# ]
+]
 
 variable = [
     
@@ -125,6 +123,18 @@ variable = [
     
 ]
 
+expression_block = [
+    
+    # B -> { E
+    pcr.block({  "derivation": ["B",[ "{", "E" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    # B -> BE
+    pcr.block({  "derivation": ["B",[ "B", "E" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
+    # E-> B }    
+    pcr.block({  "derivation": ["E",[ "B", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    # E-> B } ;    
+    # pcr.block({  "derivation": ["E",[ "B", "}",";" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    
+]
 let = [
 
     # A -> let F = X
@@ -216,12 +226,16 @@ numbers = [
     pcr.ASTNode({  "derivation": ["T",["F"]] , "identifier": "T->F" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
     
     # F -> i
+<<<<<<< HEAD
     pcr.variable({ "derivation": ["F",["i"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
 <<<<<<< HEAD
     # F -> ( E )
     pcr.ASTNode({  "derivation": ["F",["(","E",")"]] , "identifier": "brackets" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ),
 >>>>>>> b1116a1 (AST almost integrated to parser)
 =======
+=======
+    pcr.variable({ "derivation": ["F",["int"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
+>>>>>>> d3a2291 (blocks made)
     
     # F -> ( X )
     pcr.ASTNode({  "derivation": ["F",["(","X",")"]] , "identifier": "brackets" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ),
@@ -290,6 +304,7 @@ booleans = [
         "F",
         "T",
         "A",
+        "B"
                            
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
 ]
@@ -338,10 +353,16 @@ terminals= [
             "-",
             "*",
             "/",
+<<<<<<< HEAD
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
             "i" ,
+=======
+            "int" ,
+>>>>>>> d3a2291 (blocks made)
             "(" ,
             ")" ,
+            "{",
+            "}",
             "$" , 
             
         ]
@@ -410,9 +431,18 @@ gramar =[ vector , protocols , types , function , While , conditional ,
          strings , function_caLL
 =======
 grammar =[ 
+<<<<<<< HEAD
           numbers, let, variable,
         #  For , IN  , booleans  , expression_block , 
         #   vector , protocols , types , function , While , conditional , 
         #  strings , function_caLL
 >>>>>>> 3c71142 (asigment and variable declaration , ok)
+=======
+          
+        numbers, let, variable,expression_block,
+        For , IN  , booleans   , 
+        vector , protocols , types , function , While , conditional , 
+        strings , function_caLL
+        
+>>>>>>> d3a2291 (blocks made)
         ]

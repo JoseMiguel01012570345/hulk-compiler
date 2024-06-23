@@ -14,6 +14,7 @@ import production_class_representation as pcr
 import builder as B
 import visitor as V
 import copy
+from HULK_LANGUAGE_DEFINITION import SYMBOLS_and_OPERATORS_parser as symb_and_op
 
 class Parser:
 >>>>>>> b1116a1 (AST almost integrated to parser)
@@ -105,6 +106,12 @@ class Parser:
 >>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
         pass
     
+<<<<<<< HEAD
+=======
+    def contains(self , my_token , dic: list):
+        return dic.__contains__(my_token)
+        
+>>>>>>> d3a2291 (blocks made)
     @property
     def Error(self):
         return self._error
@@ -677,6 +684,7 @@ class Parser:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         AST_node = dt.builder( label , token_list ).ASTNode # pick the builder
         
         return AST_node
@@ -693,17 +701,23 @@ class Parser:
 =======
             item = code[k]
 >>>>>>> 3c71142 (asigment and variable declaration , ok)
+=======
+            item = code[k].Text
+>>>>>>> d3a2291 (blocks made)
             
+            if not self.special_token(item=item):
+                item = "int"
+                
             result =""
             
-            if dict(self.parser_table[ state[-1] ]).__contains__( item.Text ) : 
-                result = self.parser_table[ state[-1] ][ item.Text ]
+            if dict(self.parser_table[ state[-1] ]).__contains__( item ) : 
+                result = self.parser_table[ state[-1] ][ item ]
                 
                 if result == "*":
-                    print("invalid string")    
+                    print("invalid string in language")
                     return False , None
             
-            else:
+            else: # no language belongness
                 print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
                 return False , None
 
@@ -711,10 +725,11 @@ class Parser:
                 
                 state.append(result)
                 
-                symbols.append(item.Text)
+                symbols.append(item)
+                    
                 print(symbols , f"state={state[-1]}" )
                 
-                tree.append(item)
+                tree.append(code[k])
                 
                 pass
             
@@ -758,12 +773,13 @@ class Parser:
             elif result == "OK":
                 return True , tree[0]
             
-            else:
+            else: # error
                 print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
                 return False , None
             
             k +=1
         
+<<<<<<< HEAD
         pass
 <<<<<<< HEAD
 
@@ -775,3 +791,8 @@ p = Parser()
 >>>>>>> 344c94b (all on board)
 =======
 >>>>>>> c5c76dc (refactoring)
+=======
+    
+    def special_token(self,item):
+        return self.terminals.__contains__(item) or symb_and_op.__contains__(item)
+>>>>>>> d3a2291 (blocks made)

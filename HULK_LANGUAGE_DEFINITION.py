@@ -113,7 +113,7 @@ KEYWORD_VALUES = [
     'sqrt',
     'rand',
     'range',
-    'inherits'
+    'inherits',
 ]
 
 KEYWORD_DICT = {
@@ -258,7 +258,7 @@ SIMBOL_VALUES = [
     "\n",
     "self",
     ":",
-    ""
+    "",
 ]
 
 SIMBOL_DICT = {
@@ -332,7 +332,6 @@ SYMBOLS_and_OPERATORS_parser=[
     'inherits',
     'extends',
     ',',
-    '\n',
     ';',
     '=>',
     ':',
@@ -370,6 +369,4 @@ SYMBOLS_and_OPERATORS_parser=[
     "]",
     "@@",
     '**',
-    '//'
 ]
-LoadDefinition()
