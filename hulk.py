@@ -159,10 +159,14 @@ if not Error:
 
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     AST = ASTCilBuilder(gp.derivation_Tree)
 =======
     # AST = ASTCilBuilder( ast=ast )
 >>>>>>> cb6fe93 (fixes made to grammar)
+=======
+    AST = ASTCilBuilder( ast=ast )
+>>>>>>> 4e16424 (refactoring cil code)
     
     print(AST.Code)
 
