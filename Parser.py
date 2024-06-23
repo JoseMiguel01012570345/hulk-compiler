@@ -63,6 +63,7 @@ class Parser:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         parsed_code = self.gradient_parser(grammar,self._stack,code)
         
 <<<<<<< HEAD
@@ -77,6 +78,14 @@ class Parser:
 =======
         printing=0
 >>>>>>> c1b5cd8 (parser-ast integrated)
+=======
+        printing=1
+        
+        if printing == 1:
+            file = open("automata_states_log","w")
+            file.write("")
+            file.close()
+>>>>>>> cb6fe93 (fixes made to grammar)
         
         i0 = self.I0(printing=printing)
         
@@ -85,11 +94,11 @@ class Parser:
         
         self.parser_table = parser_table
         
-        if printing:
-            i=0
-            for element in parser_table:
-                print(f"I{i}={element}")
-                i+=1
+        # if printing:
+        #     i=0
+        #     for element in parser_table:
+        #         print(f"I{i}={element}")
+        #         i+=1
         
         ok , tree = self.parse_input(code=code)
         self.tree = tree
@@ -289,14 +298,22 @@ class Parser:
 =======
     def print_state(self, state_number , state):
         
-        print( f"\033[1;32m I{state_number} \033[0m" , "=\033[1;33m { \033[0m")    
+        s = "\n"
+        s += f"I{state_number}" + "= { "
+        s += "\n"
         for dic in state:
 
-            self.print_production(dic["production"],dic["look_ahead"],dic["pivote"])
+            s += self.print_production(dic["production"],dic["look_ahead"],dic["pivote"])
+            s += "\n"
 
             pass
         
-        print("\033[1;33m } \033[0m")
+        s += " }"
+        
+        # input()
+        file = open("automata_states_log","a")
+        file.write(s)
+        file.close()
         
         pass
     
@@ -306,9 +323,9 @@ class Parser:
         for item in production[1]:
             s +=  item + " "
         
-        print("\033[1m" , production[0] , "->" , s , f", c=\"{look_ahead}\"" , ", pivote:" , pivote , "\033[0m" )
+        s = str(production[0]) + "->" + s + ", c=\"" + look_ahead + "\""  + ", pivote:" + str(pivote)
         
-        pass
+        return s
     
     def I0(self,printing=True):
         
@@ -633,7 +650,11 @@ class Parser:
                 if error:
                     
                     if printing:
-                        print(f"GOTO(I{current_state},{item}):")
+                        
+                        file = open("automata_states_log","a")
+                        file.write(f"\n GOTO(I{current_state},{item}):")
+                        file.close()
+                        
                         self.print_state(state_number=len(stack_state)-1,state=state)
                         print("grammar is not LR(1)")
                         exit()
@@ -650,7 +671,10 @@ class Parser:
                     stack_state.append(state) 
                     
                     if printing:
-                        print(f"GOTO(I{current_state},{item}):")
+                        file = open("automata_states_log","a")
+                        file.write(f"\n GOTO(I{current_state},{item}):")
+                        file.close()
+                        
                         self.print_state(state_number=len(stack_state)-1,state=state)
                 
                 elif calculated:
@@ -778,6 +802,7 @@ class Parser:
                 return False , None
             
             k +=1
+<<<<<<< HEAD
         
 <<<<<<< HEAD
         pass
@@ -792,6 +817,8 @@ p = Parser()
 =======
 >>>>>>> c5c76dc (refactoring)
 =======
+=======
+>>>>>>> cb6fe93 (fixes made to grammar)
     
     def special_token(self,item):
         return self.terminals.__contains__(item) or symb_and_op.__contains__(item)

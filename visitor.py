@@ -16,4 +16,7 @@ def let( self: pcr.ASTNode ):
     return [ self.name ,  self.value ]
 
 def block( self: pcr.ASTNode ):
-    return [ None , self.expressions ]
+    if len(self.expressions) == 1:
+        return [ None , self.expressions[0] ]
+    else:
+        return self.expressions 

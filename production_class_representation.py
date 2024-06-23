@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 from EnumsTokensDefinition import Type
 '''
@@ -17,6 +18,9 @@ import copy
 >>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
 =======
 >>>>>>> 9d5529b (context checking has passed a few tests)
+=======
+import inspect
+>>>>>>> cb6fe93 (fixes made to grammar)
 
 class ASTNode:
       
@@ -142,12 +146,17 @@ class ASTNode:
         for child in children:
             
 <<<<<<< HEAD
+<<<<<<< HEAD
             if type(child) == list:
 =======
             if child != None and type(child) == "ASTNode" :
+=======
+            if child != None and hasattr(child,"id") :
+>>>>>>> cb6fe93 (fixes made to grammar)
                 child.parent = self
 >>>>>>> d3a2291 (blocks made)
                 
+<<<<<<< HEAD
                 for x in child:
                     
                     if x != None:
@@ -157,6 +166,11 @@ class ASTNode:
                 
                 if child != None:
                     child.parent = self
+=======
+                pass
+            
+            pass
+>>>>>>> cb6fe93 (fixes made to grammar)
         
     def my_self(self):
         

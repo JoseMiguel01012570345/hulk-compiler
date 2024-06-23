@@ -44,6 +44,6 @@ def block(token_list):
         
         token_list[0].expressions.append(token_list[-1])
         
-        return [ ( "expressions" , token_list[0]  ) ]
+        return [ ( "expressions" , token_list[0].expressions  ) ]
         
     

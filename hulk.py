@@ -158,7 +158,11 @@ if not Error:
 #_________________________CODE GENERATION__________________________________
 
     
+<<<<<<< HEAD
     AST = ASTCilBuilder(gp.derivation_Tree)
+=======
+    # AST = ASTCilBuilder( ast=ast )
+>>>>>>> cb6fe93 (fixes made to grammar)
     
     print(AST.Code)
 
