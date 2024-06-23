@@ -3,5 +3,3 @@ from IntermediateCodeGeneratorDefinitions import *
 
 class CilTree:
     pass    
-
-# ################################COMPROBANDO#######################

@@ -10,7 +10,6 @@ import GRAMMAR_PRODUCTIONS
 import translator
 import Parser as P
 from os import system
-from CIL import ASTCilBuilder
 import semantic_errors
 
 def FiltToken(token):
@@ -160,6 +159,7 @@ if not Error:
     
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     AST = ASTCilBuilder(gp.derivation_Tree)
 =======
     # AST = ASTCilBuilder( ast=ast )
@@ -167,6 +167,9 @@ if not Error:
 =======
     AST = ASTCilBuilder( ast=ast )
 >>>>>>> 4e16424 (refactoring cil code)
+=======
+    # AST = ASTCilBuilder( ast=ast )
+>>>>>>> 3dcd092 (dot-comma to the blocks)
     
     print(AST.Code)
 
