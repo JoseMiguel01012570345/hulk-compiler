@@ -1,87 +1,244 @@
 
 I0= { 
 S->E , c="$", pivote:-1
+E->A , c="$", pivote:-1
+E->T ; , c="$", pivote:-1
+E->F ; , c="$", pivote:-1
 E->X ; , c="$", pivote:-1
 E->B } , c="$", pivote:-1
-X->X + F , c=";", pivote:-1
-X->F , c=";", pivote:-1
+A->let F = E , c="$", pivote:-1
+A->F = E , c="$", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
 B->B E , c="}", pivote:-1
-X->X + F , c="+", pivote:-1
-X->F , c="+", pivote:-1
-F->int , c=";", pivote:-1
-F->( X ) , c=";", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
 B->{ E , c="{", pivote:-1
 B->B B , c="{", pivote:-1
 B->B E , c="{", pivote:-1
+B->{ E , c="let", pivote:-1
+B->B B , c="let", pivote:-1
+B->B E , c="let", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
 B->{ E , c="int", pivote:-1
 B->B B , c="int", pivote:-1
 B->B E , c="int", pivote:-1
 F->int , c="+", pivote:-1
 F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+ }
+ GOTO(I0,let):
+I1= { 
+A->let F = E , c="$", pivote:0
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
  }
  GOTO(I0,int):
-I1= { 
+I2= { 
 F->int , c=";", pivote:0
+F->int , c="=", pivote:0
+F->int , c="*", pivote:0
+F->int , c="/", pivote:0
 F->int , c="+", pivote:0
+F->int , c="-", pivote:0
  }
  GOTO(I0,():
-I2= { 
+I3= { 
 F->( X ) , c=";", pivote:0
-X->X + F , c=")", pivote:-1
-X->F , c=")", pivote:-1
-X->X + F , c="+", pivote:-1
-X->F , c="+", pivote:-1
+X->X + T , c=")", pivote:-1
+X->X - T , c=")", pivote:-1
+X->T , c=")", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
 F->int , c=")", pivote:-1
 F->( X ) , c=")", pivote:-1
 F->int , c="+", pivote:-1
 F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+F->( X ) , c="=", pivote:0
+F->( X ) , c="*", pivote:0
+F->( X ) , c="/", pivote:0
 F->( X ) , c="+", pivote:0
+F->( X ) , c="-", pivote:0
  }
  GOTO(I0,{):
-I3= { 
+I4= { 
 B->{ E , c="}", pivote:0
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
-X->X + F , c=";", pivote:-1
-X->F , c=";", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
 B->B E , c="}", pivote:-1
-X->X + F , c="+", pivote:-1
-X->F , c="+", pivote:-1
-F->int , c=";", pivote:-1
-F->( X ) , c=";", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
 B->{ E , c="{", pivote:-1
 B->B B , c="{", pivote:-1
 B->B E , c="{", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
 F->int , c="+", pivote:-1
 F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
 B->{ E , c="{", pivote:0
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
+B->{ E , c="let", pivote:0
+E->A , c="let", pivote:-1
+E->T ; , c="let", pivote:-1
+E->F ; , c="let", pivote:-1
+E->X ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
+A->let F = E , c="let", pivote:-1
+A->F = E , c="let", pivote:-1
 B->{ E , c="int", pivote:0
+E->A , c="int", pivote:-1
+E->T ; , c="int", pivote:-1
+E->F ; , c="int", pivote:-1
 E->X ; , c="int", pivote:-1
 E->B } , c="int", pivote:-1
+A->let F = E , c="int", pivote:-1
+A->F = E , c="int", pivote:-1
  }
  GOTO(I0,E):
-I4= { 
+I5= { 
 S->E , c="$", pivote:0
  }
  GOTO(I0,X):
-I5= { 
+I6= { 
 E->X ; , c="$", pivote:0
-X->X + F , c=";", pivote:0
-X->X + F , c="+", pivote:0
+X->X + T , c=";", pivote:0
+X->X - T , c=";", pivote:0
+X->X + T , c="+", pivote:0
+X->X - T , c="+", pivote:0
+X->X + T , c="-", pivote:0
+X->X - T , c="-", pivote:0
  }
  GOTO(I0,F):
-I6= { 
-X->F , c=";", pivote:0
-X->F , c="+", pivote:0
+I7= { 
+E->F ; , c="$", pivote:0
+A->F = E , c="$", pivote:0
+T->F , c=";", pivote:0
+T->F , c="*", pivote:0
+T->F , c="/", pivote:0
+T->F , c="+", pivote:0
+T->F , c="-", pivote:0
+ }
+ GOTO(I0,T):
+I8= { 
+E->T ; , c="$", pivote:0
+T->T * F , c=";", pivote:0
+T->T / F , c=";", pivote:0
+X->T , c=";", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->T , c="+", pivote:0
+X->T , c="-", pivote:0
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
+ }
+ GOTO(I0,A):
+I9= { 
+E->A , c="$", pivote:0
  }
  GOTO(I0,B):
-I7= { 
+I10= { 
 E->B } , c="$", pivote:0
 B->B B , c="}", pivote:0
 B->{ E , c="}", pivote:-1
@@ -91,218 +248,352 @@ B->{ E , c="{", pivote:-1
 B->B B , c="{", pivote:-1
 B->B E , c="{", pivote:-1
 B->B E , c="}", pivote:0
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
-X->X + F , c=";", pivote:-1
-X->F , c=";", pivote:-1
-X->X + F , c="+", pivote:-1
-X->F , c="+", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
 F->int , c=";", pivote:-1
 F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
 F->int , c="+", pivote:-1
 F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
 B->B B , c="{", pivote:0
 B->B E , c="{", pivote:0
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
+B->B B , c="let", pivote:0
+B->{ E , c="let", pivote:-1
+B->B B , c="let", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="let", pivote:0
+E->A , c="let", pivote:-1
+E->T ; , c="let", pivote:-1
+E->F ; , c="let", pivote:-1
+E->X ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
+A->let F = E , c="let", pivote:-1
+A->F = E , c="let", pivote:-1
 B->B B , c="int", pivote:0
 B->{ E , c="int", pivote:-1
 B->B B , c="int", pivote:-1
 B->B E , c="int", pivote:-1
 B->B E , c="int", pivote:0
+E->A , c="int", pivote:-1
+E->T ; , c="int", pivote:-1
+E->F ; , c="int", pivote:-1
 E->X ; , c="int", pivote:-1
 E->B } , c="int", pivote:-1
+A->let F = E , c="int", pivote:-1
+A->F = E , c="int", pivote:-1
  }
- GOTO(I2,int):
-I8= { 
+ GOTO(I1,int):
+I11= { 
+F->int , c="=", pivote:0
+ }
+ GOTO(I1,():
+I12= { 
+F->( X ) , c="=", pivote:0
+X->X + T , c=")", pivote:-1
+X->X - T , c=")", pivote:-1
+X->T , c=")", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=")", pivote:-1
+F->( X ) , c=")", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+ }
+ GOTO(I1,F):
+I13= { 
+A->let F = E , c="$", pivote:1
+ }
+ GOTO(I3,int):
+I14= { 
 F->int , c=")", pivote:0
 F->int , c="+", pivote:0
+F->int , c="-", pivote:0
+F->int , c="*", pivote:0
+F->int , c="/", pivote:0
  }
- GOTO(I2,():
-I9= { 
+ GOTO(I3,():
+I15= { 
 F->( X ) , c=")", pivote:0
-X->X + F , c=")", pivote:-1
-X->F , c=")", pivote:-1
-X->X + F , c="+", pivote:-1
-X->F , c="+", pivote:-1
+X->X + T , c=")", pivote:-1
+X->X - T , c=")", pivote:-1
+X->T , c=")", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
 F->int , c=")", pivote:-1
 F->( X ) , c=")", pivote:-1
 F->int , c="+", pivote:-1
 F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
 F->( X ) , c="+", pivote:0
- }
- GOTO(I2,X):
-I10= { 
-F->( X ) , c=";", pivote:1
-X->X + F , c=")", pivote:0
-X->X + F , c="+", pivote:0
-F->( X ) , c="+", pivote:1
- }
- GOTO(I2,F):
-I11= { 
-X->F , c=")", pivote:0
-X->F , c="+", pivote:0
- }
- GOTO(I3,{):
-I12= { 
-B->{ E , c="}", pivote:0
-E->X ; , c="}", pivote:-1
-E->B } , c="}", pivote:-1
-X->X + F , c=";", pivote:-1
-X->F , c=";", pivote:-1
-B->{ E , c="}", pivote:-1
-B->B B , c="}", pivote:-1
-B->B E , c="}", pivote:-1
-X->X + F , c="+", pivote:-1
-X->F , c="+", pivote:-1
-F->int , c=";", pivote:-1
-F->( X ) , c=";", pivote:-1
-B->{ E , c="{", pivote:-1
-B->B B , c="{", pivote:-1
-B->B E , c="{", pivote:-1
-F->int , c="+", pivote:-1
-F->( X ) , c="+", pivote:-1
-B->{ E , c="{", pivote:0
-E->X ; , c="{", pivote:-1
-E->B } , c="{", pivote:-1
- }
- GOTO(I3,E):
-I13= { 
-B->{ E , c="}", pivote:1
-B->{ E , c="{", pivote:1
-B->{ E , c="int", pivote:1
+F->( X ) , c="-", pivote:0
+F->( X ) , c="*", pivote:0
+F->( X ) , c="/", pivote:0
  }
  GOTO(I3,X):
-I14= { 
-E->X ; , c="}", pivote:0
-X->X + F , c=";", pivote:0
-X->X + F , c="+", pivote:0
-E->X ; , c="{", pivote:0
-E->X ; , c="int", pivote:0
- }
- GOTO(I3,B):
-I15= { 
-E->B } , c="}", pivote:0
-B->B B , c="}", pivote:0
-B->{ E , c="}", pivote:-1
-B->B B , c="}", pivote:-1
-B->B E , c="}", pivote:-1
-B->{ E , c="{", pivote:-1
-B->B B , c="{", pivote:-1
-B->B E , c="{", pivote:-1
-B->B E , c="}", pivote:0
-E->X ; , c="}", pivote:-1
-E->B } , c="}", pivote:-1
-X->X + F , c=";", pivote:-1
-X->F , c=";", pivote:-1
-X->X + F , c="+", pivote:-1
-X->F , c="+", pivote:-1
-F->int , c=";", pivote:-1
-F->( X ) , c=";", pivote:-1
-F->int , c="+", pivote:-1
-F->( X ) , c="+", pivote:-1
-B->B B , c="{", pivote:0
-B->B E , c="{", pivote:0
-E->X ; , c="{", pivote:-1
-E->B } , c="{", pivote:-1
-E->B } , c="{", pivote:0
-E->B } , c="int", pivote:0
- }
- GOTO(I5,;):
 I16= { 
-E->X ; , c="$", pivote:1
+F->( X ) , c=";", pivote:1
+X->X + T , c=")", pivote:0
+X->X - T , c=")", pivote:0
+X->X + T , c="+", pivote:0
+X->X - T , c="+", pivote:0
+X->X + T , c="-", pivote:0
+X->X - T , c="-", pivote:0
+F->( X ) , c="=", pivote:1
+F->( X ) , c="*", pivote:1
+F->( X ) , c="/", pivote:1
+F->( X ) , c="+", pivote:1
+F->( X ) , c="-", pivote:1
  }
- GOTO(I5,+):
+ GOTO(I3,F):
 I17= { 
-X->X + F , c=";", pivote:1
+T->F , c=")", pivote:0
+T->F , c="+", pivote:0
+T->F , c="-", pivote:0
+T->F , c="*", pivote:0
+T->F , c="/", pivote:0
+ }
+ GOTO(I3,T):
+I18= { 
+X->T , c=")", pivote:0
+X->T , c="+", pivote:0
+X->T , c="-", pivote:0
+T->T * F , c=")", pivote:0
+T->T / F , c=")", pivote:0
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+ }
+ GOTO(I4,let):
+I19= { 
+A->let F = E , c="}", pivote:0
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+A->let F = E , c="{", pivote:0
+A->let F = E , c="let", pivote:0
+A->let F = E , c="int", pivote:0
+ }
+ GOTO(I4,{):
+I20= { 
+B->{ E , c="}", pivote:0
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
 F->int , c=";", pivote:-1
 F->( X ) , c=";", pivote:-1
-X->X + F , c="+", pivote:1
-F->int , c="+", pivote:-1
-F->( X ) , c="+", pivote:-1
- }
- GOTO(I7,}):
-I18= { 
-E->B } , c="$", pivote:1
- }
- GOTO(I7,E):
-I19= { 
-B->B E , c="}", pivote:1
-B->B E , c="{", pivote:1
-B->B E , c="int", pivote:1
- }
- GOTO(I7,B):
-I20= { 
-B->B B , c="}", pivote:1
-B->B B , c="}", pivote:0
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
 B->B E , c="}", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
 B->{ E , c="{", pivote:-1
 B->B B , c="{", pivote:-1
 B->B E , c="{", pivote:-1
-B->B E , c="}", pivote:0
-E->X ; , c="}", pivote:-1
-E->B } , c="}", pivote:-1
-X->X + F , c=";", pivote:-1
-X->F , c=";", pivote:-1
-X->X + F , c="+", pivote:-1
-X->F , c="+", pivote:-1
-F->int , c=";", pivote:-1
-F->( X ) , c=";", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
 F->int , c="+", pivote:-1
 F->( X ) , c="+", pivote:-1
-B->B B , c="{", pivote:0
-B->B E , c="{", pivote:0
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+B->{ E , c="{", pivote:0
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
-E->B } , c="}", pivote:0
-B->B B , c="{", pivote:1
-E->B } , c="{", pivote:0
-B->B B , c="int", pivote:1
-B->B B , c="int", pivote:0
-B->{ E , c="int", pivote:-1
-B->B B , c="int", pivote:-1
-B->B E , c="int", pivote:-1
-B->B E , c="int", pivote:0
-E->X ; , c="int", pivote:-1
-E->B } , c="int", pivote:-1
-E->B } , c="int", pivote:0
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
  }
- GOTO(I9,X):
+ GOTO(I4,E):
 I21= { 
-F->( X ) , c=")", pivote:1
-X->X + F , c=")", pivote:0
-X->X + F , c="+", pivote:0
-F->( X ) , c="+", pivote:1
- }
- GOTO(I10,+):
-I22= { 
-X->X + F , c=")", pivote:1
-F->int , c=")", pivote:-1
-F->( X ) , c=")", pivote:-1
-X->X + F , c="+", pivote:1
-F->int , c="+", pivote:-1
-F->( X ) , c="+", pivote:-1
- }
- GOTO(I10,)):
-I23= { 
-F->( X ) , c=";", pivote:2
-F->( X ) , c="+", pivote:2
- }
- GOTO(I12,E):
-I24= { 
 B->{ E , c="}", pivote:1
 B->{ E , c="{", pivote:1
+B->{ E , c="let", pivote:1
+B->{ E , c="int", pivote:1
  }
- GOTO(I12,X):
-I25= { 
+ GOTO(I4,X):
+I22= { 
 E->X ; , c="}", pivote:0
-X->X + F , c=";", pivote:0
-X->X + F , c="+", pivote:0
+X->X + T , c=";", pivote:0
+X->X - T , c=";", pivote:0
+X->X + T , c="+", pivote:0
+X->X - T , c="+", pivote:0
+X->X + T , c="-", pivote:0
+X->X - T , c="-", pivote:0
 E->X ; , c="{", pivote:0
+E->X ; , c="let", pivote:0
+E->X ; , c="int", pivote:0
  }
- GOTO(I12,B):
+ GOTO(I4,F):
+I23= { 
+E->F ; , c="}", pivote:0
+A->F = E , c="}", pivote:0
+T->F , c=";", pivote:0
+T->F , c="*", pivote:0
+T->F , c="/", pivote:0
+T->F , c="+", pivote:0
+T->F , c="-", pivote:0
+E->F ; , c="{", pivote:0
+A->F = E , c="{", pivote:0
+E->F ; , c="let", pivote:0
+A->F = E , c="let", pivote:0
+E->F ; , c="int", pivote:0
+A->F = E , c="int", pivote:0
+ }
+ GOTO(I4,T):
+I24= { 
+E->T ; , c="}", pivote:0
+T->T * F , c=";", pivote:0
+T->T / F , c=";", pivote:0
+X->T , c=";", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->T , c="+", pivote:0
+X->T , c="-", pivote:0
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
+E->T ; , c="{", pivote:0
+E->T ; , c="let", pivote:0
+E->T ; , c="int", pivote:0
+ }
+ GOTO(I4,A):
+I25= { 
+E->A , c="}", pivote:0
+E->A , c="{", pivote:0
+E->A , c="let", pivote:0
+E->A , c="int", pivote:0
+ }
+ GOTO(I4,B):
 I26= { 
 E->B } , c="}", pivote:0
 B->B B , c="}", pivote:0
@@ -313,41 +604,238 @@ B->{ E , c="{", pivote:-1
 B->B B , c="{", pivote:-1
 B->B E , c="{", pivote:-1
 B->B E , c="}", pivote:0
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
-X->X + F , c=";", pivote:-1
-X->F , c=";", pivote:-1
-X->X + F , c="+", pivote:-1
-X->F , c="+", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
 F->int , c=";", pivote:-1
 F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
 F->int , c="+", pivote:-1
 F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
 B->B B , c="{", pivote:0
 B->B E , c="{", pivote:0
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
 E->B } , c="{", pivote:0
+E->B } , c="let", pivote:0
+E->B } , c="int", pivote:0
  }
- GOTO(I14,;):
+ GOTO(I6,;):
 I27= { 
-E->X ; , c="}", pivote:1
-E->X ; , c="{", pivote:1
-E->X ; , c="int", pivote:1
+E->X ; , c="$", pivote:1
  }
- GOTO(I15,}):
+ GOTO(I6,+):
 I28= { 
-E->B } , c="}", pivote:1
-E->B } , c="{", pivote:1
-E->B } , c="int", pivote:1
+X->X + T , c=";", pivote:1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+X->X + T , c="+", pivote:1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+X->X + T , c="-", pivote:1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
  }
- GOTO(I15,E):
+ GOTO(I6,-):
 I29= { 
+X->X - T , c=";", pivote:1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+X->X - T , c="+", pivote:1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+X->X - T , c="-", pivote:1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+ }
+ GOTO(I7,=):
+I30= { 
+A->F = E , c="$", pivote:1
+E->A , c="$", pivote:-1
+E->T ; , c="$", pivote:-1
+E->F ; , c="$", pivote:-1
+E->X ; , c="$", pivote:-1
+E->B } , c="$", pivote:-1
+A->let F = E , c="$", pivote:-1
+A->F = E , c="$", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+ }
+ GOTO(I7,;):
+I31= { 
+E->F ; , c="$", pivote:1
+ }
+ GOTO(I8,;):
+I32= { 
+E->T ; , c="$", pivote:1
+ }
+ GOTO(I8,*):
+I33= { 
+T->T * F , c=";", pivote:1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+T->T * F , c="*", pivote:1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+T->T * F , c="/", pivote:1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+T->T * F , c="-", pivote:1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+ }
+ GOTO(I8,/):
+I34= { 
+T->T / F , c=";", pivote:1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+T->T / F , c="*", pivote:1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+T->T / F , c="/", pivote:1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T / F , c="+", pivote:1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+T->T / F , c="-", pivote:1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+ }
+ GOTO(I10,}):
+I35= { 
+E->B } , c="$", pivote:1
+ }
+ GOTO(I10,E):
+I36= { 
 B->B E , c="}", pivote:1
 B->B E , c="{", pivote:1
+B->B E , c="let", pivote:1
+B->B E , c="int", pivote:1
  }
- GOTO(I15,B):
-I30= { 
+ GOTO(I10,B):
+I37= { 
 B->B B , c="}", pivote:1
 B->B B , c="}", pivote:0
 B->{ E , c="}", pivote:-1
@@ -357,46 +845,1086 @@ B->{ E , c="{", pivote:-1
 B->B B , c="{", pivote:-1
 B->B E , c="{", pivote:-1
 B->B E , c="}", pivote:0
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
-X->X + F , c=";", pivote:-1
-X->F , c=";", pivote:-1
-X->X + F , c="+", pivote:-1
-X->F , c="+", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
 F->int , c=";", pivote:-1
 F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
 F->int , c="+", pivote:-1
 F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
 B->B B , c="{", pivote:0
 B->B E , c="{", pivote:0
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
+E->B } , c="}", pivote:0
+B->B B , c="{", pivote:1
+E->B } , c="{", pivote:0
+B->B B , c="let", pivote:1
+B->B B , c="let", pivote:0
+B->{ E , c="let", pivote:-1
+B->B B , c="let", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="let", pivote:0
+E->A , c="let", pivote:-1
+E->T ; , c="let", pivote:-1
+E->F ; , c="let", pivote:-1
+E->X ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
+A->let F = E , c="let", pivote:-1
+A->F = E , c="let", pivote:-1
+E->B } , c="let", pivote:0
+B->B B , c="int", pivote:1
+B->B B , c="int", pivote:0
+B->{ E , c="int", pivote:-1
+B->B B , c="int", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="int", pivote:0
+E->A , c="int", pivote:-1
+E->T ; , c="int", pivote:-1
+E->F ; , c="int", pivote:-1
+E->X ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
+A->let F = E , c="int", pivote:-1
+A->F = E , c="int", pivote:-1
+E->B } , c="int", pivote:0
+ }
+ GOTO(I12,X):
+I38= { 
+F->( X ) , c="=", pivote:1
+X->X + T , c=")", pivote:0
+X->X - T , c=")", pivote:0
+X->X + T , c="+", pivote:0
+X->X - T , c="+", pivote:0
+X->X + T , c="-", pivote:0
+X->X - T , c="-", pivote:0
+ }
+ GOTO(I13,=):
+I39= { 
+A->let F = E , c="$", pivote:2
+E->A , c="$", pivote:-1
+E->T ; , c="$", pivote:-1
+E->F ; , c="$", pivote:-1
+E->X ; , c="$", pivote:-1
+E->B } , c="$", pivote:-1
+A->let F = E , c="$", pivote:-1
+A->F = E , c="$", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+ }
+ GOTO(I15,X):
+I40= { 
+F->( X ) , c=")", pivote:1
+X->X + T , c=")", pivote:0
+X->X - T , c=")", pivote:0
+X->X + T , c="+", pivote:0
+X->X - T , c="+", pivote:0
+X->X + T , c="-", pivote:0
+X->X - T , c="-", pivote:0
+F->( X ) , c="+", pivote:1
+F->( X ) , c="-", pivote:1
+F->( X ) , c="*", pivote:1
+F->( X ) , c="/", pivote:1
+ }
+ GOTO(I16,+):
+I41= { 
+X->X + T , c=")", pivote:1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=")", pivote:-1
+F->( X ) , c=")", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+X->X + T , c="+", pivote:1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+X->X + T , c="-", pivote:1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+ }
+ GOTO(I16,-):
+I42= { 
+X->X - T , c=")", pivote:1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=")", pivote:-1
+F->( X ) , c=")", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+X->X - T , c="+", pivote:1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+X->X - T , c="-", pivote:1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+ }
+ GOTO(I16,)):
+I43= { 
+F->( X ) , c=";", pivote:2
+F->( X ) , c="=", pivote:2
+F->( X ) , c="*", pivote:2
+F->( X ) , c="/", pivote:2
+F->( X ) , c="+", pivote:2
+F->( X ) , c="-", pivote:2
+ }
+ GOTO(I18,*):
+I44= { 
+T->T * F , c=")", pivote:1
+F->int , c=")", pivote:-1
+F->( X ) , c=")", pivote:-1
+T->T * F , c="+", pivote:1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+T->T * F , c="-", pivote:1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+T->T * F , c="*", pivote:1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+T->T * F , c="/", pivote:1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+ }
+ GOTO(I18,/):
+I45= { 
+T->T / F , c=")", pivote:1
+F->int , c=")", pivote:-1
+F->( X ) , c=")", pivote:-1
+T->T / F , c="+", pivote:1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+T->T / F , c="-", pivote:1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+T->T / F , c="*", pivote:1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+T->T / F , c="/", pivote:1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+ }
+ GOTO(I19,F):
+I46= { 
+A->let F = E , c="}", pivote:1
+A->let F = E , c="{", pivote:1
+A->let F = E , c="let", pivote:1
+A->let F = E , c="int", pivote:1
+ }
+ GOTO(I20,let):
+I47= { 
+A->let F = E , c="}", pivote:0
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+A->let F = E , c="{", pivote:0
+ }
+ GOTO(I20,E):
+I48= { 
+B->{ E , c="}", pivote:1
+B->{ E , c="{", pivote:1
+ }
+ GOTO(I20,X):
+I49= { 
+E->X ; , c="}", pivote:0
+X->X + T , c=";", pivote:0
+X->X - T , c=";", pivote:0
+X->X + T , c="+", pivote:0
+X->X - T , c="+", pivote:0
+X->X + T , c="-", pivote:0
+X->X - T , c="-", pivote:0
+E->X ; , c="{", pivote:0
+ }
+ GOTO(I20,F):
+I50= { 
+E->F ; , c="}", pivote:0
+A->F = E , c="}", pivote:0
+T->F , c=";", pivote:0
+T->F , c="*", pivote:0
+T->F , c="/", pivote:0
+T->F , c="+", pivote:0
+T->F , c="-", pivote:0
+E->F ; , c="{", pivote:0
+A->F = E , c="{", pivote:0
+ }
+ GOTO(I20,T):
+I51= { 
+E->T ; , c="}", pivote:0
+T->T * F , c=";", pivote:0
+T->T / F , c=";", pivote:0
+X->T , c=";", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->T , c="+", pivote:0
+X->T , c="-", pivote:0
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
+E->T ; , c="{", pivote:0
+ }
+ GOTO(I20,A):
+I52= { 
+E->A , c="}", pivote:0
+E->A , c="{", pivote:0
+ }
+ GOTO(I20,B):
+I53= { 
+E->B } , c="}", pivote:0
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->B E , c="}", pivote:0
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
+E->B } , c="{", pivote:0
+ }
+ GOTO(I22,;):
+I54= { 
+E->X ; , c="}", pivote:1
+E->X ; , c="{", pivote:1
+E->X ; , c="let", pivote:1
+E->X ; , c="int", pivote:1
+ }
+ GOTO(I23,=):
+I55= { 
+A->F = E , c="}", pivote:1
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+A->F = E , c="{", pivote:1
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
+A->F = E , c="let", pivote:1
+E->A , c="let", pivote:-1
+E->T ; , c="let", pivote:-1
+E->F ; , c="let", pivote:-1
+E->X ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
+A->let F = E , c="let", pivote:-1
+A->F = E , c="let", pivote:-1
+A->F = E , c="int", pivote:1
+E->A , c="int", pivote:-1
+E->T ; , c="int", pivote:-1
+E->F ; , c="int", pivote:-1
+E->X ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
+A->let F = E , c="int", pivote:-1
+A->F = E , c="int", pivote:-1
+ }
+ GOTO(I23,;):
+I56= { 
+E->F ; , c="}", pivote:1
+E->F ; , c="{", pivote:1
+E->F ; , c="let", pivote:1
+E->F ; , c="int", pivote:1
+ }
+ GOTO(I24,;):
+I57= { 
+E->T ; , c="}", pivote:1
+E->T ; , c="{", pivote:1
+E->T ; , c="let", pivote:1
+E->T ; , c="int", pivote:1
+ }
+ GOTO(I26,}):
+I58= { 
+E->B } , c="}", pivote:1
+E->B } , c="{", pivote:1
+E->B } , c="let", pivote:1
+E->B } , c="int", pivote:1
+ }
+ GOTO(I26,E):
+I59= { 
+B->B E , c="}", pivote:1
+B->B E , c="{", pivote:1
+ }
+ GOTO(I26,B):
+I60= { 
+B->B B , c="}", pivote:1
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->B E , c="}", pivote:0
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
 E->B } , c="}", pivote:0
 B->B B , c="{", pivote:1
 E->B } , c="{", pivote:0
  }
- GOTO(I17,F):
-I31= { 
-X->X + F , c=";", pivote:2
-X->X + F , c="+", pivote:2
+ GOTO(I28,int):
+I61= { 
+F->int , c=";", pivote:0
+F->int , c="*", pivote:0
+F->int , c="/", pivote:0
+F->int , c="+", pivote:0
+F->int , c="-", pivote:0
  }
- GOTO(I21,)):
-I32= { 
+ GOTO(I28,():
+I62= { 
+F->( X ) , c=";", pivote:0
+X->X + T , c=")", pivote:-1
+X->X - T , c=")", pivote:-1
+X->T , c=")", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=")", pivote:-1
+F->( X ) , c=")", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+F->( X ) , c="*", pivote:0
+F->( X ) , c="/", pivote:0
+F->( X ) , c="+", pivote:0
+F->( X ) , c="-", pivote:0
+ }
+ GOTO(I28,F):
+I63= { 
+T->F , c=";", pivote:0
+T->F , c="*", pivote:0
+T->F , c="/", pivote:0
+T->F , c="+", pivote:0
+T->F , c="-", pivote:0
+ }
+ GOTO(I28,T):
+I64= { 
+X->X + T , c=";", pivote:2
+T->T * F , c=";", pivote:0
+T->T / F , c=";", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->X + T , c="+", pivote:2
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+X->X + T , c="-", pivote:2
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
+ }
+ GOTO(I29,T):
+I65= { 
+X->X - T , c=";", pivote:2
+T->T * F , c=";", pivote:0
+T->T / F , c=";", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->X - T , c="+", pivote:2
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+X->X - T , c="-", pivote:2
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
+ }
+ GOTO(I30,E):
+I66= { 
+A->F = E , c="$", pivote:2
+ }
+ GOTO(I30,B):
+I67= { 
+E->B } , c="$", pivote:0
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->B E , c="}", pivote:0
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
+ }
+ GOTO(I33,F):
+I68= { 
+T->T * F , c=";", pivote:2
+T->T * F , c="*", pivote:2
+T->T * F , c="/", pivote:2
+T->T * F , c="+", pivote:2
+T->T * F , c="-", pivote:2
+ }
+ GOTO(I34,F):
+I69= { 
+T->T / F , c=";", pivote:2
+T->T / F , c="*", pivote:2
+T->T / F , c="/", pivote:2
+T->T / F , c="+", pivote:2
+T->T / F , c="-", pivote:2
+ }
+ GOTO(I38,)):
+I70= { 
+F->( X ) , c="=", pivote:2
+ }
+ GOTO(I39,E):
+I71= { 
+A->let F = E , c="$", pivote:3
+ }
+ GOTO(I40,)):
+I72= { 
 F->( X ) , c=")", pivote:2
 F->( X ) , c="+", pivote:2
+F->( X ) , c="-", pivote:2
+F->( X ) , c="*", pivote:2
+F->( X ) , c="/", pivote:2
  }
- GOTO(I22,F):
-I33= { 
-X->X + F , c=")", pivote:2
-X->X + F , c="+", pivote:2
+ GOTO(I41,T):
+I73= { 
+X->X + T , c=")", pivote:2
+T->T * F , c=")", pivote:0
+T->T / F , c=")", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->X + T , c="+", pivote:2
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+X->X + T , c="-", pivote:2
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
  }
- GOTO(I25,;):
-I34= { 
+ GOTO(I42,T):
+I74= { 
+X->X - T , c=")", pivote:2
+T->T * F , c=")", pivote:0
+T->T / F , c=")", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->X - T , c="+", pivote:2
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+X->X - T , c="-", pivote:2
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
+ }
+ GOTO(I44,F):
+I75= { 
+T->T * F , c=")", pivote:2
+T->T * F , c="+", pivote:2
+T->T * F , c="-", pivote:2
+T->T * F , c="*", pivote:2
+T->T * F , c="/", pivote:2
+ }
+ GOTO(I45,F):
+I76= { 
+T->T / F , c=")", pivote:2
+T->T / F , c="+", pivote:2
+T->T / F , c="-", pivote:2
+T->T / F , c="*", pivote:2
+T->T / F , c="/", pivote:2
+ }
+ GOTO(I46,=):
+I77= { 
+A->let F = E , c="}", pivote:2
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+A->let F = E , c="{", pivote:2
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
+A->let F = E , c="let", pivote:2
+E->A , c="let", pivote:-1
+E->T ; , c="let", pivote:-1
+E->F ; , c="let", pivote:-1
+E->X ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
+A->let F = E , c="let", pivote:-1
+A->F = E , c="let", pivote:-1
+A->let F = E , c="int", pivote:2
+E->A , c="int", pivote:-1
+E->T ; , c="int", pivote:-1
+E->F ; , c="int", pivote:-1
+E->X ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
+A->let F = E , c="int", pivote:-1
+A->F = E , c="int", pivote:-1
+ }
+ GOTO(I47,F):
+I78= { 
+A->let F = E , c="}", pivote:1
+A->let F = E , c="{", pivote:1
+ }
+ GOTO(I49,;):
+I79= { 
 E->X ; , c="}", pivote:1
 E->X ; , c="{", pivote:1
  }
- GOTO(I26,}):
-I35= { 
+ GOTO(I50,=):
+I80= { 
+A->F = E , c="}", pivote:1
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+A->F = E , c="{", pivote:1
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
+ }
+ GOTO(I50,;):
+I81= { 
+E->F ; , c="}", pivote:1
+E->F ; , c="{", pivote:1
+ }
+ GOTO(I51,;):
+I82= { 
+E->T ; , c="}", pivote:1
+E->T ; , c="{", pivote:1
+ }
+ GOTO(I53,}):
+I83= { 
 E->B } , c="}", pivote:1
 E->B } , c="{", pivote:1
+ }
+ GOTO(I55,E):
+I84= { 
+A->F = E , c="}", pivote:2
+A->F = E , c="{", pivote:2
+A->F = E , c="let", pivote:2
+A->F = E , c="int", pivote:2
+ }
+ GOTO(I62,X):
+I85= { 
+F->( X ) , c=";", pivote:1
+X->X + T , c=")", pivote:0
+X->X - T , c=")", pivote:0
+X->X + T , c="+", pivote:0
+X->X - T , c="+", pivote:0
+X->X + T , c="-", pivote:0
+X->X - T , c="-", pivote:0
+F->( X ) , c="*", pivote:1
+F->( X ) , c="/", pivote:1
+F->( X ) , c="+", pivote:1
+F->( X ) , c="-", pivote:1
+ }
+ GOTO(I77,E):
+I86= { 
+A->let F = E , c="}", pivote:3
+A->let F = E , c="{", pivote:3
+A->let F = E , c="let", pivote:3
+A->let F = E , c="int", pivote:3
+ }
+ GOTO(I78,=):
+I87= { 
+A->let F = E , c="}", pivote:2
+E->A , c="}", pivote:-1
+E->T ; , c="}", pivote:-1
+E->F ; , c="}", pivote:-1
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+A->let F = E , c="}", pivote:-1
+A->F = E , c="}", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+F->int , c="=", pivote:-1
+F->( X ) , c="=", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+F->int , c="*", pivote:-1
+F->( X ) , c="*", pivote:-1
+F->int , c="/", pivote:-1
+F->( X ) , c="/", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->( X ) , c="-", pivote:-1
+A->let F = E , c="{", pivote:2
+E->A , c="{", pivote:-1
+E->T ; , c="{", pivote:-1
+E->F ; , c="{", pivote:-1
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+A->let F = E , c="{", pivote:-1
+A->F = E , c="{", pivote:-1
+ }
+ GOTO(I80,E):
+I88= { 
+A->F = E , c="}", pivote:2
+A->F = E , c="{", pivote:2
+ }
+ GOTO(I85,)):
+I89= { 
+F->( X ) , c=";", pivote:2
+F->( X ) , c="*", pivote:2
+F->( X ) , c="/", pivote:2
+F->( X ) , c="+", pivote:2
+F->( X ) , c="-", pivote:2
+ }
+ GOTO(I87,E):
+I90= { 
+A->let F = E , c="}", pivote:3
+A->let F = E , c="{", pivote:3
  }

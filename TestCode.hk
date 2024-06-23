@@ -8,6 +8,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -251,3 +252,6 @@ i = i + i + ( i  / i ) + i - i ; $
 =======
 { { 4 + 5 ; } { 4 + 5 ; }   4 + 5 ; { 4 + 5 ; { 4 + 5 ; { 4 + 5 ; { 4 + 5 ; { 4 + 5 ; }  } } } } } $
 >>>>>>> cb6fe93 (fixes made to grammar)
+=======
+{  let r = 10 ; r = 4 ; {let m = 10 ;} let m = 10 ; } $
+>>>>>>> c73392d (hidding blocks , ok)

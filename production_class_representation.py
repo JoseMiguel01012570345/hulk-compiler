@@ -22,6 +22,12 @@ import copy
 import inspect
 >>>>>>> cb6fe93 (fixes made to grammar)
 
+class hash_class:
+    
+    hash_ = 0
+    
+    pass
+
 class ASTNode:
       
     anotated_type = None
@@ -61,6 +67,7 @@ class ASTNode:
     name = ""
     type_ = ""
     self_ = ""
+    
     
     def __init__(
         self, grammar= {
@@ -154,6 +161,7 @@ class ASTNode:
             if child != None and hasattr(child,"id") :
 >>>>>>> cb6fe93 (fixes made to grammar)
                 child.parent = self
+<<<<<<< HEAD
 >>>>>>> d3a2291 (blocks made)
                 
 <<<<<<< HEAD
@@ -167,12 +175,24 @@ class ASTNode:
                 if child != None:
                     child.parent = self
 =======
+=======
+                    
+>>>>>>> c73392d (hidding blocks , ok)
                 pass
             
             pass
 >>>>>>> cb6fe93 (fixes made to grammar)
         
+<<<<<<< HEAD
     def my_self(self):
+=======
+        hash_class.hash_ +=1
+        self.hash_ = hash_class.hash_
+        
+        pass
+        
+    def my_id(self):
+>>>>>>> c73392d (hidding blocks , ok)
         
         if self.def_node():
             return { 'id': self.id  , 'name': self.name  }
@@ -256,7 +276,7 @@ class ASTNode:
         if self.id == "var": # check if I am a variable
             
             error_type = "variable declaration"
-            error_description = "variable used before declared"
+            error_description = f"variable {self.name} used before declared"
             
             int_max =  2**63 - 1
             
@@ -276,16 +296,16 @@ class ASTNode:
             else: # the node is not contained in params
                 self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max )    
         
-        elif type(self) == "ASTNode" and self.def_node: # check if I am a definition node
+        elif self.def_node: # check if I am a definition node
             
             error_type = "definition error"
-            error_description = f" {child.id} {child.name} already defined"
+            error_description = f"{self.name} already defined"
         
             self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=1 )    
         
         for child in children: # check children
                 
-            if child != None and type(child) == "ASTNode":
+            if child != None and hasattr(child,"id") :
                 
                 child.check_context(error_list)
         
@@ -304,15 +324,17 @@ class ASTNode:
         
         node_existence = self.search_in_ast( attr_name=name , attr_id=node_id , type_protocol_name=type_name , h=h )
         
-        if allow_apparence and node_existence == 2:
+        if allow_apparence and node_existence != 0:
             return error_list
         
-        if not allow_apparence and node_existence == 1:
+        if not allow_apparence and node_existence == 0:
             return error_list
         
         # if node does not exits and should exist , report an error. If exit and it shouldn't ,  report an error
         error_ = { "type" : error_type , "description" : error_description }
-        error_list.append(error_)
+        
+        if not error_list.__contains__(error_):
+            error_list.append(error_)
         
         return error_list
     
@@ -320,11 +342,16 @@ class ASTNode:
     
         parent = self.parent
         
-        while parent != None or h == -1 :
-        
-            for child in parent.visitor_ast(): 
+        while parent != None and h > -1 :
+            
+            children = parent.visitor_ast()
+            
+            if children == None: continue
+            
+            for child in children: 
                 
-                if child == None : continue
+                if child == None  : continue
+                if child.hash_ >= self.hash_ :  break
                 
                 if type_protocol_name == None: # pass over child if type_protocol_name is not defined
                     

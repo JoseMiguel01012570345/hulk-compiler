@@ -13,7 +13,7 @@ def replacement(self:pcr.ASTNode):
     return [self.replacement]
 
 def let( self: pcr.ASTNode ):
-    return [ self.name ,  self.value ]
+    return [ None ,  self.value ]
 
 def block( self: pcr.ASTNode ):
     if len(self.expressions) == 1:
