@@ -27,7 +27,7 @@ def replacement(token_list):
     return [( "replacement" , token_list[0])]
 
 def let(token_list):
-    return [ ( "name",token_list[1] ) , ( "value" , token_list[-1] ) ]
+    return [ ( "name",token_list[1].name ) , ( "value" , token_list[-1] ) ]
 
 def literal(token_list):
     return [ ( "value" , token_list[0].Text) , ( "id" , "literal" ) ]
@@ -44,6 +44,6 @@ def block(token_list):
         
         token_list[0].expressions.append(token_list[-1])
         
-        return [ ( "expressions" , token_list[0].expressions  ) ]
+        return [ ( "expressions" , token_list[0].expressions  )  ]
         
     
