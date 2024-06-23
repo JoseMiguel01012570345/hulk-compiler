@@ -1,3 +1,4 @@
+import inspect
 
 class ASTNode:
       
@@ -86,11 +87,11 @@ class ASTNode:
         
         for child in list_children:
             
-            if child != None and type(child) == "ASTNode" :
+            if child != None and hasattr(child,"id") :
                 child.parent = self
                 
                 pass
-        
+            
             pass
         
     def my_id(self):

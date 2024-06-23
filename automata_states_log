@@ -1,0 +1,402 @@
+
+I0= { 
+S->E , c="$", pivote:-1
+E->X ; , c="$", pivote:-1
+E->B } , c="$", pivote:-1
+X->X + F , c=";", pivote:-1
+X->F , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+X->X + F , c="+", pivote:-1
+X->F , c="+", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->B B , c="int", pivote:-1
+B->B E , c="int", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+ }
+ GOTO(I0,int):
+I1= { 
+F->int , c=";", pivote:0
+F->int , c="+", pivote:0
+ }
+ GOTO(I0,():
+I2= { 
+F->( X ) , c=";", pivote:0
+X->X + F , c=")", pivote:-1
+X->F , c=")", pivote:-1
+X->X + F , c="+", pivote:-1
+X->F , c="+", pivote:-1
+F->int , c=")", pivote:-1
+F->( X ) , c=")", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->( X ) , c="+", pivote:0
+ }
+ GOTO(I0,{):
+I3= { 
+B->{ E , c="}", pivote:0
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+X->X + F , c=";", pivote:-1
+X->F , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+X->X + F , c="+", pivote:-1
+X->F , c="+", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+B->{ E , c="{", pivote:0
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+B->{ E , c="int", pivote:0
+E->X ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
+ }
+ GOTO(I0,E):
+I4= { 
+S->E , c="$", pivote:0
+ }
+ GOTO(I0,X):
+I5= { 
+E->X ; , c="$", pivote:0
+X->X + F , c=";", pivote:0
+X->X + F , c="+", pivote:0
+ }
+ GOTO(I0,F):
+I6= { 
+X->F , c=";", pivote:0
+X->F , c="+", pivote:0
+ }
+ GOTO(I0,B):
+I7= { 
+E->B } , c="$", pivote:0
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->B E , c="}", pivote:0
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+X->X + F , c=";", pivote:-1
+X->F , c=";", pivote:-1
+X->X + F , c="+", pivote:-1
+X->F , c="+", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+B->B B , c="int", pivote:0
+B->{ E , c="int", pivote:-1
+B->B B , c="int", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="int", pivote:0
+E->X ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
+ }
+ GOTO(I2,int):
+I8= { 
+F->int , c=")", pivote:0
+F->int , c="+", pivote:0
+ }
+ GOTO(I2,():
+I9= { 
+F->( X ) , c=")", pivote:0
+X->X + F , c=")", pivote:-1
+X->F , c=")", pivote:-1
+X->X + F , c="+", pivote:-1
+X->F , c="+", pivote:-1
+F->int , c=")", pivote:-1
+F->( X ) , c=")", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+F->( X ) , c="+", pivote:0
+ }
+ GOTO(I2,X):
+I10= { 
+F->( X ) , c=";", pivote:1
+X->X + F , c=")", pivote:0
+X->X + F , c="+", pivote:0
+F->( X ) , c="+", pivote:1
+ }
+ GOTO(I2,F):
+I11= { 
+X->F , c=")", pivote:0
+X->F , c="+", pivote:0
+ }
+ GOTO(I3,{):
+I12= { 
+B->{ E , c="}", pivote:0
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+X->X + F , c=";", pivote:-1
+X->F , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+X->X + F , c="+", pivote:-1
+X->F , c="+", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+B->{ E , c="{", pivote:0
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+ }
+ GOTO(I3,E):
+I13= { 
+B->{ E , c="}", pivote:1
+B->{ E , c="{", pivote:1
+B->{ E , c="int", pivote:1
+ }
+ GOTO(I3,X):
+I14= { 
+E->X ; , c="}", pivote:0
+X->X + F , c=";", pivote:0
+X->X + F , c="+", pivote:0
+E->X ; , c="{", pivote:0
+E->X ; , c="int", pivote:0
+ }
+ GOTO(I3,B):
+I15= { 
+E->B } , c="}", pivote:0
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->B E , c="}", pivote:0
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+X->X + F , c=";", pivote:-1
+X->F , c=";", pivote:-1
+X->X + F , c="+", pivote:-1
+X->F , c="+", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+E->B } , c="{", pivote:0
+E->B } , c="int", pivote:0
+ }
+ GOTO(I5,;):
+I16= { 
+E->X ; , c="$", pivote:1
+ }
+ GOTO(I5,+):
+I17= { 
+X->X + F , c=";", pivote:1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+X->X + F , c="+", pivote:1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+ }
+ GOTO(I7,}):
+I18= { 
+E->B } , c="$", pivote:1
+ }
+ GOTO(I7,E):
+I19= { 
+B->B E , c="}", pivote:1
+B->B E , c="{", pivote:1
+B->B E , c="int", pivote:1
+ }
+ GOTO(I7,B):
+I20= { 
+B->B B , c="}", pivote:1
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->B E , c="}", pivote:0
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+X->X + F , c=";", pivote:-1
+X->F , c=";", pivote:-1
+X->X + F , c="+", pivote:-1
+X->F , c="+", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+E->B } , c="}", pivote:0
+B->B B , c="{", pivote:1
+E->B } , c="{", pivote:0
+B->B B , c="int", pivote:1
+B->B B , c="int", pivote:0
+B->{ E , c="int", pivote:-1
+B->B B , c="int", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="int", pivote:0
+E->X ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
+E->B } , c="int", pivote:0
+ }
+ GOTO(I9,X):
+I21= { 
+F->( X ) , c=")", pivote:1
+X->X + F , c=")", pivote:0
+X->X + F , c="+", pivote:0
+F->( X ) , c="+", pivote:1
+ }
+ GOTO(I10,+):
+I22= { 
+X->X + F , c=")", pivote:1
+F->int , c=")", pivote:-1
+F->( X ) , c=")", pivote:-1
+X->X + F , c="+", pivote:1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+ }
+ GOTO(I10,)):
+I23= { 
+F->( X ) , c=";", pivote:2
+F->( X ) , c="+", pivote:2
+ }
+ GOTO(I12,E):
+I24= { 
+B->{ E , c="}", pivote:1
+B->{ E , c="{", pivote:1
+ }
+ GOTO(I12,X):
+I25= { 
+E->X ; , c="}", pivote:0
+X->X + F , c=";", pivote:0
+X->X + F , c="+", pivote:0
+E->X ; , c="{", pivote:0
+ }
+ GOTO(I12,B):
+I26= { 
+E->B } , c="}", pivote:0
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->B E , c="}", pivote:0
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+X->X + F , c=";", pivote:-1
+X->F , c=";", pivote:-1
+X->X + F , c="+", pivote:-1
+X->F , c="+", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+E->B } , c="{", pivote:0
+ }
+ GOTO(I14,;):
+I27= { 
+E->X ; , c="}", pivote:1
+E->X ; , c="{", pivote:1
+E->X ; , c="int", pivote:1
+ }
+ GOTO(I15,}):
+I28= { 
+E->B } , c="}", pivote:1
+E->B } , c="{", pivote:1
+E->B } , c="int", pivote:1
+ }
+ GOTO(I15,E):
+I29= { 
+B->B E , c="}", pivote:1
+B->B E , c="{", pivote:1
+ }
+ GOTO(I15,B):
+I30= { 
+B->B B , c="}", pivote:1
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->B E , c="}", pivote:0
+E->X ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
+X->X + F , c=";", pivote:-1
+X->F , c=";", pivote:-1
+X->X + F , c="+", pivote:-1
+X->F , c="+", pivote:-1
+F->int , c=";", pivote:-1
+F->( X ) , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->( X ) , c="+", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->X ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
+E->B } , c="}", pivote:0
+B->B B , c="{", pivote:1
+E->B } , c="{", pivote:0
+ }
+ GOTO(I17,F):
+I31= { 
+X->X + F , c=";", pivote:2
+X->X + F , c="+", pivote:2
+ }
+ GOTO(I21,)):
+I32= { 
+F->( X ) , c=")", pivote:2
+F->( X ) , c="+", pivote:2
+ }
+ GOTO(I22,F):
+I33= { 
+X->X + F , c=")", pivote:2
+X->X + F , c="+", pivote:2
+ }
+ GOTO(I25,;):
+I34= { 
+E->X ; , c="}", pivote:1
+E->X ; , c="{", pivote:1
+ }
+ GOTO(I26,}):
+I35= { 
+E->B } , c="}", pivote:1
+E->B } , c="{", pivote:1
+ }

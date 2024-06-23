@@ -117,7 +117,7 @@ if not Error:
 #_________________________CODE GENERATION__________________________________
 
     
-    # AST = ASTCilBuilder(gp.derivation_Tree)
+    # AST = ASTCilBuilder( ast=ast )
     
     # print(AST.Code)
 
