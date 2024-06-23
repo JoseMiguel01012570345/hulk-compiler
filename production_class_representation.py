@@ -86,7 +86,7 @@ class ASTNode:
         
         for child in list_children:
             
-            if child != None:
+            if child != None and type(child) == "ASTNode" :
                 child.parent = self
                 
                 pass
@@ -131,16 +131,16 @@ class ASTNode:
             else: # the node is not contained in params
                 self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max )    
         
-        elif self.def_node: # check if I am a definition node
+        elif type(self) == "ASTNode" and self.def_node: # check if I am a definition node
             
             error_type = "definition error"
             error_description = f" {child.id} {child.name} already defined"
-            
+        
             self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=1 )    
         
         for child in children: # check children
                 
-            if child != None:
+            if child != None and type(child) == "ASTNode":
                 
                 child.check_context(error_list)
         

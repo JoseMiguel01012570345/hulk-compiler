@@ -2,69 +2,49 @@ import builder as B
 import production_class_representation as pcr
 import visitor as V
 
-# function_caLL = [
-#     [ "",[ [] , [] ] ]
-# ]
+function_caLL = [
 
-# strings = [
-    
-#     [ "",[ [] , [] ] ]
-# ]
+]
 
-# expression_block = [
+strings = [
     
-#     [ "",[ [] , [] ] ]
-    
-# ]
+]
 
-# booleans = [
+booleans = [
     
-#     [ "",[ [] , [] ] ]
-# ]
+]
 
-# IN = [
-    
-#     [ "",[ [] , [] ] ]
+IN = [
        
-# ]
+]
 
-# For = [
-    
-#     [ "",[ [] , [] ] ]  
-    
-# ]
+For = [
+        
+]
 
-# conditional = [
-    
-#     [ "",[ [] , [] ] ]
-    
-# ]
+conditional = [
+        
+]
 
-# While = [
+While = [
+
+]
+
+function = [    
+
+]
+
+types = [
+
+]
+
+protocols = [
     
-#     [ "",[ [] , [] ] ]
-# ]
+]
 
-# function = [    
- 
-#     [ "",[ [] , [] ] ]
-# ]
+vector = [
 
-# types = [
-    
-#     [ "",[ [] , [] ] ]
-# ]
-
-# protocols = [
-
-#     [ "",[ [] , [] ] ]
-    
-# ]
-
-# vector = [
-    
-#     [ "",[ [] , [] ] ]
-# ]
+]
 
 variable = [
     
@@ -72,6 +52,18 @@ variable = [
     
 ]
 
+expression_block = [
+    
+    # B -> { E
+    pcr.block({  "derivation": ["B",[ "{", "E" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    # B -> BE
+    pcr.block({  "derivation": ["B",[ "B", "E" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
+    # E-> B }    
+    pcr.block({  "derivation": ["E",[ "B", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    # E-> B } ;    
+    # pcr.block({  "derivation": ["E",[ "B", "}",";" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    
+]
 let = [
 
     # A -> let F = X
@@ -99,7 +91,7 @@ numbers = [
     pcr.ASTNode({  "derivation": ["T",["F"]] , "identifier": "T->F" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
     
     # F -> i
-    pcr.variable({ "derivation": ["F",["i"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
+    pcr.variable({ "derivation": ["F",["int"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
     
     # F -> ( X )
     pcr.ASTNode({  "derivation": ["F",["(","X",")"]] , "identifier": "brackets" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ),
@@ -125,6 +117,7 @@ non_terminals = [
         "F",
         "T",
         "A",
+        "B"
                            
 ]
 
@@ -137,16 +130,20 @@ terminals= [
             "-",
             "*",
             "/",
-            "i" ,
+            "int" ,
             "(" ,
             ")" ,
+            "{",
+            "}",
             "$" , 
             
         ]
 
 grammar =[ 
-          numbers, let, variable,
-        #  For , IN  , booleans  , expression_block , 
-        #   vector , protocols , types , function , While , conditional , 
-        #  strings , function_caLL
+          
+        numbers, let, variable,expression_block,
+        For , IN  , booleans   , 
+        vector , protocols , types , function , While , conditional , 
+        strings , function_caLL
+        
         ]

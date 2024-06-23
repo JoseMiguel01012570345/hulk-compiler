@@ -4,6 +4,7 @@ import production_class_representation as pcr
 import builder as B
 import visitor as V
 import copy
+from HULK_LANGUAGE_DEFINITION import SYMBOLS_and_OPERATORS_parser as symb_and_op
 
 class Parser:
     
@@ -48,7 +49,6 @@ class Parser:
         pass
     
     def contains(self , my_token , dic: list):
-        
         return dic.__contains__(my_token)
         
     @property
@@ -375,18 +375,21 @@ class Parser:
         k = 0
         while k < len(code):
             
-            item = code[k]
+            item = code[k].Text
             
+            if not self.special_token(item=item):
+                item = "int"
+                
             result =""
             
-            if dict(self.parser_table[ state[-1] ]).__contains__( item.Text ) : 
-                result = self.parser_table[ state[-1] ][ item.Text ]
+            if dict(self.parser_table[ state[-1] ]).__contains__( item ) : 
+                result = self.parser_table[ state[-1] ][ item ]
                 
                 if result == "*":
-                    print("invalid string")    
+                    print("invalid string in language")
                     return False , None
             
-            else:
+            else: # no language belongness
                 print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
                 return False , None
 
@@ -394,10 +397,11 @@ class Parser:
                 
                 state.append(result)
                 
-                symbols.append(item.Text)
+                symbols.append(item)
+                    
                 print(symbols , f"state={state[-1]}" )
                 
-                tree.append(item)
+                tree.append(code[k])
                 
                 pass
             
@@ -441,10 +445,12 @@ class Parser:
             elif result == "OK":
                 return True , tree[0]
             
-            else:
+            else: # error
                 print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
                 return False , None
             
             k +=1
         
-        pass
+    
+    def special_token(self,item):
+        return self.terminals.__contains__(item) or symb_and_op.__contains__(item)
