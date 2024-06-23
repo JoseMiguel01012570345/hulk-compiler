@@ -1,1 +1,1 @@
-{  let r = 10 ; r = 4 ; {let m = 10 ;} let m = 10 ; } $
+{  let r = 10 ; r = 4 ; {let m = 10 ; { let m =10 ; } ; } ; let m = 10 ; } ; $

@@ -9,7 +9,6 @@ from LiteralDefinitions import NumberLiteral,StringLiteral,BooleanLiteral
 import GRAMMAR_PRODUCTIONS
 import Parser as P
 from os import system
-from CIL import ASTCilBuilder
 import semantic_errors
 
 def FiltToken(token):
@@ -117,7 +116,7 @@ if not Error:
 #_________________________CODE GENERATION__________________________________
 
     
-    AST = ASTCilBuilder( ast=ast )
+    # AST = ASTCilBuilder( ast=ast )
     
     # print(AST.Code)
 

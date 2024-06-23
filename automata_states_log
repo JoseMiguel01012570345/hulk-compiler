@@ -6,6 +6,7 @@ E->T ; , c="$", pivote:-1
 E->F ; , c="$", pivote:-1
 E->X ; , c="$", pivote:-1
 E->B } , c="$", pivote:-1
+E->B } ; , c="$", pivote:-1
 A->let F = E , c="$", pivote:-1
 A->F = E , c="$", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -123,6 +124,7 @@ E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -173,6 +175,7 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
 B->{ E , c="let", pivote:0
@@ -181,6 +184,7 @@ E->T ; , c="let", pivote:-1
 E->F ; , c="let", pivote:-1
 E->X ; , c="let", pivote:-1
 E->B } , c="let", pivote:-1
+E->B } ; , c="let", pivote:-1
 A->let F = E , c="let", pivote:-1
 A->F = E , c="let", pivote:-1
 B->{ E , c="int", pivote:0
@@ -189,6 +193,7 @@ E->T ; , c="int", pivote:-1
 E->F ; , c="int", pivote:-1
 E->X ; , c="int", pivote:-1
 E->B } , c="int", pivote:-1
+E->B } ; , c="int", pivote:-1
 A->let F = E , c="int", pivote:-1
 A->F = E , c="int", pivote:-1
  }
@@ -240,6 +245,7 @@ E->A , c="$", pivote:0
  GOTO(I0,B):
 I10= { 
 E->B } , c="$", pivote:0
+E->B } ; , c="$", pivote:0
 B->B B , c="}", pivote:0
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
@@ -253,6 +259,7 @@ E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -298,6 +305,7 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
 B->B B , c="let", pivote:0
@@ -310,6 +318,7 @@ E->T ; , c="let", pivote:-1
 E->F ; , c="let", pivote:-1
 E->X ; , c="let", pivote:-1
 E->B } , c="let", pivote:-1
+E->B } ; , c="let", pivote:-1
 A->let F = E , c="let", pivote:-1
 A->F = E , c="let", pivote:-1
 B->B B , c="int", pivote:0
@@ -322,6 +331,7 @@ E->T ; , c="int", pivote:-1
 E->F ; , c="int", pivote:-1
 E->X ; , c="int", pivote:-1
 E->B } , c="int", pivote:-1
+E->B } ; , c="int", pivote:-1
 A->let F = E , c="int", pivote:-1
 A->F = E , c="int", pivote:-1
  }
@@ -477,6 +487,7 @@ E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -527,6 +538,7 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
  }
@@ -596,6 +608,7 @@ E->A , c="int", pivote:0
  GOTO(I4,B):
 I26= { 
 E->B } , c="}", pivote:0
+E->B } ; , c="}", pivote:0
 B->B B , c="}", pivote:0
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
@@ -609,6 +622,7 @@ E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -654,11 +668,15 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
 E->B } , c="{", pivote:0
+E->B } ; , c="{", pivote:0
 E->B } , c="let", pivote:0
+E->B } ; , c="let", pivote:0
 E->B } , c="int", pivote:0
+E->B } ; , c="int", pivote:0
  }
  GOTO(I6,;):
 I27= { 
@@ -734,6 +752,7 @@ E->T ; , c="$", pivote:-1
 E->F ; , c="$", pivote:-1
 E->X ; , c="$", pivote:-1
 E->B } , c="$", pivote:-1
+E->B } ; , c="$", pivote:-1
 A->let F = E , c="$", pivote:-1
 A->F = E , c="$", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -826,6 +845,7 @@ F->( X ) , c="-", pivote:-1
  GOTO(I10,}):
 I35= { 
 E->B } , c="$", pivote:1
+E->B } ; , c="$", pivote:1
  }
  GOTO(I10,E):
 I36= { 
@@ -850,6 +870,7 @@ E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -895,11 +916,14 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
 E->B } , c="}", pivote:0
+E->B } ; , c="}", pivote:0
 B->B B , c="{", pivote:1
 E->B } , c="{", pivote:0
+E->B } ; , c="{", pivote:0
 B->B B , c="let", pivote:1
 B->B B , c="let", pivote:0
 B->{ E , c="let", pivote:-1
@@ -911,9 +935,11 @@ E->T ; , c="let", pivote:-1
 E->F ; , c="let", pivote:-1
 E->X ; , c="let", pivote:-1
 E->B } , c="let", pivote:-1
+E->B } ; , c="let", pivote:-1
 A->let F = E , c="let", pivote:-1
 A->F = E , c="let", pivote:-1
 E->B } , c="let", pivote:0
+E->B } ; , c="let", pivote:0
 B->B B , c="int", pivote:1
 B->B B , c="int", pivote:0
 B->{ E , c="int", pivote:-1
@@ -925,9 +951,11 @@ E->T ; , c="int", pivote:-1
 E->F ; , c="int", pivote:-1
 E->X ; , c="int", pivote:-1
 E->B } , c="int", pivote:-1
+E->B } ; , c="int", pivote:-1
 A->let F = E , c="int", pivote:-1
 A->F = E , c="int", pivote:-1
 E->B } , c="int", pivote:0
+E->B } ; , c="int", pivote:0
  }
  GOTO(I12,X):
 I38= { 
@@ -947,6 +975,7 @@ E->T ; , c="$", pivote:-1
 E->F ; , c="$", pivote:-1
 E->X ; , c="$", pivote:-1
 E->B } , c="$", pivote:-1
+E->B } ; , c="$", pivote:-1
 A->let F = E , c="$", pivote:-1
 A->F = E , c="$", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -1181,6 +1210,7 @@ E->A , c="{", pivote:0
  GOTO(I20,B):
 I53= { 
 E->B } , c="}", pivote:0
+E->B } ; , c="}", pivote:0
 B->B B , c="}", pivote:0
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
@@ -1194,6 +1224,7 @@ E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -1239,9 +1270,11 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
 E->B } , c="{", pivote:0
+E->B } ; , c="{", pivote:0
  }
  GOTO(I22,;):
 I54= { 
@@ -1258,6 +1291,7 @@ E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -1308,6 +1342,7 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
 A->F = E , c="let", pivote:1
@@ -1316,6 +1351,7 @@ E->T ; , c="let", pivote:-1
 E->F ; , c="let", pivote:-1
 E->X ; , c="let", pivote:-1
 E->B } , c="let", pivote:-1
+E->B } ; , c="let", pivote:-1
 A->let F = E , c="let", pivote:-1
 A->F = E , c="let", pivote:-1
 A->F = E , c="int", pivote:1
@@ -1324,6 +1360,7 @@ E->T ; , c="int", pivote:-1
 E->F ; , c="int", pivote:-1
 E->X ; , c="int", pivote:-1
 E->B } , c="int", pivote:-1
+E->B } ; , c="int", pivote:-1
 A->let F = E , c="int", pivote:-1
 A->F = E , c="int", pivote:-1
  }
@@ -1344,9 +1381,13 @@ E->T ; , c="int", pivote:1
  GOTO(I26,}):
 I58= { 
 E->B } , c="}", pivote:1
+E->B } ; , c="}", pivote:1
 E->B } , c="{", pivote:1
+E->B } ; , c="{", pivote:1
 E->B } , c="let", pivote:1
+E->B } ; , c="let", pivote:1
 E->B } , c="int", pivote:1
+E->B } ; , c="int", pivote:1
  }
  GOTO(I26,E):
 I59= { 
@@ -1369,6 +1410,7 @@ E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -1414,11 +1456,14 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
 E->B } , c="}", pivote:0
+E->B } ; , c="}", pivote:0
 B->B B , c="{", pivote:1
 E->B } , c="{", pivote:0
+E->B } ; , c="{", pivote:0
  }
  GOTO(I28,int):
 I61= { 
@@ -1517,6 +1562,7 @@ A->F = E , c="$", pivote:2
  GOTO(I30,B):
 I67= { 
 E->B } , c="$", pivote:0
+E->B } ; , c="$", pivote:0
 B->B B , c="}", pivote:0
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
@@ -1530,6 +1576,7 @@ E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -1575,6 +1622,7 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
  }
@@ -1594,16 +1642,20 @@ T->T / F , c="/", pivote:2
 T->T / F , c="+", pivote:2
 T->T / F , c="-", pivote:2
  }
- GOTO(I38,)):
+ GOTO(I35,;):
 I70= { 
+E->B } ; , c="$", pivote:2
+ }
+ GOTO(I38,)):
+I71= { 
 F->( X ) , c="=", pivote:2
  }
  GOTO(I39,E):
-I71= { 
+I72= { 
 A->let F = E , c="$", pivote:3
  }
  GOTO(I40,)):
-I72= { 
+I73= { 
 F->( X ) , c=")", pivote:2
 F->( X ) , c="+", pivote:2
 F->( X ) , c="-", pivote:2
@@ -1611,7 +1663,7 @@ F->( X ) , c="*", pivote:2
 F->( X ) , c="/", pivote:2
  }
  GOTO(I41,T):
-I73= { 
+I74= { 
 X->X + T , c=")", pivote:2
 T->T * F , c=")", pivote:0
 T->T / F , c=")", pivote:0
@@ -1627,7 +1679,7 @@ T->T * F , c="-", pivote:0
 T->T / F , c="-", pivote:0
  }
  GOTO(I42,T):
-I74= { 
+I75= { 
 X->X - T , c=")", pivote:2
 T->T * F , c=")", pivote:0
 T->T / F , c=")", pivote:0
@@ -1643,7 +1695,7 @@ T->T * F , c="-", pivote:0
 T->T / F , c="-", pivote:0
  }
  GOTO(I44,F):
-I75= { 
+I76= { 
 T->T * F , c=")", pivote:2
 T->T * F , c="+", pivote:2
 T->T * F , c="-", pivote:2
@@ -1651,7 +1703,7 @@ T->T * F , c="*", pivote:2
 T->T * F , c="/", pivote:2
  }
  GOTO(I45,F):
-I76= { 
+I77= { 
 T->T / F , c=")", pivote:2
 T->T / F , c="+", pivote:2
 T->T / F , c="-", pivote:2
@@ -1659,13 +1711,14 @@ T->T / F , c="*", pivote:2
 T->T / F , c="/", pivote:2
  }
  GOTO(I46,=):
-I77= { 
+I78= { 
 A->let F = E , c="}", pivote:2
 E->A , c="}", pivote:-1
 E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -1716,6 +1769,7 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
 A->let F = E , c="let", pivote:2
@@ -1724,6 +1778,7 @@ E->T ; , c="let", pivote:-1
 E->F ; , c="let", pivote:-1
 E->X ; , c="let", pivote:-1
 E->B } , c="let", pivote:-1
+E->B } ; , c="let", pivote:-1
 A->let F = E , c="let", pivote:-1
 A->F = E , c="let", pivote:-1
 A->let F = E , c="int", pivote:2
@@ -1732,27 +1787,29 @@ E->T ; , c="int", pivote:-1
 E->F ; , c="int", pivote:-1
 E->X ; , c="int", pivote:-1
 E->B } , c="int", pivote:-1
+E->B } ; , c="int", pivote:-1
 A->let F = E , c="int", pivote:-1
 A->F = E , c="int", pivote:-1
  }
  GOTO(I47,F):
-I78= { 
+I79= { 
 A->let F = E , c="}", pivote:1
 A->let F = E , c="{", pivote:1
  }
  GOTO(I49,;):
-I79= { 
+I80= { 
 E->X ; , c="}", pivote:1
 E->X ; , c="{", pivote:1
  }
  GOTO(I50,=):
-I80= { 
+I81= { 
 A->F = E , c="}", pivote:1
 E->A , c="}", pivote:-1
 E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -1803,33 +1860,43 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
  }
  GOTO(I50,;):
-I81= { 
+I82= { 
 E->F ; , c="}", pivote:1
 E->F ; , c="{", pivote:1
  }
  GOTO(I51,;):
-I82= { 
+I83= { 
 E->T ; , c="}", pivote:1
 E->T ; , c="{", pivote:1
  }
  GOTO(I53,}):
-I83= { 
+I84= { 
 E->B } , c="}", pivote:1
+E->B } ; , c="}", pivote:1
 E->B } , c="{", pivote:1
+E->B } ; , c="{", pivote:1
  }
  GOTO(I55,E):
-I84= { 
+I85= { 
 A->F = E , c="}", pivote:2
 A->F = E , c="{", pivote:2
 A->F = E , c="let", pivote:2
 A->F = E , c="int", pivote:2
  }
+ GOTO(I58,;):
+I86= { 
+E->B } ; , c="}", pivote:2
+E->B } ; , c="{", pivote:2
+E->B } ; , c="let", pivote:2
+E->B } ; , c="int", pivote:2
+ }
  GOTO(I62,X):
-I85= { 
+I87= { 
 F->( X ) , c=";", pivote:1
 X->X + T , c=")", pivote:0
 X->X - T , c=")", pivote:0
@@ -1842,21 +1909,22 @@ F->( X ) , c="/", pivote:1
 F->( X ) , c="+", pivote:1
 F->( X ) , c="-", pivote:1
  }
- GOTO(I77,E):
-I86= { 
+ GOTO(I78,E):
+I88= { 
 A->let F = E , c="}", pivote:3
 A->let F = E , c="{", pivote:3
 A->let F = E , c="let", pivote:3
 A->let F = E , c="int", pivote:3
  }
- GOTO(I78,=):
-I87= { 
+ GOTO(I79,=):
+I89= { 
 A->let F = E , c="}", pivote:2
 E->A , c="}", pivote:-1
 E->T ; , c="}", pivote:-1
 E->F ; , c="}", pivote:-1
 E->X ; , c="}", pivote:-1
 E->B } , c="}", pivote:-1
+E->B } ; , c="}", pivote:-1
 A->let F = E , c="}", pivote:-1
 A->F = E , c="}", pivote:-1
 T->T * F , c=";", pivote:-1
@@ -1907,24 +1975,30 @@ E->T ; , c="{", pivote:-1
 E->F ; , c="{", pivote:-1
 E->X ; , c="{", pivote:-1
 E->B } , c="{", pivote:-1
+E->B } ; , c="{", pivote:-1
 A->let F = E , c="{", pivote:-1
 A->F = E , c="{", pivote:-1
  }
- GOTO(I80,E):
-I88= { 
+ GOTO(I81,E):
+I90= { 
 A->F = E , c="}", pivote:2
 A->F = E , c="{", pivote:2
  }
- GOTO(I85,)):
-I89= { 
+ GOTO(I84,;):
+I91= { 
+E->B } ; , c="}", pivote:2
+E->B } ; , c="{", pivote:2
+ }
+ GOTO(I87,)):
+I92= { 
 F->( X ) , c=";", pivote:2
 F->( X ) , c="*", pivote:2
 F->( X ) , c="/", pivote:2
 F->( X ) , c="+", pivote:2
 F->( X ) , c="-", pivote:2
  }
- GOTO(I87,E):
-I90= { 
+ GOTO(I89,E):
+I93= { 
 A->let F = E , c="}", pivote:3
 A->let F = E , c="{", pivote:3
  }
