@@ -20,3 +20,7 @@ def block( self: pcr.ASTNode ):
         return [ None , self.expressions[0] ]
     else:
         return self.expressions 
+
+def def_function(self: pcr.ASTNode):
+    pass
+

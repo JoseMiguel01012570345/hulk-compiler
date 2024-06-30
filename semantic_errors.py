@@ -17,10 +17,13 @@ class context_errors:
             
             type_ = self.error_list[0]['type']
             description = self.error_list[0]['description']
+            scope = self.error_list[0]["scope"]
+            line = scope["line"]
+            column = scope["column"]
             
             print( 
-                
-                f" \033[1;31m >\033[1;32m There is an issue of the type: \033[1;31m {type_} \033[1;32m which says \033[1;31m {description} \033[1;32m in \033[1;3m \033[0;m")
+                f"\033[1;31m >\033[1;32m There is an issue of the type: \033[1;31m { type_ } \033[1;32m which says \033[1;31m {description} \033[1;32m at line { line } , column { column } \033[1;3m \033[0;m"
+                )
         
         elif len(self.error_list) > 1 :
             
@@ -31,11 +34,11 @@ class context_errors:
                 try:
                     type_ = item['type']
                     description = item['description']
-                    # scope = item['scope']
+                    scope = item['scope']
                 
                 except: continue
                 
-                print(f" \033[1;31m > \033[1;32m There is an issue of the type: \033[1;31m {type_} \033[1;32m which says \033[1;31m {description} \033[0;m ")
+                print(f" \033[1;31m > \033[1;32m There is an issue of the type: \033[1;31m {type_} \033[1;32m which says \033[1;31m {description} at line { line } , column { column } \033[0;m ")
                 
         else:
             
