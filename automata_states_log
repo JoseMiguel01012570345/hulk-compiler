@@ -1,2004 +1,1359 @@
 
 I0= { 
-S->exp , c="$", pivote:-1
-exp->var_declaration , c="$", pivote:-1
-exp->div_mult ; , c="$", pivote:-1
-exp->atom ; , c="$", pivote:-1
-exp->sum_minus ; , c="$", pivote:-1
-exp->block } , c="$", pivote:-1
-exp->block } ; , c="$", pivote:-1
-var_declaration->let atom = exp , c="$", pivote:-1
-var_declaration->atom = exp , c="$", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-block->{ exp , c="let", pivote:-1
-block->block block , c="let", pivote:-1
-block->block exp , c="let", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-block->{ exp , c="int", pivote:-1
-block->block block , c="int", pivote:-1
-block->block exp , c="int", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
+S->E , c="$", pivote:-1
+E->B } ; , c="$", pivote:-1
+E->high_level ; , c="$", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+high_level->X , c=";", pivote:-1
+high_level->A , c=";", pivote:-1
+high_level->( high_level ) , c=";", pivote:-1
+high_level->B } , c=";", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+A->let F = high_level , c=";", pivote:-1
+A->F = high_level , c=";", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c="=", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
  }
  GOTO(I0,let):
 I1= { 
-var_declaration->let atom = exp , c="$", pivote:0
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
+A->let F = high_level , c=";", pivote:0
+F->int , c="=", pivote:-1
  }
  GOTO(I0,int):
 I2= { 
-atom->int , c=";", pivote:0
-atom->int , c="=", pivote:0
-atom->int , c="*", pivote:0
-atom->int , c="/", pivote:0
-atom->int , c="+", pivote:0
-atom->int , c="-", pivote:0
+F->int , c="=", pivote:0
+F->int , c=";", pivote:0
+F->int , c="+", pivote:0
+F->int , c="-", pivote:0
+F->int , c="*", pivote:0
+F->int , c="/", pivote:0
  }
  GOTO(I0,():
 I3= { 
-atom->( sum_minus ) , c=";", pivote:0
-sum_minus->sum_minus + div_mult , c=")", pivote:-1
-sum_minus->sum_minus - div_mult , c=")", pivote:-1
-sum_minus->div_mult , c=")", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-div_mult->div_mult * atom , c=")", pivote:-1
-div_mult->div_mult / atom , c=")", pivote:-1
-div_mult->atom , c=")", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-atom->int , c=")", pivote:-1
-atom->( sum_minus ) , c=")", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-atom->( sum_minus ) , c="=", pivote:0
-atom->( sum_minus ) , c="*", pivote:0
-atom->( sum_minus ) , c="/", pivote:0
-atom->( sum_minus ) , c="+", pivote:0
-atom->( sum_minus ) , c="-", pivote:0
+high_level->( high_level ) , c=";", pivote:0
+high_level->X , c=")", pivote:-1
+high_level->A , c=")", pivote:-1
+high_level->( high_level ) , c=")", pivote:-1
+high_level->B } , c=")", pivote:-1
+X->X + T , c=")", pivote:-1
+X->X - T , c=")", pivote:-1
+X->T , c=")", pivote:-1
+A->let F = high_level , c=")", pivote:-1
+A->F = high_level , c=")", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+F->int , c="=", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=")", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
  }
  GOTO(I0,{):
 I4= { 
-block->{ exp , c="}", pivote:0
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-block->{ exp , c="{", pivote:0
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
-block->{ exp , c="let", pivote:0
-exp->var_declaration , c="let", pivote:-1
-exp->div_mult ; , c="let", pivote:-1
-exp->atom ; , c="let", pivote:-1
-exp->sum_minus ; , c="let", pivote:-1
-exp->block } , c="let", pivote:-1
-exp->block } ; , c="let", pivote:-1
-var_declaration->let atom = exp , c="let", pivote:-1
-var_declaration->atom = exp , c="let", pivote:-1
-block->{ exp , c="int", pivote:0
-exp->var_declaration , c="int", pivote:-1
-exp->div_mult ; , c="int", pivote:-1
-exp->atom ; , c="int", pivote:-1
-exp->sum_minus ; , c="int", pivote:-1
-exp->block } , c="int", pivote:-1
-exp->block } ; , c="int", pivote:-1
-var_declaration->let atom = exp , c="int", pivote:-1
-var_declaration->atom = exp , c="int", pivote:-1
+B->{ E , c="}", pivote:0
+E->B } ; , c="}", pivote:-1
+E->high_level ; , c="}", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+high_level->X , c=";", pivote:-1
+high_level->A , c=";", pivote:-1
+high_level->( high_level ) , c=";", pivote:-1
+high_level->B } , c=";", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+A->let F = high_level , c=";", pivote:-1
+A->F = high_level , c=";", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c="=", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+B->{ E , c="{", pivote:0
+E->B } ; , c="{", pivote:-1
+E->high_level ; , c="{", pivote:-1
+B->{ E , c="int", pivote:0
+E->B } ; , c="int", pivote:-1
+E->high_level ; , c="int", pivote:-1
+B->{ E , c="let", pivote:0
+E->B } ; , c="let", pivote:-1
+E->high_level ; , c="let", pivote:-1
+B->{ E , c="(", pivote:0
+E->B } ; , c="(", pivote:-1
+E->high_level ; , c="(", pivote:-1
  }
- GOTO(I0,exp):
+ GOTO(I0,E):
 I5= { 
-S->exp , c="$", pivote:0
+S->E , c="$", pivote:0
  }
- GOTO(I0,sum_minus):
+ GOTO(I0,X):
 I6= { 
-exp->sum_minus ; , c="$", pivote:0
-sum_minus->sum_minus + div_mult , c=";", pivote:0
-sum_minus->sum_minus - div_mult , c=";", pivote:0
-sum_minus->sum_minus + div_mult , c="+", pivote:0
-sum_minus->sum_minus - div_mult , c="+", pivote:0
-sum_minus->sum_minus + div_mult , c="-", pivote:0
-sum_minus->sum_minus - div_mult , c="-", pivote:0
+high_level->X , c=";", pivote:0
+X->X + T , c=";", pivote:0
+X->X - T , c=";", pivote:0
+X->X + T , c="+", pivote:0
+X->X - T , c="+", pivote:0
+X->X + T , c="-", pivote:0
+X->X - T , c="-", pivote:0
  }
- GOTO(I0,atom):
+ GOTO(I0,F):
 I7= { 
-exp->atom ; , c="$", pivote:0
-var_declaration->atom = exp , c="$", pivote:0
-div_mult->atom , c=";", pivote:0
-div_mult->atom , c="*", pivote:0
-div_mult->atom , c="/", pivote:0
-div_mult->atom , c="+", pivote:0
-div_mult->atom , c="-", pivote:0
+A->F = high_level , c=";", pivote:0
+T->F , c=";", pivote:0
+T->F , c="+", pivote:0
+T->F , c="-", pivote:0
+T->F , c="*", pivote:0
+T->F , c="/", pivote:0
  }
- GOTO(I0,div_mult):
+ GOTO(I0,T):
 I8= { 
-exp->div_mult ; , c="$", pivote:0
-div_mult->div_mult * atom , c=";", pivote:0
-div_mult->div_mult / atom , c=";", pivote:0
-sum_minus->div_mult , c=";", pivote:0
-div_mult->div_mult * atom , c="*", pivote:0
-div_mult->div_mult / atom , c="*", pivote:0
-div_mult->div_mult * atom , c="/", pivote:0
-div_mult->div_mult / atom , c="/", pivote:0
-sum_minus->div_mult , c="+", pivote:0
-sum_minus->div_mult , c="-", pivote:0
-div_mult->div_mult * atom , c="+", pivote:0
-div_mult->div_mult / atom , c="+", pivote:0
-div_mult->div_mult * atom , c="-", pivote:0
-div_mult->div_mult / atom , c="-", pivote:0
+X->T , c=";", pivote:0
+X->T , c="+", pivote:0
+X->T , c="-", pivote:0
+T->T * F , c=";", pivote:0
+T->T / F , c=";", pivote:0
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
  }
- GOTO(I0,var_declaration):
+ GOTO(I0,A):
 I9= { 
-exp->var_declaration , c="$", pivote:0
+high_level->A , c=";", pivote:0
  }
- GOTO(I0,block):
+ GOTO(I0,B):
 I10= { 
-exp->block } , c="$", pivote:0
-exp->block } ; , c="$", pivote:0
-block->block block , c="}", pivote:0
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-block->block exp , c="}", pivote:0
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-block->block block , c="{", pivote:0
-block->block exp , c="{", pivote:0
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
-block->block block , c="let", pivote:0
-block->{ exp , c="let", pivote:-1
-block->block block , c="let", pivote:-1
-block->block exp , c="let", pivote:-1
-block->block exp , c="let", pivote:0
-exp->var_declaration , c="let", pivote:-1
-exp->div_mult ; , c="let", pivote:-1
-exp->atom ; , c="let", pivote:-1
-exp->sum_minus ; , c="let", pivote:-1
-exp->block } , c="let", pivote:-1
-exp->block } ; , c="let", pivote:-1
-var_declaration->let atom = exp , c="let", pivote:-1
-var_declaration->atom = exp , c="let", pivote:-1
-block->block block , c="int", pivote:0
-block->{ exp , c="int", pivote:-1
-block->block block , c="int", pivote:-1
-block->block exp , c="int", pivote:-1
-block->block exp , c="int", pivote:0
-exp->var_declaration , c="int", pivote:-1
-exp->div_mult ; , c="int", pivote:-1
-exp->atom ; , c="int", pivote:-1
-exp->sum_minus ; , c="int", pivote:-1
-exp->block } , c="int", pivote:-1
-exp->block } ; , c="int", pivote:-1
-var_declaration->let atom = exp , c="int", pivote:-1
-var_declaration->atom = exp , c="int", pivote:-1
+E->B } ; , c="$", pivote:0
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+B->B E , c="}", pivote:0
+E->B } ; , c="}", pivote:-1
+E->high_level ; , c="}", pivote:-1
+high_level->X , c=";", pivote:-1
+high_level->A , c=";", pivote:-1
+high_level->( high_level ) , c=";", pivote:-1
+high_level->B } , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+A->let F = high_level , c=";", pivote:-1
+A->F = high_level , c=";", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c="=", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+high_level->B } , c=";", pivote:0
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->B } ; , c="{", pivote:-1
+E->high_level ; , c="{", pivote:-1
+B->B B , c="int", pivote:0
+B->B B , c="let", pivote:0
+B->B B , c="(", pivote:0
+B->B E , c="int", pivote:0
+E->B } ; , c="int", pivote:-1
+E->high_level ; , c="int", pivote:-1
+B->B E , c="let", pivote:0
+E->B } ; , c="let", pivote:-1
+E->high_level ; , c="let", pivote:-1
+B->B E , c="(", pivote:0
+E->B } ; , c="(", pivote:-1
+E->high_level ; , c="(", pivote:-1
+ }
+ GOTO(I0,high_level):
+I11= { 
+E->high_level ; , c="$", pivote:0
  }
  GOTO(I1,int):
-I11= { 
-atom->int , c="=", pivote:0
- }
- GOTO(I1,():
 I12= { 
-atom->( sum_minus ) , c="=", pivote:0
-sum_minus->sum_minus + div_mult , c=")", pivote:-1
-sum_minus->sum_minus - div_mult , c=")", pivote:-1
-sum_minus->div_mult , c=")", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-div_mult->div_mult * atom , c=")", pivote:-1
-div_mult->div_mult / atom , c=")", pivote:-1
-div_mult->atom , c=")", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-atom->int , c=")", pivote:-1
-atom->( sum_minus ) , c=")", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
+F->int , c="=", pivote:0
  }
- GOTO(I1,atom):
+ GOTO(I1,F):
 I13= { 
-var_declaration->let atom = exp , c="$", pivote:1
+A->let F = high_level , c=";", pivote:1
+ }
+ GOTO(I3,let):
+I14= { 
+A->let F = high_level , c=")", pivote:0
+F->int , c="=", pivote:-1
  }
  GOTO(I3,int):
-I14= { 
-atom->int , c=")", pivote:0
-atom->int , c="+", pivote:0
-atom->int , c="-", pivote:0
-atom->int , c="*", pivote:0
-atom->int , c="/", pivote:0
+I15= { 
+F->int , c="=", pivote:0
+F->int , c=")", pivote:0
+F->int , c="+", pivote:0
+F->int , c="-", pivote:0
+F->int , c="*", pivote:0
+F->int , c="/", pivote:0
  }
  GOTO(I3,():
-I15= { 
-atom->( sum_minus ) , c=")", pivote:0
-sum_minus->sum_minus + div_mult , c=")", pivote:-1
-sum_minus->sum_minus - div_mult , c=")", pivote:-1
-sum_minus->div_mult , c=")", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-div_mult->div_mult * atom , c=")", pivote:-1
-div_mult->div_mult / atom , c=")", pivote:-1
-div_mult->atom , c=")", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-atom->int , c=")", pivote:-1
-atom->( sum_minus ) , c=")", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-atom->( sum_minus ) , c="+", pivote:0
-atom->( sum_minus ) , c="-", pivote:0
-atom->( sum_minus ) , c="*", pivote:0
-atom->( sum_minus ) , c="/", pivote:0
- }
- GOTO(I3,sum_minus):
 I16= { 
-atom->( sum_minus ) , c=";", pivote:1
-sum_minus->sum_minus + div_mult , c=")", pivote:0
-sum_minus->sum_minus - div_mult , c=")", pivote:0
-sum_minus->sum_minus + div_mult , c="+", pivote:0
-sum_minus->sum_minus - div_mult , c="+", pivote:0
-sum_minus->sum_minus + div_mult , c="-", pivote:0
-sum_minus->sum_minus - div_mult , c="-", pivote:0
-atom->( sum_minus ) , c="=", pivote:1
-atom->( sum_minus ) , c="*", pivote:1
-atom->( sum_minus ) , c="/", pivote:1
-atom->( sum_minus ) , c="+", pivote:1
-atom->( sum_minus ) , c="-", pivote:1
+high_level->( high_level ) , c=")", pivote:0
+high_level->X , c=")", pivote:-1
+high_level->A , c=")", pivote:-1
+high_level->( high_level ) , c=")", pivote:-1
+high_level->B } , c=")", pivote:-1
+X->X + T , c=")", pivote:-1
+X->X - T , c=")", pivote:-1
+X->T , c=")", pivote:-1
+A->let F = high_level , c=")", pivote:-1
+A->F = high_level , c=")", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+F->int , c="=", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=")", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
  }
- GOTO(I3,atom):
+ GOTO(I3,X):
 I17= { 
-div_mult->atom , c=")", pivote:0
-div_mult->atom , c="+", pivote:0
-div_mult->atom , c="-", pivote:0
-div_mult->atom , c="*", pivote:0
-div_mult->atom , c="/", pivote:0
+high_level->X , c=")", pivote:0
+X->X + T , c=")", pivote:0
+X->X - T , c=")", pivote:0
+X->X + T , c="+", pivote:0
+X->X - T , c="+", pivote:0
+X->X + T , c="-", pivote:0
+X->X - T , c="-", pivote:0
  }
- GOTO(I3,div_mult):
+ GOTO(I3,F):
 I18= { 
-sum_minus->div_mult , c=")", pivote:0
-sum_minus->div_mult , c="+", pivote:0
-sum_minus->div_mult , c="-", pivote:0
-div_mult->div_mult * atom , c=")", pivote:0
-div_mult->div_mult / atom , c=")", pivote:0
-div_mult->div_mult * atom , c="+", pivote:0
-div_mult->div_mult / atom , c="+", pivote:0
-div_mult->div_mult * atom , c="-", pivote:0
-div_mult->div_mult / atom , c="-", pivote:0
-div_mult->div_mult * atom , c="*", pivote:0
-div_mult->div_mult / atom , c="*", pivote:0
-div_mult->div_mult * atom , c="/", pivote:0
-div_mult->div_mult / atom , c="/", pivote:0
+A->F = high_level , c=")", pivote:0
+T->F , c=")", pivote:0
+T->F , c="+", pivote:0
+T->F , c="-", pivote:0
+T->F , c="*", pivote:0
+T->F , c="/", pivote:0
  }
- GOTO(I4,let):
+ GOTO(I3,T):
 I19= { 
-var_declaration->let atom = exp , c="}", pivote:0
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:0
-var_declaration->let atom = exp , c="let", pivote:0
-var_declaration->let atom = exp , c="int", pivote:0
+X->T , c=")", pivote:0
+X->T , c="+", pivote:0
+X->T , c="-", pivote:0
+T->T * F , c=")", pivote:0
+T->T / F , c=")", pivote:0
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
  }
- GOTO(I4,{):
+ GOTO(I3,A):
 I20= { 
-block->{ exp , c="}", pivote:0
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-block->{ exp , c="{", pivote:0
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
+high_level->A , c=")", pivote:0
  }
- GOTO(I4,exp):
+ GOTO(I3,B):
 I21= { 
-block->{ exp , c="}", pivote:1
-block->{ exp , c="{", pivote:1
-block->{ exp , c="let", pivote:1
-block->{ exp , c="int", pivote:1
+high_level->B } , c=")", pivote:0
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+B->B E , c="}", pivote:0
+E->B } ; , c="}", pivote:-1
+E->high_level ; , c="}", pivote:-1
+high_level->X , c=";", pivote:-1
+high_level->A , c=";", pivote:-1
+high_level->( high_level ) , c=";", pivote:-1
+high_level->B } , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+A->let F = high_level , c=";", pivote:-1
+A->F = high_level , c=";", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c="=", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->B } ; , c="{", pivote:-1
+E->high_level ; , c="{", pivote:-1
+B->B B , c="int", pivote:0
+B->B B , c="let", pivote:0
+B->B B , c="(", pivote:0
+B->B E , c="int", pivote:0
+E->B } ; , c="int", pivote:-1
+E->high_level ; , c="int", pivote:-1
+B->B E , c="let", pivote:0
+E->B } ; , c="let", pivote:-1
+E->high_level ; , c="let", pivote:-1
+B->B E , c="(", pivote:0
+E->B } ; , c="(", pivote:-1
+E->high_level ; , c="(", pivote:-1
  }
- GOTO(I4,sum_minus):
+ GOTO(I3,high_level):
 I22= { 
-exp->sum_minus ; , c="}", pivote:0
-sum_minus->sum_minus + div_mult , c=";", pivote:0
-sum_minus->sum_minus - div_mult , c=";", pivote:0
-sum_minus->sum_minus + div_mult , c="+", pivote:0
-sum_minus->sum_minus - div_mult , c="+", pivote:0
-sum_minus->sum_minus + div_mult , c="-", pivote:0
-sum_minus->sum_minus - div_mult , c="-", pivote:0
-exp->sum_minus ; , c="{", pivote:0
-exp->sum_minus ; , c="let", pivote:0
-exp->sum_minus ; , c="int", pivote:0
+high_level->( high_level ) , c=";", pivote:1
  }
- GOTO(I4,atom):
+ GOTO(I4,E):
 I23= { 
-exp->atom ; , c="}", pivote:0
-var_declaration->atom = exp , c="}", pivote:0
-div_mult->atom , c=";", pivote:0
-div_mult->atom , c="*", pivote:0
-div_mult->atom , c="/", pivote:0
-div_mult->atom , c="+", pivote:0
-div_mult->atom , c="-", pivote:0
-exp->atom ; , c="{", pivote:0
-var_declaration->atom = exp , c="{", pivote:0
-exp->atom ; , c="let", pivote:0
-var_declaration->atom = exp , c="let", pivote:0
-exp->atom ; , c="int", pivote:0
-var_declaration->atom = exp , c="int", pivote:0
+B->{ E , c="}", pivote:1
+B->{ E , c="{", pivote:1
+B->{ E , c="int", pivote:1
+B->{ E , c="let", pivote:1
+B->{ E , c="(", pivote:1
  }
- GOTO(I4,div_mult):
+ GOTO(I4,B):
 I24= { 
-exp->div_mult ; , c="}", pivote:0
-div_mult->div_mult * atom , c=";", pivote:0
-div_mult->div_mult / atom , c=";", pivote:0
-sum_minus->div_mult , c=";", pivote:0
-div_mult->div_mult * atom , c="*", pivote:0
-div_mult->div_mult / atom , c="*", pivote:0
-div_mult->div_mult * atom , c="/", pivote:0
-div_mult->div_mult / atom , c="/", pivote:0
-sum_minus->div_mult , c="+", pivote:0
-sum_minus->div_mult , c="-", pivote:0
-div_mult->div_mult * atom , c="+", pivote:0
-div_mult->div_mult / atom , c="+", pivote:0
-div_mult->div_mult * atom , c="-", pivote:0
-div_mult->div_mult / atom , c="-", pivote:0
-exp->div_mult ; , c="{", pivote:0
-exp->div_mult ; , c="let", pivote:0
-exp->div_mult ; , c="int", pivote:0
+E->B } ; , c="}", pivote:0
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+B->B E , c="}", pivote:0
+E->B } ; , c="}", pivote:-1
+E->high_level ; , c="}", pivote:-1
+high_level->X , c=";", pivote:-1
+high_level->A , c=";", pivote:-1
+high_level->( high_level ) , c=";", pivote:-1
+high_level->B } , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+A->let F = high_level , c=";", pivote:-1
+A->F = high_level , c=";", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c="=", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+high_level->B } , c=";", pivote:0
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->B } ; , c="{", pivote:-1
+E->high_level ; , c="{", pivote:-1
+B->B B , c="int", pivote:0
+B->B B , c="let", pivote:0
+B->B B , c="(", pivote:0
+B->B E , c="int", pivote:0
+E->B } ; , c="int", pivote:-1
+E->high_level ; , c="int", pivote:-1
+B->B E , c="let", pivote:0
+E->B } ; , c="let", pivote:-1
+E->high_level ; , c="let", pivote:-1
+B->B E , c="(", pivote:0
+E->B } ; , c="(", pivote:-1
+E->high_level ; , c="(", pivote:-1
+E->B } ; , c="{", pivote:0
+E->B } ; , c="int", pivote:0
+E->B } ; , c="let", pivote:0
+E->B } ; , c="(", pivote:0
  }
- GOTO(I4,var_declaration):
+ GOTO(I4,high_level):
 I25= { 
-exp->var_declaration , c="}", pivote:0
-exp->var_declaration , c="{", pivote:0
-exp->var_declaration , c="let", pivote:0
-exp->var_declaration , c="int", pivote:0
- }
- GOTO(I4,block):
-I26= { 
-exp->block } , c="}", pivote:0
-exp->block } ; , c="}", pivote:0
-block->block block , c="}", pivote:0
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-block->block exp , c="}", pivote:0
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-block->block block , c="{", pivote:0
-block->block exp , c="{", pivote:0
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
-exp->block } , c="{", pivote:0
-exp->block } ; , c="{", pivote:0
-exp->block } , c="let", pivote:0
-exp->block } ; , c="let", pivote:0
-exp->block } , c="int", pivote:0
-exp->block } ; , c="int", pivote:0
- }
- GOTO(I6,;):
-I27= { 
-exp->sum_minus ; , c="$", pivote:1
+E->high_level ; , c="}", pivote:0
+E->high_level ; , c="{", pivote:0
+E->high_level ; , c="int", pivote:0
+E->high_level ; , c="let", pivote:0
+E->high_level ; , c="(", pivote:0
  }
  GOTO(I6,+):
-I28= { 
-sum_minus->sum_minus + div_mult , c=";", pivote:1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
+I26= { 
+X->X + T , c=";", pivote:1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+X->X + T , c="+", pivote:1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+F->int , c="+", pivote:-1
+X->X + T , c="-", pivote:1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="-", pivote:-1
  }
  GOTO(I6,-):
-I29= { 
-sum_minus->sum_minus - div_mult , c=";", pivote:1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
+I27= { 
+X->X - T , c=";", pivote:1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+X->X - T , c="+", pivote:1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+F->int , c="+", pivote:-1
+X->X - T , c="-", pivote:1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="-", pivote:-1
  }
  GOTO(I7,=):
-I30= { 
-var_declaration->atom = exp , c="$", pivote:1
-exp->var_declaration , c="$", pivote:-1
-exp->div_mult ; , c="$", pivote:-1
-exp->atom ; , c="$", pivote:-1
-exp->sum_minus ; , c="$", pivote:-1
-exp->block } , c="$", pivote:-1
-exp->block } ; , c="$", pivote:-1
-var_declaration->let atom = exp , c="$", pivote:-1
-var_declaration->atom = exp , c="$", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
- }
- GOTO(I7,;):
-I31= { 
-exp->atom ; , c="$", pivote:1
- }
- GOTO(I8,;):
-I32= { 
-exp->div_mult ; , c="$", pivote:1
+I28= { 
+A->F = high_level , c=";", pivote:1
+high_level->X , c=";", pivote:-1
+high_level->A , c=";", pivote:-1
+high_level->( high_level ) , c=";", pivote:-1
+high_level->B } , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+A->let F = high_level , c=";", pivote:-1
+A->F = high_level , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c="=", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
  }
  GOTO(I8,*):
-I33= { 
-div_mult->div_mult * atom , c=";", pivote:1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
+I29= { 
+T->T * F , c=";", pivote:1
+F->int , c=";", pivote:-1
+T->T * F , c="+", pivote:1
+F->int , c="+", pivote:-1
+T->T * F , c="-", pivote:1
+F->int , c="-", pivote:-1
+T->T * F , c="*", pivote:1
+F->int , c="*", pivote:-1
+T->T * F , c="/", pivote:1
+F->int , c="/", pivote:-1
  }
  GOTO(I8,/):
-I34= { 
-div_mult->div_mult / atom , c=";", pivote:1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
+I30= { 
+T->T / F , c=";", pivote:1
+F->int , c=";", pivote:-1
+T->T / F , c="+", pivote:1
+F->int , c="+", pivote:-1
+T->T / F , c="-", pivote:1
+F->int , c="-", pivote:-1
+T->T / F , c="*", pivote:1
+F->int , c="*", pivote:-1
+T->T / F , c="/", pivote:1
+F->int , c="/", pivote:-1
  }
  GOTO(I10,}):
-I35= { 
-exp->block } , c="$", pivote:1
-exp->block } ; , c="$", pivote:1
+I31= { 
+E->B } ; , c="$", pivote:1
+high_level->B } , c=";", pivote:1
  }
- GOTO(I10,exp):
-I36= { 
-block->block exp , c="}", pivote:1
-block->block exp , c="{", pivote:1
-block->block exp , c="let", pivote:1
-block->block exp , c="int", pivote:1
+ GOTO(I10,E):
+I32= { 
+B->B E , c="}", pivote:1
+B->B E , c="{", pivote:1
+B->B E , c="int", pivote:1
+B->B E , c="let", pivote:1
+B->B E , c="(", pivote:1
  }
- GOTO(I10,block):
-I37= { 
-block->block block , c="}", pivote:1
-block->block block , c="}", pivote:0
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-block->block exp , c="}", pivote:0
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-block->block block , c="{", pivote:0
-block->block exp , c="{", pivote:0
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
-exp->block } , c="}", pivote:0
-exp->block } ; , c="}", pivote:0
-block->block block , c="{", pivote:1
-exp->block } , c="{", pivote:0
-exp->block } ; , c="{", pivote:0
-block->block block , c="let", pivote:1
-block->block block , c="let", pivote:0
-block->{ exp , c="let", pivote:-1
-block->block block , c="let", pivote:-1
-block->block exp , c="let", pivote:-1
-block->block exp , c="let", pivote:0
-exp->var_declaration , c="let", pivote:-1
-exp->div_mult ; , c="let", pivote:-1
-exp->atom ; , c="let", pivote:-1
-exp->sum_minus ; , c="let", pivote:-1
-exp->block } , c="let", pivote:-1
-exp->block } ; , c="let", pivote:-1
-var_declaration->let atom = exp , c="let", pivote:-1
-var_declaration->atom = exp , c="let", pivote:-1
-exp->block } , c="let", pivote:0
-exp->block } ; , c="let", pivote:0
-block->block block , c="int", pivote:1
-block->block block , c="int", pivote:0
-block->{ exp , c="int", pivote:-1
-block->block block , c="int", pivote:-1
-block->block exp , c="int", pivote:-1
-block->block exp , c="int", pivote:0
-exp->var_declaration , c="int", pivote:-1
-exp->div_mult ; , c="int", pivote:-1
-exp->atom ; , c="int", pivote:-1
-exp->sum_minus ; , c="int", pivote:-1
-exp->block } , c="int", pivote:-1
-exp->block } ; , c="int", pivote:-1
-var_declaration->let atom = exp , c="int", pivote:-1
-var_declaration->atom = exp , c="int", pivote:-1
-exp->block } , c="int", pivote:0
-exp->block } ; , c="int", pivote:0
+ GOTO(I10,B):
+I33= { 
+B->B B , c="}", pivote:1
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+B->B E , c="}", pivote:0
+E->B } ; , c="}", pivote:-1
+E->high_level ; , c="}", pivote:-1
+high_level->X , c=";", pivote:-1
+high_level->A , c=";", pivote:-1
+high_level->( high_level ) , c=";", pivote:-1
+high_level->B } , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+A->let F = high_level , c=";", pivote:-1
+A->F = high_level , c=";", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c="=", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->B } ; , c="{", pivote:-1
+E->high_level ; , c="{", pivote:-1
+B->B B , c="int", pivote:0
+B->B B , c="let", pivote:0
+B->B B , c="(", pivote:0
+B->B E , c="int", pivote:0
+E->B } ; , c="int", pivote:-1
+E->high_level ; , c="int", pivote:-1
+B->B E , c="let", pivote:0
+E->B } ; , c="let", pivote:-1
+E->high_level ; , c="let", pivote:-1
+B->B E , c="(", pivote:0
+E->B } ; , c="(", pivote:-1
+E->high_level ; , c="(", pivote:-1
+E->B } ; , c="}", pivote:0
+high_level->B } , c=";", pivote:0
+B->B B , c="{", pivote:1
+E->B } ; , c="{", pivote:0
+B->B B , c="int", pivote:1
+B->B B , c="let", pivote:1
+B->B B , c="(", pivote:1
+E->B } ; , c="int", pivote:0
+E->B } ; , c="let", pivote:0
+E->B } ; , c="(", pivote:0
  }
- GOTO(I12,sum_minus):
-I38= { 
-atom->( sum_minus ) , c="=", pivote:1
-sum_minus->sum_minus + div_mult , c=")", pivote:0
-sum_minus->sum_minus - div_mult , c=")", pivote:0
-sum_minus->sum_minus + div_mult , c="+", pivote:0
-sum_minus->sum_minus - div_mult , c="+", pivote:0
-sum_minus->sum_minus + div_mult , c="-", pivote:0
-sum_minus->sum_minus - div_mult , c="-", pivote:0
+ GOTO(I11,;):
+I34= { 
+E->high_level ; , c="$", pivote:1
  }
  GOTO(I13,=):
+I35= { 
+A->let F = high_level , c=";", pivote:2
+high_level->X , c=";", pivote:-1
+high_level->A , c=";", pivote:-1
+high_level->( high_level ) , c=";", pivote:-1
+high_level->B } , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+A->let F = high_level , c=";", pivote:-1
+A->F = high_level , c=";", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c="=", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+ }
+ GOTO(I14,F):
+I36= { 
+A->let F = high_level , c=")", pivote:1
+ }
+ GOTO(I16,high_level):
+I37= { 
+high_level->( high_level ) , c=")", pivote:1
+ }
+ GOTO(I17,+):
+I38= { 
+X->X + T , c=")", pivote:1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=")", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+X->X + T , c="+", pivote:1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+F->int , c="+", pivote:-1
+X->X + T , c="-", pivote:1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="-", pivote:-1
+ }
+ GOTO(I17,-):
 I39= { 
-var_declaration->let atom = exp , c="$", pivote:2
-exp->var_declaration , c="$", pivote:-1
-exp->div_mult ; , c="$", pivote:-1
-exp->atom ; , c="$", pivote:-1
-exp->sum_minus ; , c="$", pivote:-1
-exp->block } , c="$", pivote:-1
-exp->block } ; , c="$", pivote:-1
-var_declaration->let atom = exp , c="$", pivote:-1
-var_declaration->atom = exp , c="$", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
+X->X - T , c=")", pivote:1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=")", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+X->X - T , c="+", pivote:1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+F->int , c="+", pivote:-1
+X->X - T , c="-", pivote:1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+F->int , c="-", pivote:-1
  }
- GOTO(I15,sum_minus):
+ GOTO(I18,=):
 I40= { 
-atom->( sum_minus ) , c=")", pivote:1
-sum_minus->sum_minus + div_mult , c=")", pivote:0
-sum_minus->sum_minus - div_mult , c=")", pivote:0
-sum_minus->sum_minus + div_mult , c="+", pivote:0
-sum_minus->sum_minus - div_mult , c="+", pivote:0
-sum_minus->sum_minus + div_mult , c="-", pivote:0
-sum_minus->sum_minus - div_mult , c="-", pivote:0
-atom->( sum_minus ) , c="+", pivote:1
-atom->( sum_minus ) , c="-", pivote:1
-atom->( sum_minus ) , c="*", pivote:1
-atom->( sum_minus ) , c="/", pivote:1
+A->F = high_level , c=")", pivote:1
+high_level->X , c=")", pivote:-1
+high_level->A , c=")", pivote:-1
+high_level->( high_level ) , c=")", pivote:-1
+high_level->B } , c=")", pivote:-1
+X->X + T , c=")", pivote:-1
+X->X - T , c=")", pivote:-1
+X->T , c=")", pivote:-1
+A->let F = high_level , c=")", pivote:-1
+A->F = high_level , c=")", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+F->int , c="=", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=")", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
  }
- GOTO(I16,+):
+ GOTO(I19,*):
 I41= { 
-sum_minus->sum_minus + div_mult , c=")", pivote:1
-div_mult->div_mult * atom , c=")", pivote:-1
-div_mult->div_mult / atom , c=")", pivote:-1
-div_mult->atom , c=")", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-atom->int , c=")", pivote:-1
-atom->( sum_minus ) , c=")", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
+T->T * F , c=")", pivote:1
+F->int , c=")", pivote:-1
+T->T * F , c="+", pivote:1
+F->int , c="+", pivote:-1
+T->T * F , c="-", pivote:1
+F->int , c="-", pivote:-1
+T->T * F , c="*", pivote:1
+F->int , c="*", pivote:-1
+T->T * F , c="/", pivote:1
+F->int , c="/", pivote:-1
  }
- GOTO(I16,-):
+ GOTO(I19,/):
 I42= { 
-sum_minus->sum_minus - div_mult , c=")", pivote:1
-div_mult->div_mult * atom , c=")", pivote:-1
-div_mult->div_mult / atom , c=")", pivote:-1
-div_mult->atom , c=")", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-atom->int , c=")", pivote:-1
-atom->( sum_minus ) , c=")", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
+T->T / F , c=")", pivote:1
+F->int , c=")", pivote:-1
+T->T / F , c="+", pivote:1
+F->int , c="+", pivote:-1
+T->T / F , c="-", pivote:1
+F->int , c="-", pivote:-1
+T->T / F , c="*", pivote:1
+F->int , c="*", pivote:-1
+T->T / F , c="/", pivote:1
+F->int , c="/", pivote:-1
  }
- GOTO(I16,)):
+ GOTO(I21,}):
 I43= { 
-atom->( sum_minus ) , c=";", pivote:2
-atom->( sum_minus ) , c="=", pivote:2
-atom->( sum_minus ) , c="*", pivote:2
-atom->( sum_minus ) , c="/", pivote:2
-atom->( sum_minus ) , c="+", pivote:2
-atom->( sum_minus ) , c="-", pivote:2
+high_level->B } , c=")", pivote:1
  }
- GOTO(I18,*):
+ GOTO(I22,)):
 I44= { 
-div_mult->div_mult * atom , c=")", pivote:1
-atom->int , c=")", pivote:-1
-atom->( sum_minus ) , c=")", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
+high_level->( high_level ) , c=";", pivote:2
  }
- GOTO(I18,/):
+ GOTO(I24,}):
 I45= { 
-div_mult->div_mult / atom , c=")", pivote:1
-atom->int , c=")", pivote:-1
-atom->( sum_minus ) , c=")", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
+E->B } ; , c="}", pivote:1
+high_level->B } , c=";", pivote:1
+E->B } ; , c="{", pivote:1
+E->B } ; , c="int", pivote:1
+E->B } ; , c="let", pivote:1
+E->B } ; , c="(", pivote:1
  }
- GOTO(I19,atom):
+ GOTO(I25,;):
 I46= { 
-var_declaration->let atom = exp , c="}", pivote:1
-var_declaration->let atom = exp , c="{", pivote:1
-var_declaration->let atom = exp , c="let", pivote:1
-var_declaration->let atom = exp , c="int", pivote:1
+E->high_level ; , c="}", pivote:1
+E->high_level ; , c="{", pivote:1
+E->high_level ; , c="int", pivote:1
+E->high_level ; , c="let", pivote:1
+E->high_level ; , c="(", pivote:1
  }
- GOTO(I20,let):
+ GOTO(I26,int):
 I47= { 
-var_declaration->let atom = exp , c="}", pivote:0
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:0
+F->int , c=";", pivote:0
+F->int , c="*", pivote:0
+F->int , c="/", pivote:0
+F->int , c="+", pivote:0
+F->int , c="-", pivote:0
  }
- GOTO(I20,exp):
+ GOTO(I26,F):
 I48= { 
-block->{ exp , c="}", pivote:1
-block->{ exp , c="{", pivote:1
+T->F , c=";", pivote:0
+T->F , c="*", pivote:0
+T->F , c="/", pivote:0
+T->F , c="+", pivote:0
+T->F , c="-", pivote:0
  }
- GOTO(I20,sum_minus):
+ GOTO(I26,T):
 I49= { 
-exp->sum_minus ; , c="}", pivote:0
-sum_minus->sum_minus + div_mult , c=";", pivote:0
-sum_minus->sum_minus - div_mult , c=";", pivote:0
-sum_minus->sum_minus + div_mult , c="+", pivote:0
-sum_minus->sum_minus - div_mult , c="+", pivote:0
-sum_minus->sum_minus + div_mult , c="-", pivote:0
-sum_minus->sum_minus - div_mult , c="-", pivote:0
-exp->sum_minus ; , c="{", pivote:0
+X->X + T , c=";", pivote:2
+T->T * F , c=";", pivote:0
+T->T / F , c=";", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->X + T , c="+", pivote:2
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+X->X + T , c="-", pivote:2
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
  }
- GOTO(I20,atom):
+ GOTO(I27,T):
 I50= { 
-exp->atom ; , c="}", pivote:0
-var_declaration->atom = exp , c="}", pivote:0
-div_mult->atom , c=";", pivote:0
-div_mult->atom , c="*", pivote:0
-div_mult->atom , c="/", pivote:0
-div_mult->atom , c="+", pivote:0
-div_mult->atom , c="-", pivote:0
-exp->atom ; , c="{", pivote:0
-var_declaration->atom = exp , c="{", pivote:0
+X->X - T , c=";", pivote:2
+T->T * F , c=";", pivote:0
+T->T / F , c=";", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->X - T , c="+", pivote:2
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+X->X - T , c="-", pivote:2
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
  }
- GOTO(I20,div_mult):
+ GOTO(I28,B):
 I51= { 
-exp->div_mult ; , c="}", pivote:0
-div_mult->div_mult * atom , c=";", pivote:0
-div_mult->div_mult / atom , c=";", pivote:0
-sum_minus->div_mult , c=";", pivote:0
-div_mult->div_mult * atom , c="*", pivote:0
-div_mult->div_mult / atom , c="*", pivote:0
-div_mult->div_mult * atom , c="/", pivote:0
-div_mult->div_mult / atom , c="/", pivote:0
-sum_minus->div_mult , c="+", pivote:0
-sum_minus->div_mult , c="-", pivote:0
-div_mult->div_mult * atom , c="+", pivote:0
-div_mult->div_mult / atom , c="+", pivote:0
-div_mult->div_mult * atom , c="-", pivote:0
-div_mult->div_mult / atom , c="-", pivote:0
-exp->div_mult ; , c="{", pivote:0
+high_level->B } , c=";", pivote:0
+B->B B , c="}", pivote:0
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+B->B E , c="}", pivote:0
+E->B } ; , c="}", pivote:-1
+E->high_level ; , c="}", pivote:-1
+high_level->X , c=";", pivote:-1
+high_level->A , c=";", pivote:-1
+high_level->( high_level ) , c=";", pivote:-1
+high_level->B } , c=";", pivote:-1
+X->X + T , c=";", pivote:-1
+X->X - T , c=";", pivote:-1
+X->T , c=";", pivote:-1
+A->let F = high_level , c=";", pivote:-1
+A->F = high_level , c=";", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=";", pivote:-1
+T->T / F , c=";", pivote:-1
+T->F , c=";", pivote:-1
+F->int , c="=", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=";", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
+B->B B , c="{", pivote:0
+B->B E , c="{", pivote:0
+E->B } ; , c="{", pivote:-1
+E->high_level ; , c="{", pivote:-1
+B->B B , c="int", pivote:0
+B->B B , c="let", pivote:0
+B->B B , c="(", pivote:0
+B->B E , c="int", pivote:0
+E->B } ; , c="int", pivote:-1
+E->high_level ; , c="int", pivote:-1
+B->B E , c="let", pivote:0
+E->B } ; , c="let", pivote:-1
+E->high_level ; , c="let", pivote:-1
+B->B E , c="(", pivote:0
+E->B } ; , c="(", pivote:-1
+E->high_level ; , c="(", pivote:-1
  }
- GOTO(I20,var_declaration):
+ GOTO(I28,high_level):
 I52= { 
-exp->var_declaration , c="}", pivote:0
-exp->var_declaration , c="{", pivote:0
+A->F = high_level , c=";", pivote:2
  }
- GOTO(I20,block):
+ GOTO(I29,F):
 I53= { 
-exp->block } , c="}", pivote:0
-exp->block } ; , c="}", pivote:0
-block->block block , c="}", pivote:0
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-block->block exp , c="}", pivote:0
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-block->block block , c="{", pivote:0
-block->block exp , c="{", pivote:0
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
-exp->block } , c="{", pivote:0
-exp->block } ; , c="{", pivote:0
+T->T * F , c=";", pivote:2
+T->T * F , c="+", pivote:2
+T->T * F , c="-", pivote:2
+T->T * F , c="*", pivote:2
+T->T * F , c="/", pivote:2
  }
- GOTO(I22,;):
+ GOTO(I30,F):
 I54= { 
-exp->sum_minus ; , c="}", pivote:1
-exp->sum_minus ; , c="{", pivote:1
-exp->sum_minus ; , c="let", pivote:1
-exp->sum_minus ; , c="int", pivote:1
+T->T / F , c=";", pivote:2
+T->T / F , c="+", pivote:2
+T->T / F , c="-", pivote:2
+T->T / F , c="*", pivote:2
+T->T / F , c="/", pivote:2
  }
- GOTO(I23,=):
+ GOTO(I31,;):
 I55= { 
-var_declaration->atom = exp , c="}", pivote:1
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-var_declaration->atom = exp , c="{", pivote:1
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="let", pivote:1
-exp->var_declaration , c="let", pivote:-1
-exp->div_mult ; , c="let", pivote:-1
-exp->atom ; , c="let", pivote:-1
-exp->sum_minus ; , c="let", pivote:-1
-exp->block } , c="let", pivote:-1
-exp->block } ; , c="let", pivote:-1
-var_declaration->let atom = exp , c="let", pivote:-1
-var_declaration->atom = exp , c="let", pivote:-1
-var_declaration->atom = exp , c="int", pivote:1
-exp->var_declaration , c="int", pivote:-1
-exp->div_mult ; , c="int", pivote:-1
-exp->atom ; , c="int", pivote:-1
-exp->sum_minus ; , c="int", pivote:-1
-exp->block } , c="int", pivote:-1
-exp->block } ; , c="int", pivote:-1
-var_declaration->let atom = exp , c="int", pivote:-1
-var_declaration->atom = exp , c="int", pivote:-1
+E->B } ; , c="$", pivote:2
  }
- GOTO(I23,;):
+ GOTO(I35,high_level):
 I56= { 
-exp->atom ; , c="}", pivote:1
-exp->atom ; , c="{", pivote:1
-exp->atom ; , c="let", pivote:1
-exp->atom ; , c="int", pivote:1
+A->let F = high_level , c=";", pivote:3
  }
- GOTO(I24,;):
+ GOTO(I36,=):
 I57= { 
-exp->div_mult ; , c="}", pivote:1
-exp->div_mult ; , c="{", pivote:1
-exp->div_mult ; , c="let", pivote:1
-exp->div_mult ; , c="int", pivote:1
+A->let F = high_level , c=")", pivote:2
+high_level->X , c=")", pivote:-1
+high_level->A , c=")", pivote:-1
+high_level->( high_level ) , c=")", pivote:-1
+high_level->B } , c=")", pivote:-1
+X->X + T , c=")", pivote:-1
+X->X - T , c=")", pivote:-1
+X->T , c=")", pivote:-1
+A->let F = high_level , c=")", pivote:-1
+A->F = high_level , c=")", pivote:-1
+B->{ E , c="}", pivote:-1
+B->B B , c="}", pivote:-1
+B->B E , c="}", pivote:-1
+X->X + T , c="+", pivote:-1
+X->X - T , c="+", pivote:-1
+X->T , c="+", pivote:-1
+X->X + T , c="-", pivote:-1
+X->X - T , c="-", pivote:-1
+X->T , c="-", pivote:-1
+T->T * F , c=")", pivote:-1
+T->T / F , c=")", pivote:-1
+T->F , c=")", pivote:-1
+F->int , c="=", pivote:-1
+B->{ E , c="{", pivote:-1
+B->B B , c="{", pivote:-1
+B->B E , c="{", pivote:-1
+B->{ E , c="int", pivote:-1
+B->{ E , c="let", pivote:-1
+B->{ E , c="(", pivote:-1
+B->B B , c="int", pivote:-1
+B->B B , c="let", pivote:-1
+B->B B , c="(", pivote:-1
+B->B E , c="int", pivote:-1
+B->B E , c="let", pivote:-1
+B->B E , c="(", pivote:-1
+T->T * F , c="+", pivote:-1
+T->T / F , c="+", pivote:-1
+T->F , c="+", pivote:-1
+T->T * F , c="-", pivote:-1
+T->T / F , c="-", pivote:-1
+T->F , c="-", pivote:-1
+T->T * F , c="*", pivote:-1
+T->T / F , c="*", pivote:-1
+T->F , c="*", pivote:-1
+T->T * F , c="/", pivote:-1
+T->T / F , c="/", pivote:-1
+T->F , c="/", pivote:-1
+F->int , c=")", pivote:-1
+F->int , c="+", pivote:-1
+F->int , c="-", pivote:-1
+F->int , c="*", pivote:-1
+F->int , c="/", pivote:-1
  }
- GOTO(I26,}):
+ GOTO(I37,)):
 I58= { 
-exp->block } , c="}", pivote:1
-exp->block } ; , c="}", pivote:1
-exp->block } , c="{", pivote:1
-exp->block } ; , c="{", pivote:1
-exp->block } , c="let", pivote:1
-exp->block } ; , c="let", pivote:1
-exp->block } , c="int", pivote:1
-exp->block } ; , c="int", pivote:1
+high_level->( high_level ) , c=")", pivote:2
  }
- GOTO(I26,exp):
+ GOTO(I38,int):
 I59= { 
-block->block exp , c="}", pivote:1
-block->block exp , c="{", pivote:1
+F->int , c=")", pivote:0
+F->int , c="*", pivote:0
+F->int , c="/", pivote:0
+F->int , c="+", pivote:0
+F->int , c="-", pivote:0
  }
- GOTO(I26,block):
+ GOTO(I38,F):
 I60= { 
-block->block block , c="}", pivote:1
-block->block block , c="}", pivote:0
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-block->block exp , c="}", pivote:0
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-block->block block , c="{", pivote:0
-block->block exp , c="{", pivote:0
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
-exp->block } , c="}", pivote:0
-exp->block } ; , c="}", pivote:0
-block->block block , c="{", pivote:1
-exp->block } , c="{", pivote:0
-exp->block } ; , c="{", pivote:0
+T->F , c=")", pivote:0
+T->F , c="*", pivote:0
+T->F , c="/", pivote:0
+T->F , c="+", pivote:0
+T->F , c="-", pivote:0
  }
- GOTO(I28,int):
+ GOTO(I38,T):
 I61= { 
-atom->int , c=";", pivote:0
-atom->int , c="*", pivote:0
-atom->int , c="/", pivote:0
-atom->int , c="+", pivote:0
-atom->int , c="-", pivote:0
+X->X + T , c=")", pivote:2
+T->T * F , c=")", pivote:0
+T->T / F , c=")", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->X + T , c="+", pivote:2
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+X->X + T , c="-", pivote:2
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
  }
- GOTO(I28,():
+ GOTO(I39,T):
 I62= { 
-atom->( sum_minus ) , c=";", pivote:0
-sum_minus->sum_minus + div_mult , c=")", pivote:-1
-sum_minus->sum_minus - div_mult , c=")", pivote:-1
-sum_minus->div_mult , c=")", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-div_mult->div_mult * atom , c=")", pivote:-1
-div_mult->div_mult / atom , c=")", pivote:-1
-div_mult->atom , c=")", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-atom->int , c=")", pivote:-1
-atom->( sum_minus ) , c=")", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-atom->( sum_minus ) , c="*", pivote:0
-atom->( sum_minus ) , c="/", pivote:0
-atom->( sum_minus ) , c="+", pivote:0
-atom->( sum_minus ) , c="-", pivote:0
+X->X - T , c=")", pivote:2
+T->T * F , c=")", pivote:0
+T->T / F , c=")", pivote:0
+T->T * F , c="*", pivote:0
+T->T / F , c="*", pivote:0
+T->T * F , c="/", pivote:0
+T->T / F , c="/", pivote:0
+X->X - T , c="+", pivote:2
+T->T * F , c="+", pivote:0
+T->T / F , c="+", pivote:0
+X->X - T , c="-", pivote:2
+T->T * F , c="-", pivote:0
+T->T / F , c="-", pivote:0
  }
- GOTO(I28,atom):
+ GOTO(I40,high_level):
 I63= { 
-div_mult->atom , c=";", pivote:0
-div_mult->atom , c="*", pivote:0
-div_mult->atom , c="/", pivote:0
-div_mult->atom , c="+", pivote:0
-div_mult->atom , c="-", pivote:0
+A->F = high_level , c=")", pivote:2
  }
- GOTO(I28,div_mult):
+ GOTO(I41,F):
 I64= { 
-sum_minus->sum_minus + div_mult , c=";", pivote:2
-div_mult->div_mult * atom , c=";", pivote:0
-div_mult->div_mult / atom , c=";", pivote:0
-div_mult->div_mult * atom , c="*", pivote:0
-div_mult->div_mult / atom , c="*", pivote:0
-div_mult->div_mult * atom , c="/", pivote:0
-div_mult->div_mult / atom , c="/", pivote:0
-sum_minus->sum_minus + div_mult , c="+", pivote:2
-div_mult->div_mult * atom , c="+", pivote:0
-div_mult->div_mult / atom , c="+", pivote:0
-sum_minus->sum_minus + div_mult , c="-", pivote:2
-div_mult->div_mult * atom , c="-", pivote:0
-div_mult->div_mult / atom , c="-", pivote:0
+T->T * F , c=")", pivote:2
+T->T * F , c="+", pivote:2
+T->T * F , c="-", pivote:2
+T->T * F , c="*", pivote:2
+T->T * F , c="/", pivote:2
  }
- GOTO(I29,div_mult):
+ GOTO(I42,F):
 I65= { 
-sum_minus->sum_minus - div_mult , c=";", pivote:2
-div_mult->div_mult * atom , c=";", pivote:0
-div_mult->div_mult / atom , c=";", pivote:0
-div_mult->div_mult * atom , c="*", pivote:0
-div_mult->div_mult / atom , c="*", pivote:0
-div_mult->div_mult * atom , c="/", pivote:0
-div_mult->div_mult / atom , c="/", pivote:0
-sum_minus->sum_minus - div_mult , c="+", pivote:2
-div_mult->div_mult * atom , c="+", pivote:0
-div_mult->div_mult / atom , c="+", pivote:0
-sum_minus->sum_minus - div_mult , c="-", pivote:2
-div_mult->div_mult * atom , c="-", pivote:0
-div_mult->div_mult / atom , c="-", pivote:0
+T->T / F , c=")", pivote:2
+T->T / F , c="+", pivote:2
+T->T / F , c="-", pivote:2
+T->T / F , c="*", pivote:2
+T->T / F , c="/", pivote:2
  }
- GOTO(I30,exp):
+ GOTO(I45,;):
 I66= { 
-var_declaration->atom = exp , c="$", pivote:2
+E->B } ; , c="}", pivote:2
+E->B } ; , c="{", pivote:2
+E->B } ; , c="int", pivote:2
+E->B } ; , c="let", pivote:2
+E->B } ; , c="(", pivote:2
  }
- GOTO(I30,block):
+ GOTO(I51,}):
 I67= { 
-exp->block } , c="$", pivote:0
-exp->block } ; , c="$", pivote:0
-block->block block , c="}", pivote:0
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-block->block exp , c="}", pivote:0
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-block->block block , c="{", pivote:0
-block->block exp , c="{", pivote:0
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
+high_level->B } , c=";", pivote:1
  }
- GOTO(I33,atom):
+ GOTO(I57,high_level):
 I68= { 
-div_mult->div_mult * atom , c=";", pivote:2
-div_mult->div_mult * atom , c="*", pivote:2
-div_mult->div_mult * atom , c="/", pivote:2
-div_mult->div_mult * atom , c="+", pivote:2
-div_mult->div_mult * atom , c="-", pivote:2
- }
- GOTO(I34,atom):
-I69= { 
-div_mult->div_mult / atom , c=";", pivote:2
-div_mult->div_mult / atom , c="*", pivote:2
-div_mult->div_mult / atom , c="/", pivote:2
-div_mult->div_mult / atom , c="+", pivote:2
-div_mult->div_mult / atom , c="-", pivote:2
- }
- GOTO(I35,;):
-I70= { 
-exp->block } ; , c="$", pivote:2
- }
- GOTO(I38,)):
-I71= { 
-atom->( sum_minus ) , c="=", pivote:2
- }
- GOTO(I39,exp):
-I72= { 
-var_declaration->let atom = exp , c="$", pivote:3
- }
- GOTO(I40,)):
-I73= { 
-atom->( sum_minus ) , c=")", pivote:2
-atom->( sum_minus ) , c="+", pivote:2
-atom->( sum_minus ) , c="-", pivote:2
-atom->( sum_minus ) , c="*", pivote:2
-atom->( sum_minus ) , c="/", pivote:2
- }
- GOTO(I41,div_mult):
-I74= { 
-sum_minus->sum_minus + div_mult , c=")", pivote:2
-div_mult->div_mult * atom , c=")", pivote:0
-div_mult->div_mult / atom , c=")", pivote:0
-div_mult->div_mult * atom , c="*", pivote:0
-div_mult->div_mult / atom , c="*", pivote:0
-div_mult->div_mult * atom , c="/", pivote:0
-div_mult->div_mult / atom , c="/", pivote:0
-sum_minus->sum_minus + div_mult , c="+", pivote:2
-div_mult->div_mult * atom , c="+", pivote:0
-div_mult->div_mult / atom , c="+", pivote:0
-sum_minus->sum_minus + div_mult , c="-", pivote:2
-div_mult->div_mult * atom , c="-", pivote:0
-div_mult->div_mult / atom , c="-", pivote:0
- }
- GOTO(I42,div_mult):
-I75= { 
-sum_minus->sum_minus - div_mult , c=")", pivote:2
-div_mult->div_mult * atom , c=")", pivote:0
-div_mult->div_mult / atom , c=")", pivote:0
-div_mult->div_mult * atom , c="*", pivote:0
-div_mult->div_mult / atom , c="*", pivote:0
-div_mult->div_mult * atom , c="/", pivote:0
-div_mult->div_mult / atom , c="/", pivote:0
-sum_minus->sum_minus - div_mult , c="+", pivote:2
-div_mult->div_mult * atom , c="+", pivote:0
-div_mult->div_mult / atom , c="+", pivote:0
-sum_minus->sum_minus - div_mult , c="-", pivote:2
-div_mult->div_mult * atom , c="-", pivote:0
-div_mult->div_mult / atom , c="-", pivote:0
- }
- GOTO(I44,atom):
-I76= { 
-div_mult->div_mult * atom , c=")", pivote:2
-div_mult->div_mult * atom , c="+", pivote:2
-div_mult->div_mult * atom , c="-", pivote:2
-div_mult->div_mult * atom , c="*", pivote:2
-div_mult->div_mult * atom , c="/", pivote:2
- }
- GOTO(I45,atom):
-I77= { 
-div_mult->div_mult / atom , c=")", pivote:2
-div_mult->div_mult / atom , c="+", pivote:2
-div_mult->div_mult / atom , c="-", pivote:2
-div_mult->div_mult / atom , c="*", pivote:2
-div_mult->div_mult / atom , c="/", pivote:2
- }
- GOTO(I46,=):
-I78= { 
-var_declaration->let atom = exp , c="}", pivote:2
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:2
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
-var_declaration->let atom = exp , c="let", pivote:2
-exp->var_declaration , c="let", pivote:-1
-exp->div_mult ; , c="let", pivote:-1
-exp->atom ; , c="let", pivote:-1
-exp->sum_minus ; , c="let", pivote:-1
-exp->block } , c="let", pivote:-1
-exp->block } ; , c="let", pivote:-1
-var_declaration->let atom = exp , c="let", pivote:-1
-var_declaration->atom = exp , c="let", pivote:-1
-var_declaration->let atom = exp , c="int", pivote:2
-exp->var_declaration , c="int", pivote:-1
-exp->div_mult ; , c="int", pivote:-1
-exp->atom ; , c="int", pivote:-1
-exp->sum_minus ; , c="int", pivote:-1
-exp->block } , c="int", pivote:-1
-exp->block } ; , c="int", pivote:-1
-var_declaration->let atom = exp , c="int", pivote:-1
-var_declaration->atom = exp , c="int", pivote:-1
- }
- GOTO(I47,atom):
-I79= { 
-var_declaration->let atom = exp , c="}", pivote:1
-var_declaration->let atom = exp , c="{", pivote:1
- }
- GOTO(I49,;):
-I80= { 
-exp->sum_minus ; , c="}", pivote:1
-exp->sum_minus ; , c="{", pivote:1
- }
- GOTO(I50,=):
-I81= { 
-var_declaration->atom = exp , c="}", pivote:1
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-var_declaration->atom = exp , c="{", pivote:1
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
- }
- GOTO(I50,;):
-I82= { 
-exp->atom ; , c="}", pivote:1
-exp->atom ; , c="{", pivote:1
- }
- GOTO(I51,;):
-I83= { 
-exp->div_mult ; , c="}", pivote:1
-exp->div_mult ; , c="{", pivote:1
- }
- GOTO(I53,}):
-I84= { 
-exp->block } , c="}", pivote:1
-exp->block } ; , c="}", pivote:1
-exp->block } , c="{", pivote:1
-exp->block } ; , c="{", pivote:1
- }
- GOTO(I55,exp):
-I85= { 
-var_declaration->atom = exp , c="}", pivote:2
-var_declaration->atom = exp , c="{", pivote:2
-var_declaration->atom = exp , c="let", pivote:2
-var_declaration->atom = exp , c="int", pivote:2
- }
- GOTO(I58,;):
-I86= { 
-exp->block } ; , c="}", pivote:2
-exp->block } ; , c="{", pivote:2
-exp->block } ; , c="let", pivote:2
-exp->block } ; , c="int", pivote:2
- }
- GOTO(I62,sum_minus):
-I87= { 
-atom->( sum_minus ) , c=";", pivote:1
-sum_minus->sum_minus + div_mult , c=")", pivote:0
-sum_minus->sum_minus - div_mult , c=")", pivote:0
-sum_minus->sum_minus + div_mult , c="+", pivote:0
-sum_minus->sum_minus - div_mult , c="+", pivote:0
-sum_minus->sum_minus + div_mult , c="-", pivote:0
-sum_minus->sum_minus - div_mult , c="-", pivote:0
-atom->( sum_minus ) , c="*", pivote:1
-atom->( sum_minus ) , c="/", pivote:1
-atom->( sum_minus ) , c="+", pivote:1
-atom->( sum_minus ) , c="-", pivote:1
- }
- GOTO(I78,exp):
-I88= { 
-var_declaration->let atom = exp , c="}", pivote:3
-var_declaration->let atom = exp , c="{", pivote:3
-var_declaration->let atom = exp , c="let", pivote:3
-var_declaration->let atom = exp , c="int", pivote:3
- }
- GOTO(I79,=):
-I89= { 
-var_declaration->let atom = exp , c="}", pivote:2
-exp->var_declaration , c="}", pivote:-1
-exp->div_mult ; , c="}", pivote:-1
-exp->atom ; , c="}", pivote:-1
-exp->sum_minus ; , c="}", pivote:-1
-exp->block } , c="}", pivote:-1
-exp->block } ; , c="}", pivote:-1
-var_declaration->let atom = exp , c="}", pivote:-1
-var_declaration->atom = exp , c="}", pivote:-1
-div_mult->div_mult * atom , c=";", pivote:-1
-div_mult->div_mult / atom , c=";", pivote:-1
-div_mult->atom , c=";", pivote:-1
-atom->int , c=";", pivote:-1
-atom->( sum_minus ) , c=";", pivote:-1
-sum_minus->sum_minus + div_mult , c=";", pivote:-1
-sum_minus->sum_minus - div_mult , c=";", pivote:-1
-sum_minus->div_mult , c=";", pivote:-1
-block->{ exp , c="}", pivote:-1
-block->block block , c="}", pivote:-1
-block->block exp , c="}", pivote:-1
-atom->int , c="=", pivote:-1
-atom->( sum_minus ) , c="=", pivote:-1
-div_mult->div_mult * atom , c="*", pivote:-1
-div_mult->div_mult / atom , c="*", pivote:-1
-div_mult->atom , c="*", pivote:-1
-div_mult->div_mult * atom , c="/", pivote:-1
-div_mult->div_mult / atom , c="/", pivote:-1
-div_mult->atom , c="/", pivote:-1
-sum_minus->sum_minus + div_mult , c="+", pivote:-1
-sum_minus->sum_minus - div_mult , c="+", pivote:-1
-sum_minus->div_mult , c="+", pivote:-1
-sum_minus->sum_minus + div_mult , c="-", pivote:-1
-sum_minus->sum_minus - div_mult , c="-", pivote:-1
-sum_minus->div_mult , c="-", pivote:-1
-block->{ exp , c="{", pivote:-1
-block->block block , c="{", pivote:-1
-block->block exp , c="{", pivote:-1
-atom->int , c="*", pivote:-1
-atom->( sum_minus ) , c="*", pivote:-1
-atom->int , c="/", pivote:-1
-atom->( sum_minus ) , c="/", pivote:-1
-div_mult->div_mult * atom , c="+", pivote:-1
-div_mult->div_mult / atom , c="+", pivote:-1
-div_mult->atom , c="+", pivote:-1
-div_mult->div_mult * atom , c="-", pivote:-1
-div_mult->div_mult / atom , c="-", pivote:-1
-div_mult->atom , c="-", pivote:-1
-atom->int , c="+", pivote:-1
-atom->( sum_minus ) , c="+", pivote:-1
-atom->int , c="-", pivote:-1
-atom->( sum_minus ) , c="-", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:2
-exp->var_declaration , c="{", pivote:-1
-exp->div_mult ; , c="{", pivote:-1
-exp->atom ; , c="{", pivote:-1
-exp->sum_minus ; , c="{", pivote:-1
-exp->block } , c="{", pivote:-1
-exp->block } ; , c="{", pivote:-1
-var_declaration->let atom = exp , c="{", pivote:-1
-var_declaration->atom = exp , c="{", pivote:-1
- }
- GOTO(I81,exp):
-I90= { 
-var_declaration->atom = exp , c="}", pivote:2
-var_declaration->atom = exp , c="{", pivote:2
- }
- GOTO(I84,;):
-I91= { 
-exp->block } ; , c="}", pivote:2
-exp->block } ; , c="{", pivote:2
- }
- GOTO(I87,)):
-I92= { 
-atom->( sum_minus ) , c=";", pivote:2
-atom->( sum_minus ) , c="*", pivote:2
-atom->( sum_minus ) , c="/", pivote:2
-atom->( sum_minus ) , c="+", pivote:2
-atom->( sum_minus ) , c="-", pivote:2
- }
- GOTO(I89,exp):
-I93= { 
-var_declaration->let atom = exp , c="}", pivote:3
-var_declaration->let atom = exp , c="{", pivote:3
+A->let F = high_level , c=")", pivote:3
  }
