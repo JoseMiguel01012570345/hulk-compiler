@@ -181,10 +181,10 @@ class Parser:
         key_stone = ""
         look_ahead = ""
         
-        AST = pcr.ASTNode({  "derivation": ["S",["E"]] , "identifier": "S->E" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+        AST = pcr.ASTNode({  "derivation": ["S",["exp"]] , "identifier": "S->E" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
         
-        i0 = [ { "production": ["S" , ["E"]] , "look_ahead": "$" , "pivote": -1 ,"AST":AST } ]
-        key_stone = "E"
+        i0 = [ { "production": ["S" , ["exp"]] , "look_ahead": "$" , "pivote": -1 ,"AST":AST } ]
+        key_stone = "exp"
         look_ahead = "$"
         
         self.build_state(state=i0,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
