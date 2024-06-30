@@ -39,11 +39,14 @@ def block(token_list):
     
     if not  token_list[0].__dict__.__contains__("id")  :
         return [ ( "expressions" , [token_list[1]] ) ]
-    
     else:
-        
         token_list[0].expressions.append(token_list[-1])
         
         return [ ( "expressions" , token_list[0].expressions  )  ]
         
+def def_function(token_list):
     
+    
+    
+    
+    pass

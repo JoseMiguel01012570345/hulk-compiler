@@ -3,11 +3,14 @@ from RegExDefinitions import TokenConstrainedRegEx,TokenFinitRegEx
 from TokensDefinition import KeywordToken,SimbolToken,OperatorToken,VariableToken,LiteralToken,Type
 from HULK_LANGUAGE_DEFINITION import KEYWORD_VALUES,SIMBOL_VALUES,OPERATOR_VALUES
 from Rules import LiteralBooleanRule,LiteralNumericRule,LiteralStringRule,NameVariableRule
+<<<<<<< HEAD
 from ExpressionDefinitions import NumberExpression,StringExpression,BooleanExpression
 from VariableDefinitions import NumberVariable,StringVariable,BooleanVariable
 from LiteralDefinitions import NumberLiteral,StringLiteral,BooleanLiteral
 import GRAMMAR_PRODUCTIONS
 import translator
+=======
+>>>>>>> 12f9d30 (column and line showing when semantic error, done)
 import Parser as P
 from os import system
 import semantic_errors
@@ -66,7 +69,14 @@ lexer.LoadCode(code)
 # check for lexical errors
 Error = False
 my_list =[]
+<<<<<<< HEAD
 for state in lexer.LexicalAnalisys(lexer.Tokenize(),FiltToken):
+=======
+
+p = lexer.LexicalAnalisys(lexer.Tokenize(),FiltToken)
+
+for state in p :
+>>>>>>> 12f9d30 (column and line showing when semantic error, done)
     
     my_list = my_list.__add__(state.TokensSequence)
     
@@ -83,7 +93,11 @@ for state in lexer.LexicalAnalisys(lexer.Tokenize(),FiltToken):
 # go to parse
 if not Error:
     
-    tokens = [ token for token in my_list if token.Text != '\n' and token.Text != ' ']
+    tokens =[]
+    for token in my_list:
+        if token.Text != '\n' and token.Text != ' ':
+            tokens.append(token)
+    
     
     my_list = tokens
     

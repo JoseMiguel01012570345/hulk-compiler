@@ -2,6 +2,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 from EnumsTokensDefinition import Type
 '''
@@ -21,6 +22,8 @@ import copy
 =======
 import inspect
 >>>>>>> cb6fe93 (fixes made to grammar)
+=======
+>>>>>>> 12f9d30 (column and line showing when semantic error, done)
 
 class hash_class:
     
@@ -67,6 +70,8 @@ class ASTNode:
     name = ""
     type_ = ""
     self_ = ""
+    line = 10e306
+    column =10e306
     
     
     def __init__(
@@ -138,6 +143,12 @@ class ASTNode:
         if is_self:
             self.parent_reference()
         
+        for token in token_list:
+           
+           if self.line > token.line:
+            self.line = token.line 
+            self.column = token.column
+
         return ast_node
 >>>>>>> 66b45d6 (ast fixed and working)
     
@@ -215,6 +226,7 @@ class ASTNode:
         for item in def_node:
 =======
         children = self.visitor(self)    
+<<<<<<< HEAD
 >>>>>>> b1116a1 (AST almost integrated to parser)
             
 <<<<<<< HEAD
@@ -273,12 +285,18 @@ class ASTNode:
                     child.context_check(error_list)
                 
 =======
+=======
+        
+        scope = { "line": self.line , "column": self.column } # line and column where node is
+        
+        int_max =  2**63 - 1
+        
+>>>>>>> 12f9d30 (column and line showing when semantic error, done)
         if self.id == "var": # check if I am a variable
             
             error_type = "variable declaration"
             error_description = f"variable {self.name} used before declared"
             
-            int_max =  2**63 - 1
             
             if self.parent != None and self.parent.id == "params": 
                 
@@ -288,20 +306,20 @@ class ASTNode:
                 
                 if self.parent != None and self.parent.parent != None and self.parent.parent.def_node: # the parent of the params is a def function or a def type or a def protocol
                     
-                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=1 )    
+                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=1 , scope=scope )    
                 
                 else: # the parent of the params is a function call
-                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max )    
+                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max , scope=scope )    
                 
             else: # the node is not contained in params
-                self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max )    
+                self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max , scope=scope )    
         
         elif self.def_node: # check if I am a definition node
             
             error_type = "definition error"
             error_description = f"{self.name} already defined"
-        
-            self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=1 )    
+            
+            self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=int_max , scope=scope )    
         
         for child in children: # check children
                 
@@ -315,7 +333,7 @@ class ASTNode:
         
         pass        
     
-    def context_checker( self, node_id , error_list:list , error_type , error_description , name , type_name=None , h=0 ):
+    def context_checker( self, node_id , error_list:list , error_type , error_description , name , type_name=None , h=0 , scope={  } ):
         
         allow_apparence = True
         
@@ -331,7 +349,7 @@ class ASTNode:
             return error_list
         
         # if node does not exits and should exist , report an error. If exit and it shouldn't ,  report an error
-        error_ = { "type" : error_type , "description" : error_description }
+        error_ = { "type" : error_type , "description" : error_description , "scope": scope  }
         
         if not error_list.__contains__(error_):
             error_list.append(error_)
@@ -412,6 +430,7 @@ class ASTNode:
         return CIL codes
 
         """
+        
         pass
 
 class function_call( ASTNode): # check context

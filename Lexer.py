@@ -191,6 +191,9 @@ class Lexer(IRegEx):
             last_token = copy(current_token)
             current_token = token
             
+            token.__dict__["line"] = line
+            token.__dict__["column"] = column
+            
             instruction.append(token)
             
             if not last_token == None and token.Type == TokenType.Variable and last_token.Type == TokenType.Literal and last_token.SelfType == Type.Number:
