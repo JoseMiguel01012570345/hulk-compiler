@@ -63,16 +63,17 @@ expression_block = [
     # B -> BE
     pcr.block({  "derivation": ["B",[ "B", "E" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
     
-    # E-> B }    
+    # high_level -> B }  ;
     pcr.block({  "derivation": ["high_level",[ "B", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
-    # E-> B } ;    
-    pcr.block({  "derivation": ["E",[ "B", "}",";" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    # E-> B }    
+    pcr.block({  "derivation": ["E",[ "B", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
     # E -> high_level ;
     pcr.ASTNode({ "derivation": ["E",["high_level",";" ]] , "identifier": "E-> X ;" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
 ]
+
 let = [
 
     # A -> let F = X
