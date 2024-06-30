@@ -1,7 +1,7 @@
 
 I0= { 
 S->E , c="$", pivote:-1
-E->B } ; , c="$", pivote:-1
+E->B } , c="$", pivote:-1
 E->high_level ; , c="$", pivote:-1
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
@@ -127,7 +127,7 @@ F->int , c="/", pivote:-1
  GOTO(I0,{):
 I4= { 
 B->{ E , c="}", pivote:0
-E->B } ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
 E->high_level ; , c="}", pivote:-1
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
@@ -181,16 +181,16 @@ F->int , c="-", pivote:-1
 F->int , c="*", pivote:-1
 F->int , c="/", pivote:-1
 B->{ E , c="{", pivote:0
-E->B } ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
 E->high_level ; , c="{", pivote:-1
 B->{ E , c="int", pivote:0
-E->B } ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
 E->high_level ; , c="int", pivote:-1
 B->{ E , c="let", pivote:0
-E->B } ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
 E->high_level ; , c="let", pivote:-1
 B->{ E , c="(", pivote:0
-E->B } ; , c="(", pivote:-1
+E->B } , c="(", pivote:-1
 E->high_level ; , c="(", pivote:-1
  }
  GOTO(I0,E):
@@ -238,7 +238,7 @@ high_level->A , c=";", pivote:0
  }
  GOTO(I0,B):
 I10= { 
-E->B } ; , c="$", pivote:0
+E->B } , c="$", pivote:0
 B->B B , c="}", pivote:0
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
@@ -256,7 +256,7 @@ B->B E , c="int", pivote:-1
 B->B E , c="let", pivote:-1
 B->B E , c="(", pivote:-1
 B->B E , c="}", pivote:0
-E->B } ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
 E->high_level ; , c="}", pivote:-1
 high_level->X , c=";", pivote:-1
 high_level->A , c=";", pivote:-1
@@ -297,19 +297,19 @@ F->int , c="/", pivote:-1
 high_level->B } , c=";", pivote:0
 B->B B , c="{", pivote:0
 B->B E , c="{", pivote:0
-E->B } ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
 E->high_level ; , c="{", pivote:-1
 B->B B , c="int", pivote:0
 B->B B , c="let", pivote:0
 B->B B , c="(", pivote:0
 B->B E , c="int", pivote:0
-E->B } ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
 E->high_level ; , c="int", pivote:-1
 B->B E , c="let", pivote:0
-E->B } ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
 E->high_level ; , c="let", pivote:-1
 B->B E , c="(", pivote:0
-E->B } ; , c="(", pivote:-1
+E->B } , c="(", pivote:-1
 E->high_level ; , c="(", pivote:-1
  }
  GOTO(I0,high_level):
@@ -452,7 +452,7 @@ B->B E , c="int", pivote:-1
 B->B E , c="let", pivote:-1
 B->B E , c="(", pivote:-1
 B->B E , c="}", pivote:0
-E->B } ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
 E->high_level ; , c="}", pivote:-1
 high_level->X , c=";", pivote:-1
 high_level->A , c=";", pivote:-1
@@ -492,19 +492,19 @@ F->int , c="*", pivote:-1
 F->int , c="/", pivote:-1
 B->B B , c="{", pivote:0
 B->B E , c="{", pivote:0
-E->B } ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
 E->high_level ; , c="{", pivote:-1
 B->B B , c="int", pivote:0
 B->B B , c="let", pivote:0
 B->B B , c="(", pivote:0
 B->B E , c="int", pivote:0
-E->B } ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
 E->high_level ; , c="int", pivote:-1
 B->B E , c="let", pivote:0
-E->B } ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
 E->high_level ; , c="let", pivote:-1
 B->B E , c="(", pivote:0
-E->B } ; , c="(", pivote:-1
+E->B } , c="(", pivote:-1
 E->high_level ; , c="(", pivote:-1
  }
  GOTO(I3,high_level):
@@ -521,7 +521,7 @@ B->{ E , c="(", pivote:1
  }
  GOTO(I4,B):
 I24= { 
-E->B } ; , c="}", pivote:0
+E->B } , c="}", pivote:0
 B->B B , c="}", pivote:0
 B->{ E , c="}", pivote:-1
 B->B B , c="}", pivote:-1
@@ -539,7 +539,7 @@ B->B E , c="int", pivote:-1
 B->B E , c="let", pivote:-1
 B->B E , c="(", pivote:-1
 B->B E , c="}", pivote:0
-E->B } ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
 E->high_level ; , c="}", pivote:-1
 high_level->X , c=";", pivote:-1
 high_level->A , c=";", pivote:-1
@@ -580,24 +580,24 @@ F->int , c="/", pivote:-1
 high_level->B } , c=";", pivote:0
 B->B B , c="{", pivote:0
 B->B E , c="{", pivote:0
-E->B } ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
 E->high_level ; , c="{", pivote:-1
 B->B B , c="int", pivote:0
 B->B B , c="let", pivote:0
 B->B B , c="(", pivote:0
 B->B E , c="int", pivote:0
-E->B } ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
 E->high_level ; , c="int", pivote:-1
 B->B E , c="let", pivote:0
-E->B } ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
 E->high_level ; , c="let", pivote:-1
 B->B E , c="(", pivote:0
-E->B } ; , c="(", pivote:-1
+E->B } , c="(", pivote:-1
 E->high_level ; , c="(", pivote:-1
-E->B } ; , c="{", pivote:0
-E->B } ; , c="int", pivote:0
-E->B } ; , c="let", pivote:0
-E->B } ; , c="(", pivote:0
+E->B } , c="{", pivote:0
+E->B } , c="int", pivote:0
+E->B } , c="let", pivote:0
+E->B } , c="(", pivote:0
  }
  GOTO(I4,high_level):
 I25= { 
@@ -742,7 +742,7 @@ F->int , c="/", pivote:-1
  }
  GOTO(I10,}):
 I31= { 
-E->B } ; , c="$", pivote:1
+E->B } , c="$", pivote:1
 high_level->B } , c=";", pivote:1
  }
  GOTO(I10,E):
@@ -773,7 +773,7 @@ B->B E , c="int", pivote:-1
 B->B E , c="let", pivote:-1
 B->B E , c="(", pivote:-1
 B->B E , c="}", pivote:0
-E->B } ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
 E->high_level ; , c="}", pivote:-1
 high_level->X , c=";", pivote:-1
 high_level->A , c=";", pivote:-1
@@ -813,30 +813,30 @@ F->int , c="*", pivote:-1
 F->int , c="/", pivote:-1
 B->B B , c="{", pivote:0
 B->B E , c="{", pivote:0
-E->B } ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
 E->high_level ; , c="{", pivote:-1
 B->B B , c="int", pivote:0
 B->B B , c="let", pivote:0
 B->B B , c="(", pivote:0
 B->B E , c="int", pivote:0
-E->B } ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
 E->high_level ; , c="int", pivote:-1
 B->B E , c="let", pivote:0
-E->B } ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
 E->high_level ; , c="let", pivote:-1
 B->B E , c="(", pivote:0
-E->B } ; , c="(", pivote:-1
+E->B } , c="(", pivote:-1
 E->high_level ; , c="(", pivote:-1
-E->B } ; , c="}", pivote:0
+E->B } , c="}", pivote:0
 high_level->B } , c=";", pivote:0
 B->B B , c="{", pivote:1
-E->B } ; , c="{", pivote:0
+E->B } , c="{", pivote:0
 B->B B , c="int", pivote:1
 B->B B , c="let", pivote:1
 B->B B , c="(", pivote:1
-E->B } ; , c="int", pivote:0
-E->B } ; , c="let", pivote:0
-E->B } ; , c="(", pivote:0
+E->B } , c="int", pivote:0
+E->B } , c="let", pivote:0
+E->B } , c="(", pivote:0
  }
  GOTO(I11,;):
 I34= { 
@@ -1048,12 +1048,12 @@ high_level->( high_level ) , c=";", pivote:2
  }
  GOTO(I24,}):
 I45= { 
-E->B } ; , c="}", pivote:1
+E->B } , c="}", pivote:1
 high_level->B } , c=";", pivote:1
-E->B } ; , c="{", pivote:1
-E->B } ; , c="int", pivote:1
-E->B } ; , c="let", pivote:1
-E->B } ; , c="(", pivote:1
+E->B } , c="{", pivote:1
+E->B } , c="int", pivote:1
+E->B } , c="let", pivote:1
+E->B } , c="(", pivote:1
  }
  GOTO(I25,;):
 I46= { 
@@ -1131,7 +1131,7 @@ B->B E , c="int", pivote:-1
 B->B E , c="let", pivote:-1
 B->B E , c="(", pivote:-1
 B->B E , c="}", pivote:0
-E->B } ; , c="}", pivote:-1
+E->B } , c="}", pivote:-1
 E->high_level ; , c="}", pivote:-1
 high_level->X , c=";", pivote:-1
 high_level->A , c=";", pivote:-1
@@ -1171,19 +1171,19 @@ F->int , c="*", pivote:-1
 F->int , c="/", pivote:-1
 B->B B , c="{", pivote:0
 B->B E , c="{", pivote:0
-E->B } ; , c="{", pivote:-1
+E->B } , c="{", pivote:-1
 E->high_level ; , c="{", pivote:-1
 B->B B , c="int", pivote:0
 B->B B , c="let", pivote:0
 B->B B , c="(", pivote:0
 B->B E , c="int", pivote:0
-E->B } ; , c="int", pivote:-1
+E->B } , c="int", pivote:-1
 E->high_level ; , c="int", pivote:-1
 B->B E , c="let", pivote:0
-E->B } ; , c="let", pivote:-1
+E->B } , c="let", pivote:-1
 E->high_level ; , c="let", pivote:-1
 B->B E , c="(", pivote:0
-E->B } ; , c="(", pivote:-1
+E->B } , c="(", pivote:-1
 E->high_level ; , c="(", pivote:-1
  }
  GOTO(I28,high_level):
@@ -1206,16 +1206,12 @@ T->T / F , c="-", pivote:2
 T->T / F , c="*", pivote:2
 T->T / F , c="/", pivote:2
  }
- GOTO(I31,;):
-I55= { 
-E->B } ; , c="$", pivote:2
- }
  GOTO(I35,high_level):
-I56= { 
+I55= { 
 A->let F = high_level , c=";", pivote:3
  }
  GOTO(I36,=):
-I57= { 
+I56= { 
 A->let F = high_level , c=")", pivote:2
 high_level->X , c=")", pivote:-1
 high_level->A , c=")", pivote:-1
@@ -1270,11 +1266,11 @@ F->int , c="*", pivote:-1
 F->int , c="/", pivote:-1
  }
  GOTO(I37,)):
-I58= { 
+I57= { 
 high_level->( high_level ) , c=")", pivote:2
  }
  GOTO(I38,int):
-I59= { 
+I58= { 
 F->int , c=")", pivote:0
 F->int , c="*", pivote:0
 F->int , c="/", pivote:0
@@ -1282,7 +1278,7 @@ F->int , c="+", pivote:0
 F->int , c="-", pivote:0
  }
  GOTO(I38,F):
-I60= { 
+I59= { 
 T->F , c=")", pivote:0
 T->F , c="*", pivote:0
 T->F , c="/", pivote:0
@@ -1290,7 +1286,7 @@ T->F , c="+", pivote:0
 T->F , c="-", pivote:0
  }
  GOTO(I38,T):
-I61= { 
+I60= { 
 X->X + T , c=")", pivote:2
 T->T * F , c=")", pivote:0
 T->T / F , c=")", pivote:0
@@ -1306,7 +1302,7 @@ T->T * F , c="-", pivote:0
 T->T / F , c="-", pivote:0
  }
  GOTO(I39,T):
-I62= { 
+I61= { 
 X->X - T , c=")", pivote:2
 T->T * F , c=")", pivote:0
 T->T / F , c=")", pivote:0
@@ -1322,11 +1318,11 @@ T->T * F , c="-", pivote:0
 T->T / F , c="-", pivote:0
  }
  GOTO(I40,high_level):
-I63= { 
+I62= { 
 A->F = high_level , c=")", pivote:2
  }
  GOTO(I41,F):
-I64= { 
+I63= { 
 T->T * F , c=")", pivote:2
 T->T * F , c="+", pivote:2
 T->T * F , c="-", pivote:2
@@ -1334,26 +1330,18 @@ T->T * F , c="*", pivote:2
 T->T * F , c="/", pivote:2
  }
  GOTO(I42,F):
-I65= { 
+I64= { 
 T->T / F , c=")", pivote:2
 T->T / F , c="+", pivote:2
 T->T / F , c="-", pivote:2
 T->T / F , c="*", pivote:2
 T->T / F , c="/", pivote:2
  }
- GOTO(I45,;):
-I66= { 
-E->B } ; , c="}", pivote:2
-E->B } ; , c="{", pivote:2
-E->B } ; , c="int", pivote:2
-E->B } ; , c="let", pivote:2
-E->B } ; , c="(", pivote:2
- }
  GOTO(I51,}):
-I67= { 
+I65= { 
 high_level->B } , c=";", pivote:1
  }
- GOTO(I57,high_level):
-I68= { 
+ GOTO(I56,high_level):
+I66= { 
 A->let F = high_level , c=")", pivote:3
  }

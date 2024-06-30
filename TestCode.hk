@@ -11,6 +11,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -263,3 +264,6 @@ i = i + i + ( i  / i ) + i - i ; $
 =======
 {  (5 + 5) ; let a = 10 ; } ; $
 >>>>>>> ce54e3f (error detected in parser, fixed)
+=======
+{  (5 + 5) ; { let a = 10 ; }  }   $
+>>>>>>> 1d01da1 (more fixes to grammar)
