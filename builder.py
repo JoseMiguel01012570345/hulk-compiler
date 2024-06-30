@@ -1,6 +1,12 @@
 from EnumsTokensDefinition import TokenType,Type
 import production_class_representation as pcr
 
+'''
+
+NOTE: every builder must return a list in where it specify the properties of the node
+
+'''
+
 def plus(token_list):
     return [ ( "left_node" , token_list[0] ) , ( "right_node" , token_list[2] ) ]
 
@@ -48,5 +54,29 @@ def def_function(token_list):
     
     
     
-    
     pass
+
+def structure(token_list):
+    
+    if len(token_list) == 2:
+        
+        if token_list[-1].__dict__.__contains__("id"):
+    
+            token_list[0].expressions.append(token_list[1])
+            return [ ("expressions", token_list[0] ) ]
+    
+        else:
+            return [ ("expressions", token_list[0] ) ]
+    x
+    if len(token_list) == 3 and token_list[0].__dict__.__contains__("id"):
+    
+        token_list[0].expressions.append(token_list[1])
+        return [ ("expressions", token_list[0] ) ]
+    
+    else:
+        return [ ("expressions", token_list[1] ) ]
+
+def params(token_list):
+    return [( "replacement" , token_list[2])]
+    
+    

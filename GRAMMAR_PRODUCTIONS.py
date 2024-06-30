@@ -101,6 +101,9 @@ While = [
 
 ]
 
+function = [    
+
+]
 
 types = [
 
@@ -114,46 +117,37 @@ vector = [
 
 ]
 
-params = [
-    
-    # param -> exp_prime ,
-    # param -> param exp_prime,
-    # param -> param exp_prime
-    # param -> ( param )
-    
-]
-
-function = [    
-
-    # func -> function atom param block
-    # pcr.def_function({ "derivation": [] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
-
-]
-
 variable = [
     
-    pcr.variable({  "derivation": ["var_declaration",["atom", "=" , "exp" ]] , "identifier": "var" , "definition_node?": False ,"builder": B.re_asigment , "visitor": V.var } ) ,
+    pcr.variable({  "derivation": ["A",["F", "=" , "high_level" ]] , "identifier": "var" , "definition_node?": False ,"builder": B.re_asigment , "visitor": V.var } ) ,
     
 ]
 
 expression_block = [
     
     # B -> { E
-    pcr.block({  "derivation": ["block",[ "{", "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    pcr.block({  "derivation": ["B",[ "{", "E" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    
     # B -> BB
-    pcr.block({  "derivation": ["block",[ "block", "block" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
+    pcr.block({  "derivation": ["B",[ "B", "B" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
+    
     # B -> BE
-    pcr.block({  "derivation": ["block",[ "block", "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
+    pcr.block({  "derivation": ["B",[ "B", "E" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
+    
     # E-> B }    
-    pcr.block({  "derivation": ["exp",[ "block", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    pcr.block({  "derivation": ["high_level",[ "B", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    
     # E-> B } ;    
-    pcr.block({  "derivation": ["exp",[ "block", "}",";" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    pcr.block({  "derivation": ["E",[ "B", "}",";" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    
+    # E -> high_level ;
+    pcr.ASTNode({ "derivation": ["E",["high_level",";" ]] , "identifier": "E-> X ;" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
 ]
 let = [
 
     # A -> let F = X
-    pcr.let({  "derivation": ["var_declaration",["let","atom", "=" , "exp" ]] , "identifier": "let" , "definition_node?": True ,"builder": B.let , "visitor": V.let } ) ,
+    pcr.let({  "derivation": ["A",["let","F", "=" , "high_level" ]] , "identifier": "let" , "definition_node?": True ,"builder": B.let , "visitor": V.let } ) ,
 ]
 
 numbers = [
@@ -225,6 +219,7 @@ numbers = [
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     pcr.plus({ "derivation" : ["X",["X","+","T"]] , "identifier": "+" ,"definition_node?": False ,"builder": B.plus  , "visitor": V.binary_opt } ),
 >>>>>>> 3c71142 (asigment and variable declaration , ok)
 =======
@@ -236,23 +231,27 @@ numbers = [
 =======
     pcr.plus({ "derivation" : ["sum_minus",["sum_minus","+","div_mult"]] , "identifier": "+" ,"definition_node?": False ,"builder": B.plus  , "visitor": V.binary_opt } ),
 >>>>>>> 12f9d30 (column and line showing when semantic error, done)
+=======
+    pcr.plus({ "derivation" : ["X",["X","+","T"]] , "identifier": "+" ,"definition_node?": False ,"builder": B.plus  , "visitor": V.binary_opt } ),
+>>>>>>> ce54e3f (error detected in parser, fixed)
     
     # X -> X - T
-    pcr.minus({ "derivation": ["sum_minus",["sum_minus","-","div_mult"]] , "identifier": "-" ,"definition_node?": False ,"builder": B.minus , "visitor": V.binary_opt } ),
+    pcr.minus({ "derivation": ["X",["X","-","T"]] , "identifier": "-" ,"definition_node?": False ,"builder": B.minus , "visitor": V.binary_opt } ),
     
     # X -> T
-    pcr.ASTNode({  "derivation": ["sum_minus",["div_mult"]] , "identifier": "E->T" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+    pcr.ASTNode({  "derivation": ["X",["T"]] , "identifier": "E->T" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
     
     # T-> T * F
-    pcr.multiplication({ "derivation": ["div_mult",["div_mult","*","atom"]] , "identifier": "*" , "definition_node?": False  , "builder": B.multiplier, "visitor": V.binary_opt } ),
+    pcr.multiplication({ "derivation": ["T",["T","*","F"]] , "identifier": "*" , "definition_node?": False  , "builder": B.multiplier, "visitor": V.binary_opt } ),
     
     # T -> T / F
-    pcr.divition({ "derivation": ["div_mult",["div_mult","/","atom"]] , "identifier": "/" , "definition_node?": False  , "builder": B.divition, "visitor": V.binary_opt } ),
+    pcr.divition({ "derivation": ["T",["T","/","F"]] , "identifier": "/" , "definition_node?": False  , "builder": B.divition, "visitor": V.binary_opt } ),
     
     # T -> F
-    pcr.ASTNode({  "derivation": ["div_mult",["atom"]] , "identifier": "T->F" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+    pcr.ASTNode({  "derivation": ["T",["F"]] , "identifier": "T->F" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
     
     # F -> i
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     pcr.variable({ "derivation": ["F",["i"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
@@ -267,10 +266,14 @@ numbers = [
 =======
     pcr.variable({ "derivation": ["atom",["int"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
 >>>>>>> 12f9d30 (column and line showing when semantic error, done)
+=======
+    pcr.variable({ "derivation": ["F",["int"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
+>>>>>>> ce54e3f (error detected in parser, fixed)
     
-    # F -> ( X )
-    pcr.ASTNode({  "derivation": ["atom",["(","sum_minus",")"]] , "identifier": "brackets" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ),
+    # high_level -> X
+    pcr.ASTNode({  "derivation": ["high_level",["X" ]] , "identifier": "E-> A" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
+<<<<<<< HEAD
     # E -> A
     pcr.ASTNode({  "derivation": ["exp",["var_declaration" ]] , "identifier": "E-> A" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
@@ -289,10 +292,18 @@ numbers = [
 >>>>>>> 12f9d30 (column and line showing when semantic error, done)
     
 >>>>>>> 20b2c73 (perfect)
+=======
+    # high_level -> A
+    pcr.ASTNode({  "derivation": ["high_level",["A" ]] , "identifier": "E-> A" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    
+    pcr.ASTNode({  "derivation": ["high_level",[ "(", "high_level",")" ]] , "identifier": "E-> X ;" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ) ,
+
+>>>>>>> ce54e3f (error detected in parser, fixed)
 ]
 
 booleans = [
     
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -335,11 +346,14 @@ booleans = [
                             
 >>>>>>> 9c513df (parser bug fixed at repeated states)
 =======
+=======
+>>>>>>> ce54e3f (error detected in parser, fixed)
         "E",
         "X",
         "F",
         "T",
         "A",
+<<<<<<< HEAD
         "B"
 =======
         "exp",
@@ -349,6 +363,10 @@ booleans = [
         "var_declaration",
         "block"
 >>>>>>> 12f9d30 (column and line showing when semantic error, done)
+=======
+        "B",
+        "high_level",
+>>>>>>> ce54e3f (error detected in parser, fixed)
                            
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
 ]
@@ -477,6 +495,7 @@ gramar =[ vector , protocols , types , function , While , conditional ,
 grammar =[ 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
           numbers, let, variable,
         #  For , IN  , booleans  , expression_block , 
         #   vector , protocols , types , function , While , conditional , 
@@ -489,6 +508,10 @@ grammar =[
         
         numbers, let, variable,expression_block, params ,
 >>>>>>> 12f9d30 (column and line showing when semantic error, done)
+=======
+          
+        numbers, let, variable,expression_block,
+>>>>>>> ce54e3f (error detected in parser, fixed)
         For , IN  , booleans   , 
         vector , protocols , types , function , While , conditional , 
         strings , function_caLL

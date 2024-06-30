@@ -125,6 +125,7 @@ class Parser:
     def Error(self):
         return self._error
     
+<<<<<<< HEAD
     @property
     def Match(self):
         return self._match
@@ -151,6 +152,14 @@ class Parser:
         return self.last_reduction
     
     def compare_procedence(self , pivote , pointer):
+=======
+    def non_terminal_first(self , alpha , visited:list=[] , my_set:list=[] ):
+        
+        if self.contains(alpha,self.terminals): # is alpha , a terminal?
+            
+            my_set.append(alpha)
+            return my_set
+>>>>>>> ce54e3f (error detected in parser, fixed)
         
         '''
         compare precedence between operator1 and operator2:
@@ -159,11 +168,15 @@ class Parser:
         -> -1: lower procedence        
         '''
         
+<<<<<<< HEAD
         if pivote == "(" : return 0
         if pivote == "{" : return 0
         if pivote == "[" : return 0
         
         if pointer == "(" and ( pivote == ")" ) : return -1
+=======
+        for feature in self._grammar:
+>>>>>>> ce54e3f (error detected in parser, fixed)
         
 <<<<<<< HEAD
         if pointer == "{" and ( pivote == "}" ): return -1
@@ -175,7 +188,9 @@ class Parser:
                 if derivation[0] == alpha:
                 
                     if self.contains( derivation[1][0] , self.terminals ):
-                        return derivation[1][0]
+                        
+                        my_set.append(derivation[1][0])
+                        return my_set
                 
                     else:
                         
@@ -184,6 +199,7 @@ class Parser:
                         
                         if len(derivation[1][0]) != 0:
                         
+<<<<<<< HEAD
                             terminal = self.non_terminal_first( derivation[1][0] , visited )
                         
                             if terminal != "":
@@ -191,6 +207,11 @@ class Parser:
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
         
         if pointer == "[" and ( pivote == "]"): return -1
+=======
+                            self.non_terminal_first( derivation[1][0] , visited , my_set=my_set )
+            
+        return my_set
+>>>>>>> ce54e3f (error detected in parser, fixed)
         
         if pointer == "$1": return 0 
         if pointer == "$2" or pivote == "$2" : return -1 
@@ -214,12 +235,12 @@ class Parser:
             return b , ""
         
         if pivote + 2 >= len(derivation):
-            return look_ahead,b
+            return [look_ahead],b
         
-        non_terminal_first = self.non_terminal_first(derivation[pivote + 2])
+        non_terminal_first = self.non_terminal_first(derivation[pivote + 2],[],[])
         
-        if non_terminal_first == "":
-            return look_ahead , b
+        if len(non_terminal_first) == 0:
+            return [look_ahead] , b
         
         return non_terminal_first,b
         
@@ -333,10 +354,10 @@ class Parser:
         key_stone = ""
         look_ahead = ""
         
-        AST = pcr.ASTNode({  "derivation": ["S",["exp"]] , "identifier": "S->E" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+        AST = pcr.ASTNode({  "derivation": ["S",["E"]] , "identifier": "S->E" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
         
-        i0 = [ { "production": ["S" , ["exp"]] , "look_ahead": "$" , "pivote": -1 ,"AST":AST } ]
-        key_stone = "exp"
+        i0 = [ { "production": ["S" , ["E"]] , "look_ahead": "$" , "pivote": -1 ,"AST":AST } ]
+        key_stone = "E"
         look_ahead = "$"
         
         self.build_state(state=i0,key_stone=key_stone,look_ahead=look_ahead,pivote=-1) 
@@ -345,6 +366,8 @@ class Parser:
             
             if i >= len(i0): break
             
+            if i == 5: 
+                print()
             derivation = i0[i]["production"]
             
             look_ahead , key_stone = self.first( derivation[1] , pivote=-1 ,look_ahead=i0[i]["look_ahead"] )
@@ -369,11 +392,13 @@ class Parser:
         for feature in grammar:
             
             for productions in feature:
-            
-                production= { "production": productions.derivation , "look_ahead" : look_ahead , "pivote":pivote , "AST": productions }
                 
-                if production["production"][0] == key_stone and not self.in_stack( state , production ) :
-                    state.append( production )
+                for c in look_ahead:
+                
+                    production= { "production": productions.derivation , "look_ahead" : c , "pivote":pivote , "AST": productions }
+                    
+                    if production["production"][0] == key_stone and not self.in_stack( state , production ) :
+                        state.append( production )
                     
         pass
     
