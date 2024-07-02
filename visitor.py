@@ -22,4 +22,7 @@ def block( self: pcr.ASTNode ):
         return self.expressions 
 
 def def_function(self: pcr.ASTNode):
-    pass
+    return [ self.args , self.body ]
+
+def structure(self: pcr.ASTNode):
+    return [ None , self.expressions ]

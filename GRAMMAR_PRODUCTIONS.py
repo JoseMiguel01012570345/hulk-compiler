@@ -85,9 +85,6 @@ booleans = [
     
 ]
 
-IN = [
-       
-]
 
 For = [
         
@@ -101,9 +98,6 @@ While = [
 
 ]
 
-function = [    
-
-]
 
 types = [
 
@@ -115,6 +109,48 @@ protocols = [
 
 vector = [
 
+]
+
+function = [    
+
+    pcr.def_function({ "derivation": [ "func" , ["function" , "atom" , "param" , "exp"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
+    
+    pcr.def_function({ "derivation": [ "func" , [ "atom" , "param" , "=>" , "exp"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
+    
+    pcr.def_function({ "derivation": [ "exp" , ["func"]] , "identifier": "exp" , "definition_node?": False , "builder": B.replacement , "visitor": V.replacement }),
+
+]
+
+IN = [
+
+    # high_level -> structure in high_level
+    # pcr.def_function({ "derivation": [ "high_level", [ "structure", "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    
+    # high_level -> high_level in high_level
+    # pcr.def_function({ "derivation": [ "high_level", [ "high_level", "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+
+    # exp -> structure in exp
+    # pcr.def_function({ "derivation": [ "exp", [ "structure", "in" , "exp" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+
+    # exp -> high_level in exp
+    # pcr.def_function({ "derivation": [ "exp", [ "high_level", "in" , "exp" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    
+]
+
+params=[
+    
+    # structure -> high_level , high_level
+    pcr.params({ "derivation": [ "structure", [ "structure", "," , "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.structure , "visitor": V.structure }),
+    
+    # structure ->  high_level
+    pcr.params({ "derivation": [ "structure", [ "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.replacement , "visitor": V.replacement }),
+    
+    # structure -> structure , structure
+    # pcr.params({ "derivation": [ "structure", [ "structure" , "structure" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.structure , "visitor": V.structure }),
+    
+    # param -> ( structure )
+    pcr.params({ "derivation": [ "param", [ "(" , "structure" ,")" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.params , "visitor": V.replacement }),
+    
 ]
 
 variable = [
@@ -382,10 +418,17 @@ booleans = [
         "block",
 >>>>>>> 359e6da (productions name changed)
         "high_level",
+<<<<<<< HEAD
 >>>>>>> ce54e3f (error detected in parser, fixed)
+=======
+        "structure",
+        "param",
+        "func",
+>>>>>>> e0c1daa (functions parsed)
                            
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
 ]
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 numbers = [
@@ -406,9 +449,15 @@ numbers = [
 ]
 =======
 =======
+=======
+>>>>>>> e0c1daa (functions parsed)
 terminals= [
             
+            "=>",
+            "function",
+            "in",
             "let",
+            ",",
             "=",
             ";",
             "+",
@@ -519,6 +568,7 @@ grammar =[
 >>>>>>> 3c71142 (asigment and variable declaration , ok)
 =======
           
+<<<<<<< HEAD
         numbers, let, variable,expression_block,
 =======
         
@@ -528,6 +578,9 @@ grammar =[
           
         numbers, let, variable,expression_block,
 >>>>>>> ce54e3f (error detected in parser, fixed)
+=======
+        numbers, let, variable,expression_block, params,
+>>>>>>> e0c1daa (functions parsed)
         For , IN  , booleans   , 
         vector , protocols , types , function , While , conditional , 
         strings , function_caLL

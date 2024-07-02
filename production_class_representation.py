@@ -1435,6 +1435,7 @@ class def_function(ASTNode): # check context
     avaliable = False
     context = []
     
+<<<<<<< HEAD
     def __init__(self,token_list):
         
         self.name = None
@@ -1629,6 +1630,8 @@ class def_function(ASTNode): # check context
         return any(lambda node: node['id'] == node1['id'] and node['name'] == node1['name'],new_context)
 
 >>>>>>> c5c76dc (refactoring)
+=======
+>>>>>>> e0c1daa (functions parsed)
     pass
 
 class type_(ASTNode): # check context
