@@ -51,10 +51,10 @@ def block(token_list):
         return [ ( "expressions" , token_list[0].expressions  )  ]
         
 def def_function(token_list):
-    
-    
-    
-    pass
+    return [ ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
+
+def in_(token_list):
+    return [ ( "args" , token_list[0] ) , ( "body" , token_list[1] ) ]
 
 def structure(token_list):
     
@@ -67,16 +67,11 @@ def structure(token_list):
     
         else:
             return [ ("expressions", token_list[0] ) ]
-    x
+    
     if len(token_list) == 3 and token_list[0].__dict__.__contains__("id"):
-    
-        token_list[0].expressions.append(token_list[1])
-        return [ ("expressions", token_list[0] ) ]
-    
-    else:
         return [ ("expressions", token_list[1] ) ]
 
 def params(token_list):
-    return [( "replacement" , token_list[2])]
+    return [( "replacement" , token_list[1])]
     
     

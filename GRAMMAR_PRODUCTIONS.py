@@ -14,9 +14,6 @@ booleans = [
     
 ]
 
-IN = [
-       
-]
 
 For = [
         
@@ -30,9 +27,6 @@ While = [
 
 ]
 
-function = [    
-
-]
 
 types = [
 
@@ -44,6 +38,48 @@ protocols = [
 
 vector = [
 
+]
+
+function = [    
+
+    pcr.def_function({ "derivation": [ "func" , ["function" , "atom" , "param" , "exp"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
+    
+    pcr.def_function({ "derivation": [ "func" , [ "atom" , "param" , "=>" , "exp"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
+    
+    pcr.def_function({ "derivation": [ "exp" , ["func"]] , "identifier": "exp" , "definition_node?": False , "builder": B.replacement , "visitor": V.replacement }),
+
+]
+
+IN = [
+
+    # high_level -> structure in high_level
+    # pcr.def_function({ "derivation": [ "high_level", [ "structure", "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    
+    # high_level -> high_level in high_level
+    # pcr.def_function({ "derivation": [ "high_level", [ "high_level", "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+
+    # exp -> structure in exp
+    # pcr.def_function({ "derivation": [ "exp", [ "structure", "in" , "exp" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+
+    # exp -> high_level in exp
+    # pcr.def_function({ "derivation": [ "exp", [ "high_level", "in" , "exp" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    
+]
+
+params=[
+    
+    # structure -> high_level , high_level
+    pcr.params({ "derivation": [ "structure", [ "structure", "," , "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.structure , "visitor": V.structure }),
+    
+    # structure ->  high_level
+    pcr.params({ "derivation": [ "structure", [ "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.replacement , "visitor": V.replacement }),
+    
+    # structure -> structure , structure
+    # pcr.params({ "derivation": [ "structure", [ "structure" , "structure" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.structure , "visitor": V.structure }),
+    
+    # param -> ( structure )
+    pcr.params({ "derivation": [ "param", [ "(" , "structure" ,")" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.params , "visitor": V.replacement }),
+    
 ]
 
 variable = [
@@ -122,12 +158,18 @@ non_terminals = [
         "var_declaration",
         "block",
         "high_level",
+        "structure",
+        "param",
+        "func",
                            
 ]
-
 terminals= [
             
+            "=>",
+            "function",
+            "in",
             "let",
+            ",",
             "=",
             ";",
             "+",
@@ -145,7 +187,7 @@ terminals= [
 
 grammar =[ 
           
-        numbers, let, variable,expression_block,
+        numbers, let, variable,expression_block, params,
         For , IN  , booleans   , 
         vector , protocols , types , function , While , conditional , 
         strings , function_caLL
