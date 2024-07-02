@@ -13,6 +13,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -271,3 +272,6 @@ i = i + i + ( i  / i ) + i - i ; $
 =======
 ( 10 , 10 , 10 , 10 ) in  19 ;  $
 >>>>>>> e0c1daa (functions parsed)
+=======
+ ((  let a =10 , let a =10 ) in  9 ) + 10 ;$
+>>>>>>> ee5f8ca (let-in made)
