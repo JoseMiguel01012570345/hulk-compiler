@@ -278,5 +278,13 @@ i = i + i + ( i  / i ) + i - i ; $
 >>>>>>> ee5f8ca (let-in made)
 =======
 
+<<<<<<< HEAD
  A (let a = 10 , (let a = 10 , let a = 10) in 19) => {4;} + 10 ; $
 >>>>>>> 00754c6 (high level expression can peform arithmetic operations)
+=======
+function program( args ) {
+    
+    function a (4 + 5 , 10 , 9 ) { 4 ; };
+
+}; $
+>>>>>>> 7f6df08 (adding functional programming)
