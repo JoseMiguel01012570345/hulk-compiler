@@ -476,3 +476,4 @@ class Parser:
     
     def special_token(self,item):
         return self.terminals.__contains__(item) or symb_and_op.__contains__(item)
+    
