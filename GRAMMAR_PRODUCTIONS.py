@@ -28,16 +28,17 @@ While = [
 ]
 
 
+
+vector = [
+
+]
+
 types = [
 
 ]
 
 protocols = [
     
-]
-
-vector = [
-
 ]
 
 function = [    
@@ -53,16 +54,10 @@ function = [
 IN = [
 
     # high_level -> structure in high_level
-    # pcr.def_function({ "derivation": [ "high_level", [ "structure", "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    # pcr.def_function({ "derivation": [ "high_level", [ "structure" , "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
     
-    # high_level -> high_level in high_level
-    # pcr.def_function({ "derivation": [ "high_level", [ "high_level", "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
-
     # exp -> structure in exp
-    # pcr.def_function({ "derivation": [ "exp", [ "structure", "in" , "exp" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
-
-    # exp -> high_level in exp
-    # pcr.def_function({ "derivation": [ "exp", [ "high_level", "in" , "exp" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    pcr.def_function({ "derivation": [ "high_level", [ "param", "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
     
 ]
 
@@ -71,11 +66,10 @@ params=[
     # structure -> high_level , high_level
     pcr.params({ "derivation": [ "structure", [ "structure", "," , "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.structure , "visitor": V.structure }),
     
-    # structure ->  high_level
-    pcr.params({ "derivation": [ "structure", [ "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.replacement , "visitor": V.replacement }),
+    pcr.params({ "derivation": [ "structure", [ "high_level", "," , "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.structure , "visitor": V.structure }),
     
-    # structure -> structure , structure
-    # pcr.params({ "derivation": [ "structure", [ "structure" , "structure" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.structure , "visitor": V.structure }),
+    # structure ->  high_level
+    # pcr.params({ "derivation": [ "structure", [ "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.replacement , "visitor": V.replacement }),
     
     # param -> ( structure )
     pcr.params({ "derivation": [ "param", [ "(" , "structure" ,")" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.params , "visitor": V.replacement }),
@@ -106,13 +100,13 @@ expression_block = [
     pcr.block({  "derivation": ["exp",[ "block", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
     # E -> high_level ;
-    pcr.ASTNode({ "derivation": ["exp",["high_level",";" ]] , "identifier": "E-> X ;" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    pcr.ASTNode({ "derivation": ["exp",["high_level",";" ]] , "identifier": "None" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
 ]
 
 let = [
 
-    # A -> let F = X
+    # var_declaration -> let atom = high_level
     pcr.let({  "derivation": ["var_declaration",["let","atom", "=" , "high_level" ]] , "identifier": "let" , "definition_node?": True ,"builder": B.let , "visitor": V.let } ) ,
 ]
 
@@ -125,7 +119,7 @@ numbers = [
     pcr.minus({ "derivation": ["sum_minus",["sum_minus","-","div_mult"]], "identifier": "-" ,"definition_node?": False ,"builder": B.minus , "visitor": V.binary_opt } ),
     
     # X -> T
-    pcr.ASTNode({  "derivation": ["sum_minus",["atom"]] , "identifier": "E->T" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+    pcr.ASTNode({  "derivation": ["sum_minus",["div_mult"]] , "identifier": "E->T" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
     
     # T-> T * F
     pcr.multiplication({ "derivation": ["div_mult",["div_mult","*","atom"]] , "identifier": "*" , "definition_node?": False  , "builder": B.multiplier, "visitor": V.binary_opt } ),
@@ -139,13 +133,14 @@ numbers = [
     # F -> i
     pcr.variable({ "derivation": ["atom",["int"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
     
-    # high_level -> X
-    pcr.ASTNode({  "derivation": ["high_level",["sum_minus" ]] , "identifier": "E-> A" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    # high_level -> sum_minus
+    pcr.ASTNode({  "derivation": ["high_level",[ "sum_minus" ]] , "identifier": "None" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
-    # high_level -> A
-    pcr.ASTNode({  "derivation": ["high_level",["var_declaration" ]] , "identifier": "E-> A" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    # high_level -> var_declaration
+    pcr.ASTNode({  "derivation": ["high_level",["var_declaration" ]] , "identifier": "None" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
-    pcr.ASTNode({  "derivation": ["high_level",[ "(", "high_level",")" ]] , "identifier": "E-> X ;" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ) ,
+    # atom -> ( high_level )
+    pcr.ASTNode({  "derivation": ["atom",[ "(", "high_level",")" ]] , "identifier": "None" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ) ,
 
 ]
 
@@ -161,6 +156,7 @@ non_terminals = [
         "structure",
         "param",
         "func",
+        "hl_in"
                            
 ]
 terminals= [
