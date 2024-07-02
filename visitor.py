@@ -26,3 +26,6 @@ def def_function(self: pcr.ASTNode):
 
 def structure(self: pcr.ASTNode):
     return [ None , self.expressions ]
+
+def function_call(self: pcr.ASTNode):
+    return [ None , self.args ]

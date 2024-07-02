@@ -847,4 +847,8 @@ p = Parser()
     
     def special_token(self,item):
         return self.terminals.__contains__(item) or symb_and_op.__contains__(item)
+<<<<<<< HEAD
 >>>>>>> d3a2291 (blocks made)
+=======
+    
+>>>>>>> 00754c6 (high level expression can peform arithmetic operations)

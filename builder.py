@@ -73,5 +73,8 @@ def structure(token_list):
 
 def params(token_list):
     return [( "replacement" , token_list[1])]
+
+def function_call(token_list):
+    return [( "name" , token_list[0] ) , ( "args",token_list[1] )]
     
     

@@ -113,34 +113,42 @@ protocols = [
 ]
 
 function = [    
-
-    pcr.def_function({ "derivation": [ "func" , ["function" , "atom" , "param" , "exp"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
     
-    pcr.def_function({ "derivation": [ "func" , [ "atom" , "param" , "=>" , "exp"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
     
-    pcr.def_function({ "derivation": [ "exp" , ["func"]] , "identifier": "exp" , "definition_node?": False , "builder": B.replacement , "visitor": V.replacement }),
+    # exp -> function atom param exp
+    pcr.def_function({ "derivation": [ "exp" , ["function" , "atom" , "param" , "exp"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
+    
+    # high_level -> function atom param high_level
+    pcr.def_function({ "derivation": [ "high_level" , ["function" , "atom" , "param" , "high_level"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
+    
+    # exp -> atom param => exp
+    pcr.def_function({ "derivation": [ "exp" , [ "atom" , "param" , "=>" , "exp"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
+    
+    # high_level -> atom param => high_level
+    pcr.def_function({ "derivation": [ "high_level" , [ "atom" , "param" , "=>" , "high_level"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
+    
+    # high_level -> atom param
+    pcr.function_call({ "derivation": [ "atom" , [ "atom" , "param" ]] , "identifier": "function_call" , "definition_node?": False , "builder": B.function_call , "visitor": V.function_call }),
 
 ]
 
 IN = [
 
-    # high_level -> structure in high_level
-    # pcr.def_function({ "derivation": [ "high_level", [ "structure" , "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
-    
-    # exp -> structure in exp
+    # exp -> structure in high_level
     pcr.def_function({ "derivation": [ "high_level", [ "param", "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    
+    # high_level -> high_level in high_level
+    pcr.def_function({ "derivation": [ "high_level", [ "high_level", "in" , "high_level" ] ] , "identifier": "def_function" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
     
 ]
 
 params=[
     
-    # structure -> high_level , high_level
+    # structure -> structure , high_level
     pcr.params({ "derivation": [ "structure", [ "structure", "," , "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.structure , "visitor": V.structure }),
     
+    # structure -> high_level , high_level
     pcr.params({ "derivation": [ "structure", [ "high_level", "," , "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.structure , "visitor": V.structure }),
-    
-    # structure ->  high_level
-    # pcr.params({ "derivation": [ "structure", [ "high_level" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.replacement , "visitor": V.replacement }),
     
     # param -> ( structure )
     pcr.params({ "derivation": [ "param", [ "(" , "structure" ,")" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.params , "visitor": V.replacement }),
@@ -149,28 +157,29 @@ params=[
 
 variable = [
     
+    # var_declaration -> atom = high_level
     pcr.variable({  "derivation": ["var_declaration",["atom", "=" , "high_level" ]] , "identifier": "var" , "definition_node?": False ,"builder": B.re_asigment , "visitor": V.var } ) ,
     
 ]
 
 expression_block = [
     
-    # B -> { E
+    # block -> { exp
     pcr.block({  "derivation": ["block",[ "{", "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
-    # B -> BB
+    # block -> block block
     pcr.block({  "derivation": ["block",[ "block", "block" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
     
-    # B -> BE
+    # block -> block exp
     pcr.block({  "derivation": ["block",[ "block", "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
     
-    # high_level -> B }  ;
+    # high_level -> block }
     pcr.block({  "derivation": ["high_level",[ "block", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
-    # E-> B }    
+    # exp-> block }    
     pcr.block({  "derivation": ["exp",[ "block", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
-    # E -> high_level ;
+    # exp -> high_level ;
     pcr.ASTNode({ "derivation": ["exp",["high_level",";" ]] , "identifier": "None" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
 ]
@@ -285,6 +294,7 @@ numbers = [
     # T -> F
     pcr.ASTNode({  "derivation": ["div_mult",["atom"]] , "identifier": "T->F" , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
     
+<<<<<<< HEAD
     # F -> i
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -300,6 +310,9 @@ numbers = [
     pcr.variable({ "derivation": ["F",["int"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
 >>>>>>> d3a2291 (blocks made)
 =======
+=======
+    # atom -> int
+>>>>>>> 00754c6 (high level expression can peform arithmetic operations)
     pcr.variable({ "derivation": ["atom",["int"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
 >>>>>>> 12f9d30 (column and line showing when semantic error, done)
 =======
@@ -343,7 +356,11 @@ numbers = [
     # atom -> ( high_level )
     pcr.ASTNode({  "derivation": ["atom",[ "(", "high_level",")" ]] , "identifier": "None" , "definition_node?": False ,"builder": B.brackets , "visitor": V.brackets } ) ,
 
+<<<<<<< HEAD
 >>>>>>> ce54e3f (error detected in parser, fixed)
+=======
+
+>>>>>>> 00754c6 (high level expression can peform arithmetic operations)
 ]
 
 booleans = [
@@ -423,12 +440,15 @@ booleans = [
 =======
         "structure",
         "param",
+<<<<<<< HEAD
         "func",
 <<<<<<< HEAD
 >>>>>>> e0c1daa (functions parsed)
 =======
         "hl_in"
 >>>>>>> ee5f8ca (let-in made)
+=======
+>>>>>>> 00754c6 (high level expression can peform arithmetic operations)
                            
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
 ]
