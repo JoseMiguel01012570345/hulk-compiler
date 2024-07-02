@@ -1,2 +1,6 @@
 
- A (let a = 10 , (let a = 10 , let a = 10) in 19) => {4;} + 10 ; $
+function program( args ) {
+    
+    function a (4 + 5 , 10 , 9 ) { 4 ; };
+
+}; $
