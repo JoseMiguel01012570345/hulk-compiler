@@ -47,6 +47,7 @@ type Range(min:Number, max:Number) {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     next(): Boolean => (self.current := self.current + 1) < self.max;
     current(): Number => self.current;
 }
@@ -283,8 +284,15 @@ i = i + i + ( i  / i ) + i - i ; $
 >>>>>>> 00754c6 (high level expression can peform arithmetic operations)
 =======
 function program( args ) {
+=======
+protocol A {
+>>>>>>> 927b086 (networkx for visualization)
     
-    function a (4 + 5 , 10 , 9 ) { 4 ; };
+    4 ;
 
+<<<<<<< HEAD
 }; $
 >>>>>>> 7f6df08 (adding functional programming)
+=======
+};
+>>>>>>> 927b086 (networkx for visualization)

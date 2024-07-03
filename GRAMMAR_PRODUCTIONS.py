@@ -2,6 +2,7 @@ import builder as B
 import production_class_representation as pcr
 import visitor as V
 
+<<<<<<< HEAD
 function_caLL = [
 <<<<<<< HEAD
     ["F",[ ["c","P"] , ["c","N" ] , ["c","T"] ] ],
@@ -75,6 +76,8 @@ literals = [
 =======
 
 ]
+=======
+>>>>>>> 927b086 (networkx for visualization)
 
 strings = [
     
@@ -104,16 +107,35 @@ vector = [
 
 ]
 
+function_caLL = [
+
+    # high_level -> atom param
+    pcr.function_call({ "derivation": [ "atom" , [ "atom" , "param" ]] , "identifier": "function_call" , "definition_node?": False , "builder": B.function_call , "visitor": V.function_call }),
+    
+]
+
 types = [
+
+    # atom -> type atom block
+    pcr.type_({ "derivation": [ "atom" , ["type" , "atom" , "block"]] , "identifier": "type" , "definition_node?": True , "builder": B.type , "visitor": V.type }),
+    
+    # type -> type atom param block
+    pcr.type_({ "derivation": [ "atom" , ["type" , "atom" , "param" , "block"]] , "identifier": "type" , "definition_node?": True , "builder": B.type , "visitor": V.type }),
+    
 
 ]
 
 protocols = [
     
+    # atom -> type atom block
+    pcr.protocol({ "derivation": [ "atom" , ["protocol" , "atom" , "block"]] , "identifier": "protocol" , "definition_node?": True , "builder": B.protocol , "visitor": V.protocol }),
+    
+    # type -> type atom param block
+    pcr.protocol({ "derivation": [ "atom" , ["protocol" , "atom" , "param" , "block"]] , "identifier": "protocol" , "definition_node?": True , "builder": B.protocol , "visitor": V.protocol }),
+    
 ]
 
 function = [    
-    
     
     # exp -> function atom param exp
     pcr.def_function({ "derivation": [ "atom" , ["function" , "atom" , "param" , "block"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
@@ -129,9 +151,6 @@ function = [
     
     # high_level -> atom param => high_level
     pcr.def_function({ "derivation": [ "high_level" , [ "atom" , "param" , "=>" , "high_level"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
-    
-    # high_level -> atom param
-    pcr.function_call({ "derivation": [ "atom" , [ "atom" , "param" ]] , "identifier": "function_call" , "definition_node?": False , "builder": B.function_call , "visitor": V.function_call }),
 
 ]
 
@@ -157,6 +176,8 @@ params=[
     
     # param -> ( structure )
     pcr.params({ "derivation": [ "param", [ "(" , "structure" ,")" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.params , "visitor": V.replacement }),
+    
+    pcr.params({ "derivation": [ "param", [ "(",")" ] ] , "identifier": "structure" , "definition_node?":False , "builder": B.params , "visitor": V.replacement }),
     
 ]
 
@@ -443,6 +464,7 @@ booleans = [
         "param",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "func",
 <<<<<<< HEAD
 >>>>>>> e0c1daa (functions parsed)
@@ -454,6 +476,8 @@ booleans = [
 =======
         "function",
 >>>>>>> 7f6df08 (adding functional programming)
+=======
+>>>>>>> 927b086 (networkx for visualization)
                            
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
 ]
@@ -482,6 +506,9 @@ numbers = [
 >>>>>>> e0c1daa (functions parsed)
 terminals= [
             
+            "function",
+            "type",
+            "protocol",
             "=>",
             "in",
             "let",

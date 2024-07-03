@@ -53,6 +53,14 @@ def block(token_list):
 def def_function(token_list):
     return [ ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
 
+def type(token_list):
+    
+
+    return [ ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
+
+def protocol(token_list):
+    return [ ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
+
 def in_(token_list):
     return [ ( "args" , token_list[0] ) , ( "body" , token_list[1] ) ]
 
@@ -72,7 +80,10 @@ def structure(token_list):
         return [ ("expressions", token_list[1] ) ]
 
 def params(token_list):
-    return [( "replacement" , token_list[1])]
+    if len(token_list) == 3:
+        return [( "replacement" , token_list[1])]
+    else:
+        return [("replacement",None)]
 
 def function_call(token_list):
     return [( "name" , token_list[0] ) , ( "args",token_list[1] )]

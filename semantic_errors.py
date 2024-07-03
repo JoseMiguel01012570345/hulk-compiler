@@ -8,7 +8,6 @@ class context_errors:
     def add_error(self,error_list):
         
         self.error_list = error_list
-        
         pass
     
     def print_(self):
@@ -31,13 +30,12 @@ class context_errors:
             
             for item in self.error_list:
                 
-                try:
-                    type_ = item['type']
-                    description = item['description']
-                    scope = item['scope']
-                
-                except: continue
-                
+                type_ = item['type']
+                description = item['description']
+                scope = item['scope']
+                line = scope["line"]
+                column = scope["column"]
+        
                 print(f" \033[1;31m > \033[1;32m There is an issue of the type: \033[1;31m {type_} \033[1;32m which says \033[1;31m {description} at line { line } , column { column } \033[0;m ")
                 
         else:
