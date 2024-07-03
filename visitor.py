@@ -21,6 +21,12 @@ def block( self: pcr.ASTNode ):
     else:
         return self.expressions 
 
+def type(self: pcr.ASTNode):
+    return [ self.args , self.body ]
+
+def protocol(self: pcr.ASTNode):
+    return [ self.args , self.body ]
+
 def def_function(self: pcr.ASTNode):
     return [ self.args , self.body ]
 

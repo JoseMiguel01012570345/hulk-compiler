@@ -1,5 +1,5 @@
 from RegExDefinitions import TokenFinitRegEx,TokenConstrainedRegEx,IRegEx,State
-from TokensDefinition import KeywordToken,OperatorToken,SimbolToken,VariableToken,LiteralToken,EndToken
+from TokensDefinition import KeywordToken,OperatorToken,SimbolToken,VariableToken,LiteralToken,EndToken,SimbolEndToken
 from HULK_LANGUAGE_DEFINITION import KEYWORD_VALUES,OPERATOR_VALUES,SIMBOL_VALUES
 from EnumsTokensDefinition import Type,TokenType,Simbol
 from copy import copy

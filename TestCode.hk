@@ -1,6 +1,6 @@
 
-function program( args ) {
+protocol A {
     
-    function a (4 + 5 , 10 , 9 ) { 4 ; };
+    4 ;
 
-}; $
+};

@@ -1,11 +1,12 @@
 from Lexer import Lexer
 from RegExDefinitions import TokenConstrainedRegEx,TokenFinitRegEx
-from TokensDefinition import KeywordToken,SimbolToken,OperatorToken,VariableToken,LiteralToken,Type
+from TokensDefinition import KeywordToken,SimbolToken,OperatorToken,VariableToken,LiteralToken,Type,SimbolEndToken
 from HULK_LANGUAGE_DEFINITION import KEYWORD_VALUES,SIMBOL_VALUES,OPERATOR_VALUES
 from Rules import LiteralBooleanRule,LiteralNumericRule,LiteralStringRule,NameVariableRule
 import Parser as P
 from os import system
 import semantic_errors
+import print_ast
 
 def FiltToken(token):
     return len(token.Text) > 0
@@ -87,7 +88,7 @@ if not Error:
             tokens.append(token)
     
     
-    my_list = tokens
+    my_list = tokens + [SimbolEndToken()]
     
     #------------PRINTS_TOKEN_SEQUENCE----------------
     # for t in my_list:
@@ -105,6 +106,8 @@ if not Error:
 
 #_________________________SEMANTIC CHEKING__________________________________
 
+    print_ast.create_graph_and_print(ast=ast)
+    
     context_error = semantic_errors.context_errors()
     
     error_list = []

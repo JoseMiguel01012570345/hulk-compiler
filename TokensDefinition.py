@@ -204,3 +204,19 @@ class EndToken(SimbolToken):
         return SimbolType.Separator
     
     pass
+
+class SimbolEndToken(SimbolToken):
+    
+    def __init__(self):
+        self._text = '$'
+        pass
+    
+    @property
+    def Simbol(self):
+        return Simbol.End
+    
+    @property
+    def SimbolType(Self):
+        return SimbolType.Separator
+    
+    pass
