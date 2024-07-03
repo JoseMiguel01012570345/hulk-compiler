@@ -1,6 +1,3 @@
-
-protocol A {
-    
-    4 ;
-
+type PolarPoint inherits Point {
+    rho() => sqrt( getX() + getY() );
 };

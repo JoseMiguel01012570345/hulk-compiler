@@ -5,6 +5,8 @@ import builder as B
 import visitor as V
 import copy
 from HULK_LANGUAGE_DEFINITION import SYMBOLS_and_OPERATORS_parser as symb_and_op
+import json
+import os
 
 class Parser:
     
@@ -36,12 +38,6 @@ class Parser:
         
         self.parser_table = parser_table
         
-        # if printing:
-        #     i=0
-        #     for element in parser_table:
-        #         print(f"I{i}={element}")
-        #         i+=1
-        
         ok , tree = self.parse_input(code=code)
         self.tree = tree
         
@@ -55,7 +51,7 @@ class Parser:
     
     def contains(self , my_token , dic: list):
         return dic.__contains__(my_token)
-        
+    
     @property
     def Error(self):
         return self._error
@@ -320,9 +316,7 @@ class Parser:
                     if self.in_stack(sub_state,derivation): count+=1
             
             if count == len(state) and len(state) != 0 :
-                # print(f"GOTO(I{ actual_state },{item}):")
-                # print(f"\033[1;31m state I{i} is repeated \033[0m")
-                return True,i
+                return True , i
             
             i+=1
         
