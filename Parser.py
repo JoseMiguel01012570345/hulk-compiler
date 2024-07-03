@@ -15,6 +15,8 @@ import builder as B
 import visitor as V
 import copy
 from HULK_LANGUAGE_DEFINITION import SYMBOLS_and_OPERATORS_parser as symb_and_op
+import json
+import os
 
 class Parser:
 >>>>>>> b1116a1 (AST almost integrated to parser)
@@ -94,12 +96,6 @@ class Parser:
         
         self.parser_table = parser_table
         
-        # if printing:
-        #     i=0
-        #     for element in parser_table:
-        #         print(f"I{i}={element}")
-        #         i+=1
-        
         ok , tree = self.parse_input(code=code)
         self.tree = tree
         
@@ -119,8 +115,12 @@ class Parser:
 =======
     def contains(self , my_token , dic: list):
         return dic.__contains__(my_token)
+<<<<<<< HEAD
         
 >>>>>>> d3a2291 (blocks made)
+=======
+    
+>>>>>>> d553c9f (ast representation with networkx)
     @property
     def Error(self):
         return self._error
@@ -496,10 +496,14 @@ class Parser:
                     if self.in_stack(sub_state,derivation): count+=1
             
             if count == len(state) and len(state) != 0 :
+<<<<<<< HEAD
                 # print(f"GOTO(I{ actual_state },{item}):")
                 # print(f"\033[1;31m state I{i} is repeated \033[0m")
                 return True,i
 >>>>>>> 9c513df (parser bug fixed at repeated states)
+=======
+                return True , i
+>>>>>>> d553c9f (ast representation with networkx)
             
             i +=1
         

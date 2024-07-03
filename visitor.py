@@ -22,10 +22,30 @@ def block( self: pcr.ASTNode ):
         return self.expressions 
 
 def type(self: pcr.ASTNode):
-    return [ self.args , self.body ]
+    
+    children = [self.name]
+    
+    if self.__dict__.__contains__("args"):
+        children.append(self.args)
+    if self.__dict__.__contains__("inheritence_name"):
+        children.append(self.inheritence_name)
+    if self.__dict__.__contains__("inheritence_args"):
+        children.append(self.inheritence_args)
+    
+    children.append( self.body )
+    
+    return children
 
 def protocol(self: pcr.ASTNode):
-    return [ self.args , self.body ]
+    
+    children = [self.name]
+    
+    if self.__dict__.__contains__("inheritence_name"):
+        children.append(self.inheritence_name)
+    
+    children.append(self.body)
+    
+    return children
 
 def def_function(self: pcr.ASTNode):
     return [ self.args , self.body ]

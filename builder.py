@@ -55,29 +55,36 @@ def def_function(token_list):
 
 def type(token_list):
     
-
-    return [ ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
+    if len(token_list) == 3:
+        return [("name",token_list[1]) , ( "body", token_list[-1] )]
+    
+    if len(token_list) == 4:
+        return [("name",token_list[1]) , ( "args", token_list[2] ) ,( "body", token_list[-1] )]
+        
+    if len(token_list) == 5:
+        return [("name",token_list[1]) , ( "inheritence_name", token_list[3] ) ,( "body", token_list[-1] )]
+    
+    return [("name",token_list[1]) , ( "args", token_list[3] ) ,( "inheritence_name", token_list[4] ) , ("inheritence_args" , token_list[5]), ("body",token_list[-1]) ]
 
 def protocol(token_list):
-    return [ ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
+    
+    if len(token_list) == 3:
+        return [ ( "name" , token_list[1] ) , ( "body", token_list[-1] ) ]
+    
+    return [ ( "name" , token_list[1] ) , ("inheritence_name",token_list[3]) , ( "body", token_list[-1] ) ]
 
 def in_(token_list):
-    return [ ( "args" , token_list[0] ) , ( "body" , token_list[1] ) ]
+    return [ ( "args" , token_list[0] ) , ( "body" , token_list[2] ) ]
 
 def structure(token_list):
     
-    if len(token_list) == 2:
+    if token_list[0].id == "structure":
         
-        if token_list[-1].__dict__.__contains__("id"):
+        token_list[0].expressions.append(token_list[-1])
+        
+        return [ ("expressions", token_list[0].expressions ) ]
     
-            token_list[0].expressions.append(token_list[1])
-            return [ ("expressions", token_list[0] ) ]
-    
-        else:
-            return [ ("expressions", token_list[0] ) ]
-    
-    if len(token_list) == 3 and token_list[0].__dict__.__contains__("id"):
-        return [ ("expressions", token_list[1] ) ]
+    return [ ("expressions", [ token_list[0] , token_list[2] ] ) ]
 
 def params(token_list):
     if len(token_list) == 3:

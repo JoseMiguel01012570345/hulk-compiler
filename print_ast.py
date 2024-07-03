@@ -12,21 +12,46 @@ def create_graph_and_print(ast:pcr.ASTNode):
     
     pass
 
-def build_graph( graph , ast:pcr.ASTNode ):
+def build_graph( graph , ast ):
 
-    children = ast.visitor_ast()
+    if type(ast) == "list":
     
-    for child in children:
+        for element in child:
+            
+            if element == None : continue
+            
+            graph = build_graph( graph=graph , ast=element )
+            
+            graph.add_edge( ast.id + str(ast.hash_), element.id + str(element.hash_) )
         
-        if child != None:
+    else:
+        
+        children = ast.visitor_ast()
+        
+        for child in children:
             
+            if child == None: continue
+            
+            if isinstance(child , list):
+                
+                for element in child:
+                    
+                    if element == None:continue
+                    
+                    graph.add_edge( ast.id + str(ast.hash_) , element.id + str(element.hash_) )
+                    graph = build_graph( graph=graph , ast=element )
+                
+                continue
+                
             if hasattr(child,"id"):
-                graph.add_node( child.id , obj=child )
-                graph.add_edge( ast.id, child.id )
+                
+                graph.add_node( child.id + str(child.hash_) , obj=child )
+                graph.add_edge( ast.id + str(ast.hash_), child.id + str(child.hash_) )
                 graph = build_graph( graph=graph , ast=child )
-            
-            else:
-                graph.add_node(child ,obj=child )
-                graph.add_edge(ast.id, child)
-    
+                
+                continue
+
+            graph.add_node(child ,obj=child )
+            graph.add_edge(ast.id +str(ast.hash_) , child)
+        
     return graph
