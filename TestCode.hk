@@ -1,6 +1,5 @@
 function program() {
-rho() => sqrt( getX() + getY() );
-
-rho() => sqrt( getX() + getY() );
+    
+4;
 
 };

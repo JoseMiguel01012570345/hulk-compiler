@@ -1,3 +1,5 @@
+import production_class_representation as pcr
+
 def isNumeric(text):
     
     if text.isnumeric():
@@ -16,4 +18,27 @@ def isNumeric(text):
         return False
     
     return False
+
+def final_reduction( ast:pcr.ASTNode , node=None ):
+    
+    children = ast.visitor_ast()
+    
+    count = 0
+    
+    for child in children:
+        if child == None:
+            count += 1
+    
+    if count == len(children): 
+        return True
+    
+    for child in children:
         
+        if hasattr(child,"id"):
+            
+            reduce = final_reduction(child)
+            
+            if reduce:
+                child = None
+            
+    return False

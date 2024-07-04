@@ -29,8 +29,8 @@ def var(token_list):
 def brackets(token_list):
     return [("expression",token_list[1])]
 
-def replacement(token_list):
-    return [( "replacement" , token_list[0])]
+def replacement(token_list,index=0):
+    return [( "replacement" , token_list[index])]
 
 def let(token_list):
     return [ ( "name",token_list[1].name ) , ( "value" , token_list[-1] ) ]
@@ -43,15 +43,20 @@ def re_asigment(token_list):
 
 def block(token_list):
     
-    if not  token_list[0].__dict__.__contains__("id")  :
-        return [ ( "expressions" , [token_list[1]] ) ]
+    if not  token_list[0].__dict__.__contains__("id")  :     
+        return [ ( "expressions" , [ token_list[1] ] ) ]
+    
     else:
         token_list[0].expressions.append(token_list[-1])
-        
-        return [ ( "expressions" , token_list[0].expressions  )  ]
+        return [ ( "expressions" , token_list[0].expressions  )  ]    
         
 def def_function(token_list):
-    return [ ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
+    
+    if not token_list[0].__dict__.__contains__("id"):
+        return [ ("name" , token_list[1].name ) , ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
+    
+    if token_list[0].__dict__.__contains__("id"):
+        return [ ("name" , token_list[0].name ) , ( "args" , token_list[-3] ) , ( "body", token_list[-1] ) ]
 
 def type(token_list):
     

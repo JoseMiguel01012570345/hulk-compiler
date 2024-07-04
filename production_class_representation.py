@@ -53,7 +53,7 @@ class ASTNode:
                         "definition_node?":"" , 
                         "builder":None , 
                         "visitor":None
-                    } ) -> None:
+                    }, *args ) -> None:
         
         self.set_identifier(grammar["identifier"])
         self.derivation = grammar["derivation"]
@@ -126,7 +126,7 @@ class ASTNode:
     
     def check_context(self,error_list):
         
-        children = self.visitor(self)    
+        children = self.visitor_ast()    
         
         scope = { "line": self.line , "column": self.column } # line and column where node is
         

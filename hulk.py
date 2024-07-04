@@ -7,6 +7,7 @@ import Parser as P
 from os import system
 import semantic_errors
 import print_ast
+import Utils
 
 def FiltToken(token):
     return len(token.Text) > 0
@@ -100,7 +101,9 @@ if not Error:
 
 #_________________________SEMANTIC CHEKING__________________________________
 
-    print_ast.create_graph_and_print( ast=ast , printig=0 )
+    Utils.final_reduction(ast=ast)
+
+    print_ast.create_graph_and_print( ast=ast , printig=1 )
     
     context_error = semantic_errors.context_errors()
     

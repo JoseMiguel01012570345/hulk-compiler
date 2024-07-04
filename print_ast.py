@@ -1,6 +1,7 @@
 import networkx as nx
 import production_class_representation as pcr
 import matplotlib.pyplot as plt
+import copy
 
 def create_graph_and_print(ast:pcr.ASTNode , printig):
 
@@ -8,14 +9,18 @@ def create_graph_and_print(ast:pcr.ASTNode , printig):
         return
     
     dg = nx.DiGraph()
-    graph =  build_graph(dg , ast=ast)    
+    
+    ast_copy = copy.deepcopy(ast)
+    ast_copy.id += " ROOT"
+    
+    graph =  build_graph(dg , ast=ast_copy)    
     
     nx.draw(graph, with_labels=True, arrows=True)
     plt.show()
     
     pass
 
-def build_graph( graph , ast ):
+def build_graph( graph , ast , h=0 ):
 
     if type(ast) == "list":
     
