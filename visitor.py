@@ -23,12 +23,10 @@ def block( self: pcr.ASTNode ):
 
 def type(self: pcr.ASTNode):
     
-    children = [self.name]
+    children = []
     
     if self.__dict__.__contains__("args"):
         children.append(self.args)
-    if self.__dict__.__contains__("inheritence_name"):
-        children.append(self.inheritence_name)
     if self.__dict__.__contains__("inheritence_args"):
         children.append(self.inheritence_args)
     

@@ -18,14 +18,14 @@ class Parser:
     terminals = GD.terminals
     non_terminals = GD.non_terminals
     
-    def __init__(self , code="" ):
+    def __init__(self , code="" , use_saved_table=1  ):
 
         self._grammar = GD.grammar
     
         self._error = None
         self.derivation_Tree = None
         
-        self.read_from_json(1)
+        self.read_from_json(use_saved_table)
         
         if len(self.parser_table) == 0:
         
@@ -41,8 +41,6 @@ class Parser:
             parser_table = self.automaton(i0=i0,printing=printing)
             
             self.parser_table = parser_table
-            
-            self.printing_table(1)
             
             self.save_table()
             

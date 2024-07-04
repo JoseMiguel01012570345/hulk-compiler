@@ -90,13 +90,7 @@ if not Error:
     
     my_list = tokens + [SimbolEndToken()]
     
-    #------------PRINTS_TOKEN_SEQUENCE----------------
-    # for t in my_list:
-    #     print(t.Text)
-    #     pass
-    #----------------------------
-    
-    gp =P.Parser( my_list )
+    gp =P.Parser( my_list , use_saved_table=1 )
 
     ast = gp.tree
     if ast == None: 
@@ -109,6 +103,10 @@ if not Error:
     print_ast.create_graph_and_print( ast=ast , printig=0 )
     
     context_error = semantic_errors.context_errors()
+    
+    # check types
+    
+    # check rules
     
     error_list = []
     

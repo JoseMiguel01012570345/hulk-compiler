@@ -1,3 +1,6 @@
-type PolarPoint inherits Point {
-    rho() => sqrt( getX() + getY() );
+function program() {
+rho() => sqrt( getX() + getY() );
+
+rho() => sqrt( getX() + getY() );
+
 };

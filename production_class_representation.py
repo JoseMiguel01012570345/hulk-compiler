@@ -270,31 +270,6 @@ class function_call( ASTNode): # check context
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def context_check(self,error_list):
-        
-        for item in self.context:
-            
-            if item['id'] == 'function_form' and item['name'] == self.name:
-                
-                super().context_check( error_list= error_list )
-                return error_list
-        
-        for item in self.build_in:
-        
-            if item['id'] == 'function_form' and item['name'] == self.name:
-                
-                super().context_check( error_list= error_list )
-                return error_list
-        
-        error_type = "function undefined"
-        error_decription = f"function {self.name} could not be found"
-        scope = self.context
-        error_list.append({'type': error_type, 'description': error_decription, 'scope':scope})
-        
-        super().context_check( error_list= error_list )
-        
-        return error_list
-    
     def type_checking(self):
         return super().type_checking()
     
