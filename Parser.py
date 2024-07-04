@@ -53,7 +53,7 @@ class Parser:
         ["$1","$3"],
     ]
     
-    def __init__(self , code="" ):
+    def __init__(self , code="" , use_saved_table=1  ):
 
         self._grammar = GD.grammar
     
@@ -62,6 +62,7 @@ class Parser:
         self._stack = []
         self.derivation_Tree = None
         
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -98,6 +99,9 @@ class Parser:
         self.parser_table = parser_table
 =======
         self.read_from_json(1)
+=======
+        self.read_from_json(use_saved_table)
+>>>>>>> e1988ab (fixing context issues)
         
         if len(self.parser_table) == 0:
         
@@ -113,8 +117,6 @@ class Parser:
             parser_table = self.automaton(i0=i0,printing=printing)
             
             self.parser_table = parser_table
-            
-            self.printing_table(1)
             
             self.save_table()
             

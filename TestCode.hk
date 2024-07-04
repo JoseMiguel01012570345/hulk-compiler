@@ -16,6 +16,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -301,3 +302,11 @@ type PolarPoint inherits Point {
 >>>>>>> d553c9f (ast representation with networkx)
 };
 >>>>>>> 927b086 (networkx for visualization)
+=======
+function program() {
+rho() => sqrt( getX() + getY() );
+
+rho() => sqrt( getX() + getY() );
+
+};
+>>>>>>> e1988ab (fixing context issues)

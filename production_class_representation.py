@@ -448,6 +448,7 @@ class function_call( ASTNode): # check context
     avaliable = False
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     def __init__( self, token_list ):
         
         if self.validator(token_list):
@@ -499,6 +500,8 @@ class function_call( ASTNode): # check context
         
         return error_list
     
+=======
+>>>>>>> e1988ab (fixing context issues)
     def type_checking(self):
         return super().type_checking()
         

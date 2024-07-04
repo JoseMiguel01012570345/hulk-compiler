@@ -103,6 +103,7 @@ if not Error:
     my_list = tokens + [SimbolEndToken()]
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     # ------------PRINTS_TOKEN_SEQUENCE----------------
     # zz=[]
     # for item in my_list:
@@ -123,6 +124,9 @@ if not Error:
 =======
     gp =P.Parser( my_list )
 >>>>>>> 5798f64 (another fix to the parser)
+=======
+    gp =P.Parser( my_list , use_saved_table=1 )
+>>>>>>> e1988ab (fixing context issues)
 
 <<<<<<< HEAD
     gp =P.Parser(GRAMMAR_PRODUCTIONS.gramar,gd_token )
@@ -156,12 +160,19 @@ if not Error:
     context_error = semantic_errors.context_errors()
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     # error_list = ast.context_check([])
 >>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
     
     context_error.add_error(error_list)
     
 =======
+=======
+    # check types
+    
+    # check rules
+    
+>>>>>>> e1988ab (fixing context issues)
     error_list = []
     
     ast.check_context(error_list)
