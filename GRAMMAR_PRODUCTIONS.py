@@ -56,10 +56,10 @@ types = [
 protocols = [
     
     # atom -> protocol atom block
-    # pcr.protocol({ "derivation": [ "atom" , ["protocol" , "atom" , "block"]] , "identifier": "protocol" , "definition_node?": True , "builder": B.protocol , "visitor": V.protocol }),
+    pcr.protocol({ "derivation": [ "atom" , ["protocol" , "atom" , "block"]] , "identifier": "protocol" , "definition_node?": True , "builder": B.protocol , "visitor": V.protocol }),
     
-    # # atom -> protocol atom extends atom block
-    # pcr.protocol({ "derivation": [ "atom" , ["protocol" , "atom" , "extends" , "atom" , "block"]] , "identifier": "protocol" , "definition_node?": True , "builder": B.protocol , "visitor": V.protocol }),
+    # atom -> protocol atom extends atom block
+    pcr.protocol({ "derivation": [ "atom" , ["protocol" , "atom" , "extends" , "atom" , "block"]] , "identifier": "protocol" , "definition_node?": True , "builder": B.protocol , "visitor": V.protocol }),
     
 ]
 
@@ -84,11 +84,11 @@ function = [
 
 IN = [
 
-    # # exp -> structure in high_level
-    # pcr.def_function({ "derivation": [ "high_level", [ "param", "in" , "high_level" ] ] , "identifier": "auto_call" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    # exp -> structure in high_level
+    pcr.def_function({ "derivation": [ "high_level", [ "param", "in" , "high_level" ] ] , "identifier": "auto_call" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
     
-    # # high_level -> high_level in high_level
-    # pcr.def_function({ "derivation": [ "high_level", [ "high_level", "in" , "high_level" ] ] , "identifier": "auto_call" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    # high_level -> high_level in high_level
+    pcr.def_function({ "derivation": [ "high_level", [ "high_level", "in" , "high_level" ] ] , "identifier": "auto_call" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
     
 ]
 
