@@ -16,6 +16,7 @@ def let( self: pcr.ASTNode ):
     return [ None ,  self.value ]
 
 def block( self: pcr.ASTNode ):
+    
     if len(self.expressions) == 1:
         return [ None , self.expressions[0] ]
     else:
@@ -49,6 +50,9 @@ def def_function(self: pcr.ASTNode):
     return [ self.args , self.body ]
 
 def structure(self: pcr.ASTNode):
+    
+    if len(self.expressions) == 0: return [None]
+    
     return [ None , self.expressions ]
 
 def function_call(self: pcr.ASTNode):

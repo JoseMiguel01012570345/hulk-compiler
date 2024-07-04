@@ -304,9 +304,8 @@ type PolarPoint inherits Point {
 >>>>>>> 927b086 (networkx for visualization)
 =======
 function program() {
-rho() => sqrt( getX() + getY() );
-
-rho() => sqrt( getX() + getY() );
+    
+4;
 
 };
 >>>>>>> e1988ab (fixing context issues)

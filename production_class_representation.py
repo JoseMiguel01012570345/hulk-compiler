@@ -82,7 +82,7 @@ class ASTNode:
                         "definition_node?":"" , 
                         "builder":None , 
                         "visitor":None
-                    } ) -> None:
+                    }, *args ) -> None:
         
         self.set_identifier(grammar["identifier"])
         self.derivation = grammar["derivation"]
@@ -221,6 +221,7 @@ class ASTNode:
 >>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
         
 <<<<<<< HEAD
+<<<<<<< HEAD
         def_node = ['function_form','protocol','type','let']
         
         for item in def_node:
@@ -286,6 +287,9 @@ class ASTNode:
                 
 =======
 =======
+=======
+        children = self.visitor_ast()    
+>>>>>>> 16d5005 (ast reduction being peformed)
         
         scope = { "line": self.line , "column": self.column } # line and column where node is
         
