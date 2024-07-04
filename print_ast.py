@@ -2,8 +2,11 @@ import networkx as nx
 import production_class_representation as pcr
 import matplotlib.pyplot as plt
 
-def create_graph_and_print(ast:pcr.ASTNode):
+def create_graph_and_print(ast:pcr.ASTNode , printig):
 
+    if not printig: 
+        return
+    
     dg = nx.DiGraph()
     graph =  build_graph(dg , ast=ast)    
     

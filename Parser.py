@@ -66,6 +66,7 @@ class Parser:
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         parsed_code = self.gradient_parser(grammar,self._stack,code)
         
 <<<<<<< HEAD
@@ -95,6 +96,29 @@ class Parser:
 >>>>>>> 20b2c73 (perfect)
         
         self.parser_table = parser_table
+=======
+        self.read_from_json(1)
+        
+        if len(self.parser_table) == 0:
+        
+            printing=1
+            
+            if printing == 1:
+                file = open("automata_states_log","w")
+                file.write("")
+                file.close()
+            
+            i0 = self.I0(printing=printing)
+            
+            parser_table = self.automaton(i0=i0,printing=printing)
+            
+            self.parser_table = parser_table
+            
+            self.printing_table(1)
+            
+            self.save_table()
+            
+>>>>>>> ddcf070 (improvements to run the parser , parser_table saved in json)
         
         ok , tree = self.parse_input(code=code)
         self.tree = tree
@@ -120,11 +144,23 @@ class Parser:
 >>>>>>> d3a2291 (blocks made)
 =======
     
+<<<<<<< HEAD
 >>>>>>> d553c9f (ast representation with networkx)
+=======
+    def printing_table(self , allow):
+        
+        if not allow : 
+            return
+        
+        for row in self.parser_table:
+            print(row)
+    
+>>>>>>> ddcf070 (improvements to run the parser , parser_table saved in json)
     @property
     def Error(self):
         return self._error
     
+<<<<<<< HEAD
 <<<<<<< HEAD
     @property
     def Match(self):
@@ -153,6 +189,26 @@ class Parser:
     
     def compare_procedence(self , pivote , pointer):
 =======
+=======
+    def save_table(self):
+        
+        with open("parser_table.json","w") as file:
+            json.dump(self.parser_table , file)    
+            file.close()
+        
+        pass
+    
+    def read_from_json(self, allow):
+        
+        if not allow : 
+            return
+        
+        with open("parser_table.json","r") as file:
+            self.parser_table =  json.load(file)
+            
+        pass
+    
+>>>>>>> ddcf070 (improvements to run the parser , parser_table saved in json)
     def non_terminal_first(self , alpha , visited:list=[] , my_set:list=[] ):
         
         if self.contains(alpha,self.terminals): # is alpha , a terminal?
@@ -315,16 +371,20 @@ class Parser:
         return True
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     def remove_item_stack(self , stack:list ,pop_number):
 =======
     def print_state(self, state_number , state):
+=======
+    def save_state(self, state_number , state):
+>>>>>>> ddcf070 (improvements to run the parser , parser_table saved in json)
         
         s = "\n"
         s += f"I{state_number}" + "= { "
         s += "\n"
         for dic in state:
 
-            s += self.print_production(dic["production"],dic["look_ahead"],dic["pivote"])
+            s += self.save_production(dic["production"],dic["look_ahead"],dic["pivote"])
             s += "\n"
 
             pass
@@ -338,7 +398,7 @@ class Parser:
         
         pass
     
-    def print_production(self,production,look_ahead,pivote):
+    def save_production(self,production,look_ahead,pivote):
         
         s=""
         for item in production[1]:
@@ -381,7 +441,7 @@ class Parser:
             i+=1
         
         if printing:
-            self.print_state(state_number=0,state=i0)
+            self.save_state(state_number=0,state=i0)
         
         return i0
     
@@ -389,17 +449,20 @@ class Parser:
         
         grammar = self._grammar
         
+        i = 0
         for feature in grammar:
             
             for productions in feature:
-                
+                   
                 for c in look_ahead:
                 
-                    production= { "production": productions.derivation , "look_ahead" : c , "pivote":pivote , "AST": productions }
+                    production= { "production": productions.derivation , "look_ahead" : c , "pivote":pivote , "AST": i }
                     
                     if production["production"][0] == key_stone and not self.in_stack( state , production ) :
                         state.append( production )
-                    
+                
+                i += 1
+    
         pass
     
     def fill_row(self,row):
@@ -684,7 +747,7 @@ class Parser:
                         file.write(f"\n GOTO(I{current_state},{item}):")
                         file.close()
                         
-                        self.print_state(state_number=len(stack_state)-1,state=state)
+                        self.save_state(state_number=len(stack_state)-1,state=state)
                         print("grammar is not LR(1)")
                         exit()
                     
@@ -704,7 +767,7 @@ class Parser:
                         file.write(f"\n GOTO(I{current_state},{item}):")
                         file.close()
                         
-                        self.print_state(state_number=len(stack_state)-1,state=state)
+                        self.save_state(state_number=len(stack_state)-1,state=state)
                 
                 elif calculated:
                                         
@@ -786,12 +849,13 @@ class Parser:
                 
                 pass
             
-            elif type(result) == tuple: # reduce
+            elif type(result) == tuple or type(result) == list : # reduce
                 
                 i = 0
                 token_list = []
                 
                 while i < len(result[0][1]):
+                    
                     state.pop()
                     
                     token = tree[-1]
@@ -804,7 +868,9 @@ class Parser:
                 
                     print(symbols, f"state={state[-1]}")
                 
-                ast = copy.deepcopy(result[1])
+                result_ast = self.search_ast_in_grammar(result[1])
+                
+                ast = copy.deepcopy(result_ast)
                 
                 ast_initialized = ast.ignition(token_list=token_list)
                 tree.append(ast_initialized)
@@ -848,6 +914,21 @@ p = Parser()
 =======
 =======
 >>>>>>> cb6fe93 (fixes made to grammar)
+    
+    def search_ast_in_grammar( self , i ):
+        
+        grammar = self._grammar    
+        
+        k = 0
+        for feature in grammar:
+            
+            for productions in feature:
+                
+                if k == i: 
+                    return productions    
+                k += 1
+                
+        raise Exception("no index found")
     
     def special_token(self,item):
         return self.terminals.__contains__(item) or symb_and_op.__contains__(item)

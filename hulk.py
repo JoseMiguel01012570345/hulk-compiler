@@ -151,7 +151,7 @@ if not Error:
 
 #_________________________SEMANTIC CHEKING__________________________________
 
-    print_ast.create_graph_and_print(ast=ast)
+    print_ast.create_graph_and_print( ast=ast , printig=0 )
     
     context_error = semantic_errors.context_errors()
     
