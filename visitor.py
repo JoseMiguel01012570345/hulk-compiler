@@ -104,9 +104,6 @@ def ast_reducer(ast:pcr.ASTNode):
         if len(grand_son) != 0:
             child = ast_reducer(child)
     
-        if ast.id == "assigment":
-            print()
-    
         reduce , num = reduce_node_condition(child)
         
         if reduce:

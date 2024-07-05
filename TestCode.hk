@@ -308,8 +308,18 @@ function program() {
     
 =======
 function program( ) {
+<<<<<<< HEAD
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
 4;
+=======
+
+type a{
+
+let y =20 ;
+
+};
+
+>>>>>>> b0043c9 (another bug in the parser fixed, ->fist set<-)
 protocol a {
     x = 10;
 };

@@ -247,14 +247,15 @@ class Parser:
                 
                     if self.contains( derivation[1][0] , self.terminals ):
                         
-                        my_set.append(derivation[1][0])
-                        return my_set
+                        if not my_set.__contains__(derivation[1][0]):
+                            my_set.append(derivation[1][0])
                 
                     else:
                         
                         if visited.__contains__(derivation[1][0]):
                             continue
                         
+<<<<<<< HEAD
                         if len(derivation[1][0]) != 0:
                         
 <<<<<<< HEAD
@@ -267,6 +268,9 @@ class Parser:
         if pointer == "[" and ( pivote == "]"): return -1
 =======
                             self.non_terminal_first( derivation[1][0] , visited , my_set=my_set )
+=======
+                        self.non_terminal_first( derivation[1][0] , visited , my_set=my_set )
+>>>>>>> b0043c9 (another bug in the parser fixed, ->fist set<-)
             
         return my_set
 >>>>>>> ce54e3f (error detected in parser, fixed)
