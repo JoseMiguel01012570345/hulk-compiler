@@ -18,6 +18,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -47,6 +48,24 @@ type Range(min:Number, max:Number) {
     min = min;
     max = max;
     current = min - 1;
+=======
+function program( b ) {
+
+type z {
+
+q = 10;
+
+};
+
+let a = 10 ;
+
+a ;
+
+b = 24 ;
+
+b + c;
+
+>>>>>>> e5f3f48 (another fix in blocks builder)
 
 <<<<<<< HEAD
 <<<<<<< HEAD

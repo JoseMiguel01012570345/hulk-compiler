@@ -150,11 +150,15 @@ if not Error:
         print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
         exit()
 
-#_________________________SEMANTIC CHEKING__________________________________
-
     ast = visitor.ast_reducer(ast=ast)
     
+#_________________________SEMANTIC CHEKING__________________________________
+    
     print_ast.create_graph_and_print( ast=ast , printig=1 )
+    
+    error_list = []
+    
+    ast.check_context(error_list)
     
     context_error = semantic_errors.context_errors()
     
@@ -171,11 +175,14 @@ if not Error:
     
     # check rules
     
+<<<<<<< HEAD
 >>>>>>> e1988ab (fixing context issues)
     error_list = []
     
     ast.check_context(error_list)
     
+=======
+>>>>>>> e5f3f48 (another fix in blocks builder)
     context_error.add_error(error_list)
     
 >>>>>>> 9d5529b (context checking has passed a few tests)

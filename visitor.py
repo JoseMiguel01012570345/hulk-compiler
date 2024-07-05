@@ -131,7 +131,6 @@ def ast_reducer(ast:pcr.ASTNode):
             else:
                 ast.__dict__[node_out] = None # because this child has only one son
             
-            print()
             pass
         
             pass
