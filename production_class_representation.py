@@ -636,7 +636,6 @@ class variable(ASTNode): # check context
             
             self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=int_max , scope=scope )    
         
-
 class if_(ASTNode):
     
     '''
@@ -647,11 +646,12 @@ class if_(ASTNode):
     > body: body of the statement
     
     '''
-    condition = [] 
-    body = []
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
+    
+    def children_name(self):
+        return [ "condition" , "body" ]
 
 class elif_(ASTNode):
     
@@ -667,13 +667,14 @@ class elif_(ASTNode):
     The condition is a list that refers to if statement , and has second element has the elif statement
     
     '''
-    condition=None
-    body = None
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
         
     pass
+
+    def children_name(self):
+        return [ "condition" , "body" ]
 
 class else_(ASTNode):
     
@@ -693,11 +694,11 @@ class else_(ASTNode):
     
     '''
     
-    condition = None
-    body = None
-    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
+        
+    def children_name(self):
+        return [ "body" ]
 
 class def_function(ASTNode): # check context
     
@@ -884,6 +885,9 @@ class while_(ASTNode):
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
+        
+    def children_name(self):
+        return [ "args" , "body" ]
     
 class for_(ASTNode):
     
@@ -896,67 +900,12 @@ class for_(ASTNode):
     
     '''
     
-    args = None
-    body = None
-    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
-    def create_context(self,args_AST:list):
-        
-        params_context = []
-        
-        if args_AST == None : 
-            print(f"\033[1;31m > no arguments in for loop")
-            params_context.append( {'id':'let','name': "" } )
-        
-        if self.args.left.id != 'var':
-            print(f"\033[1;31m > \033[1;32m unexpected argument in \'for\' loop ")
-            params_context.append( {'id':'let','name': "" } )
-            
-        else:    
-            params_context.append( {'id':'let','name': self.args.left.name } )
+    def children_name(self):
+        return [ "args" , "body" ]
     
-        return params_context
-
-    def send_context(self):
-        
-        new_context = [ item for item in self.context ]
-        params_context = self.create_context(args_AST= self.args)
-        
-        self.args.context = self.merge_context(params_context,new_context)
-        self.args.send_context()
-        
-        if self.body != None:
-            
-            body_context = self.merge_context(params_context,new_context)
-            
-            self.body.context = body_context
-            self.body.send_context()
-        
-        pass
-    
-    def merge_context(self,contex1,contex2):
-        
-        result_context = [  ]
-        for item in contex2:
-            result_context.append(item)
-        
-        for item in contex1:
-            
-            if self.equal(item,result_context):
-                continue
-            
-            result_context.append(item)
-        
-        return result_context
-        
-    def equal(self,node1,new_context):
-        
-        if node1 == None : return False
-        
-        return any( lambda item: node1['id'] == item['id'] and node1['name'] == item['name'], new_context)
-      
 class block(ASTNode):
     
     '''

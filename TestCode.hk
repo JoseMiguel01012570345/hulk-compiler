@@ -1,18 +1,3 @@
-function program( b ) {
-
-type z {
-
-q = 10;
-
-};
-
-let a = 10 ;
-
-a ;
-
-b = 24 ;
-
-b + c;
-
-
+program( for (true) 4 ) => {
+    4;
 };
