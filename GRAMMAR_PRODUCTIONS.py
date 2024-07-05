@@ -109,7 +109,7 @@ params=[
 variable = [
     
     # var_declaration -> atom = high_level
-    pcr.binary_opt({  "derivation": ["high_level",["atom", "=" , "high_level" ]] , "identifier": "assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.binary_opt({  "derivation": ["high_level",["label", "=" , "high_level" ]] , "identifier": "assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
     
     # var_declaration -> let atom = high_level
     pcr.binary_opt({  "derivation": ["high_level",["var_declaration", "=" , "high_level" ]] , "identifier": "assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
@@ -136,7 +136,7 @@ expression_block = [
 
 let = [
 
-    pcr.let({  "derivation": ["var_declaration",["let","atom" ]] , "identifier": "let" , "definition_node?": True ,"builder": B.let , "visitor": V.var } ) ,
+    pcr.let({  "derivation": ["var_declaration",["let","label" ]] , "identifier": "let" , "definition_node?": True ,"builder": B.let , "visitor": V.var } ) ,
 ]
 
 numbers = [
@@ -187,6 +187,7 @@ non_terminals = [
         "label"
                            
 ]
+
 terminals= [
             
             "function",

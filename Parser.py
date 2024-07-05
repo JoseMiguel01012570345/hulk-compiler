@@ -108,17 +108,15 @@ class Parser:
                 
                     if self.contains( derivation[1][0] , self.terminals ):
                         
-                        my_set.append(derivation[1][0])
-                        return my_set
+                        if not my_set.__contains__(derivation[1][0]):
+                            my_set.append(derivation[1][0])
                 
                     else:
                         
                         if visited.__contains__(derivation[1][0]):
                             continue
                         
-                        if len(derivation[1][0]) != 0:
-                        
-                            self.non_terminal_first( derivation[1][0] , visited , my_set=my_set )
+                        self.non_terminal_first( derivation[1][0] , visited , my_set=my_set )
             
         return my_set
         

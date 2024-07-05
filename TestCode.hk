@@ -1,5 +1,11 @@
 function program( ) {
-4;
+
+type a{
+
+let y =20 ;
+
+};
+
 protocol a {
     x = 10;
 };
