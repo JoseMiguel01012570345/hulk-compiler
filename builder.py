@@ -22,24 +22,24 @@ def divition(token_list):
 def var(token_list):
     
     if token_list[0].Type == TokenType.Variable:
-        return [ ( "name" , token_list[0].Text ) , ("value", None ) ]
+        return [ ( "name" , token_list[0].Text ) ]
     else:
-        return literal(token_list)
-    
+        return [ ("id","literal") , ("value", token_list[0].Text ) ]
+        
 def brackets(token_list):
-    return [("expression",token_list[1])]
+    return [("replacement",token_list[1])]
 
 def replacement(token_list,index=0):
     return [( "replacement" , token_list[index])]
 
 def let(token_list):
-    return [ ( "name",token_list[1].name ) , ( "value" , token_list[-1] ) ]
+    return [ ( "name",token_list[1].name ) ]
 
 def literal(token_list):
     return [ ( "value" , token_list[0].Text) , ( "id" , "literal" ) ]
 
-def re_asigment(token_list):    
-    return [ ( "name" , token_list[0].name ) , ("value", token_list[-1] ) ] 
+def assigment(token_list):    
+    return [ ( "left_node" , token_list[0] ) , ("right_node", token_list[-1] ) ] 
 
 def block(token_list):
     
@@ -53,30 +53,30 @@ def block(token_list):
 def def_function(token_list):
     
     if not token_list[0].__dict__.__contains__("id"):
-        return [ ("name" , token_list[1].name ) , ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
+        return [ ("name" , token_list[1] ) , ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
     
     if token_list[0].__dict__.__contains__("id"):
-        return [ ("name" , token_list[0].name ) , ( "args" , token_list[-3] ) , ( "body", token_list[-1] ) ]
+        return [ ("name" , token_list[0] ) , ( "args" , token_list[-3] ) , ( "body", token_list[-1] ) ]
 
 def type(token_list):
     
     if len(token_list) == 3:
-        return [("name",token_list[1].name ) , ( "body", token_list[-1] )]
+        return [("name",token_list[1] ) , ( "body", token_list[-1] )]
     
     if len(token_list) == 4:
-        return [("name",token_list[1].name) , ( "args", token_list[2] ) ,( "body", token_list[-1] )]
+        return [("name",token_list[1]) , ( "constructor", token_list[2] ) ,( "body", token_list[-1] )]
         
     if len(token_list) == 5:
-        return [("name",token_list[1].name) , ( "inheritence_name", token_list[3].name ) ,( "body", token_list[-1] )]
+        return [("name",token_list[1]) , ( "parent_name", token_list[3] ) ,( "body", token_list[-1] )]
     
-    return [("name",token_list[1].name) , ( "args", token_list[3] ) ,( "inheritence_name", token_list[4].name ) , ("inheritence_args" , token_list[5]), ("body",token_list[-1]) ]
+    return [("name",token_list[1]) , ( "constructor", token_list[3] ) ,( "parent_name", token_list[4] ) , ("base" , token_list[5]), ("body",token_list[-1]) ]
 
 def protocol(token_list):
     
     if len(token_list) == 3:
-        return [ ( "name" , token_list[1].name ) , ( "body", token_list[-1] ) ]
+        return [ ( "name" , token_list[1] ) , ( "body", token_list[-1] ) ]
     
-    return [ ( "name" , token_list[1].name ) , ("inheritence_name",token_list[3].name) , ( "body", token_list[-1] ) ]
+    return [ ( "name" , token_list[1] ) , ("parent_name",token_list[3]) , ( "body", token_list[-1] ) ]
 
 def in_(token_list):
     return [ ( "args" , token_list[0] ) , ( "body" , token_list[2] ) ]
@@ -98,6 +98,6 @@ def params(token_list):
         return [("replacement",None)]
 
 def function_call(token_list):
-    return [( "name" , token_list[0].name ) , ( "args",token_list[1] )]
+    return [( "name" , token_list[0] ) , ( "args",token_list[1] )]
     
     

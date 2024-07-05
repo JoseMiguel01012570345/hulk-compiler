@@ -33,7 +33,33 @@ class hash_class:
 
 class ASTNode:
       
+<<<<<<< HEAD
     anotated_type = None
+=======
+    build_in = [
+                {'id': 'let'           , 'name': 'Object'  } ,
+                {'id': 'let'           , 'name': 'Number'  } ,
+                {'id': 'let'           , 'name': 'String'  } ,
+                {'id': 'let'           , 'name': 'Boolean' } ,
+                {'id': 'type'          ,'name':  'Object'  } ,
+                {'id': 'type'          ,'name':  'Number'  } ,
+                {'id': 'type'          ,'name':  'String'  } ,
+                {'id': 'type'          ,'name':  'Boolean' } ,
+                {'id': 'function_form' ,'name':  'tan'     } ,
+                {'id': "function_form" ,'name':  'cot'     } ,
+                {'id': "function_form" ,'name':  'sqrt'    } ,
+                {'id': "function_form" ,'name':  'sin'     } ,
+                {'id': "function_form" ,'name':  'cos'     } ,
+                {'id': "function_form" ,'name':  'log'     } ,
+                {'id': "function_form" ,'name':  'exp'     } ,
+                {'id': "function_form" ,'name':  'rand'    } ,
+                {'id': "function_form" ,'name':  'range'   } ,
+                {'id': "function_form" ,'name':  'print'   } ,
+                {'id': "let"           , 'name': 'E'       } ,
+                {'id': "let"           , 'name': 'PI'      } ,
+                {'id': "let"           , 'name': 'self'    }
+                ]
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
     hash_ = 0
     build_in = [
                 {'id': 'let'         , 'name': 'Object' } ,
@@ -63,13 +89,9 @@ class ASTNode:
 <<<<<<< HEAD
 =======
     derivation = []
-    context = []
     def_node = False
     builder = None
     visitor = None
-    name = ""
-    type_ = ""
-    self_ = ""
     line = 10e306
     column =10e306
     
@@ -92,17 +114,11 @@ class ASTNode:
         
         pass
     
-    def visitor_ast(self):
-        return self.visitor(self)
+    def children_name(self):
+        return ["replacement"]
     
-    def ast_reducer(self):
-        
-        children = self.visitor_ast()
-        
-        if len(children) == 1 and children[0] != None:
-            return children[0],False
-        
-        return self,True
+    def visitor_ast(self,reduce=0):
+        return self.visitor(self,reduce)
             
     def ignition(self,token_list):
         
@@ -111,6 +127,7 @@ class ASTNode:
         for property in attributes: # property: ( property_name , property_value)
             self.__dict__[property[0]] = property[1]
         
+<<<<<<< HEAD
         ast_node, is_self = self.ast_reducer()
         
 <<<<<<< HEAD
@@ -142,6 +159,9 @@ class ASTNode:
 =======
         if is_self:
             self.parent_reference()
+=======
+        self.parent_reference()
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
         
         for token in token_list:
            
@@ -149,8 +169,12 @@ class ASTNode:
             self.line = token.line 
             self.column = token.column
 
+<<<<<<< HEAD
         return ast_node
 >>>>>>> 66b45d6 (ast fixed and working)
+=======
+        return self
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
     
     def parent_reference(self):
         
@@ -453,6 +477,7 @@ class function_call( ASTNode): # check context
     
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     def __init__( self, token_list ):
         
         if self.validator(token_list):
@@ -506,6 +531,11 @@ class function_call( ASTNode): # check context
     
 =======
 >>>>>>> e1988ab (fixing context issues)
+=======
+    def children_name(self):
+        return [ "name" , "args" ]
+    
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
     def type_checking(self):
         return super().type_checking()
         
@@ -519,10 +549,10 @@ class params( ASTNode):
     atributes of this class are:
     
     > id : params
-    > parameters
     
     '''
     
+<<<<<<< HEAD
     parameters = []
     avaliable = False
     context = []
@@ -549,6 +579,8 @@ class params( ASTNode):
                 new_parameters.insert(0,param1)
                 self.parameters = new_parameters
 =======
+=======
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
                 
@@ -563,6 +595,10 @@ class binary_opt(ASTNode):
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    
+    def children_name(self):
+        return [ "left_node" , "right_node" ]
     
     pass
 
@@ -627,6 +663,7 @@ class dot(binary_opt):# the context of the left side is passed to the context of
 
 class binary_expression:
     
+<<<<<<< HEAD
     '''
     this class selects the kind of binary expression the token_list refers to. Every
     class in this class has as attributes:
@@ -979,6 +1016,74 @@ class binary_expression:
             self.set_identifier('is')
             self.left = token_list[0][1]
             self.right = token_list[2][1]
+=======
+    def children_name(self):
+        return [ "args" , "body" ]
+
+class plus(binary_opt):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+    
+    pass
+        
+class minus(binary_opt):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+        
+    pass
+
+class multiplication(binary_opt):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+    
+    pass
+
+class divition(binary_opt):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+        
+    pass
+    
+class pow_(binary_opt):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+        
+    pass
+    
+class per_cent(binary_opt):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+
+    pass
+
+class concatenation(binary_opt):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+    pass
+      
+class blank_space_concatenation(binary_opt):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+
+    pass
+
+class double_dot(binary_opt): # the context of the right side is passed to the context of the left side
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+
+    def context_check(self, error_list: list):
+        
+        for item in self.context:
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
             
         pass
     
@@ -1144,6 +1249,7 @@ class unary_expression:
         if not unary_operators.__contains__(token_list[0][0]):            
             pass
         
+<<<<<<< HEAD
         else:
             self.avaliable = True
             
@@ -1160,6 +1266,14 @@ class unary_expression:
                     
                     self.AST_unary = item[1]
                     return
+=======
+    def children_name(self):
+        return [ "right" ]
+    
+    pass
+    
+class new(unary_expression):
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
 
     class new(ASTNode):
 
@@ -1268,6 +1382,7 @@ class variable(ASTNode): # check context
     > name: name of the variable
     
     '''
+<<<<<<< HEAD
     
 <<<<<<< HEAD
     avaliable = False
@@ -1309,6 +1424,13 @@ class variable(ASTNode): # check context
         error_list.append({ "type": error_type, "description": error_description, "scope": scope})
         
         return error_list
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": "var"," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+        
+    def children_name(self):
+        return [ ]    
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
 
 class if_(ASTNode):
     
@@ -1438,6 +1560,7 @@ class def_function(ASTNode): # check context
     > body
     
     '''
+<<<<<<< HEAD
     
     avaliable = False
     context = []
@@ -1641,6 +1764,26 @@ class def_function(ASTNode): # check context
 >>>>>>> e0c1daa (functions parsed)
     pass
 
+=======
+        
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)    
+    
+    def children_name(self):
+        
+        children = []
+        
+        if self.__dict__.__contains__("name"):
+            children.append("name")
+        
+        if self.__dict__.__contains__("args"):
+            children.append("args")
+        
+        children.append("body")
+        
+        return children
+    
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
 class type_(ASTNode): # check context
     
     '''
@@ -1692,6 +1835,7 @@ class type_(ASTNode): # check context
                 self.body = token_list[2][1]
         pass
     
+<<<<<<< HEAD
     def context_check(self,error_list:list):
         
         for item in self.context:
@@ -1723,11 +1867,23 @@ class type_(ASTNode): # check context
             pass
         
         return error_list
+=======
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
     
-    def check_inheritence(self,error_list:list):
+    def children_name(self):
         
-        for item in self.context:
+        children = []
+    
+        if self.__dict__.__contains__("name") and self.name != None:
+            children.append("name")
+    
+        if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+            children.append("parent_name")
+        
+        if self.__dict__.__contains__("constructor") and self.constructor != None:
+            children.append("constructor")
             
+<<<<<<< HEAD
                 if item['id'] == 'type' and item['name'] == self.name:
                     return []
         
@@ -1796,16 +1952,17 @@ class type_(ASTNode): # check context
             self.base.context = base_context
             self.base.send_context()
         
+=======
+        if self.__dict__.__contains__("base") and self.base != None:
+            children.append("base")
+
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
         if self.body != None:
-            body_context = self.merge_context(params_context,new_context)
-            
-            self.body.context = body_context
-            self.body.send_context()
+            children.append( "body" )
         
-        pass
-    
-    def merge_context(self,contex1,contex2):
+        return children
         
+<<<<<<< HEAD
         result_context = [  ]
         for item in contex2:
             
@@ -1836,6 +1993,8 @@ class type_(ASTNode): # check context
 
 =======
 >>>>>>> c5c76dc (refactoring)
+=======
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
 class protocol(ASTNode): # check context
     
     '''
@@ -1875,6 +2034,7 @@ class protocol(ASTNode): # check context
     
         pass
     
+<<<<<<< HEAD
     def context_check(self,error_list):
         
         for item in self.context:
@@ -1902,9 +2062,15 @@ class protocol(ASTNode): # check context
             self.check_inheritence(error_list)
             
         return error_list
+=======
+    def children_name(self):
+        children =[]
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
     
-    def check_inheritence(self,error_list:list):
+        if self.name != None:
+            children.append("name")
         
+<<<<<<< HEAD
         for item in self.context:
             
             if item['id'] == 'protocol' and item['name'] == self.parent_name:
@@ -1927,6 +2093,15 @@ class protocol(ASTNode): # check context
         return [ self.body ]
 
 =======
+=======
+        if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+            children.append("parent_name")
+        
+        if self.body != None:
+            children.append("body")
+        
+        return children
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
     
 >>>>>>> c5c76dc (refactoring)
 class vectors(ASTNode):
@@ -1943,6 +2118,7 @@ class vectors(ASTNode):
     > domain: the domain of a vector
     
     '''
+<<<<<<< HEAD
     
     avaliable = False
     filter_ = None
@@ -1985,6 +2161,12 @@ class vectors(ASTNode):
         super().__init__(grammar)
             
 >>>>>>> c5c76dc (refactoring)
+=======
+
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+                  
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
 class literal(ASTNode):
     
     '''
@@ -2030,6 +2212,9 @@ class literal(ASTNode):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
 >>>>>>> c5c76dc (refactoring)
+    
+    def children_name(self):
+        return []
     
     pass
 
@@ -2262,6 +2447,7 @@ class block(ASTNode):
     
     '''
     
+<<<<<<< HEAD
     expressions = [] 
     avaliable = False
     context = []
@@ -2384,3 +2570,10 @@ class block(ASTNode):
     
 =======
 >>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+
+    def children_name(self):
+        return ["expressions"]
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)

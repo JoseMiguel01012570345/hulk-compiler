@@ -17,6 +17,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -305,7 +306,13 @@ type PolarPoint inherits Point {
 =======
 function program() {
     
+=======
+function program( ) {
+>>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
 4;
+protocol a {
+    x = 10;
+};
 
 };
 >>>>>>> e1988ab (fixing context issues)
