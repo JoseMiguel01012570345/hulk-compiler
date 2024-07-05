@@ -99,6 +99,9 @@ def ast_reducer(ast:pcr.ASTNode):
     
     for index,child in enumerate(children):
         
+        if child == None:
+            continue
+        
         grand_son = child.visitor_ast()
         
         if len(grand_son) != 0:
@@ -110,7 +113,7 @@ def ast_reducer(ast:pcr.ASTNode):
             
             children_name = ast.children_name()
             
-            if children_name[0] == "expressions":
+            if children_name[0] == "expressions" :
                 node_out = ""
             
             else:

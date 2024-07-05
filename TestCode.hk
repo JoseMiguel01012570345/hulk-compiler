@@ -313,6 +313,8 @@ function program( ) {
 4;
 =======
 
+m () => { 8; };
+
 type a{
 
 let y =20 ;

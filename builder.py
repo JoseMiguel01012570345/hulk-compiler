@@ -46,6 +46,8 @@ def block(token_list):
     if not  token_list[0].__dict__.__contains__("id")  :     
         return [ ( "expressions" , [ token_list[1] ] ) ]
     
+    elif not  token_list[-1].__dict__.__contains__("id")  :     
+        return [("expressions", token_list[0].expressions )]
     else:
         token_list[0].expressions.append(token_list[-1])
         return [ ( "expressions" , token_list[0].expressions  )  ]    
@@ -92,10 +94,11 @@ def structure(token_list):
     return [ ("expressions", [ token_list[0] , token_list[2] ] ) ]
 
 def params(token_list):
+
     if len(token_list) == 3:
-        return [( "replacement" , token_list[1])]
+        return [( "expressions" , token_list[1].expressions)]
     else:
-        return [("replacement",None)]
+        return [("expressions",[None])]
 
 def function_call(token_list):
     return [( "name" , token_list[0] ) , ( "args",token_list[1] )]
