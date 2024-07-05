@@ -313,6 +313,7 @@ function program( ) {
 4;
 =======
 
+<<<<<<< HEAD
 function m ( g ,b ) => { 8; };
 
 type a{
@@ -328,3 +329,6 @@ protocol a {
 
 };
 >>>>>>> e1988ab (fixing context issues)
+=======
+};
+>>>>>>> 421e3ac (removing the None node of a expression like feature)
