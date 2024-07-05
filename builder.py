@@ -1,5 +1,4 @@
 from EnumsTokensDefinition import TokenType,Type
-import production_class_representation as pcr
 
 '''
 
@@ -111,4 +110,15 @@ def params(token_list):
 def function_call(token_list):
     return [( "name" , token_list[0] ) , ( "args",token_list[1] )]
     
-    
+def for_while(token_list):
+    return [ ( "args" , token_list[1]) , ("body", token_list[2]) ]
+
+def if_elif(token_list):
+    return [ ("args" , token_list[1]) , ("body",token_list[-1]) ]
+
+def else_(token_list):
+    return [("body",token_list[-1]) ]
+
+def conditional(token_list):
+    return [ ( "expressions" , token_list ) ]
+        

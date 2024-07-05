@@ -19,6 +19,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -351,3 +352,8 @@ protocol a {
 =======
 };
 >>>>>>> 421e3ac (removing the None node of a expression like feature)
+=======
+program( for (true) 4 ) => {
+    4;
+};
+>>>>>>> f064cbd (conditional blocks added to grammar)

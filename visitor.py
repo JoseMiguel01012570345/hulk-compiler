@@ -93,6 +93,18 @@ def function_call(self: pcr.ASTNode ):
    
     return children
 
+def for_while(self:pcr.ASTNode):
+    return [ self.args , self.body ]
+
+def if_else(self:pcr.ASTNode):
+    return [ self.args , self.body ]
+
+def else_(self:pcr.ASTNode):
+    return [ self.body ]
+    
+def conditional(self:pcr.ASTNode):
+    return self.expressions
+
 def ast_reducer(ast:pcr.ASTNode):
 
     children = ast.visitor_ast()
@@ -122,8 +134,11 @@ def ast_reducer(ast:pcr.ASTNode):
             if num == 1:
                 
                 if children_name[0] == "expressions":
+                    
                     new_node = child.visitor_ast()[0]
+                    
                     ast.__dict__["expressions"][index] = new_node    
+                    
                     continue
                 
                 new_node = child.visitor_ast()[0]
@@ -147,6 +162,11 @@ def non_reduce_node(id):
              "type",
              "var",
              "let",
+             "if",
+             "for",
+             "while",
+             "else",
+             "elif"
              ]
     
     return any( x == id for x in nodes )

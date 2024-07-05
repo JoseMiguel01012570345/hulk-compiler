@@ -4,6 +4,7 @@ import visitor as V
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function_caLL = [
 <<<<<<< HEAD
     ["F",[ ["c","P"] , ["c","N" ] , ["c","T"] ] ],
@@ -92,19 +93,76 @@ booleans = [
 ]
 
 
+=======
+>>>>>>> f064cbd (conditional blocks added to grammar)
 For = [
-        
+
+    # atom -> for param block
+    pcr.for_({  "derivation": [ "atom" , [ "for" , "param" , "block" ]] , "identifier": "for" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
+    
+    # exp -> for param exp
+    pcr.for_({  "derivation": [ "atom" , [ "for" , "param" , "exp" ]] , "identifier": "for" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
+    
+    # atom -> for param high_level
+    pcr.for_({  "derivation": [ "atom" , [ "for" , "param" , "high_level" ]] , "identifier": "for" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
+      
 ]
 
 conditional = [
+
+    # if_high_level -> if param high_level
+    pcr.if_({  "derivation": [ "if_high_level" , [ "if" , "param" , "high_level" ]] , "identifier": "if" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    
+    # if_exp -> if param exp
+    pcr.if_({  "derivation": [ "if_exp" , [ "if" , "param" , "exp" ]] , "identifier": "if" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    
+    # if_exp -> if param exp
+    pcr.if_({  "derivation": [ "if_exp" , [ "if" , "param" , "block" ]] , "identifier": "if" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    
+    # elif_high_level -> elif param high_level
+    pcr.elif_({  "derivation": [ "elif_high_level" , [ "elif" , "param" , "high_level" ]] , "identifier": "elif" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    
+    # elif_exp -> elif param exp
+    pcr.elif_({  "derivation": [ "elif_exp" , [ "elif" , "param" , "exp" ]] , "identifier": "elif" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    
+    # elif_exp -> elif param exp
+    pcr.elif_({  "derivation": [ "elif_exp" , [ "elif" , "param" , "block" ]] , "identifier": "elif" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    
+    # else_high_level -> else high_level
+    pcr.else_({  "derivation": [ "else_high_level" , [ "else" , "high_level" ]] , "identifier": "else" , "definition_node?": False , "builder": B.else_ , "visitor": V.else_ }),
+    
+    # else_exp -> else exp
+    pcr.else_({  "derivation": [ "else_exp" , [ "else" , "exp" ]] , "identifier": "else" , "definition_node?": False , "builder": B.else_ , "visitor": V.else_ }),
+    
+    # else_exp -> else block
+    pcr.else_({  "derivation": [ "else_exp" , [ "else" , "block" ]] , "identifier": "else" , "definition_node?": False , "builder": B.else_ , "visitor": V.else_ }),
+
+    # atom -> if high_level else_high_level
+    pcr.block({  "derivation": [ "atom" , [ "if_high_level" , "else_high_level" ]] , "identifier": "conditional_block" , "definition_node?": False , "builder": B.conditional , "visitor": V.conditional }),
+    
+    # atom -> if_high_level elif_high_level else_high_level
+    pcr.block({  "derivation": [ "atom" , [ "if_high_level" , "elif_high_level" , "else_high_level" ]] , "identifier": "conditional_block" , "definition_node?": False , "builder": B.conditional , "visitor": V.conditional }),
+    
+    # exp -> if_exp else_exp
+    pcr.block({  "derivation": [ "exp" , [ "if_exp" , "else_exp" ]] , "identifier": "conditional_block" , "definition_node?": False , "builder": B.conditional , "visitor": V.conditional }),
+    
+    # exp -> if_exp elif_exp else_exp
+    pcr.block({  "derivation": [ "exp" , [ "if_exp" , "elif_exp" , "else_exp" ]] , "identifier": "conditional_block" , "definition_node?": False , "builder": B.conditional , "visitor": V.conditional }),
         
 ]
 
 While = [
 
+    # atom -> while param block
+    pcr.while_({  "derivation": [ "atom" , [ "while" , "param" , "block" ]] , "identifier": "while" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
+    
+    # exp -> while param exp
+    pcr.while_({  "derivation": [ "exp" , [ "while" , "param" , "exp" ]] , "identifier": "while" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
+    
+    # atom -> while param high_level
+    pcr.while_({  "derivation": [ "atom" , [ "while" , "param" , "high_level" ]] , "identifier": "while" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
+
 ]
-
-
 
 vector = [
 
@@ -489,6 +547,7 @@ booleans = [
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "func",
 <<<<<<< HEAD
 >>>>>>> e0c1daa (functions parsed)
@@ -505,6 +564,15 @@ booleans = [
 =======
         "label"
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
+=======
+        "label",
+        "if_high_level",
+        "if_exp",
+        "elif_high_level",
+        "elif_exp",
+        "else_high_level",
+        "else_exp",
+>>>>>>> f064cbd (conditional blocks added to grammar)
                            
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
 ]
@@ -536,7 +604,12 @@ numbers = [
 
 >>>>>>> b0043c9 (another bug in the parser fixed, ->fist set<-)
 terminals= [
-            
+    
+            "if",
+            "elif",
+            "else",
+            "for",
+            "while",
             "function",
             "inherits",
             "extends",
@@ -657,6 +730,7 @@ grammar =[
 =======
           
 <<<<<<< HEAD
+<<<<<<< HEAD
         numbers, let, variable,expression_block,
 =======
         
@@ -670,6 +744,10 @@ grammar =[
         numbers, let, variable,expression_block, params,
 >>>>>>> e0c1daa (functions parsed)
         For , IN  , booleans   , 
+=======
+        numbers, let, variable , expression_block, params,
+        For , IN   , 
+>>>>>>> f064cbd (conditional blocks added to grammar)
         vector , protocols , types , function , While , conditional
         , function_caLL
         

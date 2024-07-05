@@ -1476,11 +1476,14 @@ class variable(ASTNode): # check context
             self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=int_max , scope=scope )    
         
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 >>>>>>> adb9dc1 (another fix to grammar)
 =======
 >>>>>>> 421e3ac (removing the None node of a expression like feature)
 
+=======
+>>>>>>> f064cbd (conditional blocks added to grammar)
 class if_(ASTNode):
     
     '''
@@ -1514,7 +1517,13 @@ class if_(ASTNode):
 =======
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
+<<<<<<< HEAD
 >>>>>>> c5c76dc (refactoring)
+=======
+    
+    def children_name(self):
+        return [ "condition" , "body" ]
+>>>>>>> f064cbd (conditional blocks added to grammar)
 
 class elif_(ASTNode):
     
@@ -1555,6 +1564,9 @@ class elif_(ASTNode):
 >>>>>>> c5c76dc (refactoring)
     pass
 
+    def children_name(self):
+        return [ "condition" , "body" ]
+
 class else_(ASTNode):
     
     
@@ -1573,6 +1585,7 @@ class else_(ASTNode):
     
     '''
     
+<<<<<<< HEAD
     avaliable = False
     condition = None
     context = []
@@ -1591,6 +1604,13 @@ class else_(ASTNode):
         pass
     
     pass
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+        
+    def children_name(self):
+        return [ "body" ]
+>>>>>>> f064cbd (conditional blocks added to grammar)
 
 <<<<<<< HEAD
     def visitor(self):
@@ -2382,6 +2402,9 @@ class while_(ASTNode):
 =======
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
+        
+    def children_name(self):
+        return [ "args" , "body" ]
     
 >>>>>>> c5c76dc (refactoring)
 class for_(ASTNode):
@@ -2395,6 +2418,7 @@ class for_(ASTNode):
     
     '''
     
+<<<<<<< HEAD
     avaliable = False
     args = None
     body = None
@@ -2484,6 +2508,14 @@ class for_(ASTNode):
         return any( lambda item: node1['id'] == item['id'] and node1['name'] == item['name'], new_context)
       
 >>>>>>> c5c76dc (refactoring)
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+    
+    def children_name(self):
+        return [ "args" , "body" ]
+    
+>>>>>>> f064cbd (conditional blocks added to grammar)
 class block(ASTNode):
     
     '''
