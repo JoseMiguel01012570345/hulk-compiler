@@ -43,7 +43,11 @@ def assigment(token_list):
 
 def block(token_list):
     
-    if not  token_list[0].__dict__.__contains__("id")  :     
+    if not token_list[0].__dict__.__contains__("id"):
+        
+        if not token_list[1].__dict__.__contains__("id"):
+            return [ ( "expressions" , [ ] ) ]
+             
         return [ ( "expressions" , [ token_list[1] ] ) ]
     
     elif not  token_list[-1].__dict__.__contains__("id")  :     
@@ -98,7 +102,7 @@ def params(token_list):
     if len(token_list) == 3:
         return [( "expressions" , token_list[1].expressions)]
     else:
-        return [("expressions",[None])]
+        return [("expressions",[])]
 
 def function_call(token_list):
     return [( "name" , token_list[0] ) , ( "args",token_list[1] )]

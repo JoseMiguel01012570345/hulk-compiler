@@ -637,7 +637,6 @@ class variable(ASTNode): # check context
             
             self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=int_max , scope=scope )    
         
-    
 
 class if_(ASTNode):
     
