@@ -1,9 +1,9 @@
 import production_class_representation as pcr
 
-def var(self:pcr.variable, reduce=0):
+def var(self:pcr.variable ):
     return [ ]
 
-def binary_opt(self:pcr.variable,reduce=0):
+def binary_opt(self:pcr.variable ):
    
    children = [] 
    
@@ -15,7 +15,7 @@ def binary_opt(self:pcr.variable,reduce=0):
     
    return children
 
-def replacement(self:pcr.ASTNode,reduce=0):
+def replacement(self:pcr.ASTNode ):
     
     children = []
     if self.replacement != None:
@@ -23,14 +23,14 @@ def replacement(self:pcr.ASTNode,reduce=0):
     
     return children
     
-def block( self: pcr.ASTNode ,reduce=0):
+def block( self: pcr.ASTNode  ):
     
     if hasattr(self.expressions,"id"):
         return [ self.expressions ]
     
     return self.expressions
     
-def type(self: pcr.ASTNode,reduce=0):
+def type(self: pcr.ASTNode ):
     
     children = []
     
@@ -51,7 +51,7 @@ def type(self: pcr.ASTNode,reduce=0):
     
     return children
 
-def protocol(self: pcr.ASTNode,reduce=0):
+def protocol(self: pcr.ASTNode ):
     
     children =[]
     
@@ -66,7 +66,7 @@ def protocol(self: pcr.ASTNode,reduce=0):
     
     return children
 
-def def_function(self: pcr.ASTNode,reduce=0):
+def def_function(self: pcr.ASTNode ):
    
    children = []
    
@@ -81,7 +81,7 @@ def def_function(self: pcr.ASTNode,reduce=0):
     
    return children
 
-def function_call(self: pcr.ASTNode,reduce=0):
+def function_call(self: pcr.ASTNode ):
    
     children =[]
     
