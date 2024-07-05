@@ -61,8 +61,8 @@ class ASTNode:
     def children_name(self):
         return ["replacement"]
     
-    def visitor_ast(self,reduce=0):
-        return self.visitor(self,reduce)
+    def visitor_ast(self):
+        return self.visitor(self)
             
     def ignition(self,token_list):
         

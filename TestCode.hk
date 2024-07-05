@@ -1,6 +1,6 @@
 function program( ) {
 
-m () => { 8; };
+function m ( g ,b ) => { 8; };
 
 type a{
 
