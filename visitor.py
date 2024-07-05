@@ -1,59 +1,165 @@
 import production_class_representation as pcr
 
-def binary_opt(self:pcr.binary_opt):
-    return [ self.left_node , self.right_node ]
+def var(self:pcr.variable, reduce=0):
+    return [ ]
 
-def var(self:pcr.variable):
-    return [ None , self.value ]
-
-def brackets(self:pcr.ASTNode):
-    return [self.expression]
-
-def replacement(self:pcr.ASTNode):
-    return [self.replacement]
-
-def let( self: pcr.ASTNode ):
-    return [ None ,  self.value ]
-
-def block( self: pcr.ASTNode ):
+def binary_opt(self:pcr.variable,reduce=0):
+   
+   children = [] 
+   
+   if self.left_node != None:
+       children.append(self.left_node)
+   
+   if self.right_node != None:
+       children.append(self.right_node)
     
-    if len(self.expressions) == 1:
-        return [ None , self.expressions[0] ]
-    else:
-        return self.expressions 
+   return children
 
-def type(self: pcr.ASTNode):
+def replacement(self:pcr.ASTNode,reduce=0):
+    
+    children = []
+    if self.replacement != None:
+        children.append(self.replacement)
+    
+    return children
+    
+def block( self: pcr.ASTNode ,reduce=0):
+    
+    if hasattr(self.expressions,"id"):
+        return [ self.expressions ]
+    
+    return self.expressions
+    
+def type(self: pcr.ASTNode,reduce=0):
     
     children = []
     
-    if self.__dict__.__contains__("args"):
-        children.append(self.args)
-    if self.__dict__.__contains__("inheritence_args"):
-        children.append(self.inheritence_args)
+    if self.__dict__.__contains__("name") and self.name != None:
+        children.append(self.name)
     
-    children.append( self.body )
+    if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+        children.append(self.parent_name)
+    
+    if self.__dict__.__contains__("constructor") and self.constructor != None:
+        children.append(self.constructor)
+        
+    if self.__dict__.__contains__("base") and self.base != None:
+        children.append(self.base)
+
+    if self.body != None:
+        children.append( self.body )
     
     return children
 
-def protocol(self: pcr.ASTNode):
+def protocol(self: pcr.ASTNode,reduce=0):
     
-    children = [self.name]
+    children =[]
     
-    if self.__dict__.__contains__("inheritence_name"):
-        children.append(self.inheritence_name)
+    if self.name != None:
+        children.append(self.name)
     
+    if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+        children.append(self.parent_name)
+    
+    if self.body != None:
+        children.append(self.body)
+    
+    return children
+
+def def_function(self: pcr.ASTNode,reduce=0):
+   
+   children = []
+   
+   if self.__dict__.__contains__("name") and  self.name != None:
+    children.append(self.name)
+   
+   if self.args != None:
+    children.append(self.args)
+   
+   if self.body != None:
     children.append(self.body)
     
+   return children
+
+def function_call(self: pcr.ASTNode,reduce=0):
+   
+    children =[]
+    
+    if self.name != None:
+        children.append(self.name)
+    
+    if self.args != None:
+       children.append(self.args)
+   
     return children
 
-def def_function(self: pcr.ASTNode):
-    return [ self.args , self.body ]
+def ast_reducer(ast:pcr.ASTNode):
 
-def structure(self: pcr.ASTNode):
+    children = ast.visitor_ast()
     
-    if len(self.expressions) == 0: return [None]
+    for index,child in enumerate(children):
+        
+        grand_son = child.visitor_ast()
+        
+        if len(grand_son) != 0:
+            child = ast_reducer(child)
     
-    return [ None , self.expressions ]
+        if ast.id == "assigment":
+            print()
+    
+        reduce , num = reduce_node_condition(child)
+        
+        if reduce:
+            
+            children_name = ast.children_name()
+            
+            if children_name[0] == "expressions":
+                node_out = ""
+            
+            else:
+                node_out = children_name[index]
+            
+            if num == 1:
+                
+                if children_name[0] == "expressions":
+                    new_node = child.visitor_ast()[0]
+                    ast.__dict__["expressions"][index] = new_node    
+                    continue
+                
+                new_node = child.visitor_ast()[0]
+                ast.__dict__[node_out] = new_node  # because this child has only one son
+            else:
+                ast.__dict__[node_out] = None # because this child has only one son
+            
+            print()
+            pass
+        
+            pass
+    
+    return ast
 
-def function_call(self: pcr.ASTNode):
-    return [ None , self.args ]
+def non_reduce_node(id):
+    
+    nodes = [
+            "literal" ,
+             "protocol" ,
+             "function_call",
+             "def_function",
+             "type",
+             "var",
+             "let",
+             ]
+    
+    return any( x == id for x in nodes )
+
+def reduce_node_condition(child:pcr.ASTNode) -> bool:
+    
+    children = child.visitor_ast()
+    
+    if len(children) == 1 and children[0] != None and not non_reduce_node(child.id) :
+        return True , 1
+
+    if len(children) == 0 and not non_reduce_node(child.id):
+        return True , 2
+
+    return False , 3

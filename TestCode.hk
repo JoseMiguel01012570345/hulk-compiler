@@ -1,5 +1,7 @@
-function program() {
-    
+function program( ) {
 4;
+protocol a {
+    x = 10;
+};
 
 };

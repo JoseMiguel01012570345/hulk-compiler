@@ -30,17 +30,12 @@ class ASTNode:
                 {'id': "let"           , 'name': 'PI'      } ,
                 {'id': "let"           , 'name': 'self'    }
                 ]
-    anotated_type = None
     hash_ = 0
     parent = None
     derivation = []
-    context = []
     def_node = False
     builder = None
     visitor = None
-    name = ""
-    type_ = ""
-    self_ = ""
     line = 10e306
     column =10e306
     
@@ -63,17 +58,11 @@ class ASTNode:
         
         pass
     
-    def visitor_ast(self):
-        return self.visitor(self)
+    def children_name(self):
+        return ["replacement"]
     
-    def ast_reducer(self):
-        
-        children = self.visitor_ast()
-        
-        if len(children) == 1 and children[0] != None:
-            return children[0],False
-        
-        return self,True
+    def visitor_ast(self,reduce=0):
+        return self.visitor(self,reduce)
             
     def ignition(self,token_list):
         
@@ -82,10 +71,7 @@ class ASTNode:
         for property in attributes: # property: ( property_name , property_value)
             self.__dict__[property[0]] = property[1]
         
-        ast_node, is_self = self.ast_reducer()
-        
-        if is_self:
-            self.parent_reference()
+        self.parent_reference()
         
         for token in token_list:
            
@@ -93,7 +79,7 @@ class ASTNode:
             self.line = token.line 
             self.column = token.column
 
-        return ast_node
+        return self
     
     def parent_reference(self):
         
@@ -264,11 +250,12 @@ class function_call( ASTNode): # check context
     > args
     
     '''
-    name = ""
-    args = []
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    def children_name(self):
+        return [ "name" , "args" ]
     
     def type_checking(self):
         return super().type_checking()
@@ -278,11 +265,8 @@ class params( ASTNode):
     '''
     atributes of this class are
     > id : params
-    > parameters
     
     '''
-    
-    parameters = []
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -298,6 +282,10 @@ class binary_opt(ASTNode):
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    
+    def children_name(self):
+        return [ "left_node" , "right_node" ]
     
     pass
 
@@ -361,88 +349,8 @@ class in_(binary_opt):
     
     pass
     
-    def retrive_var_context(self,node:ASTNode):
-    
-        try:
-            if node.id == '=' and node.left.id == ':':
-                return { 'id': 'let', 'name': node.left.left.name }
-            
-            elif node.id == '=' and node.left.id == 'let':
-                return { 'id': 'let', 'name': node.left.name }
-            
-            elif node.id == ':' and node.left.id == 'let':
-                return { 'id': 'let', 'name': node.left.name }
-            
-            elif node.id == 'let':
-                return { 'id': 'let', 'name': node.name }
-        
-        except:    
-            return None
-        
-        return None
-
-    def create_context(self,args_AST:list):
-        
-        params_context = []
-        
-        if args_AST.id == 'in':
-            params_context = [ item for item in self.create_context(args_AST.left) ]    
-            return params_context
-        
-        if args_AST.id == 'params':
-            
-            args_AST = args_AST.parameters
-            
-            for param in args_AST:
-                
-                var = self.retrive_var_context(param)
-                if var != None:
-                    params_context.append(var)
-            
-        else:
-            arg = self.retrive_var_context(args_AST)
-            
-            if arg != None:
-                params_context.append( arg )
-        
-        return params_context
-
-    def send_context(self):
-        
-        new_context = [ item for item in self.context ]
-        params_context = self.create_context(args_AST= self)
-        
-        self.left.context = self.merge_context(params_context,new_context)
-        self.left.send_context()
-        
-        right_context = self.merge_context(params_context,new_context)
-        
-        self.right.context = right_context
-        self.right.send_context()
-        
-        pass
-    
-    def merge_context(self,context1,context2):
-        
-        result_context = [  ]
-        for item in context2:
-            
-            result_context.append(item)
-        
-        for item in context1:
-            
-            if self.equal(item,result_context):
-                continue
-            
-            result_context.append(item)
-        
-        return result_context
-        
-    def equal(self,node1,new_context):
-    
-        if node1 == None : return False
-        
-        return any( lambda item: node1['id'] == item['id'] and node1['name'] == item['name'] , new_context )
+    def children_name(self):
+        return [ "args" , "body" ]
 
 class plus(binary_opt):
     
@@ -655,17 +563,12 @@ class unary_expression(ASTNode):
     > right: right unary member
     
     '''
-    right= []
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
-    def builder(self, token_list):
-        self.right = token_list[1][1]
-        pass
-    
-    def visitor(self):
-        return [self.right]
+    def children_name(self):
+        return [ "right" ]
     
     pass
     
@@ -725,27 +628,9 @@ class variable(ASTNode): # check context
     '''
     def __init__(self, grammar={ "derivation": "","identifier": "var"," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
-    
-    def context_check(self,error_list):
         
-        for item in self.context:
-            
-            if item['id'] == 'let' and item['name'] == self.name :
-                return error_list
-            
-        for item in self.build_in:
-        
-            if item['id'] == 'let' and item['name'] == self.name : # this variable is E , Pi or self
-                return error_list
-        
-        if self.parent.def_node: return error_list # this variable is being defined
-        
-        error_type = "variable undefined"
-        error_description = f"variable {self.name} could not be found"
-        scope = self.context
-        error_list.append({ "type": error_type, "description": error_description, "scope": scope})
-        
-        return error_list
+    def children_name(self):
+        return [ ]    
 
 class if_(ASTNode):
     
@@ -820,16 +705,24 @@ class def_function(ASTNode): # check context
     > body
     
     '''
-    
-    name = None
-    args = None
-    body = None
         
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)    
     
-    pass
-
+    def children_name(self):
+        
+        children = []
+        
+        if self.__dict__.__contains__("name"):
+            children.append("name")
+        
+        if self.__dict__.__contains__("args"):
+            children.append("args")
+        
+        children.append("body")
+        
+        return children
+    
 class type_(ASTNode): # check context
     
     '''
@@ -843,144 +736,32 @@ class type_(ASTNode): # check context
     > body
     
     '''
-    body = []
-    constructor = []
-    base = []
-    name = ""
-    id = ""
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
-    def context_check(self,error_list:list):
-        
-        for item in self.context:
-        
-            if item['id'] == 'type' and item['name'] == self.name:
-                
-                error_type = "Type definition"
-                error_description = f"The Type {self.name} has been already defined"
-                scope = self.context
-                
-                error_list.append({"type": error_type,"description": error_description,"scope": scope})
-                
-                break
-                
-        if self.parent_name != None:
-        
-            self.check_inheritence(error_list)
-            pass
-        
-        super().context_check()
-        
-        return error_list
     
-    def check_inheritence(self,error_list:list):
+    def children_name(self):
         
-        for item in self.context:
+        children = []
+    
+        if self.__dict__.__contains__("name") and self.name != None:
+            children.append("name")
+    
+        if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+            children.append("parent_name")
+        
+        if self.__dict__.__contains__("constructor") and self.constructor != None:
+            children.append("constructor")
             
-                if (item['id'] == 'type' or item['id'] == 'protocol')  and item['name'] == self.name:
-                    return
-        
-        for item in self.build_in:
-            
-                if item['id'] == 'type' and item['name'] == self.name:
-                    return
-        
-        error_type = "Inheritence undefined"
-        error_description = f"name {self.parent_name} could not be found"
-        scope = self.context
-        
-        error_list.extend({ "type": error_type, "description": error_description , "scope":scope })
-        
-        return error_list
-        
-    def retrive_var_context(self,node:ASTNode):
-        
-        if node != None and  node.id == ':' and node.left.id == 'var' :
-            
-            return { 'id': 'var', 'name': node.left.name }
-        
-        elif node != None and node.id == 'var' :
-            return { 'id': 'var', 'name': node.name }
-        
-        return None
+        if self.__dict__.__contains__("base") and self.base != None:
+            children.append("base")
 
-    def create_context(self,args_AST:list):
-        
-        params_context = []
-        if args_AST == None : return []
-        
-        if args_AST.id == 'params':
-       
-            for param in args_AST.parameters:
-                
-                var = self.retrive_var_context(param)
-                if var != None:
-                    params_context.append(var)
-        else: 
-            arg = self.retrive_var_context(args_AST)
-            params_context.append( arg )
-        
-        return params_context
-
-    def send_context(self):
-        
-        new_context = [ item for item in self.context ]
-        params_context = self.create_context(args_AST= self.constructor)
-        my_type = self.my_id()
-        
-        if self.equal( my_type , new_context ):
-            
-            print(f"\033[1;31m > \033[1;32m The type {my_type['name']} already exists  \033[0m")
-            exit()
-            
-        else:    
-            new_context.append(my_type)
-        
-        if self.constructor != None:
-            self.constructor.context = self.merge_context(params_context,new_context)
-            self.constructor.send_context()
-        
-        if self.base != None:
-            base_context = self.create_context(args_AST= self.base)
-            self.base.context = base_context
-            self.base.send_context()
-        
         if self.body != None:
-            body_context = self.merge_context(params_context,new_context)
-            
-            self.body.context = body_context
-            self.body.send_context()
+            children.append( "body" )
         
-        pass
-    
-    def merge_context(self,contex1,contex2):
+        return children
         
-        result_context = [  ]
-        for item in contex2:
-            
-            result_context.append(item)
-        
-        for item in contex1:
-            
-            if self.equal(item,result_context):
-                continue
-            
-            result_context.append(item)
-        
-        return result_context
-    
-    def equal(self,node1,new_context):
-        
-        if node1 == None : return False
-        for item in new_context:
-        
-            if node1['id'] == item['id'] and node1['name'] == item['name'] : return True
-        
-        
-        return False
-    
 class protocol(ASTNode): # check context
     
     '''
@@ -995,44 +776,19 @@ class protocol(ASTNode): # check context
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
-    def context_check(self,error_list):
-        
-        for item in self.context:
-            
-            if item['id'] == 'protocol' and item['name'] == self.name:
-                
-                error_type = "protocol definition"
-                error_descrption = f"protocol {self.parent_name} already defined"
-                scope = self.context
-                
-                error_list.append({ "type": error_type, "description": error_descrption , "scope":scope})
-            
-        
-        if self.parent_name != None:
-            self.check_inheritence(error_list)
-            
-        super().context_checker()
-        
-        return error_list
+    def children_name(self):
+        children =[]
     
-    def check_inheritence(self,error_list:list):
+        if self.name != None:
+            children.append("name")
         
-        for item in self.context:
-            
-            if item['id'] == 'protocol' and item['name'] == self.parent_name:
-                return
+        if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+            children.append("parent_name")
         
-        for item in self.build_in:
-            
-            if item['id'] == 'protocol' and item['name'] == self.parent_name:
-                return
-            
-        error_type = "extension undefined"
-        error_description = f"name {self.parent_name} could not be found"
-        scope = self.context
-        error_list.append({ "type": error_type, "description": error_description , "scope":scope})
+        if self.body != None:
+            children.append("body")
         
-        return error_list
+        return children
     
 class vectors(ASTNode):
     
@@ -1049,12 +805,9 @@ class vectors(ASTNode):
     
     '''
 
-    filter_ = None
-    domain = None
-        
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
-            
+                  
 class literal(ASTNode):
     
     '''
@@ -1069,6 +822,9 @@ class literal(ASTNode):
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
+    
+    def children_name(self):
+        return []
     
     pass
 
@@ -1208,7 +964,8 @@ class block(ASTNode):
     
     '''
     
-    expressions = [] 
-    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
+
+    def children_name(self):
+        return ["expressions"]

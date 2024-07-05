@@ -7,7 +7,7 @@ import Parser as P
 from os import system
 import semantic_errors
 import print_ast
-import Utils
+import visitor
 
 def FiltToken(token):
     return len(token.Text) > 0
@@ -47,8 +47,6 @@ recognizers = {
 # start lexer with defined rules
 
 lexer = Lexer(recognizers)
-lexer1 = Lexer(recognizers)
-lexer1.LoadCode("$\n")
 
 system("cls")
 
@@ -57,8 +55,6 @@ reader = open('TestCode.hk','r')
 code = reader.read()
 
 lexer.LoadCode(code)
-
-# print(code)
 
 # check for lexical errors
 Error = False
@@ -101,8 +97,8 @@ if not Error:
 
 #_________________________SEMANTIC CHEKING__________________________________
 
-    Utils.final_reduction(ast=ast)
-
+    ast = visitor.ast_reducer(ast=ast)
+    
     print_ast.create_graph_and_print( ast=ast , printig=1 )
     
     context_error = semantic_errors.context_errors()
