@@ -114,39 +114,6 @@ class ASTNode:
         
         children = self.visitor_ast()    
         
-        scope = { "line": self.line , "column": self.column } # line and column where node is
-        
-        int_max =  2**63 - 1
-        
-        if self.id == "var": # check if I am a variable
-            
-            error_type = "variable declaration"
-            error_description = f"variable {self.name} used before declared"
-            
-            
-            if self.parent != None and self.parent.id == "params": 
-                
-                # if parent are parameter , it means that the actual node is contained into
-                # a function call or a def function or a type definition or a protocol definition,
-                # so we have to desambiguate
-                
-                if self.parent != None and self.parent.parent != None and self.parent.parent.def_node: # the parent of the params is a def function or a def type or a def protocol
-                    
-                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=1 , scope=scope )    
-                
-                else: # the parent of the params is a function call
-                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max , scope=scope )    
-                
-            else: # the node is not contained in params
-                self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max , scope=scope )    
-        
-        elif self.def_node: # check if I am a definition node
-            
-            error_type = "definition error"
-            error_description = f"{self.name} already defined"
-            
-            self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=int_max , scope=scope )    
-        
         for child in children: # check children
                 
             if child != None and hasattr(child,"id") :
@@ -270,6 +237,9 @@ class params( ASTNode):
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+        
+    def children_name(self):
+        return [ "expressions" ]
                 
     pass
 
@@ -630,7 +600,44 @@ class variable(ASTNode): # check context
         super().__init__(grammar)
         
     def children_name(self):
-        return [ ]    
+        return []    
+    
+    def context_checker(self, node_id, error_list: list, error_type, error_description, name, type_name=None, h=0, scope={}):
+        
+        scope = { "line": self.line , "column": self.column } # line and column where node is
+        
+        int_max =  2**63 - 1
+        
+        if self.id == "var": # check if I am a variable
+            
+            error_type = "variable declaration"
+            error_description = f"variable {self.name} used before declared"
+            
+            
+            if self.parent != None and self.parent.id == "params": 
+                
+                # if parent are parameter , it means that the actual node is contained into
+                # a function call or a def function or a type definition or a protocol definition,
+                # so we have to desambiguate
+                
+                if self.parent != None and self.parent.parent != None and self.parent.parent.def_node: # the parent of the params is a def function or a def type or a def protocol
+                    
+                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=1 , scope=scope )    
+                
+                else: # the parent of the params is a function call
+                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max , scope=scope )    
+                
+            else: # the node is not contained in params
+                self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max , scope=scope )    
+        
+        elif self.def_node: # check if I am a definition node
+            
+            error_type = "definition error"
+            error_description = f"{self.name} already defined"
+            
+            self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=int_max , scope=scope )    
+        
+    
 
 class if_(ASTNode):
     

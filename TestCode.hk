@@ -1,5 +1,7 @@
 function program( ) {
 
+m () => { 8; };
+
 type a{
 
 let y =20 ;
