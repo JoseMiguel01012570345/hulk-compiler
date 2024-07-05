@@ -602,7 +602,7 @@ class variable(ASTNode): # check context
     def children_name(self):
         return []    
     
-    def context_checker(self, node_id, error_list: list, error_type, error_description, name, type_name=None, h=0, scope={}):
+    def check_context(self,error_list):
         
         scope = { "line": self.line , "column": self.column } # line and column where node is
         
@@ -612,7 +612,6 @@ class variable(ASTNode): # check context
             
             error_type = "variable declaration"
             error_description = f"variable {self.name} used before declared"
-            
             
             if self.parent != None and self.parent.id == "params": 
                 

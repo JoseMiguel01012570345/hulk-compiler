@@ -95,21 +95,21 @@ if not Error:
         print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
         exit()
 
-#_________________________SEMANTIC CHEKING__________________________________
-
     ast = visitor.ast_reducer(ast=ast)
     
+#_________________________SEMANTIC CHEKING__________________________________
+    
     print_ast.create_graph_and_print( ast=ast , printig=1 )
+    
+    error_list = []
+    
+    ast.check_context(error_list)
     
     context_error = semantic_errors.context_errors()
     
     # check types
     
     # check rules
-    
-    error_list = []
-    
-    ast.check_context(error_list)
     
     context_error.add_error(error_list)
     

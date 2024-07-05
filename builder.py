@@ -43,6 +43,9 @@ def assigment(token_list):
 
 def block(token_list):
     
+    if len(token_list) == 1:
+        return [ ( "expressions" , [ token_list[0] ] ) ]
+        
     if not token_list[0].__dict__.__contains__("id"):
         
         if not token_list[1].__dict__.__contains__("id"):
@@ -52,6 +55,7 @@ def block(token_list):
     
     elif not  token_list[-1].__dict__.__contains__("id")  :     
         return [("expressions", token_list[0].expressions )]
+    
     else:
         token_list[0].expressions.append(token_list[-1])
         return [ ( "expressions" , token_list[0].expressions  )  ]    
