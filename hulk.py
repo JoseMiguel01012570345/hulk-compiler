@@ -103,8 +103,6 @@ if not Error:
     
     error_list = []
     
-    ast.check_context(error_list)
-    
     context_error = semantic_errors.context_errors()
     
     # check types

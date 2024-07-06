@@ -1,3 +1,10 @@
-program( for (true) 4 ) => {
-    4;
+function program( ) {
+
+
+type a{
+
+};
+
+a ;
+
 };

@@ -6,16 +6,7 @@ NOTE: every builder must return a list in where it specify the properties of the
 
 '''
 
-def plus(token_list):
-    return [ ( "left_node" , token_list[0] ) , ( "right_node" , token_list[2] ) ]
-
-def minus(token_list):
-    return [ ( "left_node" , token_list[0] ) , ( "right_node" , token_list[2] ) ]
-    
-def multiplier(token_list):
-    return [ ( "left_node" , token_list[0] ) , ( "right_node" , token_list[2] ) ]
-
-def divition(token_list):
+def binary_opt(token_list):
     return [ ( "left_node" , token_list[0] ) , ( "right_node" , token_list[2] ) ]
 
 def var(token_list):
@@ -121,4 +112,6 @@ def else_(token_list):
 
 def conditional(token_list):
     return [ ( "expressions" , token_list ) ]
-        
+
+def unary_opt(token_list):
+    return [ ( "right_node" , token_list[-1] ) ]

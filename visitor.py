@@ -105,6 +105,9 @@ def else_(self:pcr.ASTNode):
 def conditional(self:pcr.ASTNode):
     return self.expressions
 
+def unary_opt(self:pcr.ASTNode):
+    return [self.right_node]
+
 def ast_reducer(ast:pcr.ASTNode):
 
     children = ast.visitor_ast()
@@ -167,6 +170,10 @@ def non_reduce_node(id):
              "while",
              "else",
              "elif"
+             "new",
+             "!",
+             "++",
+             "--",
              ]
     
     return any( x == id for x in nodes )
@@ -182,3 +189,4 @@ def reduce_node_condition(child:pcr.ASTNode) -> bool:
         return True , 2
 
     return False , 3
+

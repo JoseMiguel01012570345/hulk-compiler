@@ -7,29 +7,6 @@ class hash_class:
 
 class ASTNode:
       
-    build_in = [
-                {'id': 'let'           , 'name': 'Object'  } ,
-                {'id': 'let'           , 'name': 'Number'  } ,
-                {'id': 'let'           , 'name': 'String'  } ,
-                {'id': 'let'           , 'name': 'Boolean' } ,
-                {'id': 'type'          ,'name':  'Object'  } ,
-                {'id': 'type'          ,'name':  'Number'  } ,
-                {'id': 'type'          ,'name':  'String'  } ,
-                {'id': 'type'          ,'name':  'Boolean' } ,
-                {'id': 'function_form' ,'name':  'tan'     } ,
-                {'id': "function_form" ,'name':  'cot'     } ,
-                {'id': "function_form" ,'name':  'sqrt'    } ,
-                {'id': "function_form" ,'name':  'sin'     } ,
-                {'id': "function_form" ,'name':  'cos'     } ,
-                {'id': "function_form" ,'name':  'log'     } ,
-                {'id': "function_form" ,'name':  'exp'     } ,
-                {'id': "function_form" ,'name':  'rand'    } ,
-                {'id': "function_form" ,'name':  'range'   } ,
-                {'id': "function_form" ,'name':  'print'   } ,
-                {'id': "let"           , 'name': 'E'       } ,
-                {'id': "let"           , 'name': 'PI'      } ,
-                {'id': "let"           , 'name': 'self'    }
-                ]
     hash_ = 0
     parent = None
     derivation = []
@@ -109,94 +86,7 @@ class ASTNode:
         self.id = id_
         
         return self.id
-    
-    def check_context(self,error_list):
-        
-        children = self.visitor_ast()    
-        
-        for child in children: # check children
-                
-            if child != None and hasattr(child,"id") :
-                
-                child.check_context(error_list)
-        
-                pass
-            
-            pass
-        
-        pass        
-    
-    def context_checker( self, node_id , error_list:list , error_type , error_description , name , type_name=None , h=0 , scope={  } ):
-        
-        allow_apparence = True
-        
-        if self.def_node:
-            allow_apparence = False
-        
-        node_existence = self.search_in_ast( attr_name=name , attr_id=node_id , type_protocol_name=type_name , h=h )
-        
-        if allow_apparence and node_existence != 0:
-            return error_list
-        
-        if not allow_apparence and node_existence == 0:
-            return error_list
-        
-        # if node does not exits and should exist , report an error. If exit and it shouldn't ,  report an error
-        error_ = { "type" : error_type , "description" : error_description , "scope": scope  }
-        
-        if not error_list.__contains__(error_):
-            error_list.append(error_)
-        
-        return error_list
-    
-    def search_in_ast(self , attr_name , attr_id , type_protocol_name= None , n=0 , h=0 ) -> int: # return the number of features in ast
-    
-        parent = self.parent
-        
-        while parent != None and h > -1 :
-            
-            children = parent.visitor_ast()
-            
-            if children == None: continue
-            
-            for child in children: 
-                
-                if child == None  : continue
-                if child.hash_ >= self.hash_ :  break
-                
-                if type_protocol_name == None: # pass over child if type_protocol_name is not defined
-                    
-                   if child.__dict__.__contains__("name") and child.name == attr_name and child.id == attr_id:
-                        
-                        n+=1
-                       
-                        pass
-                
-                # if type_protocol_name is defined , then search in types or protocols
-                elif child.__dict__.__contains__("name") and type_protocol_name == child.name and ( child.id == "type" or child.id == "protocol") :
-                    
-                    type_protocol_block = child.visitor_ast()
-                    
-                    for filds in type_protocol_block:
-                        
-                        if filds.__dict__.__contains__("name") and filds["name"] == attr_name and filds.id == attr_id:
-                            
-                            n +=1
-                            
-                            pass    
-                
-                    
-            parent = parent.parent
-            h -= 1
-        
-        return n
-        
-    def infer_type(self,error_list:list):
-        pass
-      
-    def type_checking(self):
-        pass        
-    
+             
     def cil_node_code(self):
         """
         return CIL codes
@@ -544,31 +434,10 @@ class unary_expression(ASTNode):
     
 class new(unary_expression):
 
-    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
-        
-    def context_check(self, error_list: list):
-        
-        for item in self.context:
-        
-            if (item['id'] == 'type' or item['id'] == 'protocol')  and item['name'] == self.right.name:
-                return error_list
-        
-        error_type = 'undefined type'
-        error_description = f"The type {self.right.name} is not defined or visible for new keyword"
-        scope = self.context
-        
-        error_list.append({'type':error_type,'description':error_description,'scope':scope})
-        
-        return error_list
     
     pass
-    
-class let(unary_expression):
-    
-    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
-        super().__init__(grammar)
     
 class not_(unary_expression):
     
@@ -587,6 +456,11 @@ class minus_minus(unary_expression):
      
 #_____________________________________________________________________________________>>>>>>>>>>>>>>>
      
+class let(ASTNode):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+        
 class variable(ASTNode): # check context
     
     '''
@@ -601,40 +475,6 @@ class variable(ASTNode): # check context
         
     def children_name(self):
         return []    
-    
-    def check_context(self,error_list):
-        
-        scope = { "line": self.line , "column": self.column } # line and column where node is
-        
-        int_max =  2**63 - 1
-        
-        if self.id == "var": # check if I am a variable
-            
-            error_type = "variable declaration"
-            error_description = f"variable {self.name} used before declared"
-            
-            if self.parent != None and self.parent.id == "params": 
-                
-                # if parent are parameter , it means that the actual node is contained into
-                # a function call or a def function or a type definition or a protocol definition,
-                # so we have to desambiguate
-                
-                if self.parent != None and self.parent.parent != None and self.parent.parent.def_node: # the parent of the params is a def function or a def type or a def protocol
-                    
-                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=1 , scope=scope )    
-                
-                else: # the parent of the params is a function call
-                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max , scope=scope )    
-                
-            else: # the node is not contained in params
-                self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max , scope=scope )    
-        
-        elif self.def_node: # check if I am a definition node
-            
-            error_type = "definition error"
-            error_description = f"{self.name} already defined"
-            
-            self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=int_max , scope=scope )    
         
 class if_(ASTNode):
     
