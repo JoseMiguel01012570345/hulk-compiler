@@ -736,7 +736,9 @@ class Parser:
         
         current_state=0
         states_created = 0
-    
+
+        last_difference = 0
+        
         while current_state < len(stack_state):
             
             my_row =self.fill_row(T_U_N)
@@ -781,7 +783,16 @@ class Parser:
                     pass
 
             parser_table.append(my_row)
-            current_state += 1
+            current_state += 1 
+            
+            os.system("cls")
+            if last_difference <= states_created - current_state:
+                last_difference = states_created - current_state
+                print( f"\033[1;31m {states_created - current_state} \033[0m")
+            else:
+                last_difference = states_created - current_state
+                print( f"\033[1;32m {states_created - current_state} \033[0m")
+                
             pass
 >>>>>>> 9c513df (parser bug fixed at repeated states)
         

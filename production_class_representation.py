@@ -34,6 +34,7 @@ class hash_class:
 class ASTNode:
       
 <<<<<<< HEAD
+<<<<<<< HEAD
     anotated_type = None
 =======
     build_in = [
@@ -60,6 +61,8 @@ class ASTNode:
                 {'id': "let"           , 'name': 'self'    }
                 ]
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
+=======
+>>>>>>> a767035 (grammar enriched , test are requiered)
     hash_ = 0
     build_in = [
                 {'id': 'let'         , 'name': 'Object' } ,
@@ -237,6 +240,7 @@ class ASTNode:
         self.id = id_
         
         return self.id
+<<<<<<< HEAD
     
 <<<<<<< HEAD
     def def_node(self):
@@ -456,6 +460,9 @@ class ASTNode:
         
         return [ self.left , self.right ]
     
+=======
+             
+>>>>>>> a767035 (grammar enriched , test are requiered)
     def cil_node_code(self):
         """
         return CIL codes
@@ -1281,6 +1288,7 @@ class unary_expression:
 class new(unary_expression):
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
 
+<<<<<<< HEAD
     class new(ASTNode):
 
         context = []
@@ -1348,6 +1356,17 @@ class new(unary_expression):
             return [self.right]
 
     class not_(ASTNode):
+=======
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+    
+    pass
+    
+class not_(unary_expression):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+>>>>>>> a767035 (grammar enriched , test are requiered)
         
         context = []
         def __init__(self,token_list):
@@ -1379,6 +1398,11 @@ class new(unary_expression):
         def visitor(self):
             return [self.right]
      
+class let(ASTNode):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+        
 class variable(ASTNode): # check context
     
     '''
@@ -1440,40 +1464,6 @@ class variable(ASTNode): # check context
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
 =======
         return []    
-    
-    def check_context(self,error_list):
-        
-        scope = { "line": self.line , "column": self.column } # line and column where node is
-        
-        int_max =  2**63 - 1
-        
-        if self.id == "var": # check if I am a variable
-            
-            error_type = "variable declaration"
-            error_description = f"variable {self.name} used before declared"
-            
-            if self.parent != None and self.parent.id == "params": 
-                
-                # if parent are parameter , it means that the actual node is contained into
-                # a function call or a def function or a type definition or a protocol definition,
-                # so we have to desambiguate
-                
-                if self.parent != None and self.parent.parent != None and self.parent.parent.def_node: # the parent of the params is a def function or a def type or a def protocol
-                    
-                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=1 , scope=scope )    
-                
-                else: # the parent of the params is a function call
-                    self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max , scope=scope )    
-                
-            else: # the node is not contained in params
-                self.context_checker( node_id= "let" , error_list= error_list , error_type=error_type , error_description=error_description, name=self.name , h=int_max , scope=scope )    
-        
-        elif self.def_node: # check if I am a definition node
-            
-            error_type = "definition error"
-            error_description = f"{self.name} already defined"
-            
-            self.context_checker( node_id= self.id , error_list= error_list , error_type= error_type , error_description=error_description , name=self.name , h=int_max , scope=scope )    
         
 <<<<<<< HEAD
 <<<<<<< HEAD

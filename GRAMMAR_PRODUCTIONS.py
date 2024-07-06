@@ -171,7 +171,10 @@ vector = [
 function_caLL = [
 
     # high_level -> atom param
-    pcr.function_call({ "derivation": [ "atom" , [ "atom" , "param" ]] , "identifier": "function_call" , "definition_node?": False , "builder": B.function_call , "visitor": V.function_call }),
+    pcr.function_call({ "derivation": [ "call" , [ "atom" , "param" ]] , "identifier": "function_call" , "definition_node?": False , "builder": B.function_call , "visitor": V.function_call }),
+    
+    # 
+    pcr.function_call({ "derivation": [ "atom" , [ "call" ]] , "identifier": "function_call" , "definition_node?": False , "builder": B.function_call , "visitor": V.function_call }),
     
 ]
 
@@ -252,10 +255,12 @@ params=[
 variable = [
     
     # var_declaration -> atom = high_level
-    pcr.binary_opt({  "derivation": ["high_level",["label", "=" , "high_level" ]] , "identifier": "assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["high_level",["label", "=" , "high_level" ]] , "identifier": "assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
     
     # var_declaration -> let atom = high_level
-    pcr.binary_opt({  "derivation": ["high_level",["var_declaration", "=" , "high_level" ]] , "identifier": "assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["high_level",["var_declaration", "=" , "high_level" ]] , "identifier": "assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    
+    pcr.assign({  "derivation": ["high_level",["label", ":=" , "high_level" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
     
 ]
 
@@ -284,7 +289,58 @@ let = [
     pcr.let({  "derivation": ["var_declaration",["let","label" ]] , "identifier": "let" , "definition_node?": True ,"builder": B.let , "visitor": V.var } ) ,
 ]
 
-numbers = [
+unary_opt = [
+    
+    # high_level -> new call
+    pcr.new({  "derivation": ["high_level",["new","call" ]] , "identifier": "new" , "definition_node?": False ,"builder": B.unary_opt , "visitor": V.unary_opt }),
+    
+    # bool -> ! label
+    pcr.not_({  "derivation": ["bool",["!","bool" ]] , "identifier": "!" , "definition_node?": False ,"builder": B.unary_opt , "visitor": V.unary_opt }),
+    
+    # bool -> label ++
+    pcr.plus_plus({  "derivation": ["high_level",["label","++" ]] , "identifier": "++" , "definition_node?": False ,"builder": B.unary_opt , "visitor": V.unary_opt }),
+    
+    pcr.minus_minus({  "derivation": ["high_level",["label","--" ]] , "identifier": "--" , "definition_node?": False ,"builder": B.unary_opt , "visitor": V.unary_opt }),
+    
+]
+
+binary_opt = [
+    
+    # ---------------------------
+    
+    # bool -> high_level.label
+    # pcr.dot({ "derivation" : ["bool",["high_level", "." ,"label"]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    # # dot -> high_level.call
+    # pcr.dot({ "derivation" : ["bool",["high_level", "." ,"call"]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    # 4 == a.b()    
+    # ---------------------------
+    
+    # bool -> bool == concatenation
+    pcr.equal({ "derivation" : ["bool",["bool","==","concatenation"]] , "identifier": "equal" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    # bool -> bool >= concatenation
+    pcr.bigger_than({ "derivation" : ["bool",["bool",">=","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    # bool -> bool <= concatenation
+    pcr.smaller_than({ "derivation" : ["bool",["bool","<=","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    # bool -> bool & concatenation
+    pcr.and_({ "derivation" : ["bool",["bool","&","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    # bool -> bool | concatenation
+    pcr.or_({ "derivation" : ["bool",["bool","|","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    pcr.ASTNode({ "derivation" : ["bool",["concatenation"]] , "identifier": "@@" ,"definition_node?": False ,"builder": B.replacement  , "visitor": V.replacement } ),
+    
+    # concatenation -> concatenation @ sum_minus
+    pcr.concatenation({ "derivation" : ["concatenation",["concatenation","@","sum_minus"]] , "identifier": "@" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    # concatenation -> concatenation @@ sum_minus
+    pcr.concatenation({ "derivation" : ["concatenation",["concatenation","@@","sum_minus"]] , "identifier": "@@" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    pcr.ASTNode({ "derivation" : ["concatenation",["sum_minus"]] , "identifier": "@@" ,"definition_node?": False ,"builder": B.replacement  , "visitor": V.replacement } ),
     
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -355,6 +411,7 @@ numbers = [
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     pcr.plus({ "derivation" : ["X",["X","+","T"]] , "identifier": "+" ,"definition_node?": False ,"builder": B.plus  , "visitor": V.binary_opt } ),
 >>>>>>> 3c71142 (asigment and variable declaration , ok)
 =======
@@ -372,21 +429,36 @@ numbers = [
 =======
     pcr.plus({ "derivation" : ["sum_minus",["sum_minus","+","div_mult"]] , "identifier": "+" ,"definition_node?": False ,"builder": B.plus  , "visitor": V.binary_opt } ),
 >>>>>>> 359e6da (productions name changed)
+=======
+    pcr.plus({ "derivation" : ["sum_minus",["sum_minus","+","div_mult"]] , "identifier": "+" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+>>>>>>> a767035 (grammar enriched , test are requiered)
     
     # X -> X - T
-    pcr.minus({ "derivation": ["sum_minus",["sum_minus","-","div_mult"]], "identifier": "-" ,"definition_node?": False ,"builder": B.minus , "visitor": V.binary_opt } ),
+    pcr.minus({ "derivation": ["sum_minus",["sum_minus","-","div_mult"]], "identifier": "-" ,"definition_node?": False ,"builder": B.binary_opt , "visitor": V.binary_opt } ),
     
     # X -> T
     pcr.ASTNode({  "derivation": ["sum_minus",["div_mult"]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
     
     # T-> T * F
-    pcr.multiplication({ "derivation": ["div_mult",["div_mult","*","atom"]] , "identifier": "*" , "definition_node?": False  , "builder": B.multiplier, "visitor": V.binary_opt } ),
+    pcr.multiplication({ "derivation": ["div_mult",["div_mult","*","pow"]] , "identifier": "*" , "definition_node?": False  , "builder": B.binary_opt, "visitor": V.binary_opt } ),
     
     # T -> T / F
-    pcr.divition({ "derivation": ["div_mult",["div_mult","/","atom"]] , "identifier": "/" , "definition_node?": False  , "builder": B.divition, "visitor": V.binary_opt } ),
+    pcr.divition({ "derivation": ["div_mult",["div_mult","/","pow"]] , "identifier": "/" , "definition_node?": False  , "builder": B.binary_opt, "visitor": V.binary_opt } ),
+    
+    # div_mult -> pow
+    pcr.ASTNode({  "derivation": ["div_mult",["pow"]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+    
+    # T-> T ** F
+    pcr.pow_({ "derivation": ["pow",["pow","**","atom"]] , "identifier": "**" , "definition_node?": False  , "builder": B.binary_opt, "visitor": V.binary_opt } ),
+    
+    # T-> T ^ F
+    pcr.pow_({ "derivation": ["pow",["pow","^","atom"]] , "identifier": "^" , "definition_node?": False  , "builder": B.binary_opt, "visitor": V.binary_opt } ),
+    
+    # T-> T % F
+    pcr.per_cent({ "derivation": ["pow",["pow","%","atom"]] , "identifier": "%" , "definition_node?": False  , "builder": B.binary_opt, "visitor": V.binary_opt } ),
     
     # T -> F
-    pcr.ASTNode({  "derivation": ["div_mult",["atom"]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
+    pcr.ASTNode({  "derivation": ["pow",["atom"]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ),
     
 <<<<<<< HEAD
     # F -> i
@@ -406,6 +478,7 @@ numbers = [
 =======
 =======
     # atom -> int
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 00754c6 (high level expression can peform arithmetic operations)
     pcr.variable({ "derivation": ["atom",["int"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
@@ -449,21 +522,32 @@ numbers = [
 >>>>>>> ee5f8ca (let-in made)
 =======
     pcr.ASTNode({ "derivation": ["atom",["label"]] , "identifier": ".r" ,"definition_node?": False , "builder": B.replacement  , "visitor": V.replacement } ),
+=======
+    pcr.ASTNode({ "derivation": ["atom",["label"]] , "identifier": "." ,"definition_node?": False , "builder": B.replacement  , "visitor": V.replacement } ),
+>>>>>>> a767035 (grammar enriched , test are requiered)
     
+    # label -> int
     pcr.variable({ "derivation": ["label",["int"]] , "identifier": "var" ,"definition_node?": False , "builder": B.var  , "visitor": V.var } ),
     
     # high_level -> sum_minus
+<<<<<<< HEAD
     pcr.ASTNode({  "derivation": ["high_level",[ "sum_minus" ]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
+=======
+    pcr.ASTNode({  "derivation": ["high_level",[ "bool" ]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+>>>>>>> a767035 (grammar enriched , test are requiered)
     
     # atom -> ( high_level )
     pcr.ASTNode({  "derivation": ["atom",[ "(", "high_level",")" ]] , "identifier": "." , "definition_node?": False ,"builder": B.brackets , "visitor": V.replacement } ) ,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> ce54e3f (error detected in parser, fixed)
 =======
 
 >>>>>>> 00754c6 (high level expression can peform arithmetic operations)
+=======
+>>>>>>> a767035 (grammar enriched , test are requiered)
 ]
 
 booleans = [
@@ -572,7 +656,14 @@ booleans = [
         "elif_exp",
         "else_high_level",
         "else_exp",
+<<<<<<< HEAD
 >>>>>>> f064cbd (conditional blocks added to grammar)
+=======
+        "concatenation",
+        "pow",
+        "bool",
+        
+>>>>>>> a767035 (grammar enriched , test are requiered)
                            
 >>>>>>> 4ea3226 (another fix to the parser, chose the first reduction)
 ]
@@ -605,6 +696,21 @@ numbers = [
 >>>>>>> b0043c9 (another bug in the parser fixed, ->fist set<-)
 terminals= [
     
+            "new",
+            "!",
+            "++",
+            "--",
+            "==",
+            ">=",
+            "<=",
+            "|",
+            "&",
+            "%",
+            "**",
+            "^",
+            ":=",
+            "@",
+            "@@",
             "if",
             "elif",
             "else",
@@ -731,6 +837,7 @@ grammar =[
           
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         numbers, let, variable,expression_block,
 =======
         
@@ -746,10 +853,13 @@ grammar =[
         For , IN  , booleans   , 
 =======
         numbers, let, variable , expression_block, params,
+=======
+        binary_opt, let, variable , expression_block, params,
+>>>>>>> a767035 (grammar enriched , test are requiered)
         For , IN   , 
 >>>>>>> f064cbd (conditional blocks added to grammar)
         vector , protocols , types , function , While , conditional
-        , function_caLL
+        , function_caLL , unary_opt
         
 >>>>>>> d3a2291 (blocks made)
         ]
