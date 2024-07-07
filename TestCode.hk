@@ -1,15 +1,7 @@
 protocol program {
 
-    type a{
+    type a {
 
+        
     };
-
-    type b inherits a {
-
-    };
-
-    type c inherits b {
-
-    };
-
 };

@@ -1,11 +1,5 @@
 import networkx as nx
 
-class hash_class:
-    
-    hash_ = 0
-    
-    pass
-
 class ASTNode:
       
     hash_ = 0
@@ -54,9 +48,6 @@ class ASTNode:
            if self.line > token.line:
             self.line = token.line 
             self.column = token.column
-
-        hash_class.hash_ +=1
-        self.hash_ = hash_class.hash_
 
         return self
         
@@ -464,7 +455,11 @@ class variable(ASTNode): # check context
     
     def type(self, graph: nx.DiGraph = None):
         
+        start_node = f"var_{self.name}"
+        end_node = f"let_{self.name}"
         
+        if nx.has_path( graph , start_node , end_node):
+            return 
         
         
         pass    
