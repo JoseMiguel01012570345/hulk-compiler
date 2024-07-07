@@ -64,6 +64,14 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
             if child.id == "dot": # check if exits right_node inside left_node
                 
+                '''
+                TODO: verifiy if in child.left_node type hierarchy exists child.right_node 
+                
+                for that we will check if there exist a path from child.left_node type to
+                
+                "child.right_node.id_child.right_node.name"
+                
+                '''
                 left_node = ""
                 right_node = ""
                 
@@ -123,6 +131,10 @@ def def_node(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , reference_no
         end_node = f"{ast.id}_{ast.name.name}"
             
         if graph.has_node(end_node) and nx.has_path( graph , start_node , end_node ):
+            
+            parent_node = f"{ast.parent.id}_{ast.parent.name.name}"
+            graph.add_edge(parent_node , end_node)
+            
             return error_list
         else:
             

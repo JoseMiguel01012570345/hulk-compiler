@@ -1,5 +1,15 @@
 protocol program {
 
- fib(n) => if (n == 0 | n == 1) 1 else 4 + 4;
+    type a{
+
+    };
+    
+    type b inherits a {
+
+    };
+
+    type c inherits b {
+
+    };
 
 };

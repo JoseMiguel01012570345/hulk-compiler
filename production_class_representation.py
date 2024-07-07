@@ -48,33 +48,16 @@ class ASTNode:
         for property in attributes: # property: ( property_name , property_value)
             self.__dict__[property[0]] = property[1]
         
-        self.parent_reference()
-        
         for token in token_list:
            
            if self.line > token.line:
             self.line = token.line 
             self.column = token.column
 
-        return self
-    
-    def parent_reference(self):
-        
-        list_children = self.visitor_ast()
-        
-        for child in list_children:
-            
-            if child != None and hasattr(child,"id") :
-                child.parent = self
-                    
-                pass
-            
-            pass
-        
         hash_class.hash_ +=1
         self.hash_ = hash_class.hash_
-        
-        pass
+
+        return self
         
     def my_id(self):
         
