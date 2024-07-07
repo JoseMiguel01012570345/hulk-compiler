@@ -19,7 +19,7 @@ def create_graph_and_print(ast:pcr.ASTNode , printig):
       
     return graph
 
-def build_graph( graph , ast ):
+def build_graph( graph , ast , reference_node="type_Object", last_reference_node="type_Object" , chift=0 ):
 
     children = ast.visitor_ast()
     
@@ -30,26 +30,47 @@ def build_graph( graph , ast ):
         if child.def_node:        
             
             if ast.def_node:
+                
+                if chift:
+                    graph.add_edge( f"{last_reference_node}_{ast.id}_{ast.name.name}_{ast.line}_{ast.column}" , f"{reference_node}_{child.id}_{child.name.name}_{child.line}_{child.column}" )
+
+                else:
+                    graph.add_edge( f"{reference_node}_{ast.id}_{ast.name.name}_{ast.line}_{ast.column}" , f"{reference_node}_{child.id}_{child.name.name}_{child.line}_{child.column}" )
             
-                graph.add_edge( f"{ast.id}_{ast.name.name}" , f"{child.id}_{child.name.name}" )
-                continue
+            else:
             
-            graph.add_edge( f"{ast.id}_{ast.hash_}" , f"{child.id}_{child.name.name}" )
+                if chift:
+                    graph.add_edge( f"{last_reference_node}_{ast.id}_{ast.line}_{ast.column}" , f"{reference_node}_{child.id}_{child.name.name}_{child.line}_{child.column}" )
+                
+                else:
+                    graph.add_edge( f"{reference_node}_{ast.id}_{ast.line}_{ast.column}" , f"{reference_node}_{child.id}_{child.name.name}_{child.line}_{child.column}" )
         
-        elif child.id == "var":
+        elif child.id == "var" and not ast.def_node:
             
-            if not ast.def_node:
-                graph.add_edge( ast.id + str(ast.hash_), f"{child.id}_{child.name}" )
+            if chift:
+                graph.add_edge( f"{last_reference_node}_{ast.id}_{ast.line}_{ast.column}", f"{reference_node}_{child.id}_{child.name}_{child.line}_{child.column}" )
+            
+            else:
+                graph.add_edge( f"{reference_node}_{ast.id}_{ast.line}_{ast.column}", f"{reference_node}_{child.id}_{child.name}_{child.line}_{child.column}" )
         
-        else:
+        elif child.id != "var":
             
             if ast.def_node:
                 
-                graph.add_edge( f"{ast.id}_{ast.name.name}" , child.id + "_" + str(child.hash_) )
-                
+                if chift:
+                    graph.add_edge( f"{last_reference_node}_{ast.id}_{ast.name.name}_{ast.line}_{ast.column}" , f"{reference_node}_{child.id}_{child.line}_{child.column}" )
+                else:
+                    graph.add_edge( f"{reference_node}_{ast.id}_{ast.line}_{ast.column}" , f"{reference_node}_{child.id}_{child.line}_{child.column}" )
+            
             else:
-                graph.add_edge( ast.id + "_" + str(ast.hash_), child.id + "_" + str(child.hash_) )
+                if chift:
+                    graph.add_edge( f"{last_reference_node}_{ast.id}_{ast.line}_{ast.column}" , f"{reference_node}_{child.id}_{child.line}_{child.column}" )
+                else:
+                    graph.add_edge( f"{reference_node}_{ast.id}_{ast.line}_{ast.column}" , f"{reference_node}_{child.id}_{child.line}_{child.column}" )
         
-        graph = build_graph( graph=graph , ast=child )
+        if child.def_node:
+            graph = build_graph( graph=graph , ast=child , reference_node=f"{child.id}_{child.name.name}", last_reference_node=reference_node , chift=1 )
+        else:
+            graph = build_graph( graph=graph , ast=child , reference_node=reference_node , last_reference_node=reference_node , chift=0 )
         
     return graph

@@ -29,12 +29,6 @@ import inspect
 import networkx as nx
 >>>>>>> 1954534 (using networkx for type_checking and context_checking)
 
-class hash_class:
-    
-    hash_ = 0
-    
-    pass
-
 class ASTNode:
       
 <<<<<<< HEAD
@@ -181,6 +175,7 @@ class ASTNode:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         return ast_node
 >>>>>>> 66b45d6 (ast fixed and working)
 =======
@@ -237,6 +232,8 @@ class ASTNode:
         hash_class.hash_ +=1
         self.hash_ = hash_class.hash_
 
+=======
+>>>>>>> 16650f8 (improving graph representation of an ast node)
         return self
         
     def my_id(self):
@@ -1511,7 +1508,11 @@ class if_(ASTNode):
     
     def type(self, graph: nx.DiGraph = None):
         
+        start_node = f"var_{self.name}"
+        end_node = f"let_{self.name}"
         
+        if nx.has_path( graph , start_node , end_node):
+            return 
         
         
         pass    

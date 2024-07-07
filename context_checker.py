@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def context_checker(ast:pcr.ASTNode=None , error_list=[] , graph:nx.DiGraph=None , printing=0 ):
 
-    graph = build_in(graph)
+    # graph = build_in(graph)
     
     solve_context( ast=ast , error_list=error_list  , graph=graph )
     
@@ -34,7 +34,7 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 def_children = def_node_children(child=child)
                 
                 if child.id != "let":
-                    error_list = solve_context(child , error_list , graph  , def_children , reference_node= child.id + "_" + child.name.name , all_let= all_let )
+                    error_list = solve_context(child , error_list , graph  , def_children , reference_node= f"{child.id}_{child.name.name}" , all_let= all_let )
                     continue
                 
                 error_list = solve_context(child , error_list , graph  , def_children , reference_node , all_let )
@@ -153,7 +153,7 @@ def def_node(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , reference_no
     new_node = f"{ast.id}_{ast.name.name}"
         
     graph.add_node(new_node)
-    graph.add_edge( reference_node , new_node)
+    graph.add_edge( reference_node  , new_node)
     graph.add_edge( new_node ,reference_node )
     
     return error_list
@@ -212,8 +212,9 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , reference_no
     
     if graph.has_edge( reference_node , "let_"+ast.name):
         
-        graph.add_edge( "let_"+ast.name , f"var_{ast.name}" )
-        graph.add_edge( f"var_{ast.name}" , "let_"+ast.name )
+        graph.add_edge( f"let_{ast.name}_{ast.hash_}" , f"var_{ast.name}_{ast.hash_}" )
+        graph.add_edge( f"var_{ast.name}_{ast.hash_}" , f"let_{ast.name}_{ast.hash_}" )
+        
         return error_list
     
     else:
@@ -228,8 +229,9 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , re
     
     if graph.has_edge( reference_node , "def_function"+ast.name.name):
         
-        graph.add_edge( "def_function"+ast.name.name , f"function_call_{ast.name.name}" )
-        graph.add_edge( f"function_call_{ast.name.name}" , "def_function"+ast.name.name )
+        graph.add_edge( f"def_function_{ast.name.name}_{ast.hash_}" , f"function_call_{ast.name.name}_{ast.hash_}" )
+        graph.add_edge( f"function_call_{ast.name.name}_{ast.hash_}" , f"def_function_{ast.name.name}_{ast.hash_}" )
+        
         return error_list
     
     else:
