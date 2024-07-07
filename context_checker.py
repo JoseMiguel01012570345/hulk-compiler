@@ -47,7 +47,7 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
                 continue
             
-            if child.id == "args":
+            if child.id == "args" and ast.id != "while" and ast.id != "for" and ast.id != "if" and ast.id != "elif" :
                 
                 error_list = solve_context(child , error_list , graph  , None , reference_node , all_let=True  )
                 continue
