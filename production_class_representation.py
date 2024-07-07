@@ -3,6 +3,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 from EnumsTokensDefinition import Type
 '''
@@ -24,6 +25,9 @@ import inspect
 >>>>>>> cb6fe93 (fixes made to grammar)
 =======
 >>>>>>> 12f9d30 (column and line showing when semantic error, done)
+=======
+import networkx as nx
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
 
 class hash_class:
     
@@ -246,6 +250,7 @@ class ASTNode:
         self.id = id_
         
         return self.id
+<<<<<<< HEAD
 <<<<<<< HEAD
     
 <<<<<<< HEAD
@@ -475,6 +480,10 @@ class ASTNode:
 
         """
         
+=======
+    
+    def type( self, graph:nx.DiGraph=None ):
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
         pass
 
 class function_call( ASTNode): # check context
@@ -551,6 +560,7 @@ class function_call( ASTNode): # check context
     def children_name(self):
         return [ "name" , "args" ]
     
+<<<<<<< HEAD
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
     def type_checking(self):
         return super().type_checking()
@@ -558,6 +568,10 @@ class function_call( ASTNode): # check context
     def validator(self, token_list):
         
         if token_list[0][0] == 'c' or token_list[0][0] == 'b' : return True
+=======
+    def type(self):
+        return super().type()
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     
 class params( ASTNode):
     
@@ -1409,6 +1423,9 @@ class let(ASTNode):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
+    def type(self):
+        return "unknow"
+        
 class variable(ASTNode): # check context
     
     '''
@@ -1418,6 +1435,7 @@ class variable(ASTNode): # check context
     > name: name of the variable
     
     '''
+<<<<<<< HEAD
 <<<<<<< HEAD
     
 <<<<<<< HEAD
@@ -1461,10 +1479,17 @@ class variable(ASTNode): # check context
         
         return error_list
 =======
+=======
+    
+    id = ""
+    name = ""
+    
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     def __init__(self, grammar={ "derivation": "","identifier": "var"," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
         
     def children_name(self):
+<<<<<<< HEAD
 <<<<<<< HEAD
         return [ ]    
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
@@ -1481,6 +1506,30 @@ class variable(ASTNode): # check context
 =======
 >>>>>>> f064cbd (conditional blocks added to grammar)
 class if_(ASTNode):
+=======
+        return []
+    
+    def type(self, graph: nx.DiGraph = None):
+        
+        
+        
+        
+        pass    
+    
+class conditional(ASTNode):
+    
+    id = ""
+    condition = ASTNode
+    body = ASTNode
+        
+    def __init__(self, grammar={ "derivation": "","identifier": "","definition_node?": "","builder": None,"visitor": None }, *args) -> None:
+        super().__init__(grammar, *args)
+    
+    def type(self):
+        return self.body.type()
+
+class if_(conditional):
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     
     '''
     this class has the attributes:
@@ -1521,7 +1570,7 @@ class if_(ASTNode):
         return [ "condition" , "body" ]
 >>>>>>> f064cbd (conditional blocks added to grammar)
 
-class elif_(ASTNode):
+class elif_(conditional):
     
     '''
     this class has the attributes:
@@ -1563,7 +1612,7 @@ class elif_(ASTNode):
     def children_name(self):
         return [ "condition" , "body" ]
 
-class else_(ASTNode):
+class else_(conditional):
     
     
     '''
@@ -1573,8 +1622,6 @@ class else_(ASTNode):
     > condition : condition for else is the condition for the if statement and condition for the
                 elif statement, the condition is a list that refers to elif
     > body: body of the statement
-    
-    
     NOTE:
     
     the condition is a list to refers to elif statement , in case it exists , or tho the if statement in worst case
@@ -1606,6 +1653,7 @@ class else_(ASTNode):
         
     def children_name(self):
         return [ "body" ]
+<<<<<<< HEAD
 >>>>>>> f064cbd (conditional blocks added to grammar)
 
 <<<<<<< HEAD
@@ -1614,6 +1662,9 @@ class else_(ASTNode):
 
 =======
 >>>>>>> c5c76dc (refactoring)
+=======
+    
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
 class def_function(ASTNode): # check context
     
     '''
@@ -1625,6 +1676,7 @@ class def_function(ASTNode): # check context
     > body
     
     '''
+<<<<<<< HEAD
 <<<<<<< HEAD
     
     avaliable = False
@@ -1831,6 +1883,13 @@ class def_function(ASTNode): # check context
 
 =======
         
+=======
+    id = ""
+    name = ASTNode
+    args = ASTNode
+    body = ASTNode
+    
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)    
     
@@ -1848,7 +1907,13 @@ class def_function(ASTNode): # check context
         
         return children
     
+<<<<<<< HEAD
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
+=======
+    def type(self):
+        return self.body.type()
+    
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
 class type_(ASTNode): # check context
     
     '''
@@ -1862,6 +1927,12 @@ class type_(ASTNode): # check context
     > body
     
     '''
+    name = ASTNode
+    constructor = ASTNode
+    parent_name = ASTNode
+    base = ASTNode
+    body = ASTNode
+    
     
     avaliable = False
     context = []
@@ -2030,6 +2101,7 @@ class type_(ASTNode): # check context
             children.append( "body" )
         
         return children
+<<<<<<< HEAD
         
 <<<<<<< HEAD
         result_context = [  ]
@@ -2064,6 +2136,12 @@ class type_(ASTNode): # check context
 >>>>>>> c5c76dc (refactoring)
 =======
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
+=======
+    
+    def type(self):
+        return self.name.name
+            
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
 class protocol(ASTNode): # check context
     
     '''
@@ -2075,6 +2153,16 @@ class protocol(ASTNode): # check context
     > body
     
     '''
+<<<<<<< HEAD
+=======
+    id = ""
+    name = ASTNode
+    parent_name = ASTNode
+    body = ASTNode
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
+        super().__init__(grammar)
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     
     avaliable = False
     context = []
@@ -2176,7 +2264,13 @@ class protocol(ASTNode): # check context
         return children
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
     
+<<<<<<< HEAD
 >>>>>>> c5c76dc (refactoring)
+=======
+    def type(self):
+        return self.name.name
+    
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
 class vectors(ASTNode):
     
     '''
@@ -2238,6 +2332,9 @@ class vectors(ASTNode):
 
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
+    
+    def type(self):
+        return "Iterable"
                   
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
 class literal(ASTNode):
@@ -2251,8 +2348,12 @@ class literal(ASTNode):
     '''
     
     value = None
+<<<<<<< HEAD
     avaliable = False
     context = []
+=======
+    type = None
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     
 <<<<<<< HEAD
     def __init__(self,token_list):
@@ -2289,6 +2390,9 @@ class literal(ASTNode):
     def children_name(self):
         return []
     
+    def type(self):
+        return self.type
+    
     pass
 
 class index(ASTNode): # check context
@@ -2302,13 +2406,19 @@ class index(ASTNode): # check context
     
     '''
     
+<<<<<<< HEAD
     avaliable = False
     args = None
     name = None
     context = []
+=======
+    args = ASTNode
+    name = ASTNode
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     
     def __init__(self,token_list):
         
+<<<<<<< HEAD
         if self.validator(token_list):
             
             self.avaliable = True
@@ -2359,6 +2469,10 @@ class index(ASTNode): # check context
                 pass
             
         return error_list
+=======
+    def type(self):
+        return "unknow"
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     
 <<<<<<< HEAD
     def visitor(self):
@@ -2376,10 +2490,15 @@ class while_(ASTNode):
     
     '''
     
+<<<<<<< HEAD
     avaliable = False
     condition = None
     body = None
     context = []
+=======
+    condition = ASTNode
+    body = ASTNode
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     
 <<<<<<< HEAD
     def __init__(self,token_list):
@@ -2410,7 +2529,13 @@ class while_(ASTNode):
     def children_name(self):
         return [ "args" , "body" ]
     
+<<<<<<< HEAD
 >>>>>>> c5c76dc (refactoring)
+=======
+    def type(self):
+        return self.body.type()
+    
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
 class for_(ASTNode):
     
     '''
@@ -2422,6 +2547,7 @@ class for_(ASTNode):
     
     '''
     
+<<<<<<< HEAD
 <<<<<<< HEAD
     avaliable = False
     args = None
@@ -2513,13 +2639,24 @@ class for_(ASTNode):
       
 >>>>>>> c5c76dc (refactoring)
 =======
+=======
+    condition = ASTNode
+    body = ASTNode
+    
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
     def children_name(self):
         return [ "args" , "body" ]
     
+<<<<<<< HEAD
 >>>>>>> f064cbd (conditional blocks added to grammar)
+=======
+    def type(self):
+        return self.body.type()
+    
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
 class block(ASTNode):
     
     '''
@@ -2532,6 +2669,7 @@ class block(ASTNode):
     
     '''
     
+<<<<<<< HEAD
 <<<<<<< HEAD
     expressions = [] 
     avaliable = False
@@ -2656,9 +2794,21 @@ class block(ASTNode):
 =======
 >>>>>>> 5689be6 (steps to code -> search_in_ast <- hard coded)
 =======
+=======
+    expressions = []
+    
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
 
     def children_name(self):
         return ["expressions"]
+<<<<<<< HEAD
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
+=======
+    
+    def type(self):
+        return self.expressions[-1].type_checking()
+        
+    
+>>>>>>> 1954534 (using networkx for type_checking and context_checking)

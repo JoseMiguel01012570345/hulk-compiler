@@ -5,9 +5,6 @@ import copy
 
 def create_graph_and_print(ast:pcr.ASTNode , printig):
 
-    if not printig: 
-        return
-    
     dg = nx.DiGraph()
     
     ast_copy = copy.deepcopy(ast)
@@ -15,51 +12,47 @@ def create_graph_and_print(ast:pcr.ASTNode , printig):
     
     graph =  build_graph(dg , ast=ast_copy)    
     
-    nx.draw(graph, with_labels=True, arrows=True)
-    plt.show()
+    if printig: 
+      
+        nx.draw(graph, with_labels=True, arrows=True)
+        plt.show()
+      
+    return graph
+
+def build_graph( graph , ast ):
+
+    children = ast.visitor_ast()
     
-    pass
-
-def build_graph( graph , ast , h=0 ):
-
-    if type(ast) == "list":
-    
-        for element in child:
-            
-            if element == None : continue
-            
-            graph = build_graph( graph=graph , ast=element )
-            
-            graph.add_edge( ast.id + str(ast.hash_), element.id + str(element.hash_) )
+    for child in children:
         
-    else:
-        
-        children = ast.visitor_ast()
-        
-        for child in children:
+        if child == None: continue
             
-            if child == None: continue
+        if child.def_node:        
             
-            if isinstance(child , list):
-                
-                for element in child:
-                    
-                    if element == None:continue
-                    
-                    graph.add_edge( ast.id + str(ast.hash_) , element.id + str(element.hash_) )
-                    graph = build_graph( graph=graph , ast=element )
-                
+            if ast.def_node:
+            
+                graph.add_edge( f"{ast.id}_{ast.name.name}" , f"{child.id}_{child.name.name}" )
                 continue
+            
+            graph.add_edge( f"{ast.id}_{ast.hash_}" , f"{child.id}_{child.name.name}" )
+        
+        elif child.id == "var":
+            
+            if ast.def_node:
+                graph.add_edge( f"{ast.id}_{ast.name.name}", f"{child.id}_{child.name}" )
                 
-            if hasattr(child,"id"):
+            else:
+                graph.add_edge( ast.id + str(ast.hash_), f"{child.id}_{child.name}" )
+        
+        else:
+            
+            if ast.def_node:
                 
-                graph.add_node( child.id + str(child.hash_) , obj=child )
-                graph.add_edge( ast.id + str(ast.hash_), child.id + str(child.hash_) )
-                graph = build_graph( graph=graph , ast=child )
+                graph.add_edge( f"{ast.id}_{ast.name.name}" , child.id + "_" + str(child.hash_) )
                 
-                continue
-
-            graph.add_node(child ,obj=child )
-            graph.add_edge(ast.id +str(ast.hash_) , child)
+            else:
+                graph.add_edge( ast.id + "_" + str(ast.hash_), child.id + "_" + str(child.hash_) )
+        
+        graph = build_graph( graph=graph , ast=child )
         
     return graph

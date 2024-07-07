@@ -107,15 +107,14 @@ def def_node_children(child:pcr.ASTNode):
         
         class aux:
             
-            name =""
-            def __init__(self,set_name):
-                self.name = set_name
-            pass
+            name = ""
+            
+            def __init__(self,my_name) -> None:
+                self.name = my_name
         
+        child.parent_name.name = aux(child.parent_name.name)
         child.parent_name.id = child.id
         child.parent_name.__dict__["inheritence"] = True
-        child.parent_name.name = aux(child.parent_name.name)
-        
             
     children = [ item for item in grand_son if item != None and item.id != "var" ]
     
@@ -145,20 +144,13 @@ def def_node(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , reference_no
     error_type , error_description = selector(ast)(ast)
     
     # ask for an edge existence
-    if ast.id != "let" and graph.has_edge( reference_node , f"{ast.id}_{ast.name.name}"): # let has no name.name
-        
-        error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
-        return error_list
-            
-    if graph.has_edge( reference_node , f"{ast.id}_{ast.name}"):
+    if graph.has_edge( reference_node , f"{ast.id}_{ast.name.name}"): # let has no name.name
         
         error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
         return error_list
         
-    if ast.id == "let":
-        new_node = f"{ast.id}_{ast.name}"
-    else:
-        new_node = f"{ast.id}_{ast.name.name}"
+    
+    new_node = f"{ast.id}_{ast.name.name}"
         
     graph.add_node(new_node)
     graph.add_edge( reference_node , new_node)
@@ -219,6 +211,9 @@ def let_case( ast:pcr.let) -> list:
 def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , reference_node ):
     
     if graph.has_edge( reference_node , "let_"+ast.name):
+        
+        graph.add_edge( "let_"+ast.name , f"var_{ast.name}" )
+        graph.add_edge( f"var_{ast.name}" , "let_"+ast.name )
         return error_list
     
     else:
@@ -231,7 +226,10 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , reference_no
 
 def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , reference_node):
     
-    if graph.has_node( reference_node , "function_call_"+ast.name.name):
+    if graph.has_edge( reference_node , "def_function"+ast.name.name):
+        
+        graph.add_edge( "def_function"+ast.name.name , f"function_call_{ast.name.name}" )
+        graph.add_edge( f"function_call_{ast.name.name}" , "def_function"+ast.name.name )
         return error_list
     
     else:

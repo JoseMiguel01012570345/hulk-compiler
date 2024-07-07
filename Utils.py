@@ -1,4 +1,3 @@
-import production_class_representation as pcr
 
 def isNumeric(text):
     

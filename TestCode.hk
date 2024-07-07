@@ -376,7 +376,11 @@ protocol program {
     type a{
 
     };
-    
+
+    let a = 10;
+
+    let b = 20 in 10;
+
     type b inherits a {
 
     };
