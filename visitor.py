@@ -109,6 +109,31 @@ def unary_opt(self:pcr.ASTNode):
     return [self.right_node]
 
 def ast_reducer(ast:pcr.ASTNode):
+    
+    reduced_ast = remove_child(ast=ast)
+    
+    reduced_ast = parent_reference(reduced_ast)
+    
+    return reduced_ast
+
+def parent_reference(ast):
+        
+    list_children = ast.visitor_ast()
+    
+    for child in list_children:
+        
+        if child != None:
+            
+            child.parent = ast
+            parent_reference(child)
+                
+            pass
+        
+        pass
+    
+    return ast
+
+def remove_child(ast:pcr.ASTNode):
 
     children = ast.visitor_ast()
     
@@ -120,7 +145,7 @@ def ast_reducer(ast:pcr.ASTNode):
         grand_son = child.visitor_ast()
         
         if len(grand_son) != 0:
-            child = ast_reducer(child)
+            child = remove_child(child)
     
         reduce , num = reduce_node_condition(child)
         

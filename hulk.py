@@ -155,7 +155,7 @@ if not Error:
     
 #_________________________SEMANTIC CHEKING__________________________________
     
-    print_ast.create_graph_and_print( ast=ast , printig=0 )
+    print_ast.create_graph_and_print( ast=ast , printig=1 )
     
     error_list = []
     
@@ -175,7 +175,7 @@ if not Error:
     # check rules
     
     # check_context
-    context_checker.context_checker(ast=ast,error_list=error_list , printing= 0 )
+    context_checker.context_checker(ast=ast,error_list=error_list , printing= 1 )
     
 <<<<<<< HEAD
     # check rules

@@ -131,6 +131,7 @@ class ASTNode:
             self.__dict__[property[0]] = property[1]
         
 <<<<<<< HEAD
+<<<<<<< HEAD
         ast_node, is_self = self.ast_reducer()
         
 <<<<<<< HEAD
@@ -166,12 +167,15 @@ class ASTNode:
         self.parent_reference()
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
         
+=======
+>>>>>>> c77fcea (context checker almost done for dot operation)
         for token in token_list:
            
            if self.line > token.line:
             self.line = token.line 
             self.column = token.column
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         return ast_node
 >>>>>>> 66b45d6 (ast fixed and working)
@@ -224,10 +228,12 @@ class ASTNode:
 <<<<<<< HEAD
     def my_self(self):
 =======
+=======
+>>>>>>> c77fcea (context checker almost done for dot operation)
         hash_class.hash_ +=1
         self.hash_ = hash_class.hash_
-        
-        pass
+
+        return self
         
     def my_id(self):
 >>>>>>> c73392d (hidding blocks , ok)
