@@ -14,7 +14,7 @@ def var(token_list):
     if token_list[0].Type == TokenType.Variable:
         return [ ( "name" , token_list[0].Text ) ]
     else:
-        return [ ("id","literal") , ("value", token_list[0].Text ) ]
+        return [ ("id","literal") , ("value", token_list[0].Text ) , ("type" , token_list[0].SelfType.name) ]
         
 def brackets(token_list):
     return [("replacement",token_list[1])]
@@ -23,10 +23,7 @@ def replacement(token_list,index=0):
     return [( "replacement" , token_list[index])]
 
 def let(token_list):
-    return [ ( "name",token_list[1].name ) ]
-
-def literal(token_list):
-    return [ ( "value" , token_list[0].Text) , ( "id" , "literal" ) ]
+    return [ ( "name",token_list[1] ) ]
 
 def assigment(token_list):    
     return [ ( "left_node" , token_list[0] ) , ("right_node", token_list[-1] ) ] 

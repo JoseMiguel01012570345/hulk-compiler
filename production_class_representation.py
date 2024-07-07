@@ -1,3 +1,4 @@
+import networkx as nx
 
 class hash_class:
     
@@ -69,13 +70,8 @@ class ASTNode:
         self.id = id_
         
         return self.id
-             
-    def cil_node_code(self):
-        """
-        return CIL codes
-
-        """
-        
+    
+    def type( self, graph:nx.DiGraph=None ):
         pass
 
 #___________________________________________________AST OF THE GRAMMAR_________________________________________>>>>>>>>>>>>>>>>
@@ -97,8 +93,8 @@ class function_call( ASTNode): # check context
     def children_name(self):
         return [ "name" , "args" ]
     
-    def type_checking(self):
-        return super().type_checking()
+    def type(self):
+        return super().type()
     
 class params( ASTNode):
     
@@ -444,6 +440,9 @@ class let(ASTNode):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
+    def type(self):
+        return "unknow"
+        
 class variable(ASTNode): # check context
     
     '''
@@ -453,13 +452,36 @@ class variable(ASTNode): # check context
     > name: name of the variable
     
     '''
+    
+    id = ""
+    name = ""
+    
     def __init__(self, grammar={ "derivation": "","identifier": "var"," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
         
     def children_name(self):
-        return []    
+        return []
+    
+    def type(self, graph: nx.DiGraph = None):
         
-class if_(ASTNode):
+        
+        
+        
+        pass    
+    
+class conditional(ASTNode):
+    
+    id = ""
+    condition = ASTNode
+    body = ASTNode
+        
+    def __init__(self, grammar={ "derivation": "","identifier": "","definition_node?": "","builder": None,"visitor": None }, *args) -> None:
+        super().__init__(grammar, *args)
+    
+    def type(self):
+        return self.body.type()
+
+class if_(conditional):
     
     '''
     this class has the attributes:
@@ -476,7 +498,7 @@ class if_(ASTNode):
     def children_name(self):
         return [ "condition" , "body" ]
 
-class elif_(ASTNode):
+class elif_(conditional):
     
     '''
     this class has the attributes:
@@ -499,7 +521,7 @@ class elif_(ASTNode):
     def children_name(self):
         return [ "condition" , "body" ]
 
-class else_(ASTNode):
+class else_(conditional):
     
     
     '''
@@ -509,8 +531,6 @@ class else_(ASTNode):
     > condition : condition for else is the condition for the if statement and condition for the
                 elif statement, the condition is a list that refers to elif
     > body: body of the statement
-    
-    
     NOTE:
     
     the condition is a list to refers to elif statement , in case it exists , or tho the if statement in worst case
@@ -522,7 +542,7 @@ class else_(ASTNode):
         
     def children_name(self):
         return [ "body" ]
-
+    
 class def_function(ASTNode): # check context
     
     '''
@@ -534,7 +554,11 @@ class def_function(ASTNode): # check context
     > body
     
     '''
-        
+    id = ""
+    name = ASTNode
+    args = ASTNode
+    body = ASTNode
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)    
     
@@ -552,6 +576,9 @@ class def_function(ASTNode): # check context
         
         return children
     
+    def type(self):
+        return self.body.type()
+    
 class type_(ASTNode): # check context
     
     '''
@@ -565,6 +592,12 @@ class type_(ASTNode): # check context
     > body
     
     '''
+    name = ASTNode
+    constructor = ASTNode
+    parent_name = ASTNode
+    base = ASTNode
+    body = ASTNode
+    
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
@@ -590,7 +623,10 @@ class type_(ASTNode): # check context
             children.append( "body" )
         
         return children
-        
+    
+    def type(self):
+        return self.name.name
+            
 class protocol(ASTNode): # check context
     
     '''
@@ -602,6 +638,11 @@ class protocol(ASTNode): # check context
     > body
     
     '''
+    id = ""
+    name = ASTNode
+    parent_name = ASTNode
+    body = ASTNode
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
@@ -618,6 +659,9 @@ class protocol(ASTNode): # check context
             children.append("body")
         
         return children
+    
+    def type(self):
+        return self.name.name
     
 class vectors(ASTNode):
     
@@ -636,6 +680,9 @@ class vectors(ASTNode):
 
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
+    
+    def type(self):
+        return "Iterable"
                   
 class literal(ASTNode):
     
@@ -648,12 +695,16 @@ class literal(ASTNode):
     '''
     
     value = None
+    type = None
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
     def children_name(self):
         return []
+    
+    def type(self):
+        return self.type
     
     pass
 
@@ -668,29 +719,14 @@ class index(ASTNode): # check context
     
     '''
     
-    args = None
-    name = None
+    args = ASTNode
+    name = ASTNode
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
         
-    def context_check(self,error_list:list):
-        
-        for item in self.context:
-            
-            if item.id == 'var' and item.name == self.name : 
-                
-                return error_list
-
-            error_type = "vector undefined"
-            error_desciption = f"The vector {self.name} could not be found"
-            scope = self.context
-            
-            error_list.append( {"type":error_type,"description":error_desciption,"scope":scope} )
-    
-        super().context_check()
-            
-        return error_list
+    def type(self):
+        return "unknow"
     
 class while_(ASTNode):
     
@@ -703,14 +739,17 @@ class while_(ASTNode):
     
     '''
     
-    condition = None
-    body = None
+    condition = ASTNode
+    body = ASTNode
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
         
     def children_name(self):
         return [ "args" , "body" ]
+    
+    def type(self):
+        return self.body.type()
     
 class for_(ASTNode):
     
@@ -723,11 +762,17 @@ class for_(ASTNode):
     
     '''
     
+    condition = ASTNode
+    body = ASTNode
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
     def children_name(self):
         return [ "args" , "body" ]
+    
+    def type(self):
+        return self.body.type()
     
 class block(ASTNode):
     
@@ -741,8 +786,15 @@ class block(ASTNode):
     
     '''
     
+    expressions = []
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
 
     def children_name(self):
         return ["expressions"]
+    
+    def type(self):
+        return self.expressions[-1].type_checking()
+        
+    

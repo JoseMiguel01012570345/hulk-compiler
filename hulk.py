@@ -75,6 +75,7 @@ for state in p :
         break
     pass
 
+
 #__________________PARSER__________________________________________
 
 # go to parse
@@ -111,7 +112,7 @@ if not Error:
     # check rules
     
     # check_context
-    context_checker.context_checker(ast=ast,error_list=error_list , printing= 1 )
+    context_checker.context_checker(ast=ast,error_list=error_list , printing= 0 )
     
     context_error.add_error(error_list)
     
