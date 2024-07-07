@@ -1933,15 +1933,16 @@ class type_(ASTNode): # check context
         
         children = []
     
-        if self.__dict__.__contains__("name") and self.name != None:
+        if self.__dict__.__contains__("name"):
             children.append("name")
     
-        if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+        if self.__dict__.__contains__("parent_name"):
             children.append("parent_name")
         
-        if self.__dict__.__contains__("constructor") and self.constructor != None:
+        if self.__dict__.__contains__("constructor"):
             children.append("constructor")
             
+<<<<<<< HEAD
 <<<<<<< HEAD
                 if item['id'] == 'type' and item['name'] == self.name:
                     return []
@@ -2013,6 +2014,9 @@ class type_(ASTNode): # check context
         
 =======
         if self.__dict__.__contains__("base") and self.base != None:
+=======
+        if self.__dict__.__contains__("base"):
+>>>>>>> baf956b (context algorithm made , test are required)
             children.append("base")
 
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
@@ -2130,6 +2134,7 @@ class protocol(ASTNode): # check context
             children.append("name")
         
 <<<<<<< HEAD
+<<<<<<< HEAD
         for item in self.context:
             
             if item['id'] == 'protocol' and item['name'] == self.parent_name:
@@ -2154,6 +2159,9 @@ class protocol(ASTNode): # check context
 =======
 =======
         if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+=======
+        if self.__dict__.__contains__("parent_name"):
+>>>>>>> baf956b (context algorithm made , test are required)
             children.append("parent_name")
         
         if self.body != None:

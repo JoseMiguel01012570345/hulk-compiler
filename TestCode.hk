@@ -21,6 +21,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -360,13 +361,15 @@ program( for (true) 4 ) => {
 >>>>>>> f064cbd (conditional blocks added to grammar)
 =======
 function program( ) {
+=======
+function program(  ) {
+>>>>>>> baf956b (context algorithm made , test are required)
 
+(let z = 10 , m = 10 ) in 10 ;
+ 
+let m = 10;
 
-type a{
-
-};
-
-a ;
+let z = 9 ;
 
 };
 >>>>>>> a767035 (grammar enriched , test are requiered)

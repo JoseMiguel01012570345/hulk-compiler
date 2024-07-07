@@ -662,6 +662,7 @@ booleans = [
         "concatenation",
         "pow",
         "bool",
+        "call"
         
 >>>>>>> a767035 (grammar enriched , test are requiered)
                            
