@@ -174,6 +174,7 @@ def non_reduce_node(id):
              "!",
              "++",
              "--",
+             "args"
              ]
     
     return any( x == id for x in nodes )

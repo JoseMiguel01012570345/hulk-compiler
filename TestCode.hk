@@ -22,6 +22,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -364,12 +365,10 @@ function program( ) {
 =======
 function program(  ) {
 >>>>>>> baf956b (context algorithm made , test are required)
+=======
+type program ( a ) inherits b () {
+>>>>>>> eb2506b (id changed to replacement , @@ changed to .)
 
-(let z = 10 , m = 10 ) in 10 ;
- 
-let m = 10;
-
-let z = 9 ;
 
 };
 >>>>>>> a767035 (grammar enriched , test are requiered)

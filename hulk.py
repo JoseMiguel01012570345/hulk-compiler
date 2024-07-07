@@ -172,9 +172,12 @@ if not Error:
 =======
     # check types
     
+    # check rules
+    
     # check_context
     context_checker.context_checker(ast=ast,error_list=error_list , printing= 0 )
     
+<<<<<<< HEAD
     # check rules
     
 <<<<<<< HEAD
@@ -185,6 +188,8 @@ if not Error:
     
 =======
 >>>>>>> e5f3f48 (another fix in blocks builder)
+=======
+>>>>>>> eb2506b (id changed to replacement , @@ changed to .)
     context_error.add_error(error_list)
     
 >>>>>>> 9d5529b (context checking has passed a few tests)
