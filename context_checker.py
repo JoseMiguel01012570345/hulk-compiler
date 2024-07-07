@@ -8,9 +8,6 @@ def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
     
     solve_context( ast=ast , error_list=error_list  , graph=graph )
     
-    if nx.algorithms.cycles.recursive_simple_cycles(graph) == []:
-        print( "program can be evaluated" )
-    
     if printing :
         nx.draw(graph, with_labels=True, arrows=True)
         
@@ -34,7 +31,7 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
             if child.id == "type" or child.id == "protocol" or child.id == "def_function" or child.id == "let":
                 
                 error_list = def_node(graph,child,error_list , reference_node )
-                def_children = extend_stack_with_preferece_node(child=child)
+                def_children = def_node_children(child=child)
                 
                 if child.id != "let":
                     error_list = solve_context(child , error_list , graph  , def_children , reference_node= child.id + "_" + child.name.name , all_let= all_let )
@@ -92,9 +89,26 @@ def dot_case(graph:nx.DiGraph , error_list:list , right_node="" , left_node="" ,
     
     return error_list
 
-def extend_stack_with_preferece_node(child):
+def def_node_children(child:pcr.ASTNode):
     
     grand_son = child.visitor_ast()
+    
+    children = []
+    
+    if child.__dict__.__contains__("parent_name"):
+        
+        class aux:
+            
+            name =""
+            def __init__(self,set_name):
+                self.name = set_name
+            pass
+        
+        child.parent_name.id = child.id
+        child.parent_name.__dict__["inheritence"] = True
+        child.parent_name.name = aux(child.parent_name.name)
+        
+            
     children = [ item for item in grand_son if item != None and item.id != "var" ]
     
     return children
@@ -102,13 +116,28 @@ def extend_stack_with_preferece_node(child):
 def def_node(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , reference_node):
     
     scope = { "line":ast.line , "column":ast.column }
+    
+    if ast.__dict__.__contains__("inheritence") : # inheritence checking
+        
+        start_node= reference_node
+        end_node = f"{ast.id}_{ast.name.name}"
+            
+        if graph.has_node(end_node) and nx.has_path( graph , start_node , end_node ):
+            return error_list
+        else:
+            
+            error_type , error_description = inheritence_error(ast)
+            error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
+            
+            return error_list
     error_type , error_description = selector(ast)(ast)
     
-    if ast.id != "let" and graph.has_edge( reference_node , f"{ast.id}_{ast.name.name}"):
+    # ask for an edge existence
+    if ast.id != "let" and graph.has_edge( reference_node , f"{ast.id}_{ast.name.name}"): # let has no name.name
         
         error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
         return error_list
-    
+            
     if graph.has_edge( reference_node , f"{ast.id}_{ast.name}"):
         
         error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
@@ -121,8 +150,20 @@ def def_node(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , reference_no
         
     graph.add_node(new_node)
     graph.add_edge( reference_node , new_node)
+    graph.add_edge( new_node ,reference_node )
     
     return error_list
+
+def inheritence_error(ast:pcr.ASTNode):
+    
+    error_type = "inheritence"
+    
+    if ast.id == "type":
+        error_description = f"type {ast.name.name} could not be found"
+    else:
+        error_description = f"protocol {ast.name.name} could not be found"
+    
+    return error_type , error_description
 
 def selector(ast):
     
