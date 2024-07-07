@@ -373,17 +373,7 @@ type program ( a ) inherits b () {
 protocol program {
 >>>>>>> 78e6708 (inheritence context checker, done)
 
-    type a{
-
-    };
-
-    type b inherits a{
-
-    };
-
-    type c inherits b {
-
-    };
+ fib(n) => if (n == 0 | n == 1) 1 else 4 + 4;
 
 };
 >>>>>>> a767035 (grammar enriched , test are requiered)
