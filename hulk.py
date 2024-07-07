@@ -108,10 +108,10 @@ if not Error:
     
     # check types
     
+    # check rules
+    
     # check_context
     context_checker.context_checker(ast=ast,error_list=error_list , printing= 0 )
-    
-    # check rules
     
     context_error.add_error(error_list)
     

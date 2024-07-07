@@ -94,10 +94,10 @@ types = [
     pcr.type_({ "derivation": [ "atom" , ["type" , "label"  , "param" , "block"]] , "identifier": "type" , "definition_node?": True , "builder": B.type , "visitor": V.type }),
     
     # type -> type atom inherits atom block
-    pcr.type_({ "derivation": [ "atom" , ["type" , "label"  , "inherits" , "atom" , "block"]] , "identifier": "type" , "definition_node?": True , "builder": B.type , "visitor": V.type }),
+    pcr.type_({ "derivation": [ "atom" , ["type" , "label"  , "inherits" , "label" , "block"]] , "identifier": "type" , "definition_node?": True , "builder": B.type , "visitor": V.type }),
     
     # type -> type atom param inherits atom param block
-    pcr.type_({ "derivation": [ "atom" , ["type" , "label" , "param"  , "inherits" , "atom" , "param" , "block"]] , "identifier": "type" , "definition_node?": True , "builder": B.type , "visitor": V.type }),
+    pcr.type_({ "derivation": [ "atom" , ["type" , "label" , "param"  , "inherits" , "label" , "param" , "block"]] , "identifier": "type" , "definition_node?": True , "builder": B.type , "visitor": V.type }),
     
 ]
 
@@ -107,7 +107,7 @@ protocols = [
     pcr.protocol({ "derivation": [ "atom" , ["protocol" , "label" , "block"]] , "identifier": "protocol" , "definition_node?": True , "builder": B.protocol , "visitor": V.protocol }),
     
     # atom -> protocol atom extends atom block
-    pcr.protocol({ "derivation": [ "atom" , ["protocol" , "label" , "extends" , "atom" , "block"]] , "identifier": "protocol" , "definition_node?": True , "builder": B.protocol , "visitor": V.protocol }),
+    pcr.protocol({ "derivation": [ "atom" , ["protocol" , "label" , "extends" , "label" , "block"]] , "identifier": "protocol" , "definition_node?": True , "builder": B.protocol , "visitor": V.protocol }),
     
 ]
 
@@ -239,7 +239,7 @@ binary_opt = [
     # bool -> bool | concatenation
     pcr.or_({ "derivation" : ["bool",["bool","|","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
-    pcr.ASTNode({ "derivation" : ["bool",["concatenation"]] , "identifier": "@@" ,"definition_node?": False ,"builder": B.replacement  , "visitor": V.replacement } ),
+    pcr.ASTNode({ "derivation" : ["bool",["concatenation"]] , "identifier": "." ,"definition_node?": False ,"builder": B.replacement  , "visitor": V.replacement } ),
     
     # concatenation -> concatenation @ sum_minus
     pcr.concatenation({ "derivation" : ["concatenation",["concatenation","@","sum_minus"]] , "identifier": "@" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
@@ -247,7 +247,7 @@ binary_opt = [
     # concatenation -> concatenation @@ sum_minus
     pcr.concatenation({ "derivation" : ["concatenation",["concatenation","@@","sum_minus"]] , "identifier": "@@" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
-    pcr.ASTNode({ "derivation" : ["concatenation",["sum_minus"]] , "identifier": "@@" ,"definition_node?": False ,"builder": B.replacement  , "visitor": V.replacement } ),
+    pcr.ASTNode({ "derivation" : ["concatenation",["sum_minus"]] , "identifier": "." ,"definition_node?": False ,"builder": B.replacement  , "visitor": V.replacement } ),
     
     # X -> X + T
     pcr.plus({ "derivation" : ["sum_minus",["sum_minus","+","div_mult"]] , "identifier": "+" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
