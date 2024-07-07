@@ -2,9 +2,9 @@ import production_class_representation as pcr
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
+def context_checker(ast:pcr.ASTNode=None , error_list=[] , graph:nx.DiGraph=None , printing=0 ):
 
-    graph: nx.DiGraph = build_in()
+    graph = build_in(graph)
     
     solve_context( ast=ast , error_list=error_list  , graph=graph )
     
@@ -241,9 +241,7 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , re
     
         return error_list
         
-def build_in():
-    
-    graph = nx.DiGraph()
+def build_in(graph:nx.DiGraph):
     
     type_object = "type_Object"
     def_function_print = "def_function_print"
