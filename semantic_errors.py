@@ -1,4 +1,4 @@
-class context_errors:
+class semantic_errors:
     
     error_list = [ ]
     def __init__(self) -> None:
@@ -14,8 +14,8 @@ class context_errors:
         
         if len(self.error_list) == 1:
             
-            type_ = self.error_list[0]['type']
-            description = self.error_list[0]['description']
+            type_ = self.error_list[0]['error_type']
+            description = self.error_list[0]['error_description']
             scope = self.error_list[0]["scope"]
             line = scope["line"]
             column = scope["column"]
@@ -30,8 +30,8 @@ class context_errors:
             
             for item in self.error_list:
                 
-                type_ = item['type']
-                description = item['description']
+                type_ = item['error_type']
+                description = item['error_description']
                 scope = item['scope']
                 line = scope["line"]
                 column = scope["column"]

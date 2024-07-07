@@ -34,16 +34,16 @@ def type(self: pcr.ASTNode ):
     
     children = []
     
-    if self.__dict__.__contains__("name") and self.name != None:
+    if self.__dict__.__contains__("name"):
         children.append(self.name)
     
-    if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+    if self.__dict__.__contains__("parent_name"):
         children.append(self.parent_name)
     
-    if self.__dict__.__contains__("constructor") and self.constructor != None:
+    if self.__dict__.__contains__("constructor"):
         children.append(self.constructor)
         
-    if self.__dict__.__contains__("base") and self.base != None:
+    if self.__dict__.__contains__("base"):
         children.append(self.base)
 
     if self.body != None:
@@ -58,7 +58,7 @@ def protocol(self: pcr.ASTNode ):
     if self.name != None:
         children.append(self.name)
     
-    if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+    if self.__dict__.__contains__("parent_name"):
         children.append(self.parent_name)
     
     if self.body != None:
@@ -70,7 +70,7 @@ def def_function(self: pcr.ASTNode ):
    
    children = []
    
-   if self.__dict__.__contains__("name") and  self.name != None:
+   if self.__dict__.__contains__("name"):
     children.append(self.name)
    
    if self.args != None:

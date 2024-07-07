@@ -1,10 +1,9 @@
-function program( ) {
+function program(  ) {
 
+(let z = 10 , m = 10 ) in 10 ;
+ 
+let m = 10;
 
-type a{
-
-};
-
-a ;
+let z = 9 ;
 
 };

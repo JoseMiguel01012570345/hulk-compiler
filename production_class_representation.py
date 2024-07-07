@@ -591,16 +591,16 @@ class type_(ASTNode): # check context
         
         children = []
     
-        if self.__dict__.__contains__("name") and self.name != None:
+        if self.__dict__.__contains__("name"):
             children.append("name")
     
-        if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+        if self.__dict__.__contains__("parent_name"):
             children.append("parent_name")
         
-        if self.__dict__.__contains__("constructor") and self.constructor != None:
+        if self.__dict__.__contains__("constructor"):
             children.append("constructor")
             
-        if self.__dict__.__contains__("base") and self.base != None:
+        if self.__dict__.__contains__("base"):
             children.append("base")
 
         if self.body != None:
@@ -628,7 +628,7 @@ class protocol(ASTNode): # check context
         if self.name != None:
             children.append("name")
         
-        if self.__dict__.__contains__("parent_name") and self.parent_name != None:
+        if self.__dict__.__contains__("parent_name"):
             children.append("parent_name")
         
         if self.body != None:

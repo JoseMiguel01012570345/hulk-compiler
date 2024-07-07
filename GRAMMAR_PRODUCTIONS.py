@@ -314,6 +314,7 @@ non_terminals = [
         "concatenation",
         "pow",
         "bool",
+        "call"
         
                            
 ]

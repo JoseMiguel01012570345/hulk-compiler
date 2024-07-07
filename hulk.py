@@ -8,6 +8,7 @@ from os import system
 import semantic_errors
 import print_ast
 import visitor
+import context_checker
 
 def FiltToken(token):
     return len(token.Text) > 0
@@ -99,13 +100,16 @@ if not Error:
     
 #_________________________SEMANTIC CHEKING__________________________________
     
-    print_ast.create_graph_and_print( ast=ast , printig=1 )
+    print_ast.create_graph_and_print( ast=ast , printig=0 )
     
     error_list = []
     
-    context_error = semantic_errors.context_errors()
+    context_error = semantic_errors.semantic_errors()
     
     # check types
+    
+    # check_context
+    context_checker.context_checker(ast=ast,error_list=error_list , printing= 0 )
     
     # check rules
     
