@@ -38,10 +38,7 @@ def build_graph( graph , ast ):
         
         elif child.id == "var":
             
-            if ast.def_node:
-                graph.add_edge( f"{ast.id}_{ast.name.name}", f"{child.id}_{child.name}" )
-                
-            else:
+            if not ast.def_node:
                 graph.add_edge( ast.id + str(ast.hash_), f"{child.id}_{child.name}" )
         
         else:
