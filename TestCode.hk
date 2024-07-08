@@ -1,11 +1,8 @@
 function f(){
 
-type a{
-
-};
-
-  new a();
-
-    y = 10;
-
+    let a = 10;
+    a = 20;
+    a = 40;
+    a + 10;
+    
 };
