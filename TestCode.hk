@@ -377,8 +377,9 @@ protocol program {
 function f(){
 >>>>>>> 29b2e32 (new grammar generated)
 
-    a | b @ 3;
+    type b{
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         
     };
@@ -392,6 +393,25 @@ function f(){
 
     };
 
+=======
+    };
+
+    type a inherits b {
+
+    };
+
+    protocol x{
+
+    };
+
+    protocol z extends q{
+
+    };
+
+    let m = 10;
+
+    m + 10 ;
+>>>>>>> 4bdf7dc (context fixed and graph building improved)
 };
 >>>>>>> a767035 (grammar enriched , test are requiered)
 =======

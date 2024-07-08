@@ -225,19 +225,19 @@ function = [
 IN = [
 
     # exp -> structure in high_level
-    pcr.in_({ "derivation": [ "high_level", [ "param", "in" , "high_level" ] ] , "identifier": "auto_call" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    pcr.in_({ "derivation": [ "high_level", [ "param", "in" , "high_level" ] ] , "identifier": "auto_call" , "definition_node?":True , "builder": B.in_ , "visitor": V.def_function }),
     
     # high_level -> high_level in high_level
-    pcr.in_({ "derivation": [ "high_level", [ "high_level", "in" , "high_level" ] ] , "identifier": "auto_call" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    pcr.in_({ "derivation": [ "high_level", [ "high_level", "in" , "high_level" ] ] , "identifier": "auto_call" , "definition_node?":True , "builder": B.in_ , "visitor": V.def_function }),
     
     # high_level -> high_level in block
-    pcr.in_({ "derivation": [ "high_level", [ "high_level", "in" , "block" ] ] , "identifier": "auto_call" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    pcr.in_({ "derivation": [ "high_level", [ "high_level", "in" , "block" ] ] , "identifier": "auto_call" , "definition_node?":True , "builder": B.in_ , "visitor": V.def_function }),
     
     # exp -> high_level in exp
-    pcr.in_({ "derivation": [ "exp", [ "high_level", "in" , "exp" ] ] , "identifier": "auto_call" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    pcr.in_({ "derivation": [ "exp", [ "high_level", "in" , "exp" ] ] , "identifier": "auto_call" , "definition_node?":True , "builder": B.in_ , "visitor": V.def_function }),
     
     # exp -> structure in exp
-    pcr.in_({ "derivation": [ "exp", [ "param", "in" , "exp" ] ] , "identifier": "auto_call" , "definition_node?":False , "builder": B.in_ , "visitor": V.def_function }),
+    pcr.in_({ "derivation": [ "exp", [ "param", "in" , "exp" ] ] , "identifier": "auto_call" , "definition_node?":True , "builder": B.in_ , "visitor": V.def_function }),
     
 ]
 

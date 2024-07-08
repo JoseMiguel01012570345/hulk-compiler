@@ -14,7 +14,6 @@ import translator
 import Parser as P
 from os import system
 import semantic_errors
-import print_ast
 import visitor
 import context_checker
 
@@ -163,8 +162,6 @@ if not Error:
     
 #_________________________SEMANTIC CHEKING__________________________________
     
-    graph = print_ast.create_graph_and_print( ast=ast , printig=0 )
-    
     error_list = []
     
     context_error = semantic_errors.semantic_errors()
@@ -183,7 +180,7 @@ if not Error:
     # check rules
     
     # check_context
-    context_checker.context_checker(ast=ast,error_list=error_list , graph=graph , printing= 1 )
+    graph = context_checker.context_checker(ast=ast,error_list=error_list , printing= 1 )
     
 <<<<<<< HEAD
     # check rules
