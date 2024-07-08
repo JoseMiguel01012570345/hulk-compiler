@@ -1,5 +1,5 @@
 from EnumsTokensDefinition import TokenType,Type
-
+import math
 '''
 
 NOTE: every builder must return a list in where it specify the properties of the node
@@ -11,10 +11,17 @@ def binary_opt(token_list):
 
 def var(token_list):
     
-    if token_list[0].Type == TokenType.Variable:
+    if token_list[0].Type.name == "Variable":
         return [ ( "name" , token_list[0].Text ) ]
     else:
-        return [ ("id","literal") , ("value", token_list[0].Text ) , ("type" , token_list[0].Type.name) ]
+        
+        if token_list[0].Text == "e":
+            return [ ("id","literal") , ("value", math.e  ) , ("type" ,"Number") ]
+        
+        if token_list[0].Text == "PI":
+            return [ ("id","literal") , ("value", math.pi  ) , ("type" ,"Number") ]
+        
+        return [ ("id","literal") , ("value", token_list[0].Text  ) , ("type" ,token_list[0].Type.name ) ]
         
 def brackets(token_list):
     return [("replacement",token_list[1])]

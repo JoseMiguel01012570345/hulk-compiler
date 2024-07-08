@@ -471,7 +471,22 @@ type a{
 
     type p() {
 
-        let  e = "10";
+        type p() {
+
+            type p() {
+                
+                type p () {
+
+                    
+
+                };
+        
+
+            };
+
+        };
+        
+
     };
 
 

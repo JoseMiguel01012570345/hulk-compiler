@@ -16,7 +16,7 @@ def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
     
     # graph = build_in(graph)
     
-    ast.id += " ROOT"
+    ast.id += "ROOT"
         
     solve_context( ast=ast , error_list=error_list  , graph=graph )
     
@@ -25,7 +25,7 @@ def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
     
     return graph
     
-def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= None , children=None , all_let = False , stack_referent_node:list=["","type_Object"] ):
+def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= None , children=None , all_let = False , stack_referent_node:list=["","ROOT"] ):
     
     if children == None:
         children = ast.visitor_ast()    
@@ -47,14 +47,14 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
                 if child.id != "let": # let var doesn't open new scope
                     
-                    new_referent_node =f"{child.id}_{child.name.name}" # new scope
+                    new_referent_node =f"{stack_referent_node[-1]}_{child.id}_{child.name.name}" # new scope
                     
                     new_stack = [ item for item in stack_referent_node] # add the context to the stack(we are entering in new context)
                     new_stack.append(new_referent_node)
                     
-                    graph = build_in_and_self_node(graph=graph , stack_reference_node=new_stack , ast=child )
-                    
                     graph = build_graph( graph=graph , parent=ast , child=child , reference_node=new_stack[-1] , last_reference_node=new_stack[-2] , chift=1 )
+                    
+                    graph = build_in_and_self_node(graph=graph , stack_reference_node=new_stack , ast=child )
                     
                     error_list = solve_context(child , error_list , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
                     continue
@@ -115,13 +115,14 @@ def build_in_and_self_node( graph:nx.DiGraph , stack_reference_node:list , ast )
     
     if ast.id == "type" or ast.id == "protocol" :
         
-        graph = build_in( graph=graph,stack_referent_node=stack_reference_node, type_name=ast.name.name )
+        graph = build_in( graph=graph,stack_referent_node=stack_reference_node)
 
         if ast.__dict__.__contains__("constructor"):
             
             self = pcr.self( ast.name.name )
-            graph.add_node( f"{stack_reference_node[-1]}_var_self" , ASTNode=self )
-
+            graph.add_node( f"{stack_reference_node[-1]}_let_self" , ASTNode=self )
+            graph.add_edge( f"{stack_reference_node[-1]}" , f"{stack_reference_node[-1]}_let_self")
+            
         return graph
     
     if ast.id == "def_function":
@@ -132,7 +133,7 @@ def build_in_and_self_node( graph:nx.DiGraph , stack_reference_node:list , ast )
             
             if "type" in stack_reference_node[i]:
                 
-                graph = build_in( graph=graph,stack_referent_node=stack_reference_node, type_name=ast.name.name )
+                graph = build_in( graph=graph,stack_referent_node=stack_reference_node  )
 
                 type_node:pcr.ASTNode = graph.nodes[f"{stack_reference_node[i-1]}_{stack_reference_node[i]}"]["ASTNode"]
                 
@@ -401,7 +402,7 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , st
 
     return error_list
         
-def build_in(graph:nx.DiGraph , stack_referent_node:list , type_name ):
+def build_in(graph:nx.DiGraph , stack_referent_node:list ):
     
     type_object = "type_Object"
     def_function_print = "def_function_print"
@@ -437,22 +438,22 @@ def build_in(graph:nx.DiGraph , stack_referent_node:list , type_name ):
     graph.add_node(type_String , ASTNode=pcr.String)
     graph.add_node(type_Boolean , ASTNode=pcr.Boolean)
 
-    graph.add_edge( stack_referent_node[-1] , type_object )
-    graph.add_edge( stack_referent_node[-1] , type_Number )
-    graph.add_edge( stack_referent_node[-1] , type_Boolean )
-    graph.add_edge( stack_referent_node[-1] , type_String )
-    graph.add_edge( stack_referent_node[-1] , def_function_cos )
-    graph.add_edge( stack_referent_node[-1] , def_function_cot )
-    graph.add_edge( stack_referent_node[-1] , def_function_exp )
-    graph.add_edge( stack_referent_node[-1] , def_function_log )
-    graph.add_edge( stack_referent_node[-1] , def_function_rand )
-    graph.add_edge( stack_referent_node[-1] , def_function_sqrt )
-    graph.add_edge( stack_referent_node[-1] , def_function_range )
-    graph.add_edge( stack_referent_node[-1] , def_function_tan )
-    graph.add_edge( stack_referent_node[-1] , def_function_sin )
-    graph.add_edge( stack_referent_node[-1] , let_e )
-    graph.add_edge( stack_referent_node[-1] , let_PI )
-    graph.add_edge( stack_referent_node[-1] , def_function_print )
+    graph.add_edge( f"{stack_referent_node[-1]}" , type_object )
+    graph.add_edge( f"{stack_referent_node[-1]}" , type_Number )
+    graph.add_edge( f"{stack_referent_node[-1]}" , type_Boolean )
+    graph.add_edge( f"{stack_referent_node[-1]}" , type_String )
+    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_cos )
+    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_cot )
+    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_exp )
+    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_log )
+    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_rand )
+    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_sqrt )
+    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_range )
+    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_tan )
+    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_sin )
+    graph.add_edge( f"{stack_referent_node[-1]}" , let_e )
+    graph.add_edge( f"{stack_referent_node[-1]}" , let_PI )
+    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_print )
     
     return graph
 
@@ -484,8 +485,8 @@ def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node
             
             if chift: # general case            
                 
-                node1_id=f"{last_reference_node}_{parent.id}"
-                node2_id=f"{last_reference_node}_{reference_node}"
+                node1_id=f"{last_reference_node}"
+                node2_id=f"{reference_node}"
                 
             else: # let case    
                 node1_id=f"{reference_node}_{parent.id}"
@@ -500,7 +501,7 @@ def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node
         
         if parent.def_node:
             
-            node1_id=f"{last_reference_node}_{reference_node}"
+            node1_id=f"{reference_node}"
             node2_id=f"{reference_node}_{child.id}"
                 
         else:
