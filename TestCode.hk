@@ -8,6 +8,6 @@ function f(){
 
     let x = new b();
 
-    x.a;
+    x().a();
     
 };

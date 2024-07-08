@@ -74,10 +74,6 @@ for state in p :
         break
     pass
 
-
-#__________________PARSER__________________________________________
-
-# go to parse
 if not Error:
     
     tokens =[]
@@ -91,6 +87,10 @@ if not Error:
     print([ item.Text for item in my_list ])
 
     # input()
+
+#__________________PARSER__________________________________________
+
+# go to parse
     
     gp =P.Parser( my_list , use_saved_table=1 )
 

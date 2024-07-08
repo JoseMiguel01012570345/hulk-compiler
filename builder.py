@@ -76,7 +76,7 @@ def protocol(token_list):
     return [ ( "name" , token_list[1] ) , ("parent_name",token_list[3]) , ( "body", token_list[-1] ) ]
 
 def in_(token_list):
-    return [ ( "args" , token_list[0] ) , ( "body" , token_list[2] ) ]
+    return [ ( "expressions" , token_list[0] ) , ( "body" , token_list[2] ) ]
 
 def structure(token_list):
     
@@ -99,10 +99,10 @@ def function_call(token_list):
     return [( "name" , token_list[0] ) , ( "args",token_list[1] )]
     
 def for_while(token_list):
-    return [ ( "args" , token_list[1]) , ("body", token_list[2]) ]
+    return [ ( "condition" , token_list[1]) , ("body", token_list[2]) ]
 
 def if_elif(token_list):
-    return [ ("args" , token_list[1]) , ("body",token_list[-1]) ]
+    return [ ("condition" , token_list[1]) , ("body",token_list[-1]) ]
 
 def else_(token_list):
     return [("body",token_list[-1]) ]

@@ -61,7 +61,11 @@ class ASTNode:
         
         return self.id
     
-    def type( self, graph:nx.DiGraph=None ):
+    def type( self, graph:nx.DiGraph=None , node_graph_representation=""):
+        
+        '''
+        #### <`node_graph_representation`> is the representation of a node in `graph`
+        '''
         pass
 
 #___________________________________________________AST OF THE GRAMMAR_________________________________________>>>>>>>>>>>>>>>>
