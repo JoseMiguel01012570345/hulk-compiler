@@ -10,6 +10,7 @@ class ASTNode:
     visitor = None
     line = 10e306
     column =10e306
+    expected_type = "any"
     
     def __init__(
         self, grammar= {
@@ -61,10 +62,10 @@ class ASTNode:
         
         return self.id
     
-    def type( self, graph:nx.DiGraph=None , node_graph_representation=""):
+    def type( self, graph:nx.DiGraph=None , referene_node="" , error_list:list=[]):
         
         '''
-        #### <`node_graph_representation`> is the representation of a node in `graph`
+        #### `<referene_node>` is the reference node of the actual node in `graph`
         '''
         pass
 
@@ -80,6 +81,8 @@ class function_call( ASTNode): # check context
     > args
     
     '''
+    name=""
+    args=""
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -87,8 +90,13 @@ class function_call( ASTNode): # check context
     def children_name(self):
         return [ "name" , "args" ]
     
-    def type(self):
-        return super().type()
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+
+        target_node = f"{referene_node}_def_function_{ self.name.name}"
+        
+        target_node_ast:ASTNode = graph.nodes[target_node]["ASTNode"]
+        
+        return target_node_ast.type()
     
 class params( ASTNode):
     
@@ -104,7 +112,7 @@ class params( ASTNode):
         
     def children_name(self):
         return [ "expressions" ]
-                
+    
     pass
 
 #_________________________________________________BINARY EXPRESSIONS___________________________________________>>>>>>>>>>>>>>>>
@@ -128,53 +136,9 @@ class dot(binary_opt):# the context of the left side is passed to the context of
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def context_check(self, error_list: list):
-        
-        left_id = self.left_node.id
-        
-        if self.left_node.__dict__["name"] == None:
-            ## error
-            
-            error_type = ""
-            error_description = ""
-            error_list.append({ "type":error_type , "description":error_description })
-            
-            return error_list
-            
-        
-        left_name = self.left_node.name
-        
-        # completar el metodo , este debe buscar en left_node lo que esta en rigth_node
-        
-        
-        pass
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        return self.right_node.type()
     
-    def check_right_side_context(self, type_name , attr_name , attr_id ):
-        
-        
-        
-        found_attr = False
-        parent_node = self
-
-        while not found_attr:
-            
-            if ASTNode(parent_node).__dict__["parent"] != None:
-                parent_node = ASTNode(parent_node).parent
-            
-            else:
-                return False
-            
-            if parent_node.__dict__["name"]:
-                found_attr = type_name == parent_node.__dict__["name"]
-            
-        pass
-    
-        for item in type_(parent_node).body:
-            
-            if ASTNode(item).id == attr_id and ASTNode(item).__dict__["name"] == attr_name:
-                return True
-        
-        return False
 
 class in_(binary_opt):
     
@@ -183,62 +147,173 @@ class in_(binary_opt):
     
     pass
     
+    expressions = []
+    body: ASTNode = None
+    
     def children_name(self):
         return [ "args" , "body" ]
+    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        return self.body.type()
 
 class plus(binary_opt):
     
+    expected_type = "Number"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
     
     pass
         
 class minus(binary_opt):
     
+    expected_type = "Number"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
         
     pass
 
 class multiplication(binary_opt):
     
+    expected_type = "Number"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
     
     pass
 
 class divition(binary_opt):
     
+    expected_type = "Number"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
         
     pass
     
 class pow_(binary_opt):
     
+    expected_type = "Number"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
         
     pass
     
 class per_cent(binary_opt):
     
+    expected_type = "Number"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
 
     pass
 
 class concatenation(binary_opt):
     
+    expected_type = "String"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+        
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
+        
     pass
       
 class blank_space_concatenation(binary_opt):
     
+    expected_type = "String"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
 
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
+    
     pass
 
 class double_dot(binary_opt): # the context of the right side is passed to the context of the left side
@@ -246,20 +321,9 @@ class double_dot(binary_opt): # the context of the right side is passed to the c
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
 
-    def context_check(self, error_list: list):
-        
-        for item in self.context:
-            
-            if (item['id'] == 'type' or item['id'] == 'protocol') and item['name'] == self.right.name:
-                return error_list                
-            
-        for item in self.build_in:
-            
-            if (item['id'] == 'type' or item['id'] == 'protocol') and item['name'] == self.right.name:
-                return error_list                
-            
-        return error_list
-
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        return self.right_node.type()
+    
     pass
 
 class double_dot_equal(binary_opt): # the context of the right side is passed to the context of the left side
@@ -267,66 +331,141 @@ class double_dot_equal(binary_opt): # the context of the right side is passed to
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        return self.right_node.type()
+    
     pass
 
 class as_(binary_opt):
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
         
+        self.expected_type = self.right_node.name
+        return self.right_node.type()
+    
     pass
 
 class is_(binary_opt):
     
+    expected_type = "Boolean"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
         
     pass
 
 class equal(binary_opt): # the context of the right side is passed to the context of the left side
     
+    expected_type = "Boolean"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def infer_type(self,error_list:list):
-        
-        if self.left_node.id != "let":
-            
-            error_type = "assignment"
-            error_description = "unexpected use of \"=\" , you only can use \"=\" with let statement"
-            error_list.append( { "type": error_type , "description": error_description } )
-            return error_list
-        
-        variable(unary_expression(self.left_node).right).type_ = ASTNode(self.right_node).type_
     
-        return error_list
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
+    
     
 class bigger_than(binary_opt):
     
+    expected_type = "Boolean"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+        
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
     
     pass
 
 class smaller_than(binary_opt):
     
+    expected_type = "Boolean"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
     
     pass
 
 class bigger_or_equal(binary_opt):
     
+    expected_type = "Boolean"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
+        
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
     
     pass
 
 class smaller_or_equal(binary_opt):
     
+    expected_type = "Boolean"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
+        
     pass
 
 class assign(binary_opt):
@@ -334,54 +473,79 @@ class assign(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type == "any":
+            return right_node_type
+        
+        elif left_node_type == right_node_type:
+            return left_node_type
+        
+        else:
+            return "any"
+        
     pass
     
 class or_(binary_opt):
     
+    expected_type = "Boolean"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
+        
     pass
 
 class and_(binary_opt):
     
+    expected_type = "Boolean"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
+        
     pass
     
 class different(binary_opt):
     
-    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
-        super().__init__(grammar)
-    
-    pass
-
-class divide_and_assign(binary_opt):
+    expected_type = "Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
-    
-    pass
-    
-class multiply_and_assign(binary_opt):
-    
-    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
-        super().__init__(grammar)
-    
-    pass
-
-class plus_and_assign(binary_opt):
-    
-    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
-        super().__init__(grammar)
-    
-    pass
-
-class minus_and_assign(binary_opt):
-    
-    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
-        super().__init__(grammar)
+        
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        left_node_type = self.left_node.type()
+        right_node_type = self.right_node.type()
+        
+        if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
+            return "any"
+        
+        else:
+            return self.expected_type
     
     pass
  
@@ -394,15 +558,21 @@ class unary_expression(ASTNode):
     class in this class has as attributes:
     
     > id : the kind of expression it is specified by its symbol
-    > right: right unary member
+    > node: right unary member
     
     '''
+    node:ASTNode = None
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
     def children_name(self):
         return [ "right" ]
+    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        
+        node_type = self.node.type()
+        return node_type
     
     pass
     
@@ -411,19 +581,28 @@ class new(unary_expression):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        return self.node.name.name
+    
     pass
     
 class not_(unary_expression):
+    
+    expected_type = "Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
 class plus_plus(unary_expression):
     
+    expected_type = "Number"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
 class minus_minus(unary_expression):
+    
+    expected_type = "Number"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -435,7 +614,7 @@ class let(ASTNode):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
-    def type(self):
+    def type(self,graph: nx.DiGraph = None, referene_node=""):
         return "any"
         
 class variable(ASTNode): # check context
@@ -457,8 +636,18 @@ class variable(ASTNode): # check context
     def children_name(self):
         return []
     
-    def type(self, graph: nx.DiGraph = None, node_graph_representation=""):
-        return super().type(graph, node_graph_representation)
+    def type(self, graph: nx.DiGraph = None, referene_node=""):
+        
+        target_node = f"{referene_node}_let_{self.name}"
+        target_node_ast:ASTNode = graph.nodes[target_node]["ASTNode"]
+        
+        if True:
+            
+            
+            return
+        
+        
+        return target_node_ast.type()
     
 class conditional(ASTNode):
     
@@ -557,10 +746,9 @@ class def_function(ASTNode): # check context
         
         children = []
         
-        if self.__dict__.__contains__("name"):
-            children.append("name")
+        children.append("name")
         
-        if self.__dict__.__contains__("args"):
+        if self.args != None:
             children.append("args")
         
         children.append("body")
@@ -601,13 +789,13 @@ class type_(ASTNode): # check context
         if self.__dict__.__contains__("name"):
             children.append("name")
     
-        if self.__dict__.__contains__("parent_name"):
+        if self.parent_name != None:
             children.append("parent_name")
         
-        if self.__dict__.__contains__("constructor"):
+        if self.constructor != None:
             children.append("constructor")
             
-        if self.__dict__.__contains__("base"):
+        if self.base != None:
             children.append("base")
 
         if self.body != None:
@@ -615,7 +803,7 @@ class type_(ASTNode): # check context
         
         return children
     
-    def type(self):
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
         return self.name.name
             
 class protocol(ASTNode): # check context
@@ -643,7 +831,7 @@ class protocol(ASTNode): # check context
         if self.name != None:
             children.append("name")
         
-        if self.__dict__.__contains__("parent_name"):
+        if self.parent_name !=None:
             children.append("parent_name")
         
         if self.body != None:
@@ -651,7 +839,7 @@ class protocol(ASTNode): # check context
         
         return children
     
-    def type(self):
+    def type( self ,graph: DiGraph = None, referene_node="", error_list: list = []):
         return self.name.name
     
 class vectors(ASTNode):
@@ -672,7 +860,7 @@ class vectors(ASTNode):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
-    def type(self):
+    def type(graph: DiGraph = None, referene_node="", error_list: list = []):
         return "Iterable"
                   
 class literal(ASTNode):
@@ -686,7 +874,7 @@ class literal(ASTNode):
     '''
     
     value = None
-    type = None
+    type_ = None
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
@@ -694,8 +882,8 @@ class literal(ASTNode):
     def children_name(self):
         return []
     
-    def type(self):
-        return self.type
+    def type( self , graph: DiGraph = None, referene_node="", error_list: list = []):
+        return self.type_
     
     pass
 
@@ -716,7 +904,7 @@ class index(ASTNode): # check context
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
         
-    def type(self):
+    def type(graph: DiGraph = None, referene_node="", error_list: list = []):
         return "any"
     
 class while_(ASTNode):
@@ -739,8 +927,8 @@ class while_(ASTNode):
     def children_name(self):
         return [ "args" , "body" ]
     
-    def type(self):
-        return self.body.type()
+    def type(self,graph: DiGraph = None, referene_node="", error_list: list = []):
+        return self.body.type(graph , referene_node , error_list)
     
 class for_(ASTNode):
     
@@ -762,9 +950,9 @@ class for_(ASTNode):
     def children_name(self):
         return [ "args" , "body" ]
     
-    def type(self):
-        return self.body.type()
-    
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        return self.body.type(graph , referene_node , error_list)
+        
 class block(ASTNode):
     
     '''
@@ -785,9 +973,11 @@ class block(ASTNode):
     def children_name(self):
         return ["expressions"]
     
-    def type(self):
-        return self.expressions[-1].type_checking()
-
+    def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
+        return self.expressions[-1].type(graph , referene_node , error_list)
+  
+  
+  
 class build_in:
     type_ = ""
 

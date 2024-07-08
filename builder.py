@@ -16,12 +16,12 @@ def var(token_list):
     else:
         
         if token_list[0].Text == "e":
-            return [ ("id","literal") , ("value", math.e  ) , ("type" ,"Number") ]
+            return [ ("id","literal") , ("value", math.e  ) , ("type_" ,"Number") ]
         
         if token_list[0].Text == "PI":
-            return [ ("id","literal") , ("value", math.pi  ) , ("type" ,"Number") ]
+            return [ ("id","literal") , ("value", math.pi  ) , ("type_" ,"Number") ]
         
-        return [ ("id","literal") , ("value", token_list[0].Text  ) , ("type" ,token_list[0].Type.name ) ]
+        return [ ("id","literal") , ("value", token_list[0].Text  ) , ("type_" ,token_list[0].Type.name ) ]
         
 def brackets(token_list):
     return [("replacement",token_list[1])]

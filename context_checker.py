@@ -14,8 +14,6 @@ def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
 
     graph = nx.DiGraph()
     
-    # graph = build_in(graph)
-    
     ast.id += "ROOT"
         
     solve_context( ast=ast , error_list=error_list  , graph=graph )
@@ -54,7 +52,7 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                     
                     graph = build_graph( graph=graph , parent=ast , child=child , reference_node=new_stack[-1] , last_reference_node=new_stack[-2] , chift=1 )
                     
-                    graph = build_in_and_self_node(graph=graph , stack_reference_node=new_stack , ast=child )
+                    # graph = build_in(graph=graph , stack_referent_node=new_stack )
                     
                     error_list = solve_context(child , error_list , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
                     continue
@@ -71,7 +69,7 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
                 new_stack.append("anonymus")    
                 
-                graph = build_in_and_self_node(graph=graph , stack_reference_node=new_stack , ast=child )
+                # graph = build_in(graph=graph , stack_reference_node=new_stack )
                 
                 error_list = solve_context(child , error_list , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
                 continue
@@ -111,45 +109,6 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
     return error_list
     
-def build_in_and_self_node( graph:nx.DiGraph , stack_reference_node:list , ast ):
-    
-    if ast.id == "type" or ast.id == "protocol" :
-        
-        graph = build_in( graph=graph,stack_referent_node=stack_reference_node)
-
-        if ast.__dict__.__contains__("constructor"):
-            
-            self = pcr.self( ast.name.name )
-            graph.add_node( f"{stack_reference_node[-1]}_let_self" , ASTNode=self )
-            graph.add_edge( f"{stack_reference_node[-1]}" , f"{stack_reference_node[-1]}_let_self")
-            
-        return graph
-    
-    if ast.id == "def_function":
-        
-        i = len(stack_reference_node) - 1
-        
-        while i >= 0:
-            
-            if "type" in stack_reference_node[i]:
-                
-                graph = build_in( graph=graph,stack_referent_node=stack_reference_node  )
-
-                type_node:pcr.ASTNode = graph.nodes[f"{stack_reference_node[i-1]}_{stack_reference_node[i]}"]["ASTNode"]
-                
-                if type_node.__dict__.__contains__("constructor") :
-                
-                    self = pcr.self( ast.name.name )
-                    graph.add_edge(  stack_reference_node[-1] , f"{stack_reference_node[-1]}_var_self" , ASTNode=self )
-                
-                pass
-            
-            i -= 1        
-        
-        pass
-    
-    return graph
-
 def instance_case(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_referent_node:list ): 
     
     i=len(stack_referent_node) - 1
@@ -357,6 +316,17 @@ def let_case( ast:pcr.let) -> list:
 
 def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , stack_referent_node):
     
+    if ast.name == "self":
+            
+        referent_node = stack_referent_node[-1]    
+        referent_node_ast: pcr.ASTNode = graph.nodes[stack_referent_node[-1]]["ASTNode"]    
+        
+        if "type" in referent_node and referent_node_ast.constructor != None :
+            
+            graph.add_edge( referent_node , f"{referent_node}_var_{ast.name}")
+        
+            return error_list
+        
     for reference_node in stack_referent_node:
     
         if graph.has_node( f"{reference_node}_let_{ast.name}"): # check if variable is accesable from outter context from its position
@@ -365,6 +335,7 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , stack_refere
             graph.add_edge( f"{reference_node}_var_{ast.name}" , f"{reference_node}_let_{ast.name}" )
             
             return error_list
+    
     
     error_type = "variable usage"
     error_description = f"variable {ast.name} is used before assigned"    
