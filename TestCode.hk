@@ -377,6 +377,7 @@ protocol program {
 function f(){
 >>>>>>> 29b2e32 (new grammar generated)
 
+<<<<<<< HEAD
     type b{
 
 <<<<<<< HEAD
@@ -423,6 +424,19 @@ function f(){
 =======
     x().a();
 >>>>>>> 72b8fbe (grammar enriched)
+=======
+    b () =>{};
+
+    let x = new b();
+
+    type z ( a ){
+
+    };
+
+    type z ( a ){
+
+    };
+>>>>>>> c9b795e (args, constructor and base added to obj id for context checking)
     
 >>>>>>> d685c53 (type checking fase)
 };

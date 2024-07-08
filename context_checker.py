@@ -3,6 +3,13 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from Utils import names
 
+class aux: # convert parent var <name> into a type <name>
+            
+    name = ""
+    
+    def __init__(self,my_name) -> None:
+        self.name = my_name
+
 def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
 
     graph = nx.DiGraph()
@@ -29,6 +36,7 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
             
             if all_let and child.id == "var":
                 child.id = "let"
+                child.__dict__["name"] = aux(child.name)
             
             # case 1: types , case 2: protocols , case 3: functions , case 4 : let
             if child.id == "type" or child.id == "protocol" or child.id == "def_function" or child.id == "let":
@@ -37,11 +45,11 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
                 def_children = def_node_children(child=child)
                 
-                if child.id != "let":
+                if child.id != "let": # let var doesn't open new scope
                     
-                    new_referent_node =f"{child.id}_{child.name.name}"
+                    new_referent_node =f"{child.id}_{child.name.name}" # new scope
                     
-                    new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
+                    new_stack = [ item for item in stack_referent_node] # add the context to the stack(we are entering in new context)
                     new_stack.append(new_referent_node)
                     
                     graph = build_graph( graph=graph , parent=ast , child=child , reference_node=new_stack[-1] , last_reference_node=new_stack[-2] , chift=1 )
@@ -86,22 +94,23 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
             if child.id == "dot": # check if exits right_node inside left_node
                 
-                '''
-                TODO: verifiy if in child.left_node type hierarchy exists child.right_node 
-                        for that we will check if there exist a path from child.left_node type to
-                        "child.right_node.id_child.right_node.name"
-                '''
-                
                 dot_case( graph , error_list , child.right_node ,child.left_node , stack_referent_node[-1])
             
             error_list = solve_context( child , error_list , graph , None , all_let , stack_referent_node )
                 
     return error_list
 
-def instance_case():
+def instance_case(graph:nx.DiGraph , error_list:list , stack_referent_node:list ): 
+    
+    
+    
     pass
 
 def dot_case(graph:nx.DiGraph , error_list:list , right_node:pcr.ASTNode , left_node:pcr.ASTNode , reference_node=""):
+    
+    # verifiy if in child.left_node type hierarchy exists child.right_node 
+    # for that we will check if there exist a path from child.left_node type to
+    # "child.right_node.id_child.right_node.name"
     
     left_name = names(left_node)
     right_name =names(right_node)
@@ -142,13 +151,6 @@ def def_node_children(child:pcr.ASTNode):
     
     if child.__dict__.__contains__("parent_name"):
         
-        class aux: # convert parent var <name> into a type <name>
-            
-            name = ""
-            
-            def __init__(self,my_name) -> None:
-                self.name = my_name
-        
         child.parent_name.name = aux(child.parent_name.name)
         child.parent_name.id = child.id
         child.parent_name.__dict__["inheritence"] = True
@@ -184,10 +186,43 @@ def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , refere
     # ask for an edge existence
     if graph.has_node( f"{reference_node}_{ast.id}_{ast.name.name}"):
         
-        error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
+        node_ast = graph.nodes[f"{reference_node}_{ast.id}_{ast.name.name}"]["ASTNode"]
+        
+        args = args_checking( ast , node_ast )
+        
+        if args:
+            error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
+        
         return error_list
     
     return error_list
+
+def args_checking( node_ast:pcr.ASTNode , ast:pcr.ASTNode ):
+    '''
+    returns True if amount of arguments is the same
+    '''
+    if ast.id == "def_function":
+        
+        if len(node_ast.args.expressions) != len(ast.args.expressions):
+            return False
+        
+    if ast.id == "type":
+        
+        if ast.__dict__.__contains__("constructor") and node_ast.__dict__.__contains__("constructor"):
+            
+            if len(ast.constructor.expressions) != len(node_ast.constructor.expressions):
+                return False
+        else:
+            return False
+        
+        if ast.__dict__.__contains__("base") and node_ast.__dict__.__contains__("base"):
+            
+            if len(ast.base.expressions) != len(node_ast.base.expressions):
+                return False
+        elif ast.__dict__.__contains__("base") or node_ast.__dict__.__contains__("base") :
+            return False
+        
+    return True
 
 def inheritence_error(ast:pcr.ASTNode):
     
@@ -259,14 +294,25 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , stack_refere
 
 def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , stack_referent_node ):
     
-    for reference_node in stack_referent_node:
-    
-        if graph.has_node( f"{reference_node}_def_function_{ast.name.name}" ): # check if call is accesable from outter context from its position
+    i = len(stack_referent_node) - 1
+    while i >=0:
+        
+        reference_node = stack_referent_node[i]
+        
+        if graph.has_node( f"{reference_node}_def_function_{ast.name.name}" ) : # check if call is accesable from outter context from its position
             
-            graph.add_edge( f"{reference_node}_def_function_{ast.name.name}" ,  f"{reference_node}_function_call_{ast.name.name}" )
-            graph.add_edge( f"{reference_node}_function_call_{ast.name.name}" , f"{reference_node}_def_function_{ast.name.name}" )
+            reference_of_the_referent_node = f"{stack_referent_node[i-1]}_{reference_node}"
             
-            return error_list
+            node_ast = graph.nodes[ f"{reference_node}_def_function_{ast.name.name}" ]["ASTNode"]
+            referent_node_ast = graph.nodes[ reference_of_the_referent_node ]["ASTNode"]
+            
+            if node_ast.args != None and  referent_node_ast.args != None and len(node_ast.args.expressions) == len( referent_node_ast.args.expressions ):   
+                
+                graph.add_edge( f"{reference_node}_def_function_{ast.name.name}" ,  f"{reference_node}_function_call_{ast.name.name}" )
+                graph.add_edge( f"{reference_node}_function_call_{ast.name.name}" , f"{reference_node}_def_function_{ast.name.name}" )
+            
+                return error_list
+        i -= 1
     
     scope = { "line":ast.line , "column":ast.column }
     error_type = "function usage"
