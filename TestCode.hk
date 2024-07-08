@@ -1,15 +1,11 @@
 function f(){
 
-    b () =>{};
+type a{
 
-    let x = new b();
+};
 
-    type z ( a ){
+  new a();
 
-    };
+    y = 10;
 
-    type z ( a ){
-
-    };
-    
 };
