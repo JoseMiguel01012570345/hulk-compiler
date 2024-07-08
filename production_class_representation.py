@@ -1,4 +1,5 @@
 import networkx as nx
+from networkx import DiGraph
 
 class ASTNode:
       
@@ -10,7 +11,6 @@ class ASTNode:
     line = 10e306
     column =10e306
     
-    
     def __init__(
         self, grammar= {
                         
@@ -19,7 +19,7 @@ class ASTNode:
                         "definition_node?":"" , 
                         "builder":None , 
                         "visitor":None
-                    }, *args ) -> None:
+                    } ) -> None:
         
         self.set_identifier(grammar["identifier"])
         self.derivation = grammar["derivation"]
@@ -97,6 +97,7 @@ class params( ASTNode):
     > id : params
     
     '''
+    expressions=[]
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -435,7 +436,7 @@ class let(ASTNode):
         super().__init__(grammar)
         
     def type(self):
-        return "unknow"
+        return "any"
         
 class variable(ASTNode): # check context
     
@@ -456,15 +457,8 @@ class variable(ASTNode): # check context
     def children_name(self):
         return []
     
-    def type(self, graph: nx.DiGraph = None):
-        
-        start_node = f"var_{self.name}"
-        end_node = f"let_{self.name}"
-        
-        if nx.has_path( graph , start_node , end_node):
-            return 
-        
-        pass    
+    def type(self, graph: nx.DiGraph = None, node_graph_representation=""):
+        return super().type(graph, node_graph_representation)
     
 class conditional(ASTNode):
     
@@ -723,7 +717,7 @@ class index(ASTNode): # check context
         super().__init__(grammar)
         
     def type(self):
-        return "unknow"
+        return "any"
     
 class while_(ASTNode):
     
@@ -793,5 +787,71 @@ class block(ASTNode):
     
     def type(self):
         return self.expressions[-1].type_checking()
-        
+
+class build_in:
+    type_ = ""
+
+class object(build_in):
+    type_ = "object"
+
+class Number(build_in):
+    type_ = "Number"
+
+class Boolean(build_in):
+    type_ = "boolean"
+
+class String(build_in):
+    type_ = "string"
+
+class cos(build_in):
+    type_ = "Number"
+    args=params
+
+class cot(build_in):
+    type_ = "Number"
+    args=params
+
+class exp(build_in):
+    type_ = "Number"
+    args=params
+
+class log(build_in):
+    type_ = "Number"
+    args=params
+
+class rand(build_in):
+    type_ = "Number"
+    args=params
+
+class sqrt(build_in):
+    type_ = "Number"
+    args=params
+
+class range(build_in):
+    type_ = "Iterable"
+    args=params
+
+class tan(build_in):
+    type_ = "Number"
+    args=params
+
+class sin(build_in):
+    type_ = "Number"
+    args=params
+
+class e(build_in):
+    type_ = "Number"
+
+class PI(build_in):
+    type_ = "Number"
+
+class print(build_in):
+    type_ = "String"
+    args=params
+
+class self:
     
+    type=""
+    
+    def __init__(self,type) -> None:
+        self.type = type

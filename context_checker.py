@@ -52,6 +52,8 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                     new_stack = [ item for item in stack_referent_node] # add the context to the stack(we are entering in new context)
                     new_stack.append(new_referent_node)
                     
+                    graph = build_in_and_self_node(graph=graph , stack_reference_node=new_stack , ast=child )
+                    
                     graph = build_graph( graph=graph , parent=ast , child=child , reference_node=new_stack[-1] , last_reference_node=new_stack[-2] , chift=1 )
                     
                     error_list = solve_context(child , error_list , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
@@ -68,6 +70,8 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
                 new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
                 new_stack.append("anonymus")    
+                
+                graph = build_in_and_self_node(graph=graph , stack_reference_node=new_stack , ast=child )
                 
                 error_list = solve_context(child , error_list , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
                 continue
@@ -107,6 +111,44 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
     return error_list
     
+def build_in_and_self_node( graph:nx.DiGraph , stack_reference_node:list , ast ):
+    
+    if ast.id == "type" or ast.id == "protocol" :
+        
+        graph = build_in( graph=graph,stack_referent_node=stack_reference_node, type_name=ast.name.name )
+
+        if ast.__dict__.__contains__("constructor"):
+            
+            self = pcr.self( ast.name.name )
+            graph.add_node( f"{stack_reference_node[-1]}_var_self" , ASTNode=self )
+
+        return graph
+    
+    if ast.id == "def_function":
+        
+        i = len(stack_reference_node) - 1
+        
+        while i >= 0:
+            
+            if "type" in stack_reference_node[i]:
+                
+                graph = build_in( graph=graph,stack_referent_node=stack_reference_node, type_name=ast.name.name )
+
+                type_node:pcr.ASTNode = graph.nodes[f"{stack_reference_node[i-1]}_{stack_reference_node[i]}"]["ASTNode"]
+                
+                if type_node.__dict__.__contains__("constructor") :
+                
+                    self = pcr.self( ast.name.name )
+                    graph.add_edge(  stack_reference_node[-1] , f"{stack_reference_node[-1]}_var_self" , ASTNode=self )
+                
+                pass
+            
+            i -= 1        
+        
+        pass
+    
+    return graph
+
 def instance_case(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_referent_node:list ): 
     
     i=len(stack_referent_node) - 1
@@ -359,7 +401,7 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , st
 
     return error_list
         
-def build_in(graph:nx.DiGraph):
+def build_in(graph:nx.DiGraph , stack_referent_node:list , type_name ):
     
     type_object = "type_Object"
     def_function_print = "def_function_print"
@@ -378,51 +420,39 @@ def build_in(graph:nx.DiGraph):
     type_String = "type_String"
     type_Boolean = "type_Boolean"
     
-    
-    graph.add_node(type_object)
-    graph.add_node(def_function_print)    
-    graph.add_edge( type_object , type_Number )
-    graph.add_edge( type_object , type_Boolean )
-    graph.add_edge( type_object , type_String )
-    
-    graph.add_node(type_Number)
-    
-    graph.add_node(def_function_cos)
-    graph.add_edge( type_Number , def_function_cos )
-    
-    graph.add_node(def_function_cot)
-    graph.add_edge( type_Number , def_function_cot )
-    
-    graph.add_node(def_function_exp)
-    graph.add_edge( type_Number , def_function_exp )
-    
-    graph.add_node(def_function_log)
-    graph.add_edge( type_Number , def_function_log )
-    
-    graph.add_node(def_function_rand)
-    graph.add_edge( type_Number , def_function_rand )
-    
-    graph.add_node(def_function_sqrt)
-    graph.add_edge( type_Number , def_function_sqrt )
-    
-    graph.add_node(def_function_range)
-    graph.add_edge( type_Number , def_function_range )
-    
-    graph.add_node(def_function_tan)
-    graph.add_edge( type_Number , def_function_tan )
-    
-    graph.add_node(def_function_sin)
-    graph.add_edge( type_Number , def_function_sin )
-    
-    graph.add_node(let_e)
-    graph.add_edge( type_Number , let_e )
-    
-    graph.add_node(let_PI)
-    graph.add_edge( type_Number , let_PI )
-    
-    graph.add_node(type_String)
-    graph.add_edge( type_String , def_function_print )
-    graph.add_node(type_Boolean)
+    graph.add_node(type_object , ASTNode=pcr.object)
+    graph.add_node(def_function_print , ASTNode=pcr.print)
+    graph.add_node(type_Number , ASTNode=pcr.Number)
+    graph.add_node(let_e , ASTNode=pcr.e)
+    graph.add_node(let_PI , ASTNode=pcr.PI)
+    graph.add_node(def_function_tan , ASTNode=pcr.tan)
+    graph.add_node(def_function_cot , ASTNode=pcr.cot)
+    graph.add_node(def_function_sqrt , ASTNode=pcr.sin)
+    graph.add_node(def_function_sin , ASTNode=pcr.sin)
+    graph.add_node(def_function_cos , ASTNode=pcr.cos)
+    graph.add_node(def_function_log , ASTNode=pcr.log)
+    graph.add_node(def_function_exp , ASTNode=pcr.exp)
+    graph.add_node(def_function_rand , ASTNode=pcr.rand)
+    graph.add_node(def_function_range , ASTNode=pcr.range)
+    graph.add_node(type_String , ASTNode=pcr.String)
+    graph.add_node(type_Boolean , ASTNode=pcr.Boolean)
+
+    graph.add_edge( stack_referent_node[-1] , type_object )
+    graph.add_edge( stack_referent_node[-1] , type_Number )
+    graph.add_edge( stack_referent_node[-1] , type_Boolean )
+    graph.add_edge( stack_referent_node[-1] , type_String )
+    graph.add_edge( stack_referent_node[-1] , def_function_cos )
+    graph.add_edge( stack_referent_node[-1] , def_function_cot )
+    graph.add_edge( stack_referent_node[-1] , def_function_exp )
+    graph.add_edge( stack_referent_node[-1] , def_function_log )
+    graph.add_edge( stack_referent_node[-1] , def_function_rand )
+    graph.add_edge( stack_referent_node[-1] , def_function_sqrt )
+    graph.add_edge( stack_referent_node[-1] , def_function_range )
+    graph.add_edge( stack_referent_node[-1] , def_function_tan )
+    graph.add_edge( stack_referent_node[-1] , def_function_sin )
+    graph.add_edge( stack_referent_node[-1] , let_e )
+    graph.add_edge( stack_referent_node[-1] , let_PI )
+    graph.add_edge( stack_referent_node[-1] , def_function_print )
     
     return graph
 
