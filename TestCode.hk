@@ -58,6 +58,7 @@ type Range(min:Number, max:Number) {
 function program( b ) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 type z {
 
 q = 10;
@@ -450,6 +451,13 @@ type a{
     y = 10;
 
 >>>>>>> 29bfa67 (instance context made)
+=======
+    let a = 10;
+    a = 20;
+    a = 40;
+    a + 10;
+    
+>>>>>>> de1efe2 (fixes over instance case, args verfication)
 };
 >>>>>>> a767035 (grammar enriched , test are requiered)
 =======

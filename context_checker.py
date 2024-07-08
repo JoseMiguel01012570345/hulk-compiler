@@ -72,7 +72,7 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 error_list = solve_context(child , error_list , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
                 continue
             
-            if child.id == "args" :
+            if child.id == "args" and ast.def_node :
                 
                 error_list = solve_context(child , error_list , graph  , None , all_let=True , stack_referent_node=stack_referent_node )
                 continue
@@ -93,6 +93,10 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
 
                 error_list = instance_case( graph=graph , ast=child , error_list=error_list , stack_referent_node=stack_referent_node )
                 
+                verify_instance_args = child.node.args.expressions
+                
+                error_list = solve_context( child , error_list , graph , verify_instance_args , all_let , stack_referent_node )
+                
                 continue
                 
             if child.id == "dot": # check if exits right_node inside left_node
@@ -102,7 +106,7 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
             error_list = solve_context( child , error_list , graph , None , all_let , stack_referent_node )
                 
     return error_list
-
+    
 def instance_case(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_referent_node:list ): 
     
     i=len(stack_referent_node) - 1
