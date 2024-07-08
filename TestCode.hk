@@ -471,22 +471,11 @@ type a{
 
     type p() {
 
-        type p() {
+    self = 10;
 
-            type p() {
-                
-                type p () {
 
-                    
-
-                };
-        
-
-            };
-
-        };
-        
-
+    let self =10;
+    
     };
 
 
