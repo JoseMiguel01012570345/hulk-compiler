@@ -407,6 +407,7 @@ function f(){
     let x = new b();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     };
 
     protocol z extends q{
@@ -419,6 +420,9 @@ function f(){
 >>>>>>> 4bdf7dc (context fixed and graph building improved)
 =======
     x.a;
+=======
+    x().a();
+>>>>>>> 72b8fbe (grammar enriched)
     
 >>>>>>> d685c53 (type checking fase)
 };

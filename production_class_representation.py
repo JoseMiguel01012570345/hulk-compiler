@@ -482,8 +482,16 @@ class ASTNode:
         
 =======
     
+<<<<<<< HEAD
     def type( self, graph:nx.DiGraph=None ):
 >>>>>>> 1954534 (using networkx for type_checking and context_checking)
+=======
+    def type( self, graph:nx.DiGraph=None , node_graph_representation=""):
+        
+        '''
+        #### <`node_graph_representation`> is the representation of a node in `graph`
+        '''
+>>>>>>> 72b8fbe (grammar enriched)
         pass
 
 class function_call( ASTNode): # check context

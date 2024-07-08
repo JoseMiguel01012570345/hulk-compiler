@@ -316,11 +316,17 @@ binary_opt = [
     
     # ---------------------------
     
-    # bool -> high_level.label
+    # bool -> label.label
     pcr.dot({ "derivation" : ["atom",["label", "." ,"label"]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
-    # dot -> high_level . label param
+    # dot -> label.call
     pcr.dot({ "derivation" : ["atom",["label", "." ,"call" ]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    # dot -> call.call
+    pcr.dot({ "derivation" : ["atom",["call", "." ,"call" ]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    # dot -> call.label
+    pcr.dot({ "derivation" : ["atom",["call", "." ,"label" ]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     # 4 == a.b()    
     # ---------------------------

@@ -17,3 +17,11 @@ def isNumeric(text):
         return False
     
     return False
+
+def names(node):
+    
+    if node.id == "var":
+        return node.name
+    else:
+        return node.name.name
+    
