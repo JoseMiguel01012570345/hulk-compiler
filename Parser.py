@@ -276,6 +276,7 @@ class Parser:
         new_state = []
         found = False
         error = False
+        state_found = ""
         
         while i < len(state):
             
@@ -289,9 +290,18 @@ class Parser:
                 if  state[i]["pivote"] == len(state[i]["production"][1]) -1 and state[i]["look_ahead"] == item :
                     
                     if found:
+                        
+                        print(  "state " +  str(state_found["production"]) + " c=\"" + str(state_found["look_ahead"]) + "\"" + " pivote=" + str(state_found["pivote"]) +
+                                " is in conflict with " +
+                                str(state[i]["production"]) + "," + "c=" + str(state[i]["look_ahead"]) + " , " + " pivote= " + str(state[i]["pivote"]) 
+                            )
+                        
                         error = True
                     
                     found = True
+                    
+                    state_found = state[i]
+                    
                     my_row[item] = (state[i]["production"],state[i]["AST"])
                     if state[i]["production"][0] == "S":
                         my_row[item] = "OK"

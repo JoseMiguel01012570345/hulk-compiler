@@ -2,7 +2,6 @@ import networkx as nx
 
 class ASTNode:
       
-    hash_ = 0
     parent = None
     derivation = []
     def_node = False
@@ -460,7 +459,6 @@ class variable(ASTNode): # check context
         
         if nx.has_path( graph , start_node , end_node):
             return 
-        
         
         pass    
     

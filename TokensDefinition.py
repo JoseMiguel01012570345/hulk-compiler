@@ -74,6 +74,10 @@ class LiteralToken(Token,ILiteralToken):
         
         return self._self_type
     
+    @property
+    def Text(self):
+        return self._text.replace('"','')
+    
     pass
 
 class OperatorToken(Token,IOperatorToken):

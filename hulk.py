@@ -89,6 +89,10 @@ if not Error:
     
     my_list = tokens + [SimbolEndToken()]
     
+    print([ item.Text for item in my_list ])
+
+    # input()
+    
     gp =P.Parser( my_list , use_saved_table=1 )
 
     ast = gp.tree

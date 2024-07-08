@@ -1,7 +1,5 @@
-protocol program {
+function f(){
 
-    type a {
+    new a();
 
-        
-    };
 };
