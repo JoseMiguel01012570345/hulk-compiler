@@ -1,5 +1,22 @@
 function f(){
 
-    a | b @ 3;
+    type b{
 
+    };
+
+    type a inherits b {
+
+    };
+
+    protocol x{
+
+    };
+
+    protocol z extends q{
+
+    };
+
+    let m = 10;
+
+    m + 10 ;
 };

@@ -2,20 +2,22 @@ import production_class_representation as pcr
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def context_checker(ast:pcr.ASTNode=None , error_list=[] , graph:nx.DiGraph=None , printing=0 ):
+def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
 
+    graph = nx.DiGraph()
+    
     # graph = build_in(graph)
     
+    ast.id += " ROOT"
+        
     solve_context( ast=ast , error_list=error_list  , graph=graph )
     
     if printing :
-        nx.draw(graph, with_labels=True, arrows=True)
-        
-        plt.show()
+        print_graph(graph=graph)
     
-    return
+    return graph
     
-def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= None , children=None , reference_node="type_Object" , all_let = False ):
+def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= None , children=None , reference_node="type_Object" , all_let = False , last_referent_node="" ):
     
     if children == None:
         children = ast.visitor_ast()    
@@ -30,26 +32,34 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
             # case 1: types , case 2: protocols , case 3: functions , case 4 : let
             if child.id == "type" or child.id == "protocol" or child.id == "def_function" or child.id == "let":
                 
-                error_list = def_node(graph,child,error_list , reference_node )
+                error_list = def_node_error(graph,child,error_list , reference_node , last_referent_node )
+                
                 def_children = def_node_children(child=child)
                 
                 if child.id != "let":
-                    error_list = solve_context(child , error_list , graph  , def_children , reference_node= f"{child.id}_{child.name.name}" , all_let= all_let )
+                    
+                    new_referent_node =f"{child.id}_{child.name.name}"
+                    
+                    graph = build_graph( graph=graph , parent=ast , child=child , reference_node=new_referent_node , last_reference_node=reference_node , chift=1 )
+                    
+                    error_list = solve_context(child , error_list , graph  , def_children , reference_node=new_referent_node , all_let= all_let , last_referent_node=reference_node )
                     continue
                 
-                error_list = solve_context(child , error_list , graph  , def_children , reference_node , all_let )
+                graph = build_graph( graph=graph , parent=ast , child=child , reference_node=reference_node , last_reference_node=last_referent_node )
                 
+                error_list = solve_context(child , error_list , graph  , def_children , reference_node , all_let , last_referent_node )
                 continue
+            
+            graph = build_graph( graph=graph , parent=ast , child=child , reference_node=reference_node , last_reference_node=last_referent_node )
             
             if child.id == "auto_call":
                 
-                error_list = solve_context(child , error_list , graph  , None , reference_node= "anonymus" , all_let= all_let )
-                
+                error_list = solve_context(child , error_list , graph  , None , reference_node= "anonymus" , all_let= all_let ,last_referent_node=last_referent_node)
                 continue
             
             if child.id == "args" and ast.id != "while" and ast.id != "for" and ast.id != "if" and ast.id != "elif" :
                 
-                error_list = solve_context(child , error_list , graph  , None , reference_node , all_let=True  )
+                error_list = solve_context(child , error_list , graph  , None , reference_node , all_let=True , last_referent_node=last_referent_node )
                 continue
                     
             if child.id == "function_call": # check if exits
@@ -57,8 +67,7 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 error_list = function_call(graph,child,error_list , reference_node )
                 children_function_call = def_node_children(child=child)
                 
-                error_list = solve_context( child , error_list , graph , children_function_call , reference_node , all_let )
-                
+                error_list = solve_context( child , error_list , graph , children_function_call , reference_node , all_let , last_referent_node )
                 continue
                 
             # check for existence
@@ -82,13 +91,13 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 line = ""
                 column =""
                 
-                dot_case( graph , error_list , right_node , left_node , line , column )
+                dot_case( graph , error_list , right_node , left_node , line , column , last_referent_node)
             
-            error_list = solve_context( child , error_list , graph , None , reference_node , all_let )
+            error_list = solve_context( child , error_list , graph , None , reference_node , all_let , last_referent_node )
                 
     return error_list
 
-def dot_case(graph:nx.DiGraph , error_list:list , right_node="" , left_node="" , line= "" , column = "" ):
+def dot_case(graph:nx.DiGraph , error_list:list , right_node="" , left_node="" , line= "" , column = "" , last_referent_node=""):
     
     if graph.has_edge( right_node , left_node):
         return error_list
@@ -108,7 +117,7 @@ def def_node_children(child:pcr.ASTNode):
     
     if child.__dict__.__contains__("parent_name"):
         
-        class aux:
+        class aux: # convert parent var <name> into a type <name>
             
             name = ""
             
@@ -123,40 +132,35 @@ def def_node_children(child:pcr.ASTNode):
     
     return children
 
-def def_node(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , reference_node):
+def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , reference_node , last_referent_node):
     
     scope = { "line":ast.line , "column":ast.column }
     
     if ast.__dict__.__contains__("inheritence") : # inheritence checking
         
-        start_node= reference_node
-        end_node = f"{ast.id}_{ast.name.name}"
+        inheritence = f"{last_referent_node}_{ast.id}_{ast.name.name}"
             
-        if graph.has_node(end_node) and nx.has_path( graph , start_node , end_node ):
+        if graph.has_node(inheritence):
             
-            parent_node = f"{ast.parent.id}_{ast.parent.name.name}"
-            graph.add_edge(parent_node , end_node)
+            parent_node = f"{last_referent_node}_{ast.parent.id}_{ast.parent.name.name}"
+            graph.add_edge(parent_node , inheritence)
             
             return error_list
+        
         else:
             
             error_type , error_description = inheritence_error(ast)
             error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
             
             return error_list
+    
     error_type , error_description = selector(ast)(ast)
     
     # ask for an edge existence
-    if graph.has_edge( reference_node , f"{ast.id}_{ast.name.name}"): # let has no name.name
+    if graph.has_node( f"{reference_node}_{ast.id}_{ast.name.name}"):
         
         error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
         return error_list
-        
-    
-    new_node = f"{ast.id}_{ast.name.name}"
-    
-    graph.add_edge( reference_node  , new_node)
-    graph.add_edge( new_node ,reference_node )
     
     return error_list
 
@@ -206,16 +210,16 @@ def function_case( ast:pcr.def_function) -> list:
 def let_case( ast:pcr.let) -> list:
     
     error_type = "variable definition"
-    error_description = f"variable {ast.name} has been already defined"
+    error_description = f"variable {ast.name.name} has been already defined"
     
     return error_type , error_description
 
-def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , reference_node ):
+def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , reference_node):
     
-    if graph.has_edge( reference_node , "let_"+ast.name):
+    if graph.has_node( f"{reference_node}_let_{ast.name}"):
         
-        graph.add_edge( f"let_{ast.name}_{ast.hash_}" , f"var_{ast.name}_{ast.hash_}" )
-        graph.add_edge( f"var_{ast.name}_{ast.hash_}" , f"let_{ast.name}_{ast.hash_}" )
+        graph.add_edge( f"{reference_node}_let_{ast.name}" , f"{reference_node}_var_{ast.name}" )
+        graph.add_edge( f"{reference_node}_var_{ast.name}" , f"{reference_node}_let_{ast.name}" )
         
         return error_list
     
@@ -227,12 +231,12 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , reference_no
     
         return error_list
 
-def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , reference_node):
+def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , reference_node ):
     
-    if graph.has_edge( reference_node , "def_function"+ast.name.name):
+    if graph.has_node( f"{reference_node}_def_function_{ast.name.name}" ):
         
-        graph.add_edge( f"def_function_{ast.name.name}_{ast.hash_}" , f"function_call_{ast.name.name}_{ast.hash_}" )
-        graph.add_edge( f"function_call_{ast.name.name}_{ast.hash_}" , f"def_function_{ast.name.name}_{ast.hash_}" )
+        graph.add_edge( f"{reference_node}_def_function_{ast.name.name}" ,  f"{reference_node}_function_call_{ast.name.name}" )
+        graph.add_edge( f"{reference_node}_function_call_{ast.name.name}" , f"{reference_node}_def_function_{ast.name.name}" )
         
         return error_list
     
@@ -309,5 +313,74 @@ def build_in(graph:nx.DiGraph):
     graph.add_node(type_String)
     graph.add_edge( type_String , def_function_print )
     graph.add_node(type_Boolean)
+    
+    return graph
+
+def print_graph(graph):
+    
+    nx.draw(graph, with_labels=True, arrows=True)
+    plt.show()
+    
+    pass
+
+def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node="type_Object" , last_reference_node="type_Object" , chift=0 ):
+    
+    if child.__dict__.__contains__("inheritence"):
+        return graph
+    
+    node1_id = ""
+    node1 = parent
+    node2_id = ""
+    node2 = child
+    
+    if child.def_node:        
+        
+        if parent.def_node:
+        
+            node1_id= last_reference_node
+            node2_id =reference_node
+        
+        else:
+            
+            if chift: # general case            
+                
+                node1_id=f"{last_reference_node}_{parent.id}"
+                node2_id=f"{last_reference_node}_{reference_node}"
+                
+            else: # let case    
+                node1_id=f"{reference_node}_{parent.id}"
+                node2_id=f"{reference_node}_{child.id}_{child.name.name}"
+                
+    elif child.id == "var" and not parent.def_node:
+            
+        node1_id=f"{reference_node}_{parent.id}"
+        node2_id=f"{reference_node}_var_{child.name}"
+            
+    elif child.id != "var":
+        
+        if parent.def_node:
+            
+            node1_id=f"{last_reference_node}_{reference_node}"
+            node2_id=f"{reference_node}_{child.id}"
+                
+        else:
+            
+            node1_id=f"{reference_node}_{parent.id}"
+            node2_id=f"{reference_node}_{child.id}"
+    
+    if node1_id != "" and node2_id != "":
+        graph = add_connection( graph=graph ,node1_id=node1_id ,node1= node1 ,node2= node2 ,node2_id= node2_id )
+        
+    return graph
+
+def add_connection( graph:nx.DiGraph , node1:pcr.ASTNode , node1_id:str , node2:pcr.ASTNode , node2_id:str ):
+    
+    '''
+    #### Connection from `node1` to `node2`
+    
+    '''
+    graph.add_node( node1_id , ASTNode= node1   )
+    graph.add_node( node2_id , ASTNode= node2   )
+    graph.add_edge( node1_id , node2_id   )
     
     return graph
