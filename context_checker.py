@@ -90,7 +90,10 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 error_list = variable(graph,child,error_list , stack_referent_node )
             
             if child.id == "instance":
-                pass
+
+                error_list = instance_case( graph=graph , ast=child , error_list=error_list , stack_referent_node=stack_referent_node )
+                
+                continue
                 
             if child.id == "dot": # check if exits right_node inside left_node
                 
@@ -100,11 +103,42 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
     return error_list
 
-def instance_case(graph:nx.DiGraph , error_list:list , stack_referent_node:list ): 
+def instance_case(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_referent_node:list ): 
     
+    i=len(stack_referent_node) - 1
     
+    while i >=0:
+        
+        refence_node = stack_referent_node[i]
+        
+        type_name = ast.node.name.name
+        
+        verify_node = f"{refence_node}_type_{type_name}"
+        
+        if graph.has_node(verify_node):
+            
+            type_node:pcr.ASTNode = graph.nodes[verify_node]["ASTNode"]
+            
+            if type_node.__dict__.__contains__("constructor") and \
+                len(type_node.constructor.expressions) == len(ast.node.args.expressions):
+                    
+                    return error_list
+            
+        i-=1
     
-    pass
+    error_type , error_description = instance_error(ast=ast)
+    scope = { "line": ast.line , "column": ast.column }
+    
+    error_list.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
+    
+    return error_list
+
+def instance_error(ast:pcr.ASTNode):
+    
+    error_type="type definition"
+    error_description=f"type {ast.node.name.name} is not defined in scope"
+    
+    return error_type , error_description
 
 def dot_case(graph:nx.DiGraph , error_list:list , right_node:pcr.ASTNode , left_node:pcr.ASTNode , reference_node=""):
     

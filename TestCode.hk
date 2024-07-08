@@ -57,6 +57,7 @@ type Range(min:Number, max:Number) {
 =======
 function program( b ) {
 
+<<<<<<< HEAD
 type z {
 
 q = 10;
@@ -439,6 +440,16 @@ function f(){
 >>>>>>> c9b795e (args, constructor and base added to obj id for context checking)
     
 >>>>>>> d685c53 (type checking fase)
+=======
+type a{
+
+};
+
+  new a();
+
+    y = 10;
+
+>>>>>>> 29bfa67 (instance context made)
 };
 >>>>>>> a767035 (grammar enriched , test are requiered)
 =======
