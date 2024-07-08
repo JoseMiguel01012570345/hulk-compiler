@@ -106,7 +106,7 @@ def conditional(self:pcr.ASTNode):
     return self.expressions
 
 def unary_opt(self:pcr.ASTNode):
-    return [self.right_node]
+    return [self.node]
 
 def ast_reducer(ast:pcr.ASTNode):
     
@@ -195,7 +195,7 @@ def non_reduce_node(id):
              "while",
              "else",
              "elif"
-             "new",
+             "instance",
              "!",
              "++",
              "--",

@@ -111,4 +111,9 @@ def conditional(token_list):
     return [ ( "expressions" , token_list ) ]
 
 def unary_opt(token_list):
-    return [ ( "right_node" , token_list[-1] ) ]
+
+    if hasattr(token_list[0],"id"):
+        return [ ( "node" , token_list[0] ) ]
+    else:
+        return [ ( "node" , token_list[1] ) ]
+

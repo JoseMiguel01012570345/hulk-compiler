@@ -24,6 +24,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -372,9 +373,13 @@ type program ( a ) inherits b () {
 =======
 protocol program {
 >>>>>>> 78e6708 (inheritence context checker, done)
+=======
+function f(){
+>>>>>>> 29b2e32 (new grammar generated)
 
-    type a {
+    new a();
 
+<<<<<<< HEAD
         
     };
 <<<<<<< HEAD
@@ -392,3 +397,6 @@ protocol program {
 =======
 };
 >>>>>>> 16650f8 (improving graph representation of an ast node)
+=======
+};
+>>>>>>> 29b2e32 (new grammar generated)

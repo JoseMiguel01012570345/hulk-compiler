@@ -103,6 +103,7 @@ if not Error:
     
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     # ------------PRINTS_TOKEN_SEQUENCE----------------
     # zz=[]
     # for item in my_list:
@@ -124,6 +125,12 @@ if not Error:
     gp =P.Parser( my_list )
 >>>>>>> 5798f64 (another fix to the parser)
 =======
+=======
+    print([ item.Text for item in my_list ])
+
+    # input()
+    
+>>>>>>> 29b2e32 (new grammar generated)
     gp =P.Parser( my_list , use_saved_table=1 )
 >>>>>>> e1988ab (fixing context issues)
 

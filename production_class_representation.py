@@ -33,6 +33,7 @@ class ASTNode:
       
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     anotated_type = None
 =======
     build_in = [
@@ -86,6 +87,8 @@ class ASTNode:
                 {'id': "let"          , 'name': 'self' }
                 
                 ]
+=======
+>>>>>>> 29b2e32 (new grammar generated)
     parent = None
 <<<<<<< HEAD
 =======
@@ -1513,7 +1516,6 @@ class if_(ASTNode):
         
         if nx.has_path( graph , start_node , end_node):
             return 
-        
         
         pass    
     
