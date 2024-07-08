@@ -53,11 +53,14 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 continue
                     
             if child.id == "function_call": # check if exits
+                
                 error_list = function_call(graph,child,error_list , reference_node )
-                error_list = solve_context(child , error_list , graph  , def_children , reference_node ,all_let )
+                children_function_call = def_node_children(child=child)
+                
+                error_list = solve_context( child , error_list , graph , children_function_call , reference_node , all_let )
                 
                 continue
-
+                
             # check for existence
             if child.id == "var":
                 error_list = variable(graph,child,error_list , reference_node )
@@ -151,8 +154,7 @@ def def_node(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , reference_no
         
     
     new_node = f"{ast.id}_{ast.name.name}"
-        
-    graph.add_node(new_node)
+    
     graph.add_edge( reference_node  , new_node)
     graph.add_edge( new_node ,reference_node )
     

@@ -207,7 +207,7 @@ let = [
 unary_opt = [
     
     # high_level -> new call
-    pcr.new({  "derivation": ["high_level",["new", "label" , "param" ]] , "identifier": "instance" , "definition_node?": False ,"builder": B.unary_opt , "visitor": V.unary_opt }),
+    pcr.new({  "derivation": ["high_level",["new", "call" ]] , "identifier": "instance" , "definition_node?": False ,"builder": B.unary_opt , "visitor": V.unary_opt }),
     
     # bool -> ! high_level
     pcr.not_({  "derivation": ["bool",["!","bool" ]] , "identifier": "!" , "definition_node?": False ,"builder": B.unary_opt , "visitor": V.unary_opt }),
@@ -233,19 +233,19 @@ binary_opt = [
     # ---------------------------
     
     # bool -> bool == concatenation
-    pcr.equal({ "derivation" : ["bool",["concatenation","==","bool"]] , "identifier": "equal" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    pcr.equal({ "derivation" : ["bool",["bool","==","concatenation"]] , "identifier": "equal" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     # bool -> bool >= concatenation
-    pcr.bigger_than({ "derivation" : ["bool",["concatenation",">=","bool"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    pcr.bigger_than({ "derivation" : ["bool",["bool",">=","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     # bool -> bool <= concatenation
-    pcr.smaller_than({ "derivation" : ["bool",["concatenation","<=","bool"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    pcr.smaller_than({ "derivation" : ["bool",["bool","<=","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     # bool -> bool & concatenation
-    pcr.and_({ "derivation" : ["bool",["concatenation","&","bool"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    pcr.and_({ "derivation" : ["bool",["bool","&","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     # bool -> bool | concatenation
-    pcr.or_({ "derivation" : ["bool",["concatenation","|","bool"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    pcr.or_({ "derivation" : ["bool",["bool","|","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     pcr.ASTNode({ "derivation" : ["bool",["concatenation"]] , "identifier": "." ,"definition_node?": False ,"builder": B.replacement  , "visitor": V.replacement } ),
     
