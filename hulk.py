@@ -6,6 +6,7 @@ import semantic_errors
 import visitor
 import context_checker
 
+system("cls")
 
 file = open('./TestCode.hk','r')
 code = file.read()
