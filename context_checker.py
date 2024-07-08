@@ -84,28 +84,40 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 "child.right_node.id_child.right_node.name"
                 
                 '''
-                left_node = ""
-                right_node = ""
                 
-                # line and column most be of the left node
-                line = ""
-                column =""
-                
-                dot_case( graph , error_list , right_node , left_node , line , column , last_referent_node)
+                dot_case( graph , error_list , child.right_node ,child.left_node , reference_node , last_referent_node)
             
             error_list = solve_context( child , error_list , graph , None , reference_node , all_let , last_referent_node )
                 
     return error_list
 
-def dot_case(graph:nx.DiGraph , error_list:list , right_node="" , left_node="" , line= "" , column = "" , last_referent_node=""):
+def dot_case(graph:nx.DiGraph , error_list:list , right_node:pcr.ASTNode , left_node:pcr.ASTNode , reference_node=""):
     
-    if graph.has_edge( right_node , left_node):
+    left_node = f"{reference_node}_{left_node.id}"
+    right_node = f"{left_node.type()}_{right_node.id}"
+    
+    # line and column most be of the left node
+    line = left_node.line
+    column =left_node.column
+    
+    if graph.has_node(left_node):
         return error_list
     
-    error_type = "attr definition"
-    error_description = f"attr {left_node} could not be found at {right_node}"
-    scope = { "line":line , "column":column }
-    error_list.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
+    else:
+        
+        error_type = "object used before declared"
+        error_description = f"object {left_node.name.name} is not declared in scope"
+        scope = { "line":line , "column":column }
+        error_list.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
+        
+    if graph.has_node( right_node):
+        return error_list
+    
+    else:
+        error_type = "attr definition"
+        error_description = f"object {right_node.name.name} is not accesable"
+        scope = { "line":line , "column":column }
+        error_list.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
     
     return error_list
 

@@ -2,21 +2,12 @@ function f(){
 
     type b{
 
-    };
-
-    type a inherits b {
+        let a = 10 ;
 
     };
 
-    protocol x{
+    let x = new b();
 
-    };
-
-    protocol z extends q{
-
-    };
-
-    let m = 10;
-
-    m + 10 ;
+    x.a;
+    
 };
