@@ -381,6 +381,7 @@ function f(){
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         
     };
 <<<<<<< HEAD
@@ -397,11 +398,15 @@ function f(){
     };
 
     type a inherits b {
+=======
+        let a = 10 ;
+>>>>>>> d685c53 (type checking fase)
 
     };
 
-    protocol x{
+    let x = new b();
 
+<<<<<<< HEAD
     };
 
     protocol z extends q{
@@ -412,6 +417,10 @@ function f(){
 
     m + 10 ;
 >>>>>>> 4bdf7dc (context fixed and graph building improved)
+=======
+    x.a;
+    
+>>>>>>> d685c53 (type checking fase)
 };
 >>>>>>> a767035 (grammar enriched , test are requiered)
 =======
