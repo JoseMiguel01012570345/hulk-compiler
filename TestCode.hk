@@ -377,7 +377,7 @@ protocol program {
 function f(){
 >>>>>>> 29b2e32 (new grammar generated)
 
-    new a();
+    a | b @ 3;
 
 <<<<<<< HEAD
         

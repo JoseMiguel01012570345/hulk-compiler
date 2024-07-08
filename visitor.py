@@ -194,14 +194,14 @@ def non_reduce_node(id):
              "for",
              "while",
              "else",
-             "elif"
+             "elif",
              "instance",
              "!",
              "++",
              "--",
              "args"
              ]
-    
+     
     return any( x == id for x in nodes )
 
 def reduce_node_condition(child:pcr.ASTNode) -> bool:
