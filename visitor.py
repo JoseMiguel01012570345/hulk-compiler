@@ -94,10 +94,10 @@ def function_call(self: pcr.ASTNode ):
     return children
 
 def for_while(self:pcr.ASTNode):
-    return [ self.args , self.body ]
+    return [ self.condition , self.body ]
 
 def if_else(self:pcr.ASTNode):
-    return [ self.args , self.body ]
+    return [ self.condition , self.body ]
 
 def else_(self:pcr.ASTNode):
     return [ self.body ]

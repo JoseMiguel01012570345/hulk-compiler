@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from Lexer import Lexer
 from RegExDefinitions import TokenConstrainedRegEx,TokenFinitRegEx
 from TokensDefinition import KeywordToken,SimbolToken,OperatorToken,VariableToken,LiteralToken,Type,SimbolEndToken
@@ -11,19 +12,25 @@ import GRAMMAR_PRODUCTIONS
 import translator
 =======
 >>>>>>> 12f9d30 (column and line showing when semantic error, done)
+=======
+
+from lexer import HULKLexer
+>>>>>>> bac6c5e (lexer fixed)
 import Parser as P
 from os import system
 import semantic_errors
 import visitor
 import context_checker
 
-def FiltToken(token):
-    return len(token.Text) > 0
 
-#_____________________________LEXER___________________________________________________
+file = open('./TestCode.hk','r')
+code = file.read()
+file.close()
 
-# build automaton to recognice language
+Lexer = HULKLexer()
+Lexer.LoadCode(code)
 
+<<<<<<< HEAD
 keyword_token_recognizer = TokenFinitRegEx(KEYWORD_VALUES,KeywordToken)
 
 simbol_token_recognizer = TokenFinitRegEx(SIMBOL_VALUES,SimbolToken)
@@ -124,11 +131,15 @@ if not Error:
     print([ item.Text for item in my_list ])
 
     # input()
+=======
+tokens = [token for token in Lexer.Tokenize()]
+>>>>>>> bac6c5e (lexer fixed)
 
 #__________________PARSER__________________________________________
 
 # go to parse
     
+<<<<<<< HEAD
 >>>>>>> 29b2e32 (new grammar generated)
     gp =P.Parser( my_list , use_saved_table=1 )
 >>>>>>> e1988ab (fixing context issues)
@@ -159,8 +170,20 @@ if not Error:
         exit()
 
     ast = visitor.ast_reducer(ast=ast)
+=======
+gp =P.Parser( [value[0] for value in tokens] , use_saved_table=1 )
+
+ast = gp.tree
+if ast == None: 
+>>>>>>> bac6c5e (lexer fixed)
     
+    print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
+    exit()
+
+ast = visitor.ast_reducer(ast=ast)
+
 #_________________________SEMANTIC CHEKING__________________________________
+<<<<<<< HEAD
     
     error_list = []
     
@@ -218,6 +241,30 @@ if not Error:
 >>>>>>> 3dcd092 (dot-comma to the blocks)
     
     print(AST.Code)
+=======
 
-    pass
+error_list = []
+
+context_error = semantic_errors.semantic_errors()
+
+# check types
+
+# check rules
+
+# check_context
+graph = context_checker.context_checker(ast=ast,error_list=error_list , printing= 1 )
+
+context_error.add_error(error_list)
+
+context_error.print_()
+
+#_________________________CODE GENERATION__________________________________
+
+>>>>>>> bac6c5e (lexer fixed)
+
+# AST = ASTCilBuilder( ast=ast )
+
+# print(AST.Code)
+
+pass
 #________________________END_____________________________________________

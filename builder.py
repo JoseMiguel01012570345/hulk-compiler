@@ -14,7 +14,7 @@ def var(token_list):
     if token_list[0].Type == TokenType.Variable:
         return [ ( "name" , token_list[0].Text ) ]
     else:
-        return [ ("id","literal") , ("value", token_list[0].Text ) , ("type" , token_list[0].SelfType.name) ]
+        return [ ("id","literal") , ("value", token_list[0].Text ) , ("type" , token_list[0].Type.name) ]
         
 def brackets(token_list):
     return [("replacement",token_list[1])]
