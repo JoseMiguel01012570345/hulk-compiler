@@ -65,7 +65,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
             
             graph = build_graph( graph=graph , parent=ast , child=child , reference_node=stack_referent_node[-1] , last_reference_node=stack_referent_node[-2] )
             
-            if child.id == "auto_call":
+            if child.id == "auto_call": # in case
                 
                 new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
                 new_stack.append("anonymus")    
@@ -75,7 +75,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                 error_list = solve_context_and_type(child , error_list , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
                 continue
             
-            if child.id == "args" and ast.def_node :
+            if child.id == "args" and ast.def_node : # set all args var to let var
                 
                 error_list = solve_context_and_type(child , error_list , graph  , None , all_let=True , stack_referent_node=stack_referent_node )
                 continue
@@ -88,11 +88,10 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                 error_list = solve_context_and_type( child , error_list , graph , children_function_call , all_let , stack_referent_node )
                 continue
             
-            # check for existence
-            if child.id == "var":
+            if child.id == "var":# check for existence
                 error_list = variable(graph,child,error_list , stack_referent_node )
             
-            if child.id == "instance":
+            if child.id == "instance": # instance case
 
                 error_list = instance_case( graph=graph , ast=child , error_list=error_list , stack_referent_node=stack_referent_node )
                 
@@ -103,7 +102,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                 continue
                 
             if child.id == "dot": # check if exits right_node inside left_node
-                dot_case( graph , error_list , child.right_node ,child.left_node , stack_referent_node[-1])
+                dot_case( graph , error_list , child.right_node ,child.left_node , stack_referent_node)
             
             error_list = solve_context_and_type( child , error_list , graph , None , all_let , stack_referent_node )
                 
@@ -146,7 +145,7 @@ def instance_error(ast:pcr.ASTNode):
     
     return error_type , error_description
 
-def dot_case(graph:nx.DiGraph , error_list:list , right_node:pcr.ASTNode , left_node:pcr.ASTNode , reference_node=""):
+def dot_case(graph:nx.DiGraph , error_list:list , right_node:pcr.ASTNode , left_node:pcr.ASTNode , stack_referent_node=""):
     
     # verifiy if in child.left_node type hierarchy exists child.right_node 
     # for that we will check if there exist a path from child.left_node type to
@@ -155,33 +154,64 @@ def dot_case(graph:nx.DiGraph , error_list:list , right_node:pcr.ASTNode , left_
     left_name = names(left_node)
     right_name =names(right_node)
     
-    child_left_node = f"{reference_node}_{left_node.id}_{left_name}"
-    child_right_node = f"{left_node.type()}_{right_node.id}_{right_name}"
+    target_type = left_node.type()
+    attr = f"{right_node.id}_{right_name}"
+    
+    child_left_node = f"{stack_referent_node[-1]}_{left_node.id}_{left_name}"
     
     # line and column most be of the left node
     line = left_node.line
     column =left_node.column
     
-    if graph.has_node(child_left_node):
-        return error_list
-    
-    else:
+    if not graph.has_node(child_left_node): # left node most exist
         
         error_type = "object used before declared"
         error_description = f"object {left_name} is not declared in scope"
         scope = { "line":line , "column":column }
         error_list.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
         
-    if graph.has_node( child_right_node ):
-        return error_list
+    result = inheritence_walker( graph=graph , target_type=target_type , attr=attr , stack_referent_node=stack_referent_node , state= len(stack_referent_node) - 1 )
     
-    else:
+    if not result:
+        
         error_type = "attr definition"
         error_description = f"object {right_name} is not accesable"
         scope = { "line":line , "column":column }
         error_list.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
     
     return error_list
+
+def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_referent_node:list , state= 0 ) -> bool:
+    
+    i = state
+    
+    # walk through all visible types that match with target_type and in adition , consider its inheritence
+    
+    while i>=0:
+        
+        referent_node = stack_referent_node[i]
+        
+        if graph.has_node(f"{referent_node}_{target_type}"):
+        
+            if graph.has_node(f"{referent_node}_{target_type}_{attr}"):
+                return True
+            
+            target_type_ast = graph.nodes[f"{referent_node}_{target_type}"]["ASTNode"]
+            
+            if target_type_ast.parent_name != None:
+                
+                parent_type = target_type_ast.parent_name.name.name
+                
+                result = inheritence_walker( graph , parent_type , i - 1 )
+                
+                if result:
+                    return True
+            
+            pass
+        
+        i-=1
+        
+    return False
 
 def def_node_children(child:pcr.ASTNode):
     
