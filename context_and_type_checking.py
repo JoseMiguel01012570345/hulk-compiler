@@ -16,14 +16,15 @@ def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
     
     ast.id += "ROOT"
         
-    solve_context( ast=ast , error_list=error_list  , graph=graph )
+    solve_context_and_type( ast=ast , error_list=error_list  , graph=graph )
     
     if printing :
         print_graph(graph=graph)
     
+    
     return graph
     
-def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= None , children=None , all_let = False , stack_referent_node:list=["","ROOT"] ):
+def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= None , children=None , all_let = False , stack_referent_node:list=["","ROOT"] ):
     
     if children == None:
         children = ast.visitor_ast()    
@@ -54,12 +55,12 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                     
                     # graph = build_in(graph=graph , stack_referent_node=new_stack )
                     
-                    error_list = solve_context(child , error_list , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
+                    error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
                     continue
                 
                 graph = build_graph( graph=graph , parent=ast , child=child , reference_node=stack_referent_node[-1] , last_reference_node=stack_referent_node[-2] )
                 
-                error_list = solve_context(child , error_list , graph  , def_children , all_let , stack_referent_node )
+                error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let , stack_referent_node )
                 continue
             
             graph = build_graph( graph=graph , parent=ast , child=child , reference_node=stack_referent_node[-1] , last_reference_node=stack_referent_node[-2] )
@@ -71,12 +72,12 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
                 # graph = build_in(graph=graph , stack_reference_node=new_stack )
                 
-                error_list = solve_context(child , error_list , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
+                error_list = solve_context_and_type(child , error_list , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
                 continue
             
             if child.id == "args" and ast.def_node :
                 
-                error_list = solve_context(child , error_list , graph  , None , all_let=True , stack_referent_node=stack_referent_node )
+                error_list = solve_context_and_type(child , error_list , graph  , None , all_let=True , stack_referent_node=stack_referent_node )
                 continue
                     
             if child.id == "function_call": # check if exits
@@ -84,7 +85,7 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 error_list = function_call(graph,child,error_list , stack_referent_node )
                 children_function_call = def_node_children(child=child)
                 
-                error_list = solve_context( child , error_list , graph , children_function_call , all_let , stack_referent_node )
+                error_list = solve_context_and_type( child , error_list , graph , children_function_call , all_let , stack_referent_node )
                 continue
             
             # check for existence
@@ -97,18 +98,17 @@ def solve_context( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= Non
                 
                 verify_instance_args = child.node.args.expressions
                 
-                error_list = solve_context( child , error_list , graph , verify_instance_args , all_let , stack_referent_node )
+                error_list = solve_context_and_type( child , error_list , graph , verify_instance_args , all_let , stack_referent_node )
                 
                 continue
                 
             if child.id == "dot": # check if exits right_node inside left_node
-                
                 dot_case( graph , error_list , child.right_node ,child.left_node , stack_referent_node[-1])
             
-            error_list = solve_context( child , error_list , graph , None , all_let , stack_referent_node )
+            error_list = solve_context_and_type( child , error_list , graph , None , all_let , stack_referent_node )
                 
     return error_list
-    
+
 def instance_case(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_referent_node:list ): 
     
     i=len(stack_referent_node) - 1
@@ -467,6 +467,10 @@ def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node
             
         node1_id=f"{reference_node}_{parent.id}"
         node2_id=f"{reference_node}_var_{child.name}"
+        graph = add_connection( graph=graph ,node1_id=node1_id ,node1= node1 ,node2= node2 ,node2_id= node2_id )
+        
+        node1_id=f"{reference_node}_var_{child.name}"
+        node2_id=f"{reference_node}_{parent.id}"
             
     elif child.id != "var":
         

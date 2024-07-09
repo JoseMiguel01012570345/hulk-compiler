@@ -103,6 +103,7 @@ class ASTNode:
     line = 10e306
     column =10e306
     expected_type = "any"
+    node_type = "any"
     
     def __init__(
         self, grammar= {
@@ -1283,7 +1284,11 @@ class double_dot(binary_opt): # the context of the right side is passed to the c
         pass
 =======
     def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
-        return self.right_node.type()
+        
+        right_node_type = self.right_node.type()
+        self.left_node.node_type = right_node_type
+        
+        return right_node_type
     
     pass
 
@@ -1293,10 +1298,12 @@ class double_dot_equal(binary_opt): # the context of the right side is passed to
         super().__init__(grammar)
     
     def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
-        return self.right_node.type()
+        
+        right_node_type = self.right_node.type()
+        self.left_node.node_type = right_node_type
+        
+        return right_node_type
     
-    pass
-
 class as_(binary_opt):
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
@@ -1539,24 +1546,19 @@ class unary_expression:
 
 class assign(binary_opt):
     
+    expected_type = "any"
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
     def type(self, graph: DiGraph = None, referene_node="", error_list: list = []):
         
-        left_node_type = self.left_node.type()
         right_node_type = self.right_node.type()
         
-        if left_node_type == "any":
-            return right_node_type
+        self.left_node.node_type = right_node_type
         
-        elif left_node_type == right_node_type:
-            return left_node_type
-        
-        else:
-            return "any"
-        
-    pass
+        return right_node_type
+    
     
 class or_(binary_opt):
     
@@ -1898,16 +1900,23 @@ class if_(ASTNode):
     
     def type(self, graph: nx.DiGraph = None, referene_node=""):
         
-        target_node = f"{referene_node}_let_{self.name}"
-        target_node_ast:ASTNode = graph.nodes[target_node]["ASTNode"]
+        neighborn_re_asigment = [ node for node in  graph.neighbors(f"{referene_node}_var_{self.name}") if "re_assigment" in node ]
         
-        if True:
+        if len(neighborn_re_asigment) == 0:
             
+            neighborn_asigment = [ node for node in  graph.neighbors(f"{referene_node}_var_{self.name}") if "assigment" in node ][0]
             
-            return
+            let_node_ast = graph.nodes[neighborn_asigment]["ASTNode"]
+
+            return let_node_ast.node_type
+        else:
+            
+            neighborn_re_asigment = neighborn_re_asigment[0]
+            
+            neighborn_re_asigment_ast = graph.nodes[neighborn_re_asigment]["ASTNode"]
+            
+            return neighborn_re_asigment_ast.node_type
         
-        
-        return target_node_ast.type()
     
 class conditional(ASTNode):
     
