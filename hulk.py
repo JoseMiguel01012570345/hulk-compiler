@@ -4,7 +4,7 @@ import Parser as P
 from os import system
 import semantic_errors
 import visitor
-import context_checker
+import context_and_type_checking
 
 system("cls")
 
@@ -42,7 +42,7 @@ context_error = semantic_errors.semantic_errors()
 # check rules
 
 # check_context
-graph = context_checker.context_checker(ast=ast,error_list=error_list , printing= 1 )
+graph = context_and_type_checking.context_checker(ast=ast,error_list=error_list , printing= 1 )
 
 context_error.add_error(error_list)
 
