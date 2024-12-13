@@ -1,17 +1,14 @@
-
-from lexer import HULKLexer
-import Parser as P
 from os import system
-import semantic_errors
-import visitor
-import context_and_type_checking
+
+from src.parser import Parser as P
+from src.semantic_check import context_and_type_checking, semantic_errors, visitor
+from src.lexer.lexer_definition import HULKLexer
 
 system("cls")
 
 file = open('./TestCode.hk','r')
 code = file.read()
 file.close()
-
 
 Lexer = HULKLexer()
 Lexer.LoadCode(code)
