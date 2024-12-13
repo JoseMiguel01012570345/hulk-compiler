@@ -1,21 +1,7 @@
+type program {
 
-    type p() {
-
-    let a = 10;
-    let b = "10";
-    let c = true;
-
-    a := "10";
-    a;
-
-    function f(){
-       
-        f();
-        4;
-    };
-
-    f() + 1;
-
-    };
-
-
+     function tan(x) { 
+        
+        sin(x) / cos(x);
+     };
+};

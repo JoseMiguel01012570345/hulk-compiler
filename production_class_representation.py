@@ -13,7 +13,15 @@ class ASTNode:
     expected_type = "any"
     node_type = "any"
     type_checker = False
+    rules = []
     
+    def check_rules(self):
+        
+        for rule in self.rules:
+            rule(self)
+
+        pass
+        
     def __init__(
         self, grammar= {
                         
@@ -121,8 +129,8 @@ class params( ASTNode):
 
 class binary_opt(ASTNode):
     
-    left_node = []
-    right_node = []
+    left_node = None
+    right_node = None
     type_checker = True
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
@@ -142,7 +150,6 @@ class dot(binary_opt):# the context of the left side is passed to the context of
     def type(self, graph: DiGraph = None, referent_node=""):
         return self.right_node.type( graph ,  referent_node  )
     
-
 class in_(binary_opt):
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
@@ -669,8 +676,8 @@ class variable(ASTNode): # check context
 class conditional(ASTNode):
     
     id = ""
-    condition = ASTNode
-    body = ASTNode
+    condition = None
+    body = None
         
     def __init__(self, grammar={ "derivation": "","identifier": "","definition_node?": "","builder": None,"visitor": None }, *args) -> None:
         super().__init__(grammar, *args)
@@ -752,9 +759,9 @@ class def_function(ASTNode): # check context
     
     '''
     id = ""
-    name = ASTNode
-    args = ASTNode
-    body = ASTNode
+    name = None
+    args = None
+    body = None
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)    
@@ -765,7 +772,7 @@ class def_function(ASTNode): # check context
         
         children.append("name")
         
-        if self.args != None:
+        if self.args is not None:
             children.append("args")
         
         children.append("body")
@@ -788,11 +795,11 @@ class type_(ASTNode): # check context
     > body
     
     '''
-    name = ASTNode
-    constructor = ASTNode
-    parent_name = ASTNode
-    base = ASTNode
-    body = ASTNode
+    name = None
+    constructor = None
+    parent_name = None
+    base = None
+    body = None
     
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
@@ -806,16 +813,16 @@ class type_(ASTNode): # check context
         if self.__dict__.__contains__("name"):
             children.append("name")
     
-        if self.parent_name != None:
+        if self.parent_name is not None:
             children.append("parent_name")
         
-        if self.constructor != None:
+        if self.constructor is not None:
             children.append("constructor")
             
-        if self.base != None:
+        if self.base is not None:
             children.append("base")
 
-        if self.body != None:
+        if self.body is not None:
             children.append( "body" )
         
         return children
@@ -835,9 +842,9 @@ class protocol(ASTNode): # check context
     
     '''
     id = ""
-    name = ASTNode
-    parent_name = ASTNode
-    body = ASTNode
+    name = None
+    parent_name = None
+    body = None
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
@@ -845,13 +852,13 @@ class protocol(ASTNode): # check context
     def children_name(self):
         children =[]
     
-        if self.name != None:
+        if self.name is not None:
             children.append("name")
         
-        if self.parent_name !=None:
+        if self.parent_name is not None:
             children.append("parent_name")
         
-        if self.body != None:
+        if self.body is not None:
             children.append("body")
         
         return children
@@ -910,8 +917,8 @@ class index(ASTNode): # check context
     
     '''
     
-    args = ASTNode
-    name = ASTNode
+    args = None
+    name = None
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
@@ -930,8 +937,8 @@ class while_(ASTNode):
     
     '''
     
-    condition = ASTNode
-    body = ASTNode
+    condition = None
+    body = None
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
@@ -953,8 +960,8 @@ class for_(ASTNode):
     
     '''
     
-    condition = ASTNode
-    body = ASTNode
+    condition = None
+    body = None
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)

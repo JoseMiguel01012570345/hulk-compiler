@@ -1,6 +1,6 @@
 import production_class_representation as pcr
 import networkx as nx
-import matplotlib.pyplot as plt
+from graph_utils import print_graph , build_graph , build_in
 from Utils import names
 
 class aux: # convert parent var <name> into a type <name>
@@ -26,14 +26,13 @@ def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
     
 def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= None , children=None , all_let = False , stack_referent_node:list=["","ROOT"] ):
     
-    if children == None:
-        children = ast.visitor_ast()    
+    if  children is None:
+        children = ast.visitor_ast()
     
-    for child in children :
+    for child in children:
     
-        if child != None:
-            
-            
+        if child is not None:
+                        
             if all_let and child.id == "var":
                 child.id = "let"
                 child.__dict__["name"] = aux(child.name)
@@ -49,14 +48,14 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                     
                     new_referent_node =f"{stack_referent_node[-1]}_{child.id}_{child.name.name}" # new scope
                     
-                    new_stack = [ item for item in stack_referent_node] # add the context to the stack(we are entering in new context)
+                    new_stack = [ item for item in stack_referent_node] # add the context to the stack(we are entering into new context)
                     new_stack.append(new_referent_node)
                     
                     # build graph adding new context
                     graph = build_graph( graph=graph , parent=ast , child=child , reference_node=new_stack[-1] , last_reference_node=new_stack[-2] , chift=1 )
                     
                     # import build-ins
-                    # graph = build_in(graph=graph , stack_referent_node=new_stack )
+                    graph = build_in(graph=graph , stack_referent_node=new_stack )
                     
                     error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
                     continue
@@ -262,10 +261,10 @@ def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_
     error_type , error_description = selector(ast)(ast)
     
     # ask for an edge existence
-    if graph.has_node( f"{stack_referent_node[-1]}_{ast.id}_{ast.name.name}"):
+    reference_node = f"{stack_referent_node[-1]}_{ast.id}_{ast.name.name}"
+    if graph.has_node( reference_node ):
         
-        node_ast = graph.nodes[f"{reference_node}_{ast.id}_{ast.name.name}"]["ASTNode"]
-        
+        node_ast = graph.nodes[ reference_node ]["ASTNode"]
         
         args = args_checking( ast , node_ast )
         
@@ -279,121 +278,41 @@ def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_
         
     return error_list
 
-def let_var_case( graph:nx.DiGraph , stack_referent_node:list , child:pcr.ASTNode ) -> nx.DiGraph:
+def args_checking( referent_node:pcr.ASTNode , ast:pcr.ASTNode ):
     
-    graph.add_edge(stack_referent_node[-1] , f"{stack_referent_node[-1]}_var_{child.name.name}")
-    
-    return graph
-
-def args_checking( node_ast:pcr.ASTNode , ast:pcr.ASTNode ):
     '''
     returns True if amount of arguments is the same
+    
+    ast: is the node to be checked
+    
     '''
+    
     if ast.id == "def_function":
         
-        if len(node_ast.args.expressions) != len(ast.args.expressions):
+        if len(referent_node.args.expressions) != len(ast.args.expressions):
             return False
         
     if ast.id == "type":
         
-        if ast.__dict__.__contains__("constructor") and node_ast.__dict__.__contains__("constructor"):
+        if ast.__dict__.__contains__("constructor") and referent_node.__dict__.__contains__("constructor"):
             
-            if len(ast.constructor.expressions) != len(node_ast.constructor.expressions):
-                return False
+            if len(ast.constructor.expressions) != len(referent_node.constructor.expressions):
+                return False # they are not the same type because of different number of arguments
         else:
-            return False
+            return False # ast is a static class and referent node is a class with constructor
         
-        if ast.__dict__.__contains__("base") and node_ast.__dict__.__contains__("base"):
+        if ast.__dict__.__contains__("base") and referent_node.__dict__.__contains__("base"):
             
-            if len(ast.base.expressions) != len(node_ast.base.expressions):
-                return False
-        elif ast.__dict__.__contains__("base") or node_ast.__dict__.__contains__("base") :
-            return False
+            if len(ast.base.expressions) != len(referent_node.base.expressions):
+                return False #  they are not the same type because of different number of arguments in base constructor
+        elif ast.__dict__.__contains__("base") or referent_node.__dict__.__contains__("base") :
+            return False # they are different because one of them has a base constructor
         
     return True
 
-def inheritence_error(ast:pcr.ASTNode):
-    
-    error_type = "inheritence"
-    
-    if ast.id == "type":
-        error_description = f"type {ast.name.name} could not be found"
-    else:
-        error_description = f"protocol {ast.name.name} could not be found"
-    
-    return error_type , error_description
-
-def selector(ast):
-    
-    type_errors = [ ( type_case , "type") , (protocol_case , "protocol") , (function_case , "def_function") , (let_case , "let" ) ]
-    my_func = ""
-    
-    for element in type_errors:
-        
-        if element[1] == ast.id:
-            my_func = element[0]
-            return my_func
-    
-def type_case( ast:pcr.type_ ):
-    
-    error_type = "type definition"
-    error_description = f"type {ast.name.name} has been already defined"
-    
-    return error_type , error_description
-
-def protocol_case( ast:pcr.protocol ) -> list:
-    
-    error_type = "protocol definition"
-    error_description = f"protocol {ast.name.name} has been already defined"
-    
-    return error_type , error_description
-    
-def function_case( ast:pcr.def_function) -> list:
-    
-    error_type = "function definition"
-    error_description = f"function {ast.name.name} has been already defined"
-        
-    return error_type , error_description
-
-def let_case( ast:pcr.let) -> list:
-    
-    error_type = "variable definition"
-    error_description = f"variable {ast.name.name} has been already defined"
-    
-    return error_type , error_description
-
-def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , stack_referent_node):
-    
-    if ast.name == "self": # self case
-            
-        referent_node = stack_referent_node[-1]    
-        referent_node_ast: pcr.ASTNode = graph.nodes[stack_referent_node[-1]]["ASTNode"]    
-        
-        if "type" in referent_node and referent_node_ast.constructor != None : # if there is a referent type node with a constructor , we add var self to graph
-            
-            graph.add_edge( referent_node , f"{referent_node}_var_{ast.name}")
-        
-            return error_list
-        
-    for reference_node in stack_referent_node:
-    
-        if graph.has_node( f"{reference_node}_let_{ast.name}"): # check if variable is accesable from outter context from its position
-            
-            graph.add_edge( f"{reference_node}_let_{ast.name}" , f"{stack_referent_node[-1]}_var_{ast.name}" )
-            graph.add_edge( f"{reference_node}_var_{ast.name}" , f"{stack_referent_node[-1]}_let_{ast.name}" )
-            
-            return error_list
-    
-    error_type = "variable usage"
-    error_description = f"variable {ast.name} is used before assigned"    
-    scope = { "line":ast.line , "column":ast.column }
-    error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
-
-    return error_list
-
 def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , stack_referent_node ):
     
-    i = len(stack_referent_node) - 1
+    i = stack_referent_node[- 1]
     
     my_node = None
     
@@ -445,134 +364,91 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , st
     error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
 
     return error_list
-        
-def build_in(graph:nx.DiGraph , stack_referent_node:list ):
-    
-    type_object = "type_Object"
-    def_function_print = "def_function_print"
-    type_Number = "type_Number"
-    let_e = "let_e"
-    let_PI = "let_PI"
-    def_function_tan = "def_function_tan"
-    def_function_cot = "def_function_cot"
-    def_function_sqrt = "def_function_sqrt"
-    def_function_sin = "def_function_sin"
-    def_function_cos = "def_function_cos"
-    def_function_log = "def_function_log"
-    def_function_exp = "def_function_exp"
-    def_function_rand = "def_function_rand"
-    def_function_range = "def_function_range"
-    type_String = "type_String"
-    type_Boolean = "type_Boolean"
-    
-    graph.add_node(type_object , ASTNode=pcr.object)
-    graph.add_node(def_function_print , ASTNode=pcr.print)
-    graph.add_node(type_Number , ASTNode=pcr.Number)
-    graph.add_node(let_e , ASTNode=pcr.e)
-    graph.add_node(let_PI , ASTNode=pcr.PI)
-    graph.add_node(def_function_tan , ASTNode=pcr.tan)
-    graph.add_node(def_function_cot , ASTNode=pcr.cot)
-    graph.add_node(def_function_sqrt , ASTNode=pcr.sin)
-    graph.add_node(def_function_sin , ASTNode=pcr.sin)
-    graph.add_node(def_function_cos , ASTNode=pcr.cos)
-    graph.add_node(def_function_log , ASTNode=pcr.log)
-    graph.add_node(def_function_exp , ASTNode=pcr.exp)
-    graph.add_node(def_function_rand , ASTNode=pcr.rand)
-    graph.add_node(def_function_range , ASTNode=pcr.range)
-    graph.add_node(type_String , ASTNode=pcr.String)
-    graph.add_node(type_Boolean , ASTNode=pcr.Boolean)
 
-    graph.add_edge( f"{stack_referent_node[-1]}" , type_object )
-    graph.add_edge( f"{stack_referent_node[-1]}" , type_Number )
-    graph.add_edge( f"{stack_referent_node[-1]}" , type_Boolean )
-    graph.add_edge( f"{stack_referent_node[-1]}" , type_String )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_cos )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_cot )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_exp )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_log )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_rand )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_sqrt )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_range )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_tan )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_sin )
-    graph.add_edge( f"{stack_referent_node[-1]}" , let_e )
-    graph.add_edge( f"{stack_referent_node[-1]}" , let_PI )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_print )
+def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , stack_referent_node):
+    
+    if ast.name == "self": # self case
+            
+        referent_node = stack_referent_node[-1]    
+        referent_node_ast: pcr.ASTNode = graph.nodes[stack_referent_node[-1]]["ASTNode"]    
+        
+        if "type" in referent_node and referent_node_ast.constructor != None : # if there is a referent type node with a constructor , we add var self to graph
+            
+            graph.add_edge( referent_node , f"{referent_node}_var_{ast.name}")
+        
+            return error_list
+        
+    for reference_node in stack_referent_node:
+    
+        if graph.has_node( f"{reference_node}_let_{ast.name}"): # check if variable is accesable from outter context from its position
+            
+            graph.add_edge( f"{reference_node}_let_{ast.name}" , f"{stack_referent_node[-1]}_var_{ast.name}" )
+            graph.add_edge( f"{reference_node}_var_{ast.name}" , f"{stack_referent_node[-1]}_let_{ast.name}" )
+            
+            return error_list
+    
+    error_type = "variable usage"
+    error_description = f"variable {ast.name} is used before assigned"    
+    scope = { "line":ast.line , "column":ast.column }
+    error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
+
+    return error_list
+
+def inheritence_error(ast:pcr.ASTNode):
+    
+    error_type = "inheritence"
+    
+    if ast.id == "type":
+        error_description = f"type {ast.name.name} could not be found"
+    else:
+        error_description = f"protocol {ast.name.name} could not be found"
+    
+    return error_type , error_description
+
+def selector(ast): # switch case
+    
+    type_errors = [ ( type_case , "type") , (protocol_case , "protocol") , (function_case , "def_function") , (let_case , "let" ) ]
+    my_func = ""
+    
+    for element in type_errors:
+        
+        if element[1] == ast.id:
+            my_func = element[0]
+            return my_func
+
+def let_var_case( graph:nx.DiGraph , stack_referent_node:list , child:pcr.ASTNode ) -> nx.DiGraph:
+    
+    graph.add_edge(stack_referent_node[-1] , f"{stack_referent_node[-1]}_var_{child.name.name}")
     
     return graph
 
-def print_graph(graph):
+def type_case( ast:pcr.type_ ):
     
-    nx.draw(graph, with_labels=True, arrows=True)
-    plt.show()
+    error_type = "type definition"
+    error_description = f"type {ast.name.name} has been already defined"
     
-    pass
+    return error_type , error_description
 
-def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node="type_Object" , last_reference_node="type_Object" , chift=0 ):
+def protocol_case( ast:pcr.protocol ) -> list:
     
-    if child.__dict__.__contains__("inheritence"):
-        return graph
+    error_type = "protocol definition"
+    error_description = f"protocol {ast.name.name} has been already defined"
     
-    node1_id = ""
-    node1 = parent
-    node2_id = ""
-    node2 = child
+    return error_type , error_description
     
-    if child.def_node:        
-        
-        if parent.def_node:
-        
-            node1_id= last_reference_node
-            node2_id =reference_node
-        
-        else:
-            
-            if chift: # general case            
-                
-                node1_id=f"{last_reference_node}"
-                node2_id=f"{reference_node}"
-                
-            else: # let case    
-                node1_id=f"{reference_node}_{parent.id}"
-                node2_id=f"{reference_node}_{child.id}_{child.name.name}"
-                
-    elif child.id == "var" and not parent.def_node:
-            
-        node1_id=f"{reference_node}_{parent.id}"
-        node2_id=f"{reference_node}_var_{child.name}"
-        graph = add_connection( graph=graph ,node1_id=node1_id ,node1= node1 ,node2= node2 ,node2_id= node2_id )
-        
-        node1_id=f"{reference_node}_var_{child.name}"
-        node2_id=f"{reference_node}_{parent.id}"
-            
-    elif child.id != "var":
-        
-        if parent.def_node:
-            
-            node1_id=f"{reference_node}"
-            node2_id=f"{reference_node}_{child.id}"
-                
-        else:
-            
-            node1_id=f"{reference_node}_{parent.id}"
-            node2_id=f"{reference_node}_{child.id}"
+def function_case( ast:pcr.def_function) -> list:
     
-    if node1_id != "" and node2_id != "":
-        graph = add_connection( graph=graph ,node1_id=node1_id ,node1= node1 ,node2= node2 ,node2_id= node2_id )
+    error_type = "function definition"
+    error_description = f"function {ast.name.name} has been already defined"
         
-    return graph
+    return error_type , error_description
 
-def add_connection( graph:nx.DiGraph , node1:pcr.ASTNode , node1_id:str , node2:pcr.ASTNode , node2_id:str ):
+def let_case( ast:pcr.let) -> list:
     
-    '''
-    #### Connection from `node1` to `node2`
+    error_type = "variable definition"
+    error_description = f"variable {ast.name.name} has been already defined"
     
-    '''
-    graph.add_node( node1_id , ASTNode= node1   )
-    graph.add_node( node2_id , ASTNode= node2   )
-    graph.add_edge( node1_id , node2_id   )
-    
-    return graph
+    return error_type , error_description
 
 def type_error( ast_node:pcr.ASTNode ):
     
@@ -580,10 +456,10 @@ def type_error( ast_node:pcr.ASTNode ):
     error_description=""
     
     if type(ast_node) == pcr.binary_opt:
-        error_type="operation peformance"
+        error_type="type error"
         error_description = "operation can not be peformed between different types"
     else:
-        error_type="operation peformance"
+        error_type="type error"
         error_description = f"operation can not be peformed , expected type { ast_node.expected_type } , dismatchs"
     
     return error_type , error_description
