@@ -1,4 +1,11 @@
 /test.py
-/automata_states_log
+/src/parse/automata_states_log
 /.vscode
 /__pycache__
+/src/parser/__pycache__
+/src/lexer/__pycache__
+/src/status/__pycache__
+/src/semantic_check/__pycache__
+/src/CIL/__pycache__
+/src/automaton/__pycache__
+/src/__pycache__
