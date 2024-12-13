@@ -1,4 +1,3 @@
-
 def isNumeric(text):
     
     if text.isnumeric():
