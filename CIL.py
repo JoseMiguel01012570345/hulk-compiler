@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from EnumIntermediateCodeDefinitions import IntermediateCodeType
 from IntermediateCodeGeneratorDefinitions import *
 
@@ -255,3 +256,11 @@ def ASTCilBuilder(ast):
     return CilTree(cilnode,trees)
 
 # ################################COMPROBANDO#######################
+=======
+
+class CilTree:
+
+    
+
+    pass    
+>>>>>>> jhosef

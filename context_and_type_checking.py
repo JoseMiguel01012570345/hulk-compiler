@@ -316,7 +316,11 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , st
     
     my_node = None
     
+<<<<<<< HEAD
     while i>=0:
+=======
+    while i >= 0:
+>>>>>>> jhosef
         
         node = stack_referent_node[i]
         

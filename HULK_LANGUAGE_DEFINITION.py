@@ -369,4 +369,8 @@ SYMBOLS_and_OPERATORS_parser=[
     "]",
     "@@",
     '**',
+<<<<<<< HEAD
 ]
+=======
+]
+>>>>>>> jhosef
