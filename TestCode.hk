@@ -26,6 +26,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 function tan(x: Number): Number => sin(x) / cos(x);
 function cot(x) => 1 / tan(x);
 function operate(x, y) {
@@ -490,3 +491,12 @@ type a{
 
 
 >>>>>>> bac6c5e (lexer fixed)
+=======
+type program {
+
+     function tan(x) { 
+        
+        sin(x) / cos(x);
+     };
+};
+>>>>>>> 8527124 (refactoring)

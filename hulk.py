@@ -28,6 +28,7 @@ file = open('./TestCode.hk','r')
 code = file.read()
 file.close()
 
+
 Lexer = HULKLexer()
 Lexer.LoadCode(code)
 
@@ -136,9 +137,11 @@ if not Error:
 tokens = [token for token in Lexer.Tokenize()]
 >>>>>>> bac6c5e (lexer fixed)
 
+
 #__________________PARSER__________________________________________
 
 # go to parse
+<<<<<<< HEAD
     
 <<<<<<< HEAD
 >>>>>>> 29b2e32 (new grammar generated)
@@ -172,9 +175,13 @@ tokens = [token for token in Lexer.Tokenize()]
 
     ast = visitor.ast_reducer(ast=ast)
 =======
+=======
+>>>>>>> 8527124 (refactoring)
 gp =P.Parser( [value[0] for value in tokens] , use_saved_table=1 )
 
 ast = gp.tree
+
+
 if ast == None: 
 >>>>>>> bac6c5e (lexer fixed)
     

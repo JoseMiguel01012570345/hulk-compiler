@@ -61,6 +61,7 @@ class Parser:
         self._match = False
         self._stack = []
         self.derivation_Tree = None
+<<<<<<< HEAD
         
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -100,8 +101,11 @@ class Parser:
 =======
         self.read_from_json(1)
 =======
+=======
+>>>>>>> 8527124 (refactoring)
         self.read_from_json(use_saved_table)
 >>>>>>> e1988ab (fixing context issues)
+        
         
         if len(self.parser_table) == 0:
         
@@ -123,6 +127,7 @@ class Parser:
 >>>>>>> ddcf070 (improvements to run the parser , parser_table saved in json)
         
         ok , tree = self.parse_input(code=code)
+        
         self.tree = tree
         
         if not ok:
@@ -499,7 +504,7 @@ class Parser:
             if  derivation_pivote + 1 >= len(right_derivation_side) or \
                 right_derivation_side[ derivation_pivote + 1] != item:
                 
-                if  state[i]["pivote"] == len(state[i]["production"][1]) -1 and state[i]["look_ahead"] == item :
+                if  state[i]["pivote"] == len(state[i]["production"][1]) -1 and state[i]["look_ahead"] == item : # reduce
                     
                     if found:
                         

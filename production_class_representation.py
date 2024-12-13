@@ -105,7 +105,15 @@ class ASTNode:
     expected_type = "any"
     node_type = "any"
     type_checker = False
+    rules = []
     
+    def check_rules(self):
+        
+        for rule in self.rules:
+            rule(self)
+
+        pass
+        
     def __init__(
         self, grammar= {
                         
@@ -666,8 +674,8 @@ class params( ASTNode):
 
 class binary_opt(ASTNode):
     
-    left_node = []
-    right_node = []
+    left_node = None
+    right_node = None
     type_checker = True
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
@@ -687,6 +695,7 @@ class dot(binary_opt):# the context of the left side is passed to the context of
     def type(self, graph: DiGraph = None, referent_node=""):
         return self.right_node.type( graph ,  referent_node  )
     
+<<<<<<< HEAD
 <<<<<<< HEAD
     def check_right_side_context(self, type_name , attr_name , attr_id ):
         
@@ -721,6 +730,13 @@ class dot(binary_opt):# the context of the left side is passed to the context of
 =======
 >>>>>>> 5f68b21 (self hide , made)
 
+=======
+class in_(binary_opt):
+    
+    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+        super().__init__(grammar)
+    
+>>>>>>> 8527124 (refactoring)
     pass
 
 class binary_expression:
@@ -1945,8 +1961,8 @@ class if_(ASTNode):
 class conditional(ASTNode):
     
     id = ""
-    condition = ASTNode
-    body = ASTNode
+    condition = None
+    body = None
         
     def __init__(self, grammar={ "derivation": "","identifier": "","definition_node?": "","builder": None,"visitor": None }, *args) -> None:
         super().__init__(grammar, *args)
@@ -2311,9 +2327,9 @@ class def_function(ASTNode): # check context
         
 =======
     id = ""
-    name = ASTNode
-    args = ASTNode
-    body = ASTNode
+    name = None
+    args = None
+    body = None
     
 >>>>>>> 1954534 (using networkx for type_checking and context_checking)
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
@@ -2325,7 +2341,7 @@ class def_function(ASTNode): # check context
         
         children.append("name")
         
-        if self.args != None:
+        if self.args is not None:
             children.append("args")
         
         children.append("body")
@@ -2357,11 +2373,11 @@ class type_(ASTNode): # check context
     > body
     
     '''
-    name = ASTNode
-    constructor = ASTNode
-    parent_name = ASTNode
-    base = ASTNode
-    body = ASTNode
+    name = None
+    constructor = None
+    parent_name = None
+    base = None
+    body = None
     
     
     avaliable = False
@@ -2443,12 +2459,13 @@ class type_(ASTNode): # check context
         if self.__dict__.__contains__("name"):
             children.append("name")
     
-        if self.parent_name != None:
+        if self.parent_name is not None:
             children.append("parent_name")
         
-        if self.constructor != None:
+        if self.constructor is not None:
             children.append("constructor")
             
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2532,6 +2549,12 @@ class type_(ASTNode): # check context
 
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
         if self.body != None:
+=======
+        if self.base is not None:
+            children.append("base")
+
+        if self.body is not None:
+>>>>>>> 8527124 (refactoring)
             children.append( "body" )
         
         return children
@@ -2590,9 +2613,9 @@ class protocol(ASTNode): # check context
 <<<<<<< HEAD
 =======
     id = ""
-    name = ASTNode
-    parent_name = ASTNode
-    body = ASTNode
+    name = None
+    parent_name = None
+    body = None
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
@@ -2658,9 +2681,10 @@ class protocol(ASTNode): # check context
         children =[]
 >>>>>>> 401b67f (ast_reduction and grammar improved , grammar: added label non terminal)
     
-        if self.name != None:
+        if self.name is not None:
             children.append("name")
         
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -2694,9 +2718,12 @@ class protocol(ASTNode): # check context
 =======
         if self.parent_name !=None:
 >>>>>>> 5f68b21 (self hide , made)
+=======
+        if self.parent_name is not None:
+>>>>>>> 8527124 (refactoring)
             children.append("parent_name")
         
-        if self.body != None:
+        if self.body is not None:
             children.append("body")
         
         return children
@@ -2857,6 +2884,7 @@ class index(ASTNode): # check context
     '''
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     avaliable = False
     args = None
     name = None
@@ -2865,6 +2893,10 @@ class index(ASTNode): # check context
     args = ASTNode
     name = ASTNode
 >>>>>>> 1954534 (using networkx for type_checking and context_checking)
+=======
+    args = None
+    name = None
+>>>>>>> 8527124 (refactoring)
     
     def __init__(self,token_list):
         
@@ -2954,6 +2986,7 @@ class while_(ASTNode):
     '''
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     avaliable = False
     condition = None
     body = None
@@ -2962,6 +2995,10 @@ class while_(ASTNode):
     condition = ASTNode
     body = ASTNode
 >>>>>>> 1954534 (using networkx for type_checking and context_checking)
+=======
+    condition = None
+    body = None
+>>>>>>> 8527124 (refactoring)
     
 <<<<<<< HEAD
     def __init__(self,token_list):
@@ -3020,6 +3057,7 @@ class for_(ASTNode):
     
     '''
     
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     avaliable = False
@@ -3115,6 +3153,10 @@ class for_(ASTNode):
 =======
     condition = ASTNode
     body = ASTNode
+=======
+    condition = None
+    body = None
+>>>>>>> 8527124 (refactoring)
     
 >>>>>>> 1954534 (using networkx for type_checking and context_checking)
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
