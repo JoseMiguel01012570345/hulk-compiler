@@ -104,8 +104,10 @@ class function_call( ASTNode): # check context
 
         target_node = f"{referent_node}_def_function_{ self.name.name}"
         
-        target_node_ast:ASTNode = graph.nodes[target_node]["ASTNode"]
+        if not graph.has_node( target_node ):
+            return 'any'
         
+        target_node_ast:ASTNode = graph.nodes[target_node]["ASTNode"]
         return target_node_ast.type( graph ,  referent_node  )
     
 class params( ASTNode):

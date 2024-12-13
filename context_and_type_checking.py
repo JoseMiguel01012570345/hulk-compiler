@@ -312,7 +312,7 @@ def args_checking( referent_node:pcr.ASTNode , ast:pcr.ASTNode ):
 
 def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , stack_referent_node ):
     
-    i = stack_referent_node[- 1]
+    i = len(stack_referent_node) - 1
     
     my_node = None
     
