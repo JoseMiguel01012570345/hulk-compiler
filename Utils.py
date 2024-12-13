@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 
->>>>>>> jhosef
 def isNumeric(text):
     
     if text.isnumeric():
@@ -27,8 +24,4 @@ def names(node):
         return node.name
     else:
         return node.name.name
-<<<<<<< HEAD
     
-=======
-    
->>>>>>> jhosef
