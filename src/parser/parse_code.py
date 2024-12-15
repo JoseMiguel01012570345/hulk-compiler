@@ -2,18 +2,22 @@ import copy
 from ..lexer import HULK_LANGUAGE_DEFINITION 
 symb_and_op = HULK_LANGUAGE_DEFINITION .SYMBOLS_and_OPERATORS_parser  
 from . import GRAMMAR_PRODUCTIONS as GD
-from src.semantic_check import context_and_type_checking, semantic_errors, visitor
+from src.semantic_check import context_and_type_checking, visitor , semantic_errors
+ctck = context_and_type_checking
+
 import json
 
 def parse_input( code ):
 
-    parser_table =  read_from_json()    
+    parser_table =  read_from_json()
+    graph = ctck.context_checker()
+    s_error = semantic_errors.semantic_errors()
     
     symbols = []
     state = [0]
     tree = []
     error = False
-    error_list = []
+    error_log = []
     
     k = 0
     while k < len(code):
@@ -64,8 +68,11 @@ def parse_input( code ):
             
             ast = copy.deepcopy(result_ast)
             
-            ast_initialized = ast.ignition(token_list=token_list)
-            ast_reduced = visitor.ast_reducer(ast=ast_initialized)
+            ast_initialized = ast.ignition(token_list=token_list) # initialize ast
+            ast_reduced = visitor.ast_reducer(ast=ast_initialized) # reduce ast
+            error_log = ctck.solve_context_and_type( graph=graph , ast=ast_reduced , error_log=error_log ) # check context and type
+            s_error.add_error(error_log) # add errors to error list
+
             tree.append( ast_reduced )
                 
             key_stone = result[0][0]
@@ -92,16 +99,15 @@ def parse_input( code ):
         k +=1
     
     if error:
+        s_error.print_() # print errors of error_log
         exit()
     
     print(f"\033[1;32m GOOD syntaxis \033[0m")
     
-    return tree[0] , error_list
+    return tree[0] , error_log
 
-def search_ast_in_grammar( i ):
-        
+def search_ast_in_grammar( i ):        
         grammar = GD.grammar
-        
         k = 0
         for feature in grammar:
             

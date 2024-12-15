@@ -24,6 +24,8 @@ tokens = [token for token in Lexer.Tokenize()]
 # parse code
 ast , error_list = parse_input( code=[value[0] for value in tokens] )
 
+semantic_errors
+
 if ast == None: 
     
     print(" \033[1;32m >\033[1;31m Syntaxis errors :( \033[0m")

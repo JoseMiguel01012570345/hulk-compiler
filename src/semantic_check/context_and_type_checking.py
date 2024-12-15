@@ -13,26 +13,19 @@ class aux: # convert parent var <name> into a type <name>
     def __init__(self,my_name) -> None:
         self.name = my_name
 
-
-# __________________TODO: HACER EL RECORRIDO SEMANTICO EN ORDEN CON EL PARSER__________________
-def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
+def context_checker( printing=0 ):
 
     graph = nx.DiGraph()
     
-    ast.id += "ROOT"
-    
     # import build-ins
     graph = build_in(graph=graph )
-                    
-    solve_context_and_type( ast=ast , error_list=error_list  , graph=graph )
     
     if printing :
         print_graph(graph=graph)
     
-    
     return graph
     
-def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= None , children=None , all_let = False , stack_referent_node:list=["","ROOT"] ):
+def solve_context_and_type( ast:pcr.ASTNode=None , error_log=[] , graph: nx.DiGraph= None , children=None , all_let = False , stack_referent_node:list=[""] ):
     
     if  children is None:
         children = ast.visitor_ast()
@@ -49,7 +42,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
             # case 1: types , case 2: protocols , case 3: functions , case 4 : let
             if child.id == "type" or child.id == "protocol" or child.id == "def_function" or child.id == "let":
                 
-                error_list = def_node_error(graph,child,error_list , stack_referent_node )
+                error_log = def_node_error(graph,child,error_log , stack_referent_node )
                 
                 def_children = def_node_children(child=child)
                 
@@ -64,16 +57,16 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                     graph = build_graph( graph=graph , def_node_scope=new_stack[-1] , def_node=child )
                     
                     if child.id == 'type' or child.id == 'protocol': # all type attr or protocol attr are let
-                        error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let= True , stack_referent_node=new_stack )
+                        error_log = solve_context_and_type(child , error_log , graph  , def_children , all_let= True , stack_referent_node=new_stack )
                         continue
                     
-                    error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
+                    error_log = solve_context_and_type(child , error_log , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
                     continue
                 
                 let_scope = f'{stack_referent_node[-1]}_let_{child.name.name}'
                 graph = build_graph( graph=graph , def_node_scope=let_scope , def_node=child )
                 
-                error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let , stack_referent_node )
+                error_log = solve_context_and_type(child , error_log , graph  , def_children , all_let , stack_referent_node )
                 continue
             
             if child.id == "auto_call": # IN case
@@ -81,43 +74,43 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                 new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
                 new_stack.append("anonymus")    
                 
-                error_list = solve_context_and_type(child , error_list , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
+                error_log = solve_context_and_type(child , error_log , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
                 continue
             
             if child.id == "args" and ast.def_node : # set all args var to let var
                 
-                error_list = solve_context_and_type(child , error_list , graph  , None , all_let=True , stack_referent_node=stack_referent_node )
+                error_log = solve_context_and_type(child , error_log , graph  , None , all_let=True , stack_referent_node=stack_referent_node )
                 continue
             
             if child.id == "function_call": # check if exits
                 
-                error_list = function_call(graph,child,error_list , stack_referent_node )
+                error_log = function_call(graph,child,error_log , stack_referent_node )
                 children_function_call = def_node_children(child=child)
                 
-                error_list = solve_context_and_type( child , error_list , graph , children_function_call , all_let , stack_referent_node )
+                error_log = solve_context_and_type( child , error_log , graph , children_function_call , all_let , stack_referent_node )
                 continue
             
             if child.id == "var": # check for existence
-                error_list = variable(graph,child,error_list , stack_referent_node )
+                error_log = variable(graph,child,error_log , stack_referent_node )
                 
             if child.id == "instance": # instance case
 
-                error_list = instance_case( graph=graph , ast=child , error_list=error_list , stack_referent_node=stack_referent_node )
+                error_log = instance_case( graph=graph , ast=child , error_list=error_log , stack_referent_node=stack_referent_node )
                 
                 verify_instance_args = child.node.args.expressions
                 
-                error_list = solve_context_and_type( child , error_list , graph , verify_instance_args , all_let , stack_referent_node )
+                error_log = solve_context_and_type( child , error_log , graph , verify_instance_args , all_let , stack_referent_node )
                 
                 continue
                 
             if child.id == "dot": # check if exits right_node inside left_node
-                dot_case( graph , error_list , child.right_node ,child.left_node , stack_referent_node)
+                dot_case( graph , error_log , child.right_node ,child.left_node , stack_referent_node)
                     
-            error_list = solve_context_and_type( child , error_list , graph , None , all_let , stack_referent_node )
+            error_log = solve_context_and_type( child , error_log , graph , None , all_let , stack_referent_node )
                 
-    error_list = type_checking_creteria( graph , ast_node=ast , stack_referent_node=stack_referent_node , error_list=error_list )
+    error_log = type_checking_creteria( graph , ast_node=ast , stack_referent_node=stack_referent_node , error_list=error_log )
     
-    return error_list
+    return error_log
 
 def instance_case(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_referent_node:list ): 
     
