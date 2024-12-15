@@ -372,18 +372,11 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , stack_refere
         referent_node_ast: pcr.ASTNode = graph.nodes[stack_referent_node[-1]]["ASTNode"]    
         
         if "type" in referent_node and referent_node_ast.constructor != None : # if there is a referent type node with a constructor , we add var self to graph
-            
-            graph.add_edge( referent_node , f"{referent_node}_var_{ast.name}")
-        
             return error_list
         
     for reference_node in stack_referent_node:
     
         if graph.has_node( f"{reference_node}_let_{ast.name}"): # check if variable is accesable from outter context from its position
-            
-            graph.add_edge( f"{reference_node}_let_{ast.name}" , f"{stack_referent_node[-1]}_var_{ast.name}" )
-            graph.add_edge( f"{reference_node}_var_{ast.name}" , f"{stack_referent_node[-1]}_let_{ast.name}" )
-            
             return error_list
     
     error_type = "variable usage"

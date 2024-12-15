@@ -15,12 +15,9 @@ def add_connection( graph:nx.DiGraph , node1:pcr.ASTNode , node1_id:str , node2:
     return graph
 
 def print_graph(graph):
-    
     nx.draw(graph, with_labels=True, arrows=True)
     plt.show()
     
-    pass
-
 def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node="type_Object" , last_reference_node="type_Object" , chift=0 ):
     
     if child.__dict__.__contains__("inheritence"):
@@ -49,15 +46,6 @@ def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node
                 node1_id=f"{reference_node}_{parent.id}"
                 node2_id=f"{reference_node}_{child.id}_{child.name.name}"
                 
-    elif child.id == "var" and not parent.def_node:
-            
-        node1_id=f"{reference_node}_{parent.id}"
-        node2_id=f"{reference_node}_var_{child.name}"
-        graph = add_connection( graph=graph ,node1_id=node1_id ,node1= node1 ,node2= node2 ,node2_id= node2_id )
-        
-        node1_id=f"{reference_node}_var_{child.name}"
-        node2_id=f"{reference_node}_{parent.id}"
-            
     elif child.id != "var":
         
         if parent.def_node:
