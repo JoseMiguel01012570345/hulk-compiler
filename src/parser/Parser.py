@@ -465,11 +465,11 @@ class Parser:
                 result = self.parser_table[ state[-1] ][ item ]
                 
                 if result == "*":
-                    print("invalid string in language")
+                    print(f"unexpected {code[k].Text } at line: {code[k].line} column: {code[k].column}")
                     return False , None
             
-            else: # no language belongness
-                print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
+            else: # no string belongness
+                print(f"\033[1;31m >> ERROR: item \033[1;33m {code[k].Text } \033[1;31m is not valid at line { code[k].line } column {code[k].column} \033[0m")
                 return False , None
 
             if type(result) == int: # shift
@@ -478,7 +478,7 @@ class Parser:
                 
                 symbols.append(item)
                     
-                print(symbols , f"state={state[-1]}" )
+                # print(symbols , f"state={state[-1]}" )
                 
                 tree.append(code[k])
                 
@@ -501,7 +501,7 @@ class Parser:
                     tree.pop()
                     i += 1
                 
-                    print(symbols, f"state={state[-1]}")
+                    # print(symbols, f"state={state[-1]}")
                 
                 result_ast = self.search_ast_in_grammar(result[1])
                 
@@ -520,7 +520,7 @@ class Parser:
                 state.append( self.parser_table[ last_state_number ][ key_stone ] )
                 
                 symbols.append(key_stone)
-                print(symbols, f"state={state[-1]}" )
+                # print(symbols, f"state={state[-1]}" )
                 
                 continue  
                 
@@ -528,7 +528,7 @@ class Parser:
                 return True , tree[0]
             
             else: # error
-                print(f"\033[1;31m >> ERROR: item \033[1;33m {item} \033[1;31m is not valid \033[0m")
+                print(f"\033[1;31m >> ERROR: item \033[1;33m {code[k].Text } \033[1;31m is not valid at line { code[k].line } column {code[k].column} \033[0m")
                 return False , None
             
             k +=1

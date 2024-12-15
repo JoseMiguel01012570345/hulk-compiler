@@ -23,10 +23,9 @@ gp =P.Parser( [value[0] for value in tokens] , use_saved_table=1 )
 
 ast = gp.tree
 
-
 if ast == None: 
     
-    print(" \033[1;32m >\033[1;31m CODE HAS ERRORS :( \033[0m")
+    print(" \033[1;32m >\033[1;31m Syntaxis errors :( \033[0m")
     exit()
 
 ast = visitor.ast_reducer(ast=ast)
@@ -36,8 +35,6 @@ ast = visitor.ast_reducer(ast=ast)
 error_list = []
 
 context_error = semantic_errors.semantic_errors()
-
-# check types
 
 # check rules
 

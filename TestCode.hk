@@ -2,6 +2,6 @@ type program {
 
      function tan(x) { 
         
-        sin(x) / cos(x);
+        sin(x);  cos(x);
      };
 };
