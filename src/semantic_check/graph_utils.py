@@ -18,46 +18,18 @@ def add_connection( graph:nx.DiGraph , node1:pcr.ASTNode , node1_id:str , node2:
 def print_graph(graph):
     nx.draw(graph, with_labels=True, arrows=True)
     plt.show()
-    
-def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node="type_Object" , last_reference_node="type_Object" , chift=0 ):
-    
-    if child.__dict__.__contains__("inheritence"):
+
+def build_graph( graph:nx.DiGraph , def_node_scope:str , def_node:pcr.ASTNode , ref_node_scope:str='' , ref_node:pcr.ASTNode=None , add_node=True ): 
+    # add edge if and only if one node is a definition and the other is a reference    
+        
+    if add_node:
+        graph.add_node( def_node_scope , ASTNode=def_node )
         return graph
     
-    node1_id = ""
-    node1 = parent
-    node2_id = ""
-    node2 = child
-    
-    if child.def_node:
-        
-        if parent.def_node:
-        
-            node1_id= last_reference_node
-            node2_id =reference_node
-        
-        else:
-            node1_id=f"{reference_node}_{parent.id}"
-            node2_id=f"{reference_node}_{child.id}_{child.name.name}"
-                
-    elif child.id != "var":
-        
-        if parent.def_node:
-            
-            node1_id=f"{reference_node}"
-            node2_id=f"{reference_node}_{child.id}"
-                
-        else:
-            
-            node1_id=f"{reference_node}_{parent.id}"
-            node2_id=f"{reference_node}_{child.id}"
-    
-    if node1_id != "" and node2_id != "":
-        graph = add_connection( graph=graph ,node1_id=node1_id ,node1= node1 ,node2= node2 ,node2_id= node2_id )
-        
+    graph.add_node( ref_node_scope , ref_node )
+    graph.add_edge( def_node , ref_node   )
     return graph
-
-
+    
 def build_in(graph:nx.DiGraph ):
     
     type_object = "type_Object"

@@ -58,18 +58,20 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                     new_stack.append(new_referent_node)
                     
                     # build graph adding new context
-                    graph = build_graph( graph=graph , parent=ast , child=child , reference_node=new_stack[-2] , last_reference_node=new_stack[-2] )
+                    graph = build_graph( graph=graph , def_node_scope=new_stack[-1] , def_node=child )
+                    
+                    if child.id == 'type' or child.id == 'protocol': # all type attr or protocol attr are let
+                        error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let= True , stack_referent_node=new_stack )
+                        continue
                     
                     error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
                     continue
                 
-                graph = build_graph( graph=graph , parent=ast , child=child , reference_node=stack_referent_node[-1] , last_reference_node=stack_referent_node[-2] )
+                let_scope = f'{stack_referent_node[-1]}_let_{child.name.name}'
+                graph = build_graph( graph=graph , def_node_scope=let_scope , def_node=child )
                 
                 error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let , stack_referent_node )
                 continue
-            
-            # build graph
-            graph = build_graph( graph=graph , parent=ast , child=child , reference_node=stack_referent_node[-1] , last_reference_node=stack_referent_node[-2] )
             
             if child.id == "auto_call": # IN case
                 
