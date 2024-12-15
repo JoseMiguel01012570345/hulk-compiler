@@ -47,10 +47,4 @@ context_error.print_()
 
 #_________________________CODE GENERATION__________________________________
 
-
-# AST = ASTCilBuilder( ast=ast )
-
-# print(AST.Code)
-
-pass
 #________________________END_____________________________________________

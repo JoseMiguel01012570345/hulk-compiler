@@ -17,7 +17,10 @@ def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
     graph = nx.DiGraph()
     
     ast.id += "ROOT"
-        
+    
+    # import build-ins
+    graph = build_in(graph=graph )
+                    
     solve_context_and_type( ast=ast , error_list=error_list  , graph=graph )
     
     if printing :
@@ -55,10 +58,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                     new_stack.append(new_referent_node)
                     
                     # build graph adding new context
-                    graph = build_graph( graph=graph , parent=ast , child=child , reference_node=new_stack[-1] , last_reference_node=new_stack[-2] , chift=1 )
-                    
-                    # import build-ins
-                    graph = build_in(graph=graph , stack_referent_node=new_stack )
+                    graph = build_graph( graph=graph , parent=ast , child=child , reference_node=new_stack[-2] , last_reference_node=new_stack[-2] )
                     
                     error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
                     continue
@@ -71,12 +71,10 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
             # build graph
             graph = build_graph( graph=graph , parent=ast , child=child , reference_node=stack_referent_node[-1] , last_reference_node=stack_referent_node[-2] )
             
-            if child.id == "auto_call": # in case
+            if child.id == "auto_call": # IN case
                 
                 new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
                 new_stack.append("anonymus")    
-                
-                # graph = build_in(graph=graph , stack_reference_node=new_stack )
                 
                 error_list = solve_context_and_type(child , error_list , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
                 continue
@@ -94,7 +92,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                 error_list = solve_context_and_type( child , error_list , graph , children_function_call , all_let , stack_referent_node )
                 continue
             
-            if child.id == "var":# check for existence
+            if child.id == "var": # check for existence
                 error_list = variable(graph,child,error_list , stack_referent_node )
                 
             if child.id == "instance": # instance case
@@ -109,9 +107,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                 
             if child.id == "dot": # check if exits right_node inside left_node
                 dot_case( graph , error_list , child.right_node ,child.left_node , stack_referent_node)
-            
-            # check types
-            
+                    
             error_list = solve_context_and_type( child , error_list , graph , None , all_let , stack_referent_node )
                 
     error_list = type_checking_creteria( graph , ast_node=ast , stack_referent_node=stack_referent_node , error_list=error_list )
@@ -269,9 +265,6 @@ def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_
         
         return error_list
     
-    if ast.id == "let":
-        graph = let_var_case( graph , stack_referent_node , ast )
-        
     return error_list
 
 def args_checking( referent_node:pcr.ASTNode , ast:pcr.ASTNode ):
@@ -414,12 +407,6 @@ def inheritence_error(ast:pcr.ASTNode):
         error_description = f"protocol {ast.name.name} could not be found"
     
     return error_type , error_description
-
-def let_var_case( graph:nx.DiGraph , stack_referent_node:list , child:pcr.ASTNode ) -> nx.DiGraph:
-    
-    graph.add_edge(stack_referent_node[-1] , f"{stack_referent_node[-1]}_var_{child.name.name}")
-    
-    return graph
 
 def type_case( ast:pcr.type_ ):
     

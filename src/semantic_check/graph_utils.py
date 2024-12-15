@@ -11,6 +11,7 @@ def add_connection( graph:nx.DiGraph , node1:pcr.ASTNode , node1_id:str , node2:
     graph.add_node( node1_id , ASTNode= node1   )
     graph.add_node( node2_id , ASTNode= node2   )
     graph.add_edge( node1_id , node2_id   )
+    graph.add_edge( node2_id , node1_id   )
     
     return graph
 
@@ -28,7 +29,7 @@ def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node
     node2_id = ""
     node2 = child
     
-    if child.def_node:        
+    if child.def_node:
         
         if parent.def_node:
         
@@ -36,15 +37,8 @@ def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node
             node2_id =reference_node
         
         else:
-            
-            if chift: # general case            
-                
-                node1_id=f"{last_reference_node}"
-                node2_id=f"{reference_node}"
-                
-            else: # let case    
-                node1_id=f"{reference_node}_{parent.id}"
-                node2_id=f"{reference_node}_{child.id}_{child.name.name}"
+            node1_id=f"{reference_node}_{parent.id}"
+            node2_id=f"{reference_node}_{child.id}_{child.name.name}"
                 
     elif child.id != "var":
         
@@ -64,7 +58,7 @@ def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node
     return graph
 
 
-def build_in(graph:nx.DiGraph , stack_referent_node:list ):
+def build_in(graph:nx.DiGraph ):
     
     type_object = "type_Object"
     def_function_print = "def_function_print"
