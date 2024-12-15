@@ -19,7 +19,7 @@ def print_graph(graph):
     nx.draw(graph, with_labels=True, arrows=True)
     plt.show()
 
-def build_graph( graph:nx.DiGraph , def_node_scope:str , def_node:pcr.ASTNode , ref_node_scope:str='' , ref_node:pcr.ASTNode=None , add_node=True ): 
+def build_graph( graph:nx.DiGraph , def_node_scope:str='' , def_node:pcr.ASTNode=None , ref_node_scope:str='' , ref_node:pcr.ASTNode=None , add_node=True ): 
     # add edge if and only if one node is a definition and the other is a reference    
         
     if add_node:
@@ -27,7 +27,7 @@ def build_graph( graph:nx.DiGraph , def_node_scope:str , def_node:pcr.ASTNode , 
         return graph
     
     graph.add_node( ref_node_scope , ref_node )
-    graph.add_edge( def_node , ref_node   )
+    graph.add_edge( def_node_scope , ref_node_scope   )
     return graph
     
 def build_in(graph:nx.DiGraph ):

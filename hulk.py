@@ -1,8 +1,9 @@
 from os import system
 
-from src.parser import Parser as P
+from src.parser import parser as P
 from src.semantic_check import context_and_type_checking, semantic_errors, visitor
 from src.lexer.lexer_definition import HULKLexer
+from src.parser.parse_code import parse_input
 
 system("cls")
 
@@ -17,33 +18,19 @@ tokens = [token for token in Lexer.Tokenize()]
 
 
 #__________________PARSER__________________________________________
+# uncomment to build states 
+# P.Parser()
 
-# go to parse
-gp =P.Parser( [value[0] for value in tokens] , use_saved_table=1 )
-
-ast = gp.tree
+# parse code
+ast , error_list = parse_input( code=[value[0] for value in tokens] )
 
 if ast == None: 
     
     print(" \033[1;32m >\033[1;31m Syntaxis errors :( \033[0m")
     exit()
 
-ast = visitor.ast_reducer(ast=ast)
-
 #_________________________SEMANTIC CHEKING__________________________________
 
-error_list = []
-
-context_error = semantic_errors.semantic_errors()
-
-# check rules
-
-# check_context
-graph = context_and_type_checking.context_checker(ast=ast,error_list=error_list , printing= 1 )
-
-context_error.add_error(error_list)
-
-context_error.print_()
 
 #_________________________CODE GENERATION__________________________________
 
