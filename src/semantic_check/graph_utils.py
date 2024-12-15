@@ -99,22 +99,5 @@ def build_in(graph:nx.DiGraph , stack_referent_node:list ):
     graph.add_node(def_function_range , ASTNode=pcr.range())
     graph.add_node(type_String , ASTNode=pcr.String())
     graph.add_node(type_Boolean , ASTNode=pcr.Boolean())
-
-    graph.add_edge( f"{stack_referent_node[-1]}" , type_object )
-    graph.add_edge( f"{stack_referent_node[-1]}" , type_Number )
-    graph.add_edge( f"{stack_referent_node[-1]}" , type_Boolean )
-    graph.add_edge( f"{stack_referent_node[-1]}" , type_String )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_cos )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_cot )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_exp )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_log )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_rand )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_sqrt )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_range )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_tan )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_sin )
-    graph.add_edge( f"{stack_referent_node[-1]}" , let_e )
-    graph.add_edge( f"{stack_referent_node[-1]}" , let_PI )
-    graph.add_edge( f"{stack_referent_node[-1]}" , def_function_print )
     
     return graph

@@ -56,7 +56,7 @@ class Parser:
             self._error = True
         
         else:
-            print(f"\033[1;32m {ok} \033[0m")
+            print(f"\033[1;32m GOOD syntaxis \033[0m")
         
         pass
     

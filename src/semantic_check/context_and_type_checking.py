@@ -308,10 +308,10 @@ def args_checking( referent_node:pcr.ASTNode , ast:pcr.ASTNode ):
 
 def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , stack_referent_node ):
     
-    i = len(stack_referent_node) - 1
-    
-    my_node = None
-    my_node_signature = ''
+    i = len(stack_referent_node) - 1    
+    my_node = None # ast node
+    my_node_signature = '' # graph representation
+    build_in_fun = False
     
     while i >= 0:
         
@@ -320,11 +320,10 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , st
         if f"def_function_{ast.name.name}" in node:
             
             my_node = graph.nodes[node]["ASTNode"]
-            my_node_signature = node
+            my_node_signature = node 
             ast.node_type =  my_node.pointer_to_node_type # use pointer_to_node_type function to point to the current type
             
             break
-        
         i-=1
         
     if my_node == None: # outter scope ( non-recursive )
@@ -342,20 +341,21 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , st
                 my_node = graph.nodes[node]["ASTNode"]
                 my_node_signature = node
                 ast.node_type = my_node.pointer_to_node_type # use pointer_to_node_type function to point to the current type
-                
-                break
-        
+                build_in_fun = True
+                break        
             i-=1
     
-    if my_node is not None:
-    
-        if my_node.args is not None and len(ast.args.expressions) == len( my_node.args.expressions ):
-            
-            graph.add_edge( my_node_signature ,  f"{stack_referent_node[-1]}_function_call_{ast.name.name}" )
-            graph.add_edge( f"{stack_referent_node[-1]}_function_call_{ast.name.name}" , my_node_signature )
+    if my_node is not None and my_node.args is not None and len(ast.args.expressions) == len( my_node.args.expressions ):
         
+        if build_in_fun:
+            graph.add_edge( my_node_signature ,  f"{stack_referent_node[-1]}_{ast.parent.id}" )
+            graph.add_edge( f"{stack_referent_node[-1]}_{ast.parent.id}" , my_node_signature )
             return error_list
         
+        graph.add_edge( my_node_signature ,  f"{stack_referent_node[-1]}_function_call_{ast.name.name}" )
+        graph.add_edge( f"{stack_referent_node[-1]}_function_call_{ast.name.name}" , my_node_signature )
+    
+        return error_list
     
     scope = { "line":ast.line , "column":ast.column }
     error_type = "function usage"
