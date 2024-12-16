@@ -99,7 +99,6 @@ def parse_input( code ):
         exit()
     
     print(f"\033[1;32m GOOD syntaxis \033[0m")
-    s_error.print_() # print errors of error_log
     
     return tree[0]
 

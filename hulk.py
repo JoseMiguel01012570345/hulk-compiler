@@ -1,6 +1,6 @@
 from os import system
 
-from src.parser import parser as P
+# from src.parser import parser as P
 from src.semantic_check import context_and_type_checking, semantic_errors, visitor
 ctck = context_and_type_checking
 from src.lexer.lexer_definition import HULKLexer
