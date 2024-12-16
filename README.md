@@ -1,5 +1,7 @@
 # The HULK Language
 
+Note: All of this documentation is what the HULK compiler is supposed to do, but it may not be entirely accurate. The HULK compiler is still in development. Team is still working on semantic check
+
 **HULK** (**H**avana **U**niversity **L**anguage for **K**ompilers) is a didactic, type-safe, object-oriented, and incremental programming language designed for the course Introduction to Compilers in the Computer Science major at the University of Havana.
 
 A simple “Hello World” in HULK looks like this:
@@ -977,5 +979,4 @@ type Vector_T {
     }
 }
 ```
-
 # END
