@@ -5,6 +5,8 @@ from . import graph_utils
 build_graph , build_in =  graph_utils.build_graph , graph_utils.build_in
 from ..risk import risk
 log_state_on_error = risk.log_state_on_error
+inheritence_error = errors.inheritence_error
+
 import inspect
 # from src import Utils
 # from Utils import names
@@ -115,6 +117,25 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_log=[] , graph: nx.DiGr
     error_log = type_checking_creteria( graph , ast_node=ast , stack_referent_node=stack_referent_node , error_log=error_log )
     
     return error_log
+
+def check_inheritance( graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_referent_node:list , scope:dict ):
+    
+    found = False
+    target = ''
+    
+    if ast.id == "type" :
+        target = f'type_{ast.parent_name.name}'
+    else:
+        target = f'protocol_{ast.parent_name.name}'
+        
+    found= inheritence_walker(graph=graph , target_type=target , stack_referent_node=stack_referent_node , attr='' , state=len(stack_referent_node)-1 )
+    
+    if not found:
+        error_type , error_description = inheritence_error(ast=ast.parent_name , type_or_protocol=ast.id )
+        error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
+    
+    return error_log
+
 @log_state_on_error
 def instance_case(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_referent_node:list ): 
     risk.frame_logger.append( inspect.currentframe() )
@@ -198,8 +219,12 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
         referent_node = stack_referent_node[i]
         
         if graph.has_node(f"{referent_node}_{target_type}"):
-        
-            if graph.has_node(f"{referent_node}_{target_type}_{attr}"):
+            
+            if attr != '':
+                attr = f'_{attr}'
+            
+            if graph.has_node(f"{referent_node}_{target_type}{attr}"):
+                
                 return True
             
             target_type_ast = graph.nodes[f"{referent_node}_{target_type}"]["ASTNode"]
@@ -243,23 +268,8 @@ def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_r
     
     scope = { "line":ast.line , "column":ast.column }
     
-    if ast.__dict__.__contains__("inheritence") : # inheritence checking
-        
-        inheritence = f"{stack_referent_node[-1]}_{ast.id}_{ast.name.name}"
-            
-        if graph.has_node(inheritence):
-            
-            parent_node = f"{stack_referent_node[-1]}_{ast.parent.id}_{ast.parent.name.name}"
-            graph.add_edge(parent_node , inheritence)
-            
-            return error_log
-        
-        else:
-            
-            error_type , error_description = errors.inheritence_error(ast)
-            error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
-            
-            return error_log
+    if (ast.id == 'type' or ast.id == 'protocol') and ast.__dict__.__contains__('parent_name'):
+        error_log = check_inheritance(graph=graph , ast=ast , error_log=error_log , stack_referent_node=stack_referent_node , scope=scope)
     
     error_type , error_description = errors.selector(ast)(ast)
     

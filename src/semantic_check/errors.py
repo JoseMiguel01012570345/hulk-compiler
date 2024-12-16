@@ -18,11 +18,11 @@ def instance_error(ast:pcr.ASTNode):
     
     return error_type , error_description
 
-def inheritence_error(ast:pcr.ASTNode):
+def inheritence_error(ast:pcr.ASTNode , type_or_protocol:str):
     
     error_type = "inheritence"
     
-    if ast.id == "type":
+    if type_or_protocol == "type":
         error_description = f"type {ast.name} could not be found"
     else:
         error_description = f"protocol {ast.name} could not be found"
