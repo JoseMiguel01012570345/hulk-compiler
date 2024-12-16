@@ -404,10 +404,10 @@ def typing_error( ast_node:pcr.ASTNode ):
     error_description=""
     
     if type(ast_node) == pcr.binary_opt:
-        error_type="type error"
+        error_type="typing error"
         error_description = "operation can not be peformed between different types"
     else:
-        error_type="type error"
+        error_type="typing error"
         error_description = f"operation can not be peformed , expected type { ast_node.expected_type } , dismatchs"
     
     return error_type , error_description
