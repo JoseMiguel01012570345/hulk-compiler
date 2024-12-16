@@ -25,7 +25,7 @@ tokens = [token for token in Lexer.Tokenize()]
 # P.Parser()
 
 # parse code
-ast = parse_input( code=[value[0] for value in tokens] )
+ast = parse_input( code=[value[0] for value in tokens]  , allow=0 )
 
 s_error = semantic_errors.semantic_errors()
 
