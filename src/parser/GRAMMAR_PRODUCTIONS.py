@@ -201,7 +201,7 @@ expression_block = [
 
 let = [
 
-    pcr.let({  "derivation": ["var_declaration",["let","label" ]] , "identifier": "let" , "definition_node?": True ,"builder": B.let , "visitor": V.var } ) ,
+    pcr.let({  "derivation": ["var_declaration",[ "let" , "label" ]] , "identifier": "let" , "definition_node?": True ,"builder": B.let , "visitor": V.var } ) ,
 ]
 
 unary_opt = [

@@ -1,7 +1,11 @@
 from ..parser import production_class_representation as pcr
+from . import errors
 import networkx as nx
 from . import graph_utils
 print_graph , build_graph , build_in = graph_utils.print_graph , graph_utils.build_graph , graph_utils.build_in
+from ..risk import risk
+log_state_on_error = risk.log_state_on_error
+import inspect
 # from src import Utils
 # from Utils import names
 
@@ -12,21 +16,23 @@ class aux: # convert parent var <name> into a type <name>
     def __init__(self,my_name) -> None:
         self.name = my_name
 
-def context_checker(ast:pcr.ASTNode=None , error_list=[] , printing=0 ):
-
+@log_state_on_error
+def context_checker( printing=0 ):
+    risk.frame_logger.append( inspect.currentframe() )
+    
     graph = nx.DiGraph()
     
-    ast.id += "ROOT"
-        
-    solve_context_and_type( ast=ast , error_list=error_list  , graph=graph )
+    # import build-ins
+    graph = build_in(graph=graph )
     
     if printing :
         print_graph(graph=graph)
     
-    
     return graph
-    
-def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiGraph= None , children=None , all_let = False , stack_referent_node:list=["","ROOT"] ):
+
+@log_state_on_error
+def solve_context_and_type( ast:pcr.ASTNode=None , error_log=[] , graph: nx.DiGraph= None , children=None , all_let = False , stack_referent_node:list=[""] ):
+    risk.frame_logger.append( inspect.currentframe() )
     
     if  children is None:
         children = ast.visitor_ast()
@@ -43,7 +49,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
             # case 1: types , case 2: protocols , case 3: functions , case 4 : let
             if child.id == "type" or child.id == "protocol" or child.id == "def_function" or child.id == "let":
                 
-                error_list = def_node_error(graph,child,error_list , stack_referent_node )
+                error_log = def_node_error(graph,child,error_log , stack_referent_node )
                 
                 def_children = def_node_children(child=child)
                 
@@ -55,70 +61,66 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_list=[] , graph: nx.DiG
                     new_stack.append(new_referent_node)
                     
                     # build graph adding new context
-                    graph = build_graph( graph=graph , parent=ast , child=child , reference_node=new_stack[-1] , last_reference_node=new_stack[-2] , chift=1 )
+                    graph = build_graph( graph=graph , def_node_scope=new_stack[-1] , def_node=child )
                     
-                    # import build-ins
-                    graph = build_in(graph=graph , stack_referent_node=new_stack )
+                    if child.id == 'type' or child.id == 'protocol': # all type attr or protocol attr are let
+                        error_log = solve_context_and_type(child , error_log , graph  , def_children , all_let= True , stack_referent_node=new_stack )
+                        continue
                     
-                    error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
+                    error_log = solve_context_and_type(child , error_log , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
                     continue
                 
-                graph = build_graph( graph=graph , parent=ast , child=child , reference_node=stack_referent_node[-1] , last_reference_node=stack_referent_node[-2] )
+                let_scope = f'{stack_referent_node[-1]}_let_{child.name.name}'
+                graph = build_graph( graph=graph , def_node_scope=let_scope , def_node=child )
                 
-                error_list = solve_context_and_type(child , error_list , graph  , def_children , all_let , stack_referent_node )
+                error_log = solve_context_and_type(child , error_log , graph  , def_children , all_let , stack_referent_node )
                 continue
             
-            # build graph
-            graph = build_graph( graph=graph , parent=ast , child=child , reference_node=stack_referent_node[-1] , last_reference_node=stack_referent_node[-2] )
-            
-            if child.id == "auto_call": # in case
+            if child.id == "auto_call": # IN case
                 
                 new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
                 new_stack.append("anonymus")    
                 
-                # graph = build_in(graph=graph , stack_reference_node=new_stack )
-                
-                error_list = solve_context_and_type(child , error_list , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
+                error_log = solve_context_and_type(child , error_log , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
                 continue
             
             if child.id == "args" and ast.def_node : # set all args var to let var
                 
-                error_list = solve_context_and_type(child , error_list , graph  , None , all_let=True , stack_referent_node=stack_referent_node )
+                error_log = solve_context_and_type(child , error_log , graph  , None , all_let=True , stack_referent_node=stack_referent_node )
                 continue
             
             if child.id == "function_call": # check if exits
                 
-                error_list = function_call(graph,child,error_list , stack_referent_node )
+                error_log = function_call(graph,child,error_log , stack_referent_node )
                 children_function_call = def_node_children(child=child)
                 
-                error_list = solve_context_and_type( child , error_list , graph , children_function_call , all_let , stack_referent_node )
+                error_log = solve_context_and_type( child , error_log , graph , children_function_call , all_let , stack_referent_node )
                 continue
             
-            if child.id == "var":# check for existence
-                error_list = variable(graph,child,error_list , stack_referent_node )
+            if child.id == "var": # check for existence
+                error_log = variable(graph,child,error_log , stack_referent_node )
                 
             if child.id == "instance": # instance case
 
-                error_list = instance_case( graph=graph , ast=child , error_list=error_list , stack_referent_node=stack_referent_node )
+                error_log = instance_case( graph=graph , ast=child , error_log=error_log , stack_referent_node=stack_referent_node )
                 
                 verify_instance_args = child.node.args.expressions
                 
-                error_list = solve_context_and_type( child , error_list , graph , verify_instance_args , all_let , stack_referent_node )
+                error_log = solve_context_and_type( child , error_log , graph , verify_instance_args , all_let , stack_referent_node )
                 
                 continue
                 
             if child.id == "dot": # check if exits right_node inside left_node
-                dot_case( graph , error_list , child.right_node ,child.left_node , stack_referent_node)
-            
-            # check types
-            
-            error_list = solve_context_and_type( child , error_list , graph , None , all_let , stack_referent_node )
+                dot_case( graph , error_log , child.right_node ,child.left_node , stack_referent_node)
+                    
+            error_log = solve_context_and_type( child , error_log , graph , None , all_let , stack_referent_node )
                 
-    error_list = type_checking_creteria( graph , ast_node=ast , stack_referent_node=stack_referent_node , error_list=error_list )
+    error_log = type_checking_creteria( graph , ast_node=ast , stack_referent_node=stack_referent_node , error_log=error_log )
     
-    return error_list
-
-def instance_case(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_referent_node:list ): 
+    return error_log
+@log_state_on_error
+def instance_case(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_referent_node:list ): 
+    risk.frame_logger.append( inspect.currentframe() )
     
     i=len(stack_referent_node) - 1
     
@@ -137,18 +139,20 @@ def instance_case(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_r
             if type_node.__dict__.__contains__("constructor") and \
                 len(type_node.constructor.expressions) == len(ast.node.args.expressions):
                     ast.expected_type = type_name
-                    return error_list
+                    return error_log
             
         i-=1
     
-    error_type , error_description = instance_error(ast=ast)
+    error_type , error_description = errors.instance_error(ast=ast)
     scope = { "line": ast.line , "column": ast.column }
     
-    error_list.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
+    error_log.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
     
-    return error_list
+    return error_log
 
-def dot_case(graph:nx.DiGraph , error_list:list , right_node:pcr.ASTNode , left_node:pcr.ASTNode , stack_referent_node=""):
+@log_state_on_error
+def dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , left_node:pcr.ASTNode , stack_referent_node=""):
+    risk.frame_logger.append( inspect.currentframe() )
     
     # verifiy if in child.left_node type hierarchy exists child.right_node 
     # for that we will check if there exist a path from child.left_node type to
@@ -171,7 +175,7 @@ def dot_case(graph:nx.DiGraph , error_list:list , right_node:pcr.ASTNode , left_
         error_type = "object used before declared"
         error_description = f"object {left_name} is not declared in scope"
         scope = { "line":line , "column":column }
-        error_list.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
+        error_log.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
         
     result = inheritence_walker( graph=graph , target_type=target_type , attr=attr , stack_referent_node=stack_referent_node , state= len(stack_referent_node) - 1 )
     
@@ -180,11 +184,13 @@ def dot_case(graph:nx.DiGraph , error_list:list , right_node:pcr.ASTNode , left_
         error_type = "attr definition"
         error_description = f"object {right_name} is not accesable"
         scope = { "line":line , "column":column }
-        error_list.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
+        error_log.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
     
-    return error_list
+    return error_log
 
+@log_state_on_error
 def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_referent_node:list , state= 0 ) -> bool:
+    risk.frame_logger.append( inspect.currentframe() )
     
     i = state
     
@@ -216,7 +222,9 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
         
     return False
 
+@log_state_on_error
 def def_node_children(child:pcr.ASTNode):
+    risk.frame_logger.append( inspect.currentframe() )
     
     grand_son = child.visitor_ast()
     
@@ -232,7 +240,9 @@ def def_node_children(child:pcr.ASTNode):
     
     return children
 
-def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_referent_node:list):
+@log_state_on_error
+def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_referent_node:list):
+    risk.frame_logger.append( inspect.currentframe() )
     
     scope = { "line":ast.line , "column":ast.column }
     
@@ -245,16 +255,16 @@ def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_
             parent_node = f"{stack_referent_node[-1]}_{ast.parent.id}_{ast.parent.name.name}"
             graph.add_edge(parent_node , inheritence)
             
-            return error_list
+            return error_log
         
         else:
             
-            error_type , error_description = inheritence_error(ast)
-            error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
+            error_type , error_description = errors.inheritence_error(ast)
+            error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
             
-            return error_list
+            return error_log
     
-    error_type , error_description = selector(ast)(ast)
+    error_type , error_description = errors.selector(ast)(ast)
     
     # ask for an edge existence
     reference_node = f"{stack_referent_node[-1]}_{ast.id}_{ast.name.name}"
@@ -265,16 +275,15 @@ def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_list:list , stack_
         args = args_checking( ast , node_ast )
         
         if args:
-            error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
+            error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
         
-        return error_list
+        return error_log
     
-    if ast.id == "let":
-        graph = let_var_case( graph , stack_referent_node , ast )
-        
-    return error_list
+    return error_log
 
+@log_state_on_error
 def args_checking( referent_node:pcr.ASTNode , ast:pcr.ASTNode ):
+    risk.frame_logger.append( inspect.currentframe() )
     
     '''
     returns True if amount of arguments is the same
@@ -306,12 +315,13 @@ def args_checking( referent_node:pcr.ASTNode , ast:pcr.ASTNode ):
         
     return True
 
-def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , stack_referent_node ):
+@log_state_on_error
+def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_log:list , stack_referent_node ):
+    risk.frame_logger.append( inspect.currentframe() )
     
     i = len(stack_referent_node) - 1    
     my_node = None # ast node
-    my_node_signature = '' # graph representation
-    build_in_fun = False
+    my_node_signature = '' # graph representation name of my_node
     
     while i >= 0:
         
@@ -341,30 +351,27 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_list:list , st
                 my_node = graph.nodes[node]["ASTNode"]
                 my_node_signature = node
                 ast.node_type = my_node.pointer_to_node_type # use pointer_to_node_type function to point to the current type
-                build_in_fun = True
+                
                 break        
             i-=1
     
     if my_node is not None and my_node.args is not None and len(ast.args.expressions) == len( my_node.args.expressions ):
         
-        if build_in_fun:
-            graph.add_edge( my_node_signature ,  f"{stack_referent_node[-1]}_{ast.parent.id}" )
-            graph.add_edge( f"{stack_referent_node[-1]}_{ast.parent.id}" , my_node_signature )
-            return error_list
+        ref_node_scope = f"{stack_referent_node[-1]}_{ast.id}_{ast.name.name}"
+        build_graph( graph=graph, def_node_scope=my_node_signature , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
         
-        graph.add_edge( my_node_signature ,  f"{stack_referent_node[-1]}_function_call_{ast.name.name}" )
-        graph.add_edge( f"{stack_referent_node[-1]}_function_call_{ast.name.name}" , my_node_signature )
-    
-        return error_list
+        return error_log
     
     scope = { "line":ast.line , "column":ast.column }
     error_type = "function usage"
     error_description = f"function {ast.name.name} is used before declared"    
-    error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
+    error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
 
-    return error_list
+    return error_log
 
-def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , stack_referent_node):
+@log_state_on_error
+def variable(graph:nx.DiGraph, ast:pcr.variable , error_log:list , stack_referent_node):
+    risk.frame_logger.append( inspect.currentframe() )
     
     if ast.name == "self": # self case
             
@@ -372,84 +379,26 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_list:list , stack_refere
         referent_node_ast: pcr.ASTNode = graph.nodes[stack_referent_node[-1]]["ASTNode"]    
         
         if "type" in referent_node and referent_node_ast.constructor != None : # if there is a referent type node with a constructor , we add var self to graph
-            return error_list
+            return error_log
         
     for reference_node in stack_referent_node:
     
         if graph.has_node( f"{reference_node}_let_{ast.name}"): # check if variable is accesable from outter context from its position
-            return error_list
+            
+            ref_node_scope = f'{stack_referent_node[-1]}_var_{ast.name}'
+            build_graph( graph=graph , def_node_scope=f"{reference_node}_let_{ast.name}" , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
+            return error_log
     
     error_type = "variable usage"
     error_description = f"variable {ast.name} is used before assigned"    
     scope = { "line":ast.line , "column":ast.column }
-    error_list.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
+    error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
 
-    return error_list
+    return error_log
 
-def selector(ast): # switch case
-    
-    type_errors = [ ( type_case , "type") , (protocol_case , "protocol") , (function_case , "def_function") , (let_case , "let" ) ]
-    my_func = ""
-    
-    for element in type_errors:
-        
-        if element[1] == ast.id:
-            my_func = element[0]
-            return my_func
-
-def instance_error(ast:pcr.ASTNode):
-    
-    error_type="type definition"
-    error_description=f"type {ast.node.name.name} is not defined in scope"
-    
-    return error_type , error_description
-
-def inheritence_error(ast:pcr.ASTNode):
-    
-    error_type = "inheritence"
-    
-    if ast.id == "type":
-        error_description = f"type {ast.name.name} could not be found"
-    else:
-        error_description = f"protocol {ast.name.name} could not be found"
-    
-    return error_type , error_description
-
-def let_var_case( graph:nx.DiGraph , stack_referent_node:list , child:pcr.ASTNode ) -> nx.DiGraph:
-    
-    graph.add_edge(stack_referent_node[-1] , f"{stack_referent_node[-1]}_var_{child.name.name}")
-    
-    return graph
-
-def type_case( ast:pcr.type_ ):
-    
-    error_type = "type definition"
-    error_description = f"type {ast.name.name} has been already defined"
-    
-    return error_type , error_description
-
-def protocol_case( ast:pcr.protocol ) -> list:
-    
-    error_type = "protocol definition"
-    error_description = f"protocol {ast.name.name} has been already defined"
-    
-    return error_type , error_description
-    
-def function_case( ast:pcr.def_function) -> list:
-    
-    error_type = "function definition"
-    error_description = f"function {ast.name.name} has been already defined"
-        
-    return error_type , error_description
-
-def let_case( ast:pcr.let) -> list:
-    
-    error_type = "variable definition"
-    error_description = f"variable {ast.name.name} has been already defined"
-    
-    return error_type , error_description
-
-def type_error( ast_node:pcr.ASTNode ):
+@log_state_on_error
+def typing_error( ast_node:pcr.ASTNode ):
+    risk.frame_logger.append( inspect.currentframe() )
     
     error_type=""
     error_description=""
@@ -463,7 +412,9 @@ def type_error( ast_node:pcr.ASTNode ):
     
     return error_type , error_description
 
-def type_checking_creteria( graph:nx.DiGraph , ast_node:pcr.ASTNode , stack_referent_node:list , error_list:list ):
+@log_state_on_error
+def type_checking_creteria( graph:nx.DiGraph , ast_node:pcr.ASTNode , stack_referent_node:list , error_log:list ):
+    risk.frame_logger.append( inspect.currentframe() )
     
     if ast_node.type_checker:
         
@@ -472,12 +423,22 @@ def type_checking_creteria( graph:nx.DiGraph , ast_node:pcr.ASTNode , stack_refe
         
         if expected_type != "Object" and ast_type != expected_type :
             
-            error_type , error_description = type_error( ast_node=ast_node )
+            error_type , error_description = typing_error( ast_node=ast_node )
             
             scope= { "line": ast_node.line , "column": ast_node.column }
             
-            error_list.append( { "error_type": error_type , "error_description": error_description , "scope":scope } )
+            error_log.append( { "error_type": error_type , "error_description": error_description , "scope":scope } )
             
-            return error_list
+            return error_log
                 
-    return error_list
+    return error_log
+
+@log_state_on_error
+def names(node):
+    risk.frame_logger.append( inspect.currentframe() )
+    
+    if node.id == "var":
+        return node.name
+    else:
+        return node.name.name
+    

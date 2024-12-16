@@ -3,32 +3,25 @@ from . import GRAMMAR_PRODUCTIONS as GD
 import src.parser.production_class_representation as pcr
 from . import builder as B
 from ..semantic_check import visitor as V
-import copy
-from ..lexer import HULK_LANGUAGE_DEFINITION 
-
-symb_and_op = HULK_LANGUAGE_DEFINITION .SYMBOLS_and_OPERATORS_parser  
-
 import json
 import os
 
 class Parser:
     
     """
-    PARSER
-
+    PARSER LR(1)
     """
+    
     parser_table = []
     terminals = GD.terminals
     non_terminals = GD.non_terminals
     
-    def __init__(self , code="" , use_saved_table=1  ):
+    def __init__(self):
 
         self._grammar = GD.grammar
     
         self._error = None
         self.derivation_Tree = None
-        self.read_from_json(use_saved_table)
-        
         
         if len(self.parser_table) == 0:
         
@@ -46,20 +39,7 @@ class Parser:
             self.parser_table = parser_table
             
             self.save_table()
-            
         
-        ok , tree = self.parse_input(code=code)
-        
-        self.tree = tree
-        
-        if not ok:
-            self._error = True
-        
-        else:
-            print(f"\033[1;32m GOOD syntaxis \033[0m")
-        
-        pass
-    
     def contains(self , my_token , dic: list):
         return dic.__contains__(my_token)
     
@@ -71,29 +51,12 @@ class Parser:
         for row in self.parser_table:
             print(row)
     
-    @property
-    def Error(self):
-        return self._error
-    
     def save_table(self):
         
         with open("parser_table.json","w") as file:
             json.dump(self.parser_table , file)    
             file.close()
         
-        pass
-    
-    def read_from_json(self, allow):
-        
-        if not allow : 
-            return
-        
-        import os
-        print("Current Working Directory:", os.getcwd())
-
-        with open("./src/parser/parser_table.json","r") as file:
-            self.parser_table =  json.load(file)
-            
         pass
     
     def non_terminal_first(self , alpha , visited:list=[] , my_set:list=[] ):
@@ -444,110 +407,3 @@ class Parser:
             pass
         
         return parser_table
-
-    def parse_input(self,code) -> bool:
-    
-        symbols = []
-        state = [0]
-        tree = []
-        
-        k = 0
-        while k < len(code):
-            
-            item = code[k].Text
-            
-            if not self.special_token(item=item):
-                item = "int"
-                
-            result =""
-            
-            if dict(self.parser_table[ state[-1] ]).__contains__( item ) : 
-                result = self.parser_table[ state[-1] ][ item ]
-                
-                if result == "*":
-                    print(f"unexpected {code[k].Text } at line: {code[k].line} column: {code[k].column}")
-                    return False , None
-            
-            else: # no string belongness
-                print(f"\033[1;31m >> ERROR: item \033[1;33m {code[k].Text } \033[1;31m is not valid at line { code[k].line } column {code[k].column} \033[0m")
-                return False , None
-
-            if type(result) == int: # shift
-                
-                state.append(result)
-                
-                symbols.append(item)
-                    
-                # print(symbols , f"state={state[-1]}" )
-                
-                tree.append(code[k])
-                
-                pass
-            
-            elif type(result) == tuple or type(result) == list : # reduce
-                
-                i = 0
-                token_list = []
-                
-                while i < len(result[0][1]):
-                    
-                    state.pop()
-                    
-                    token = tree[-1]
-                    
-                    token_list.insert(0,token)
-                    
-                    symbols.pop()
-                    tree.pop()
-                    i += 1
-                
-                    # print(symbols, f"state={state[-1]}")
-                
-                result_ast = self.search_ast_in_grammar(result[1])
-                
-                ast = copy.deepcopy(result_ast)
-                
-                ast_initialized = ast.ignition(token_list=token_list)
-                tree.append(ast_initialized)
-                    
-                key_stone = result[0][0]
-                last_state_number = state[-1]
-                
-                if self.parser_table[ last_state_number ][ key_stone ] == "*":
-                    print("invalid string")    
-                    return False , None
-                
-                state.append( self.parser_table[ last_state_number ][ key_stone ] )
-                
-                symbols.append(key_stone)
-                # print(symbols, f"state={state[-1]}" )
-                
-                continue  
-                
-            elif result == "OK":
-                return True , tree[0]
-            
-            else: # error
-                print(f"\033[1;31m >> ERROR: item \033[1;33m {code[k].Text } \033[1;31m is not valid at line { code[k].line } column {code[k].column} \033[0m")
-                return False , None
-            
-            k +=1
-    
-    def search_ast_in_grammar( self , i ):
-        
-        grammar = self._grammar    
-        
-        k = 0
-        for feature in grammar:
-            
-            for productions in feature:
-                
-                if k == i: 
-                    return productions    
-                k += 1
-                
-        raise Exception("no index found")
-    
-    def special_token(self,item):
-        return self.terminals.__contains__(item) or symb_and_op.__contains__(item)
-    

@@ -1,9 +1,13 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from ..parser import production_class_representation as pcr
+from ..risk import risk
+import inspect
+log_state_on_error = risk.log_state_on_error
 
+@log_state_on_error
 def add_connection( graph:nx.DiGraph , node1:pcr.ASTNode , node1_id:str , node2:pcr.ASTNode , node2_id:str ):
-    
+    risk.frame_logger.append( inspect.currentframe() )
     '''
     #### Connection from `node1` to `node2`
     
@@ -11,60 +15,30 @@ def add_connection( graph:nx.DiGraph , node1:pcr.ASTNode , node1_id:str , node2:
     graph.add_node( node1_id , ASTNode= node1   )
     graph.add_node( node2_id , ASTNode= node2   )
     graph.add_edge( node1_id , node2_id   )
+    graph.add_edge( node2_id , node1_id   )
     
     return graph
 
 def print_graph(graph):
     nx.draw(graph, with_labels=True, arrows=True)
     plt.show()
-    
-def build_graph( graph , parent:pcr.ASTNode , child:pcr.ASTNode , reference_node="type_Object" , last_reference_node="type_Object" , chift=0 ):
-    
-    if child.__dict__.__contains__("inheritence"):
+
+@log_state_on_error
+def build_graph( graph:nx.DiGraph , def_node_scope:str='' , def_node:pcr.ASTNode=None , ref_node_scope:str='' , ref_node:pcr.ASTNode=None , add_node=True ): 
+    # add edge if and only if one node is a definition and the other is a reference    
+    risk.frame_logger.append( inspect.currentframe() )
+        
+    if add_node:
+        graph.add_node( def_node_scope , ASTNode=def_node )
         return graph
     
-    node1_id = ""
-    node1 = parent
-    node2_id = ""
-    node2 = child
-    
-    if child.def_node:        
-        
-        if parent.def_node:
-        
-            node1_id= last_reference_node
-            node2_id =reference_node
-        
-        else:
-            
-            if chift: # general case            
-                
-                node1_id=f"{last_reference_node}"
-                node2_id=f"{reference_node}"
-                
-            else: # let case    
-                node1_id=f"{reference_node}_{parent.id}"
-                node2_id=f"{reference_node}_{child.id}_{child.name.name}"
-                
-    elif child.id != "var":
-        
-        if parent.def_node:
-            
-            node1_id=f"{reference_node}"
-            node2_id=f"{reference_node}_{child.id}"
-                
-        else:
-            
-            node1_id=f"{reference_node}_{parent.id}"
-            node2_id=f"{reference_node}_{child.id}"
-    
-    if node1_id != "" and node2_id != "":
-        graph = add_connection( graph=graph ,node1_id=node1_id ,node1= node1 ,node2= node2 ,node2_id= node2_id )
-        
+    graph.add_node( ref_node_scope , ASTNode=ref_node )
+    graph.add_edge( def_node_scope , ref_node_scope   )
     return graph
-
-
-def build_in(graph:nx.DiGraph , stack_referent_node:list ):
+    
+@log_state_on_error
+def build_in(graph:nx.DiGraph ):
+    risk.frame_logger.append( inspect.currentframe() )
     
     type_object = "type_Object"
     def_function_print = "def_function_print"
@@ -90,7 +64,7 @@ def build_in(graph:nx.DiGraph , stack_referent_node:list ):
     graph.add_node(let_PI , ASTNode=pcr.PI)
     graph.add_node(def_function_tan , ASTNode=pcr.tan())
     graph.add_node(def_function_cot , ASTNode=pcr.cot())
-    graph.add_node(def_function_sqrt , ASTNode=pcr.sin())
+    graph.add_node(def_function_sqrt , ASTNode=pcr.sqrt())
     graph.add_node(def_function_sin , ASTNode=pcr.sin())
     graph.add_node(def_function_cos , ASTNode=pcr.cos())
     graph.add_node(def_function_log , ASTNode=pcr.log())
