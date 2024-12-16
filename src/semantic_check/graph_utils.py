@@ -33,7 +33,7 @@ def build_graph( graph:nx.DiGraph , def_node_scope:str='' , def_node:pcr.ASTNode
         return graph
     
     graph.add_node( ref_node_scope , ASTNode=ref_node )
-    graph.add_edge( def_node_scope , ref_node_scope   )
+    graph.add_edge( ref_node_scope , def_node_scope  )
     return graph
     
 @log_state_on_error
