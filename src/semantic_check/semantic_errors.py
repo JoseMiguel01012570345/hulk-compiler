@@ -11,7 +11,7 @@ class semantic_errors:
         pass
     
     def print_(self):
-        
+    
         if len(self.error_list) == 1:
             
             type_ = self.error_list[0]['error_type']

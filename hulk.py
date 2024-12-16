@@ -2,6 +2,7 @@ from os import system
 
 from src.parser import parser as P
 from src.semantic_check import context_and_type_checking, semantic_errors, visitor
+ctck = context_and_type_checking
 from src.lexer.lexer_definition import HULKLexer
 from src.parser.parse_code import parse_input
 
@@ -22,9 +23,9 @@ tokens = [token for token in Lexer.Tokenize()]
 # P.Parser()
 
 # parse code
-ast , error_list = parse_input( code=[value[0] for value in tokens] )
+ast = parse_input( code=[value[0] for value in tokens] )
 
-semantic_errors
+s_error = semantic_errors.semantic_errors()
 
 if ast == None: 
     
@@ -32,6 +33,12 @@ if ast == None:
     exit()
 
 #_________________________SEMANTIC CHEKING__________________________________
+
+graph = ctck.context_checker()
+error_log = []
+error_log = ctck.solve_context_and_type( graph=graph , ast=ast , error_log=error_log ) # check context and type
+s_error.add_error(error_log) # add errors to error list
+s_error.print_()
 
 
 #_________________________CODE GENERATION__________________________________

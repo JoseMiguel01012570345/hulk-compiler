@@ -10,19 +10,19 @@ import json
 def parse_input( code ):
 
     parser_table =  read_from_json()
-    graph = ctck.context_checker()
     s_error = semantic_errors.semantic_errors()
     
     symbols = []
     state = [0]
     tree = []
     error = False
-    error_log = []
+    parser_msg = []
     
     k = 0
     while k < len(code):
         
         item = code[k].Text
+        parser_process_printer( allow=0 , parser_msg=parser_msg)
         
         if not special_token(item=item):
             item = "int"
@@ -44,7 +44,7 @@ def parse_input( code ):
             
             state.append(result)
             symbols.append(item)
-            print(symbols , f"state={state[-1]}" )
+            parser_msg.append(  f"{symbols} state={state[-1]}" )
             tree.append(code[k])
             
         elif type(result) == tuple or type(result) == list : # reduce
@@ -61,18 +61,16 @@ def parse_input( code ):
                 tree.pop()
                 
                 i += 1
-            
-                print(symbols, f"state={state[-1]}")
-            
+
+                parser_msg.append( f"{symbols} state={state[-1]}" )
+                
             result_ast = search_ast_in_grammar(result[1])
             
             ast = copy.deepcopy(result_ast)
             
             ast_initialized = ast.ignition(token_list=token_list) # initialize ast
             ast_reduced = visitor.ast_reducer(ast=ast_initialized) # reduce ast
-            error_log = ctck.solve_context_and_type( graph=graph , ast=ast_reduced , error_log=error_log ) # check context and type
-            s_error.add_error(error_log) # add errors to error list
-
+            
             tree.append( ast_reduced )
                 
             key_stone = result[0][0]
@@ -85,7 +83,7 @@ def parse_input( code ):
             state.append( parser_table[ last_state_number ][ key_stone ] )
             
             symbols.append(key_stone)
-            print(symbols, f"state={state[-1]}" )
+            parser_msg.append( f"{symbols} state={state[-1]}" )
             
             continue  
         
@@ -99,12 +97,19 @@ def parse_input( code ):
         k +=1
     
     if error:
-        s_error.print_() # print errors of error_log
         exit()
     
     print(f"\033[1;32m GOOD syntaxis \033[0m")
+    s_error.print_() # print errors of error_log
     
-    return tree[0] , error_log
+    return tree[0]
+
+def parser_process_printer( allow= 1 , parser_msg:list=[] ):
+    if allow:
+        for msg in parser_msg:
+            print(msg)
+        
+        parser_msg.clear()
 
 def search_ast_in_grammar( i ):        
         grammar = GD.grammar

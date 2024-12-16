@@ -40,7 +40,7 @@ class ASTNode:
         
         pass
     
-    def pointer_to_node_type():
+    def pointer_to_node_type(self):
         return self.node_type
     
     def children_name(self):
@@ -104,7 +104,7 @@ class function_call( ASTNode): # check context
         return [ "name" , "args" ]
     
     def type(self, graph: DiGraph = None, referent_node=""):
-        return self.node_type()
+        return self.pointer_to_node_type()
     
 class params( ASTNode):
     
