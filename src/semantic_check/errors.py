@@ -23,9 +23,9 @@ def inheritence_error(ast:pcr.ASTNode):
     error_type = "inheritence"
     
     if ast.id == "type":
-        error_description = f"type {ast.name.name} could not be found"
+        error_description = f"type {ast.name} could not be found"
     else:
-        error_description = f"protocol {ast.name.name} could not be found"
+        error_description = f"protocol {ast.name} could not be found"
     
     return error_type , error_description
 
