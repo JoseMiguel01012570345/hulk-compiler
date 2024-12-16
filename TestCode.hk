@@ -1,9 +1,9 @@
 type program {
 
-      x = 10;
+      let x = 10;
 
      function tan(x) { 
         
-        sinx(x) /  cos(x);
+        sin(x) /  cos(x);
      };
 };

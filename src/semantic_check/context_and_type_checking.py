@@ -2,7 +2,7 @@ from ..parser import production_class_representation as pcr
 from . import errors
 import networkx as nx
 from . import graph_utils
-print_graph , build_graph , build_in = graph_utils.print_graph , graph_utils.build_graph , graph_utils.build_in
+build_graph , build_in =  graph_utils.build_graph , graph_utils.build_in
 from ..risk import risk
 log_state_on_error = risk.log_state_on_error
 import inspect
@@ -17,16 +17,13 @@ class aux: # convert parent var <name> into a type <name>
         self.name = my_name
 
 @log_state_on_error
-def context_checker( printing=0 ):
+def init_graph():
     risk.frame_logger.append( inspect.currentframe() )
     
     graph = nx.DiGraph()
     
     # import build-ins
     graph = build_in(graph=graph )
-    
-    if printing :
-        print_graph(graph=graph)
     
     return graph
 
@@ -94,7 +91,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_log=[] , graph: nx.DiGr
                 error_log = function_call(graph,child,error_log , stack_referent_node )
                 children_function_call = def_node_children(child=child)
                 
-                error_log = solve_context_and_type( child , error_log , graph , children_function_call , all_let , stack_referent_node )
+                error_log = solve_context_and_type( ast=child ,error_log=error_log ,graph=graph , children=children_function_call , stack_referent_node=stack_referent_node , all_let=False )
                 continue
             
             if child.id == "var": # check for existence
@@ -106,7 +103,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_log=[] , graph: nx.DiGr
                 
                 verify_instance_args = child.node.args.expressions
                 
-                error_log = solve_context_and_type( child , error_log , graph , verify_instance_args , all_let , stack_referent_node )
+                error_log = solve_context_and_type( child , error_log , graph , verify_instance_args , all_let , stack_referent_node , all_let=False )
                 
                 continue
                 
@@ -350,7 +347,7 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_log:list , sta
                 
                 my_node = graph.nodes[node]["ASTNode"]
                 my_node_signature = node
-                ast.node_type = my_node.pointer_to_node_type # use pointer_to_node_type function to point to the current type
+                ast.pointer_to_node_type = my_node.pointer_to_node_type # use pointer_to_node_type function to point to the current type
                 
                 break        
             i-=1

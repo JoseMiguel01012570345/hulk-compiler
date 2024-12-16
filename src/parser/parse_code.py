@@ -21,7 +21,7 @@ def parse_input( code ):
     while k < len(code):
         
         item = code[k].Text
-        parser_process_printer( allow=1 , parser_msg=parser_msg)
+        parser_process_printer( allow=0 , parser_msg=parser_msg)
         
         if not special_token(item=item):
             item = "int"

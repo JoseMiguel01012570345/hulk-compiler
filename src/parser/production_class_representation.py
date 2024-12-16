@@ -10,8 +10,8 @@ class ASTNode:
     visitor = None
     line = 10e306
     column =10e306
-    expected_type = "object"
-    node_type = "object"
+    expected_type = "Object"
+    node_type = "Object"
     type_checker = False
     rules = []
     
@@ -20,8 +20,6 @@ class ASTNode:
         for rule in self.rules:
             rule(self)
 
-        pass
-        
     def __init__(
         self, grammar= {
                         
@@ -38,8 +36,6 @@ class ASTNode:
         self.builder = grammar["builder"]
         self.visitor = grammar["visitor"]
         
-        pass
-    
     def pointer_to_node_type(self):
         return self.node_type
     
@@ -47,6 +43,9 @@ class ASTNode:
         return ["replacement"]
     
     def visitor_ast(self):
+        '''
+        return the children of the current node
+        '''
         return self.visitor(self)
             
     def ignition(self,token_list):
@@ -80,8 +79,6 @@ class ASTNode:
         '''
         #### `<referent_node>` is the reference node of the actual node in `graph`
         '''
-        pass
-
 #___________________________________________________AST OF THE GRAMMAR_________________________________________>>>>>>>>>>>>>>>>
 
 class function_call( ASTNode): # check context
@@ -121,8 +118,6 @@ class params( ASTNode):
     def children_name(self):
         return [ "expressions" ]
     
-    pass
-
 #_________________________________________________BINARY EXPRESSIONS___________________________________________>>>>>>>>>>>>>>>>
 
 class binary_opt(ASTNode):
@@ -138,8 +133,6 @@ class binary_opt(ASTNode):
     def children_name(self):
         return [ "left_node" , "right_node" ]
     
-    pass
-
 class dot(binary_opt):# the context of the left side is passed to the context of the right side
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
@@ -152,9 +145,7 @@ class in_(binary_opt):
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
-    
-    pass
-    
+        
     expressions = []
     body: ASTNode = None
     
@@ -177,12 +168,12 @@ class plus(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-    
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
         
 class minus(binary_opt):
     
@@ -197,12 +188,12 @@ class minus(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-        
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
 
 class multiplication(binary_opt):
     
@@ -217,12 +208,12 @@ class multiplication(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-    
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
 
 class divition(binary_opt):
     
@@ -237,12 +228,12 @@ class divition(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-        
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
     
 class pow_(binary_opt):
     
@@ -257,12 +248,12 @@ class pow_(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-        
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
     
 class per_cent(binary_opt):
     
@@ -277,12 +268,12 @@ class per_cent(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
 
 class concatenation(binary_opt):
     
@@ -297,12 +288,12 @@ class concatenation(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-        
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
       
 class blank_space_concatenation(binary_opt):
     
@@ -317,12 +308,12 @@ class blank_space_concatenation(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-    
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
 
 class double_dot(binary_opt): # the context of the right side is passed to the context of the left side
     
@@ -334,9 +325,9 @@ class double_dot(binary_opt): # the context of the right side is passed to the c
         right_node_type = self.right_node.type( graph ,  referent_node  )
         self.left_node.node_type = right_node_type
         
-        return right_node_type
-    
-    pass
+        self.node_type = right_node_type
+        
+        return self.pointer_to_node_type()
 
 class double_dot_equal(binary_opt): # the context of the right side is passed to the context of the left side
     
@@ -348,7 +339,9 @@ class double_dot_equal(binary_opt): # the context of the right side is passed to
         right_node_type = self.right_node.type( graph ,  referent_node  )
         self.left_node.node_type = right_node_type
         
-        return right_node_type
+        self.node_type = right_node_type
+        
+        return self.pointer_to_node_type()
     
 class as_(binary_opt):
     
@@ -359,8 +352,6 @@ class as_(binary_opt):
         
         self.expected_type = self.right_node.name
         return self.right_node.type( graph ,  referent_node  )
-    
-    pass
 
 class is_(binary_opt):
     
@@ -375,12 +366,12 @@ class is_(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-        
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
 
 class equal(binary_opt): # the context of the right side is passed to the context of the left side
     
@@ -396,10 +387,12 @@ class equal(binary_opt): # the context of the right side is passed to the contex
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
     
     
 class bigger_than(binary_opt):
@@ -415,12 +408,12 @@ class bigger_than(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-    
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
 
 class smaller_than(binary_opt):
     
@@ -435,12 +428,12 @@ class smaller_than(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-    
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
 
 class bigger_or_equal(binary_opt):
     
@@ -455,12 +448,12 @@ class bigger_or_equal(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-    
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
 
 class smaller_or_equal(binary_opt):
     
@@ -475,12 +468,12 @@ class smaller_or_equal(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-        
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
 
 class assign(binary_opt):
     
@@ -495,7 +488,9 @@ class assign(binary_opt):
         
         self.left_node.node_type = right_node_type
         
-        return right_node_type
+        self.node_type = right_node_type
+        
+        return self.pointer_to_node_type()
     
     
 class or_(binary_opt):
@@ -511,12 +506,12 @@ class or_(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-        
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
 
 class and_(binary_opt):
     
@@ -531,12 +526,12 @@ class and_(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-        
-    pass
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type()
     
 class different(binary_opt):
     
@@ -551,13 +546,12 @@ class different(binary_opt):
         right_node_type = self.right_node.type( graph ,  referent_node  )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            return "Object"
+            self.node_type = "Object"
+            return self.pointer_to_node_type()
         
         else:
-            return self.expected_type
-    
-    pass
- 
+            self.node_type = self.expected_type
+            return self.pointer_to_node_type() 
 #______________________________________________________UNARY EXPRESSIONS_______________________________>>>>>>>>>>>>>>>
     
 class unary_expression(ASTNode):
@@ -582,7 +576,7 @@ class unary_expression(ASTNode):
     def type(self, graph: DiGraph = None, referent_node=""):
         
         node_type = self.node.type( graph ,  referent_node  )
-        return node_type
+        return self.pointer_to_node_type()
     
     pass
     
@@ -592,7 +586,8 @@ class new(unary_expression):
         super().__init__(grammar)
     
     def type(self, graph: DiGraph = None, referent_node=""):
-        return self.node.name.name
+        self.node_type =  self.node.name.name
+        return self.pointer_to_node_type()
     
     pass
     
@@ -625,7 +620,7 @@ class let(ASTNode):
         super().__init__(grammar)
         
     def type(self,graph: nx.DiGraph = None, referent_node=""):
-        return "Object"
+        return self.pointer_to_node_type()
         
 class variable(ASTNode): # check context
     
@@ -826,7 +821,8 @@ class type_(ASTNode): # check context
         return children
     
     def type(self, graph: DiGraph = None, referent_node=""):
-        return self.name.name
+        self.node_type = self.name.name
+        return self.pointer_to_node_type()
             
 class protocol(ASTNode): # check context
     
@@ -862,7 +858,8 @@ class protocol(ASTNode): # check context
         return children
     
     def type( self ,graph: DiGraph = None, referent_node=""):
-        return self.name.name
+        self.node_type = self.name.name
+        return self.pointer_to_node_type()
     
 class vectors(ASTNode):
     
@@ -882,8 +879,9 @@ class vectors(ASTNode):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
-    def type(graph: DiGraph = None, referent_node=""):
-        return "Iterable"
+    def type( self, graph: DiGraph = None, referent_node=""):
+        self.node_type = "Iterable"
+        return self.pointer_to_node_type()
                   
 class literal(ASTNode):
     
@@ -921,8 +919,9 @@ class index(ASTNode): # check context
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
         
-    def type(graph: DiGraph = None, referent_node=""):
-        return "Object"
+    def type( self, graph: DiGraph = None, referent_node=""):
+        self.node_type = "Object"
+        return self.pointer_to_node_type()
     
 class while_(ASTNode):
     

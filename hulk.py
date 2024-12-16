@@ -1,10 +1,12 @@
 from os import system
 
 # from src.parser import parser as P
-from src.semantic_check import context_and_type_checking, semantic_errors, visitor
+from src.semantic_check import context_and_type_checking, semantic_errors
+from src.semantic_check.graph_utils import print_graph
 ctck = context_and_type_checking
 from src.lexer.lexer_definition import HULKLexer
 from src.parser.parse_code import parse_input
+from src.semantic_check import type_inspector
 
 system("cls")
 
@@ -34,11 +36,15 @@ if ast == None:
 
 #_________________________SEMANTIC CHEKING__________________________________
 
-graph = ctck.context_checker()
+graph = ctck.init_graph()
 error_log = []
 error_log = ctck.solve_context_and_type( graph=graph , ast=ast , error_log=error_log ) # check context and type
 s_error.add_error(error_log) # add errors to error list
 s_error.print_()
+
+print_graph( graph=graph )
+
+type_inspector.type_inpector( ast=ast )
 
 
 #_________________________CODE GENERATION__________________________________
