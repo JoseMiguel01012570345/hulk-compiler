@@ -2,12 +2,12 @@ import copy
 from ..lexer import HULK_LANGUAGE_DEFINITION 
 symb_and_op = HULK_LANGUAGE_DEFINITION .SYMBOLS_and_OPERATORS_parser  
 from . import GRAMMAR_PRODUCTIONS as GD
-from src.semantic_check import context_and_type_checking, visitor , semantic_errors
+from src.semantic_check import context_and_type_checking, visitor
 ctck = context_and_type_checking
 
 import json
 
-def parse_input( code ):
+def parse_input( code , allow=1 ):
 
     parser_table =  read_from_json()
     
@@ -21,7 +21,7 @@ def parse_input( code ):
     while k < len(code):
         
         item = code[k].Text
-        parser_process_printer( allow=0 , parser_msg=parser_msg)
+        parser_process_printer( allow=allow , parser_msg=parser_msg)
         
         if not special_token(item=item):
             item = "int"
@@ -32,12 +32,14 @@ def parse_input( code ):
             result = parser_table[ state[-1] ][ item ]
             
             if result == "*":
-                print(f"unexpected {code[k].Text } at line: {code[k].line} column: {code[k].column}")
+                print(f"\033[1;31m unexpected {code[k].Text } at line: {code[k].line} column: {code[k].column} \033[0m")
                 error = True
+                break
         
         else: # no string belongness
             print(f"\033[1;31m >> ERROR: item \033[1;33m {code[k].Text } \033[1;31m is not valid at line { code[k].line } column {code[k].column} \033[0m")
             error = True
+            break
             
         if type(result) == int: # shift
             
@@ -78,6 +80,7 @@ def parse_input( code ):
             if parser_table[ last_state_number ][ key_stone ] == "*":
                 print( f"unexpected character at line {code[k].line} and column {code[k].line}")    
                 error = True 
+                break
             
             state.append( parser_table[ last_state_number ][ key_stone ] )
             
@@ -92,6 +95,7 @@ def parse_input( code ):
         else: # error
             print(f"\033[1;31m >> ERROR: item \033[1;33m {code[k].Text } \033[1;31m is not valid at line { code[k].line } column {code[k].column} \033[0m")
             error = True
+            break
         
         k +=1
     
