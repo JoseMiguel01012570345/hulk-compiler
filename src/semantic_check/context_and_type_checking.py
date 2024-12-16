@@ -128,9 +128,10 @@ def check_inheritance( graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
     else:
         target = f'protocol_{ast.parent_name.name}'
         
+    # walk through the graph to find the target node , this node has no attr because it's a protocol or type
     found= inheritence_walker(graph=graph , target_type=target , stack_referent_node=stack_referent_node , attr='' , state=len(stack_referent_node)-1 )
     
-    if not found:
+    if not found: # if its not found it means an error
         error_type , error_description = inheritence_error(ast=ast.parent_name , type_or_protocol=ast.id )
         error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
     
@@ -208,11 +209,12 @@ def dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , left_n
 
 @log_state_on_error
 def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_referent_node:list , state= 0 ) -> bool:
+    # walk through all visible types that match with target_type and in adition , consider its inheritence
+    
     risk.frame_logger.append( inspect.currentframe() )
     
     i = state
     
-    # walk through all visible types that match with target_type and in adition , consider its inheritence
     
     while i>=0:
         
@@ -387,15 +389,20 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_log:list , stack_referen
         
         if "type" in referent_node and referent_node_ast.constructor != None : # if there is a referent type node with a constructor , we add var self to graph
             return error_log
-        
-    for reference_node in stack_referent_node:
     
+    i = len(stack_referent_node) - 1
+    while i >=0:
+        
+        reference_node = stack_referent_node[i]
         if graph.has_node( f"{reference_node}_let_{ast.name}"): # check if variable is accesable from outter context from its position
             
             ref_node_scope = f'{stack_referent_node[-1]}_var_{ast.name}'
             build_graph( graph=graph , def_node_scope=f"{reference_node}_let_{ast.name}" , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
             return error_log
-    
+        
+        i-=1
+     
+    # variable usage error case
     error_type = "variable usage"
     error_description = f"variable {ast.name} is used before assigned"    
     scope = { "line":ast.line , "column":ast.column }
