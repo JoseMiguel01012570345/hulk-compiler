@@ -620,8 +620,10 @@ class let(ASTNode):
         super().__init__(grammar)
         
     def type(self,graph: nx.DiGraph = None, ):
+        self.node_type = self.parent.pointer_to_node_type()
         return self.pointer_to_node_type()
-        
+
+@risk.log_state_on_error
 class variable(ASTNode): # check context
     
     '''
@@ -651,21 +653,8 @@ class variable(ASTNode): # check context
         if self.literal:
             return self.type_
         
-        node_search = f"{self.referent_node}_var_{self.name}"
-        neighborn_re_assigment = [ node for node in  graph.neighbors(node_search) if "re_assigment" in node ]
-        
-        if len(neighborn_re_assigment) == 0:
-            
-            let_node_ast = graph.nodes[f"{self.referent_node}_let_{self.name}"]["ASTNode"]
-            
-            return let_node_ast.node_type
-        else:
-            
-            neighborn_re_assigment = neighborn_re_assigment[0]
-            
-            neighborn_re_assigment_ast = graph.nodes[neighborn_re_assigment]["ASTNode"]
-            
-            return neighborn_re_assigment_ast.node_type
+        let_node_ast = graph.nodes[f"{ self.referent_node }_let_{self.name}"]["ASTNode"]
+        return let_node_ast.pointer_to_node_type()
         
     
 class conditional(ASTNode):
@@ -815,6 +804,7 @@ class type_(ASTNode): # check context
         return children
     
     def type(self, graph: DiGraph = None):
+        self.node_type = self.name
         return self.pointer_to_node_type()
             
 class protocol(ASTNode): # check context
@@ -846,6 +836,7 @@ class protocol(ASTNode): # check context
         return children
     
     def type( self ,graph: DiGraph = None, ):
+        self.node_type = self.name
         return self.pointer_to_node_type()
     
 class vectors(ASTNode):
@@ -887,8 +878,6 @@ class literal(ASTNode):
     def children_name(self):
         return []
     
-    
-
 class index(ASTNode): # check context
     
     '''
