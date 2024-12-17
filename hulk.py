@@ -1,6 +1,6 @@
 from os import system
 
-import src.parser.Parser
+import src.parser.Parser as P
 
 from src.semantic_check import context_and_type_checking, semantic_errors
 from src.semantic_check.graph_utils import print_graph
