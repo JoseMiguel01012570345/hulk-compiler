@@ -25,6 +25,7 @@ def init_graph():
 @log_state_on_error
 def solve_context_and_type( ast:pcr.ASTNode=None , error_log=[] , graph: nx.DiGraph= None , children=None , all_let = False , stack_referent_node:list=[""] ):
     risk.frame_logger.append( inspect.currentframe() )
+    ast.referent_node = stack_referent_node[-1]
     
     if  children is None:
         children = ast.visitor_ast()
@@ -413,7 +414,7 @@ def type_checking_creteria( graph:nx.DiGraph , ast_node:pcr.ASTNode , stack_refe
     
     if ast_node.type_checker:
         
-        ast_type = ast_node.type(graph=graph , referent_node=stack_referent_node[-1] )
+        ast_type = ast_node.type(graph=graph )
         expected_type = ast_node.expected_type
         
         if expected_type != "Object" and ast_type != expected_type :
