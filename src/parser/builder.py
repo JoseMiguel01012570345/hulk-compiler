@@ -33,7 +33,7 @@ def replacement(token_list,index=0):
     return [( "replacement" , token_list[index])]
 
 def let(token_list):
-    return [ ( "name",token_list[1] ) ]
+    return [ ( "name",token_list[1].name ) ]
 
 def assigment(token_list):    
     return [ ( "left_node" , token_list[0] ) , ("right_node", token_list[-1] ) ] 
