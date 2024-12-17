@@ -43,7 +43,7 @@ error_log   = ctck.solve_context_and_type( graph=graph , ast=ast , error_log=err
 s_error.add_error(error_log) # add errors to error list
 s_error.print_()
 
-print_graph( graph=graph )
+# print_graph( graph=graph )
 
 type_inspector.type_inpector( ast=ast , graph=graph )
 

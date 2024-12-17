@@ -12,8 +12,9 @@ type program inherits program2 {
       let x = 10;
 
      function tan(x) { 
-        
-        sin(x) /  cos(x);
+
+         let c = 10;        
+        sin(c) /  cos(c);
      };
 };
 
