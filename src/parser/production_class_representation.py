@@ -654,6 +654,7 @@ class variable(ASTNode): # check context
             return self.type_
         
         let_node_ast = graph.nodes[f"{ self.referent_node }_let_{self.name}"]["ASTNode"]
+        
         return let_node_ast.pointer_to_node_type()
         
     
