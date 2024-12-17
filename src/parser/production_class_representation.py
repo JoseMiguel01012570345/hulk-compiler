@@ -98,7 +98,7 @@ class function_call( ASTNode): # check context
         super().__init__(grammar)
     
     def children_name(self):
-        return [ "name" , "args" ]
+        return [ "args" ]
     
     def type(self, graph: DiGraph = None, referent_node=""):
         return self.pointer_to_node_type()
@@ -586,7 +586,7 @@ class new(unary_expression):
         super().__init__(grammar)
     
     def type(self, graph: DiGraph = None, referent_node=""):
-        self.node_type =  self.node.name.name
+        self.node_type =  self.node.name
         return self.pointer_to_node_type()
     
     pass
@@ -763,8 +763,6 @@ class def_function(ASTNode): # check context
         
         children = []
         
-        children.append("name")
-        
         if self.args is not None:
             children.append("args")
         
@@ -803,12 +801,6 @@ class type_(ASTNode): # check context
         
         children = []
     
-        if self.__dict__.__contains__("name"):
-            children.append("name")
-    
-        if self.parent_name is not None:
-            children.append("parent_name")
-        
         if self.constructor is not None:
             children.append("constructor")
             
@@ -821,7 +813,7 @@ class type_(ASTNode): # check context
         return children
     
     def type(self, graph: DiGraph = None, referent_node=""):
-        self.node_type = self.name.name
+        self.node_type = self.name
         return self.pointer_to_node_type()
             
 class protocol(ASTNode): # check context
@@ -846,19 +838,13 @@ class protocol(ASTNode): # check context
     def children_name(self):
         children =[]
     
-        if self.name is not None:
-            children.append("name")
-        
-        if self.parent_name is not None:
-            children.append("parent_name")
-        
         if self.body is not None:
             children.append("body")
         
         return children
     
     def type( self ,graph: DiGraph = None, referent_node=""):
-        self.node_type = self.name.name
+        self.node_type = self.name
         return self.pointer_to_node_type()
     
 class vectors(ASTNode):

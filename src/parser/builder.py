@@ -60,7 +60,7 @@ def block(token_list):
 def def_function(token_list):
     
     if not token_list[0].__dict__.__contains__("id"):
-        return [ ("name" , token_list[1] ) , ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
+        return [ ("name" , token_list[1].name ) , ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
     
     if token_list[0].__dict__.__contains__("id"):
         return [ ("name" , token_list[0] ) , ( "args" , token_list[-3] ) , ( "body", token_list[-1] ) ]
@@ -68,22 +68,22 @@ def def_function(token_list):
 def type(token_list):
     
     if len(token_list) == 3:
-        return [("name",token_list[1] ) , ( "body", token_list[-1] )]
+        return [("name",token_list[1].name ) , ( "body", token_list[-1] )]
     
     if len(token_list) == 4:
-        return [("name",token_list[1]) , ( "constructor", token_list[2] ) ,( "body", token_list[-1] )]
+        return [("name",token_list[1].name) , ( "constructor", token_list[2] ) ,( "body", token_list[-1] )]
         
     if len(token_list) == 5:
-        return [("name",token_list[1]) , ( "parent_name", token_list[3] ) ,( "body", token_list[-1] )]
+        return [("name",token_list[1].name) , ( "parent_name", token_list[3].name ) ,( "body", token_list[-1] )]
     
-    return [("name",token_list[1]) , ( "constructor", token_list[2] ) ,( "parent_name", token_list[4] ) , ("base" , token_list[5]), ("body",token_list[-1]) ]
+    return [("name",token_list[1].name) , ( "constructor", token_list[2] ) ,( "parent_name", token_list[4].name ) , ("base" , token_list[5]), ("body",token_list[-1]) ]
 
 def protocol(token_list):
     
     if len(token_list) == 3:
-        return [ ( "name" , token_list[1] ) , ( "body", token_list[-1] ) ]
+        return [ ( "name" , token_list[1].name ) , ( "body", token_list[-1] ) ]
     
-    return [ ( "name" , token_list[1] ) , ("parent_name",token_list[3]) , ( "body", token_list[-1] ) ]
+    return [ ( "name" , token_list[1].name ) , ("parent_name",token_list[3].name ) , ( "body", token_list[-1] ) ]
 
 def in_(token_list):
     return [ ( "expressions" , token_list[0] ) , ( "body" , token_list[2] ) ]
@@ -106,7 +106,7 @@ def params(token_list):
         return [("expressions",[])]
 
 def function_call(token_list):
-    return [( "name" , token_list[0] ) , ( "args",token_list[1] )]
+    return [( "name" , token_list[0].name ) , ( "args",token_list[1] )]
     
 def for_while(token_list):
     return [ ( "condition" , token_list[1]) , ("body", token_list[2]) ]

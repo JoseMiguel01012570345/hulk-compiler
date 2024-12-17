@@ -10,7 +10,7 @@ def type_inpector( ast:pcr.ASTNode ):
     for child in children:
         child_signature = ''
         if child.def_node:
-            child_signature = f'{child.id}_{child.name.name}'
+            child_signature = f'{child.id}_{child.name}'
         else:
             child_signature = f'{child.id}'
             

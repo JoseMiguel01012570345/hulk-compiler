@@ -1,4 +1,13 @@
-type program {
+type superprogram{
+
+protocol x {};
+protocol y  extends x {};
+
+type program2{
+
+};
+
+type program inherits program2 {
 
       let x = 10;
 
@@ -6,4 +15,6 @@ type program {
         
         sin(x) /  cos(x);
      };
+};
+
 };

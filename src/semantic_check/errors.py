@@ -14,7 +14,7 @@ def selector(ast): # switch case
 def instance_error(ast:pcr.ASTNode):
     
     error_type="type definition"
-    error_description=f"type {ast.node.name.name} is not defined in scope"
+    error_description=f"type {ast.node.name} is not defined in scope"
     
     return error_type , error_description
 
@@ -32,27 +32,27 @@ def inheritence_error(ast:pcr.ASTNode , type_or_protocol:str):
 def type_error( ast:pcr.type_ ):
     
     error_type = "type definition"
-    error_description = f"type {ast.name.name} has been already defined"
+    error_description = f"type {ast.name} has been already defined"
     
     return error_type , error_description
 
 def protocol_error( ast:pcr.protocol ) -> list:
     
     error_type = "protocol definition"
-    error_description = f"protocol {ast.name.name} has been already defined"
+    error_description = f"protocol {ast.name} has been already defined"
     
     return error_type , error_description
     
 def function_error( ast:pcr.def_function) -> list:
     
     error_type = "function definition"
-    error_description = f"function {ast.name.name} has been already defined"
+    error_description = f"function {ast.name} has been already defined"
         
     return error_type , error_description
 
 def let_error( ast:pcr.let) -> list:
     
     error_type = "variable definition"
-    error_description = f"variable {ast.name.name} has been already defined"
+    error_description = f"variable {ast.name} has been already defined"
     
     return error_type , error_description
