@@ -1,6 +1,7 @@
 from os import system
 
-# from src.parser import parser as P
+import src.parser.Parser
+
 from src.semantic_check import context_and_type_checking, semantic_errors
 from src.semantic_check.graph_utils import print_graph
 ctck = context_and_type_checking
@@ -38,13 +39,13 @@ if ast == None:
 
 graph = ctck.init_graph()
 error_log = []
-error_log = ctck.solve_context_and_type( graph=graph , ast=ast , error_log=error_log ) # check context and type
+error_log   = ctck.solve_context_and_type( graph=graph , ast=ast , error_log=error_log ) # check context and type
 s_error.add_error(error_log) # add errors to error list
 s_error.print_()
 
 print_graph( graph=graph )
 
-type_inspector.type_inpector( ast=ast )
+type_inspector.type_inpector( ast=ast , graph=graph )
 
 
 #_________________________CODE GENERATION__________________________________
