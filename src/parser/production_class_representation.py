@@ -1,5 +1,7 @@
 import networkx as nx
 from networkx import DiGraph
+from ..risk import risk
+import inspect
 
 class ASTNode:
       
@@ -14,6 +16,7 @@ class ASTNode:
     node_type = "Object"
     type_checker = False
     rules = []
+    referent_node = ''
     
     def check_rules(self):
         
@@ -74,7 +77,7 @@ class ASTNode:
         
         return self.id
     
-    def type( self, graph:nx.DiGraph=None , referent_node=""):
+    def type( self, graph:nx.DiGraph=None):
         
         '''
         #### `<referent_node>` is the reference node of the actual node in `graph`
@@ -100,7 +103,7 @@ class function_call( ASTNode): # check context
     def children_name(self):
         return [ "args" ]
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         return self.pointer_to_node_type()
     
 class params( ASTNode):
@@ -138,8 +141,8 @@ class dot(binary_opt):# the context of the left side is passed to the context of
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
-        return self.right_node.type( graph ,  referent_node  )
+    def type(self, graph: DiGraph = None):
+        return self.right_node.type( graph   )
     
 class in_(binary_opt):
     
@@ -152,8 +155,8 @@ class in_(binary_opt):
     def children_name(self):
         return [ "args" , "body" ]
     
-    def type(self, graph: DiGraph = None, referent_node=""):
-        return self.body.type( graph ,  referent_node  )
+    def type(self, graph: DiGraph = None):
+        return self.body.type( graph   )
 
 class plus(binary_opt):
     
@@ -162,10 +165,10 @@ class plus(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -182,10 +185,10 @@ class minus(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -202,10 +205,10 @@ class multiplication(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -222,10 +225,10 @@ class divition(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -242,10 +245,10 @@ class pow_(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -262,10 +265,10 @@ class per_cent(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
 
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -282,10 +285,10 @@ class concatenation(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -302,10 +305,10 @@ class blank_space_concatenation(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
 
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -320,9 +323,9 @@ class double_dot(binary_opt): # the context of the right side is passed to the c
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
 
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        right_node_type = self.right_node.type( graph   )
         self.left_node.node_type = right_node_type
         
         self.node_type = right_node_type
@@ -334,9 +337,9 @@ class double_dot_equal(binary_opt): # the context of the right side is passed to
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        right_node_type = self.right_node.type( graph   )
         self.left_node.node_type = right_node_type
         
         self.node_type = right_node_type
@@ -348,10 +351,10 @@ class as_(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
         self.expected_type = self.right_node.name
-        return self.right_node.type( graph ,  referent_node  )
+        return self.right_node.type( graph   )
 
 class is_(binary_opt):
     
@@ -360,10 +363,10 @@ class is_(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -381,10 +384,10 @@ class equal(binary_opt): # the context of the right side is passed to the contex
         super().__init__(grammar)
     
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -402,10 +405,10 @@ class bigger_than(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -422,10 +425,10 @@ class smaller_than(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -442,10 +445,10 @@ class bigger_or_equal(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -462,10 +465,10 @@ class smaller_or_equal(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -482,9 +485,9 @@ class assign(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        right_node_type = self.right_node.type( graph   )
         
         self.left_node.node_type = right_node_type
         
@@ -500,10 +503,10 @@ class or_(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -520,10 +523,10 @@ class and_(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -540,10 +543,10 @@ class different(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         
-        left_node_type = self.left_node.type( graph ,  referent_node  )
-        right_node_type = self.right_node.type( graph ,  referent_node  )
+        left_node_type = self.left_node.type( graph   )
+        right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
             self.node_type = "Object"
@@ -573,23 +576,20 @@ class unary_expression(ASTNode):
     def children_name(self):
         return [ "right" ]
     
-    def type(self, graph: DiGraph = None, referent_node=""):
-        
-        node_type = self.node.type( graph ,  referent_node  )
+    def type(self, graph: DiGraph = None):
         return self.pointer_to_node_type()
     
-    pass
     
 class new(unary_expression):
 
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
     
-    def type(self, graph: DiGraph = None, referent_node=""):
+    def type(self, graph: DiGraph = None):
         self.node_type =  self.node.name
         return self.pointer_to_node_type()
     
-    pass
+    
     
 class not_(unary_expression):
     
@@ -619,7 +619,7 @@ class let(ASTNode):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
-    def type(self,graph: nx.DiGraph = None, referent_node=""):
+    def type(self,graph: nx.DiGraph = None, ):
         return self.pointer_to_node_type()
         
 class variable(ASTNode): # check context
@@ -644,17 +644,19 @@ class variable(ASTNode): # check context
     def children_name(self):
         return []
     
-    def type(self, graph: nx.DiGraph = None, referent_node=""):
+    @risk.log_state_on_error
+    def type(self, graph: nx.DiGraph = None ):
+        risk.frame_logger.append( inspect.currentframe()) # add frame to  frame_logger
         
         if self.literal:
             return self.type_
         
-        node_search = f"{referent_node}_var_{self.name}"
+        node_search = f"{self.referent_node}_var_{self.name}"
         neighborn_re_assigment = [ node for node in  graph.neighbors(node_search) if "re_assigment" in node ]
         
         if len(neighborn_re_assigment) == 0:
             
-            let_node_ast = graph.nodes[f"{referent_node}_let_{self.name}"]["ASTNode"]
+            let_node_ast = graph.nodes[f"{self.referent_node}_let_{self.name}"]["ASTNode"]
             
             return let_node_ast.node_type
         else:
@@ -675,8 +677,8 @@ class conditional(ASTNode):
     def __init__(self, grammar={ "derivation": "","identifier": "","definition_node?": "","builder": None,"visitor": None }, *args) -> None:
         super().__init__(grammar, *args)
     
-    def type(self , graph:nx.DiGraph , referent_node=""):
-        return self.body.type( graph ,  referent_node  )
+    def type(self , graph:nx.DiGraph ):
+        return self.body.type( graph  )
 
 class if_(conditional):
     
@@ -713,7 +715,7 @@ class elif_(conditional):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
         
-    pass
+    
 
     def children_name(self):
         return [ "condition" , "body" ]
@@ -770,8 +772,8 @@ class def_function(ASTNode): # check context
         
         return children
     
-    def type(self, graph:nx.DiGraph ,  referent_node=""):
-        return self.body.type( graph ,  referent_node  )
+    def type(self, graph:nx.DiGraph   ):
+        return self.body.type( graph  )
     
 class type_(ASTNode): # check context
     
@@ -791,7 +793,7 @@ class type_(ASTNode): # check context
     parent_name = None
     base = None
     body = None
-    
+    node_type = name
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
@@ -812,8 +814,7 @@ class type_(ASTNode): # check context
         
         return children
     
-    def type(self, graph: DiGraph = None, referent_node=""):
-        self.node_type = self.name
+    def type(self, graph: DiGraph = None):
         return self.pointer_to_node_type()
             
 class protocol(ASTNode): # check context
@@ -831,6 +832,7 @@ class protocol(ASTNode): # check context
     name = None
     parent_name = None
     body = None
+    node_type = name
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
@@ -843,8 +845,7 @@ class protocol(ASTNode): # check context
         
         return children
     
-    def type( self ,graph: DiGraph = None, referent_node=""):
-        self.node_type = self.name
+    def type( self ,graph: DiGraph = None, ):
         return self.pointer_to_node_type()
     
 class vectors(ASTNode):
@@ -865,7 +866,7 @@ class vectors(ASTNode):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
-    def type( self, graph: DiGraph = None, referent_node=""):
+    def type( self, graph: DiGraph = None, ):
         self.node_type = "Iterable"
         return self.pointer_to_node_type()
                   
@@ -886,7 +887,7 @@ class literal(ASTNode):
     def children_name(self):
         return []
     
-    pass
+    
 
 class index(ASTNode): # check context
     
@@ -905,7 +906,7 @@ class index(ASTNode): # check context
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
         
-    def type( self, graph: DiGraph = None, referent_node=""):
+    def type( self, graph: DiGraph = None, ):
         self.node_type = "Object"
         return self.pointer_to_node_type()
     
@@ -929,8 +930,8 @@ class while_(ASTNode):
     def children_name(self):
         return [ "args" , "body" ]
     
-    def type(self,graph: DiGraph = None, referent_node=""):
-        return self.body.type(graph , referent_node)
+    def type(self,graph: DiGraph = None ):
+        return self.body.type(graph)
     
 class for_(ASTNode):
     
@@ -952,8 +953,8 @@ class for_(ASTNode):
     def children_name(self):
         return [ "args" , "body" ]
     
-    def type(self, graph: DiGraph = None, referent_node=""):
-        return self.body.type(graph , referent_node )
+    def type(self, graph: DiGraph = None):
+        return self.body.type( graph )
         
 class block(ASTNode):
     
@@ -975,8 +976,8 @@ class block(ASTNode):
     def children_name(self):
         return ["expressions"]
     
-    def type(self, graph: DiGraph = None, referent_node=""):
-        return self.expressions[-1].type(graph , referent_node)
+    def type(self, graph: DiGraph = None):
+        return self.expressions[-1].type( graph )
   
   
   
