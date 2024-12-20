@@ -50,7 +50,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_log=[] , graph: nx.DiGr
                     skip = True
             
             if not skip:
-                solve_context_and_type( ast=child ,error_log= error_log , graph=graph ,children=None ,all_let=all_let ,stack_referent_node=stack_referent_node )
+                solve_context_and_type( ast=child ,error_log= error_log , graph=graph ,children=None ,all_let=False ,stack_referent_node=stack_referent_node )
                     
     type_checking_creteria( graph , ast_node=ast , stack_referent_node=stack_referent_node , error_log=error_log )
     
@@ -98,20 +98,20 @@ def def_cases( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list ,
             solve_context_and_type(child , error_log , graph  , def_children , all_let= True , stack_referent_node=new_stack )
             return 
         
-        solve_context_and_type(child , error_log , graph  , def_children , all_let= all_let , stack_referent_node=new_stack )
+        solve_context_and_type(child , error_log , graph  , def_children , all_let= False , stack_referent_node=new_stack )
         return
     
     # case 2 : let
     let_scope = f'{stack_referent_node[-1]}_let_{child.name}'
     graph = build_graph( graph=graph , def_node_scope=let_scope , def_node=child )
     
-    solve_context_and_type(child , error_log , graph  , def_children , all_let , stack_referent_node )
+    solve_context_and_type(child , error_log , graph  , def_children , all_let=False ,stack_referent_node=stack_referent_node )
     
 def auto_call( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
     new_stack.append("anonymus")    
     
-    solve_context_and_type(child , error_log , graph  , None , all_let= all_let ,stack_referent_node=new_stack)
+    solve_context_and_type(child , error_log , graph  , None , all_let= False ,stack_referent_node=new_stack)
     
 def function_call_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
     function_call(graph,child,error_log , stack_referent_node )
@@ -130,7 +130,7 @@ def var_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , a
      variable(graph,child,error_log , stack_referent_node )
      solve_context_and_type( ast=child , 
                             error_log=error_log ,graph=graph , 
-                            children=None , all_let=all_let , 
+                            children=None , all_let=False , 
                             stack_referent_node=stack_referent_node )
     
 def instance_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
@@ -198,7 +198,7 @@ def find_instance_type(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
 def dot_case( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     
     solve_dot_case( graph=graph , error_log=error_log , right_node=child.righ_node , left_node=child.left_node , stack_referent_node=stack_referent_node )
-    solve_context_and_type( child , error_log , graph , None , all_let , stack_referent_node )
+    solve_context_and_type( child , error_log , graph , None , all_let=False , stack_referent_node=stack_referent_node )
 
 @log_state_on_error
 def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , left_node:pcr.ASTNode , stack_referent_node=""):
