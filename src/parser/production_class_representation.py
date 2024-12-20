@@ -654,16 +654,23 @@ class variable(ASTNode): # check context
         if self.literal:
             return self.type_
         
-        target = f"{ self.referent_node }_let_{self.name}"
-        let_node_ast = None
-        if graph.has_node(target):
+        if self.id == 'let':
+            target = f"{ self.referent_node }_let_{self.name}"
             let_node_ast = graph.nodes[target]["ASTNode"]
+            return let_node_ast.pointer_to_node_type()
+        
+        # simple variable case ( id == var )
+        target = f"{ self.referent_node }_var_{self.name}"
+        var_neighbor = next(graph.neighbors(target))
+        
+        let_node_ast = None
+        if var_neighbor is not None:
+            let_node_ast = graph.nodes[var_neighbor]["ASTNode"]
             return let_node_ast.pointer_to_node_type()
         
         self.node_type = 'Object'
         return self.pointer_to_node_type()
         
-    
 class conditional(ASTNode):
     
     id = ""
@@ -769,7 +776,7 @@ class def_function(ASTNode): # check context
         return children
     
     def type(self, graph:nx.DiGraph   ):
-        return self.body.type( graph  )
+        return self.body.expressions[-1].type( graph  )
     
 class type_(ASTNode): # check context
     
