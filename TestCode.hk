@@ -3,7 +3,7 @@ type superprogram{
 protocol x {};
 protocol y  extends x {};
 
-type program2{
+type program{
 
 };
 

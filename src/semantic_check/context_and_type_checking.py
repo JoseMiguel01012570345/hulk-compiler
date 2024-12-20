@@ -145,7 +145,7 @@ def check_inheritance( graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
     found= inheritence_walker(graph=graph , target_type=target , stack_referent_node=stack_referent_node , attr='' , state=len(stack_referent_node)-1 )
     
     if not found: # if its not found it means an error
-        error_type , error_description = inheritence_error(ast=ast.parent_name , type_or_protocol=ast.id )
+        error_type , error_description = inheritence_error(ast_parent_inheritence=ast.parent_name , type_or_protocol=ast.id )
         error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
     
     return error_log
