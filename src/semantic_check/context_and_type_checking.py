@@ -403,9 +403,18 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_log:list , stack_referen
     if ast.name == "self": # self case
             
         referent_node = stack_referent_node[-1]
-        referent_node_ast: pcr.ASTNode = graph.nodes[stack_referent_node[-1]]["ASTNode"]    
-        
-        if "type" in referent_node and referent_node_ast.constructor != None : # if there is a referent type node with a constructor , we add var self to graph
+        self_allow , type_reference_ast , type_reference_scope = self_case( graph=graph , reference_node=referent_node , stack_reference_node=stack_referent_node )
+
+        # if there is a referent type node with a constructor , we add var self to graph
+        if self_allow :
+            self_scope = f"{referent_node}_var_self"
+            build_graph( graph=graph ,
+                        def_node_scope=type_reference_scope , 
+                        def_node=type_reference_ast , 
+                        ref_node_scope=self_scope ,
+                        add_node=False
+                        )
+            
             return error_log
     
     i = len(stack_referent_node) - 1
@@ -427,6 +436,33 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_log:list , stack_referen
     error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
 
     return error_log
+
+def self_case( graph:nx.DiGraph , reference_node:str , stack_reference_node:list ):
+    
+    if "type" not in reference_node:
+        return False , None , ''
+    
+    splited_reference = reference_node.split('_')
+    
+    i = len( splited_reference ) - 1
+    type_name = ''
+    while i >= 0:
+        if splited_reference[i] == "type" :
+            type_name = splited_reference[ i + 1 ]
+            break
+        i -=1
+    
+    i = len( stack_reference_node ) - 1
+    type_scope = ''
+    while i >=0:
+        
+        stack_ref_node_split =stack_reference_node[i].split('_')
+        if type_name not in stack_ref_node_split:
+            type_scope = stack_reference_node[ i + 1 ]
+            break
+        i -= 1
+    
+    return True , graph.nodes[type_scope]["ASTNode"] , type_scope
 
 @log_state_on_error
 def typing_error( ast_node:pcr.ASTNode ):
