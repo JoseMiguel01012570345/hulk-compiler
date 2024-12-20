@@ -50,7 +50,7 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_log=[] , graph: nx.DiGr
                     skip = True
             
             if not skip:
-                solve_context_and_type( ast=child ,error_log= error_log , graph=graph ,children=None ,all_let=False ,stack_referent_node=stack_referent_node )
+                solve_context_and_type( ast=child ,error_log= error_log , graph=graph ,children=None ,all_let=all_let ,stack_referent_node=stack_referent_node )
                     
     type_checking_creteria( graph , ast_node=ast , stack_referent_node=stack_referent_node , error_log=error_log )
     
@@ -195,10 +195,12 @@ def find_instance_type(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
     
     return error_log
 
+@log_state_on_error
 def dot_case( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
+    risk.frame_logger.append( inspect.currentframe() )
     
-    solve_dot_case( graph=graph , error_log=error_log , right_node=child.righ_node , left_node=child.left_node , stack_referent_node=stack_referent_node )
     solve_context_and_type( child , error_log , graph , None , all_let=False , stack_referent_node=stack_referent_node )
+    solve_dot_case( graph=graph , error_log=error_log , right_node=child.right_node , left_node=child.left_node , stack_referent_node=stack_referent_node )
 
 @log_state_on_error
 def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , left_node:pcr.ASTNode , stack_referent_node=""):
@@ -211,7 +213,7 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
     left_name = left_node.name
     right_name =right_node.name
     
-    target_type = left_node.type()
+    target_type = left_node.type(graph=graph)
     attr = f"{right_node.id}_{right_name}"
     
     child_left_node = f"{stack_referent_node[-1]}_{left_node.id}_{left_name}"
@@ -243,8 +245,6 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
     risk.frame_logger.append( inspect.currentframe() )
     
     i = state
-    
-    
     while i>=0:
         
         referent_node = stack_referent_node[i]
@@ -255,7 +255,6 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
                 attr = f'_{attr}'
             
             if graph.has_node(f"{referent_node}_{target_type}{attr}"):
-                
                 return True
             
             target_type_ast = graph.nodes[f"{referent_node}_{target_type}"]["ASTNode"]
@@ -263,14 +262,10 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
             if target_type_ast.parent_name != None:
                 
                 parent_type = target_type_ast.parent_name
-                
                 result = inheritence_walker( graph= graph , target_type= parent_type , state= i - 1 )
                 
                 if result:
                     return True
-            
-            pass
-        
         i-=1
         
     return False
