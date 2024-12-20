@@ -114,6 +114,7 @@ class params( ASTNode):
     
     '''
     expressions=[]
+    parent_constructor = False
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -653,9 +654,14 @@ class variable(ASTNode): # check context
         if self.literal:
             return self.type_
         
-        let_node_ast = graph.nodes[f"{ self.referent_node }_let_{self.name}"]["ASTNode"]
+        target = f"{ self.referent_node }_let_{self.name}"
+        let_node_ast = None
+        if graph.has_node(target):
+            let_node_ast = graph.nodes[target]["ASTNode"]
+            return let_node_ast.pointer_to_node_type()
         
-        return let_node_ast.pointer_to_node_type()
+        self.node_type = 'Object'
+        return self.pointer_to_node_type()
         
     
 class conditional(ASTNode):

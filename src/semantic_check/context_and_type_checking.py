@@ -120,16 +120,29 @@ def function_call_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_nod
     solve_context_and_type( ast=child ,error_log=error_log ,graph=graph , children=children_function_call , stack_referent_node=stack_referent_node , all_let=False )
     
 def args_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
-     solve_context_and_type(child , error_log , graph  , None , all_let=True , stack_referent_node=stack_referent_node )
+    if child.parent_constructor:
+        solve_context_and_type(child , error_log , graph  , None , all_let=False , stack_referent_node=stack_referent_node )
+        return
+    
+    solve_context_and_type(child , error_log , graph  , None , all_let=True , stack_referent_node=stack_referent_node )
     
 def var_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
      variable(graph,child,error_log , stack_referent_node )
-     solve_context_and_type( child , error_log , graph , None , all_let , stack_referent_node )
+     solve_context_and_type( ast=child , 
+                            error_log=error_log ,graph=graph , 
+                            children=None , all_let=all_let , 
+                            stack_referent_node=stack_referent_node )
     
 def instance_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
     find_instance_type( graph=graph , ast=child , error_log=error_log , stack_referent_node=stack_referent_node )
     verify_instance_args = child.node.args.expressions
-    solve_context_and_type( child , error_log , graph , verify_instance_args , all_let , stack_referent_node , all_let=False )  
+    solve_context_and_type( 
+                           ast=child ,
+                           error_log=error_log ,
+                           graph=graph ,
+                           children=verify_instance_args ,
+                           stack_referent_node=stack_referent_node , 
+                           all_let=False )  
     
 def check_inheritance( graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_referent_node:list , scope:dict ):
     
@@ -145,7 +158,7 @@ def check_inheritance( graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
     found= inheritence_walker(graph=graph , target_type=target , stack_referent_node=stack_referent_node , attr='' , state=len(stack_referent_node)-1 )
     
     if not found: # if its not found it means an error
-        error_type , error_description = inheritence_error(ast_parent_inheritence=ast.parent_name , type_or_protocol=ast.id )
+        error_type , error_description = inheritence_error(ast=ast.parent_name , type_or_protocol=ast.id )
         error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
     
     return error_log

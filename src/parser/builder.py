@@ -76,6 +76,7 @@ def type(token_list):
     if len(token_list) == 5:
         return [("name",token_list[1].name) , ( "parent_name", token_list[3].name ) ,( "body", token_list[-1] )]
     
+    token_list[5].parent_constructor = True
     return [("name",token_list[1].name) , ( "constructor", token_list[2] ) ,( "parent_name", token_list[4].name ) , ("base" , token_list[5]), ("body",token_list[-1]) ]
 
 def protocol(token_list):
