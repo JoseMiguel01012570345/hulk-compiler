@@ -1,6 +1,6 @@
-2024-12-20 11:04:43,902 - matplotlib data path: C:\Program Files\Python311\Lib\site-packages\matplotlib\mpl-data
-2024-12-20 11:04:43,913 - CONFIGDIR=C:\Users\Jose PC\.matplotlib
-2024-12-20 11:04:43,915 - interactive is False
-2024-12-20 11:04:43,915 - platform is win32
-2024-12-20 11:04:43,970 - CACHEDIR=C:\Users\Jose PC\.matplotlib
-2024-12-20 11:04:43,972 - Using fontManager instance from C:\Users\Jose PC\.matplotlib\fontlist-v390.json
+2024-12-20 13:17:34,432 - matplotlib data path: C:\Program Files\Python311\Lib\site-packages\matplotlib\mpl-data
+2024-12-20 13:17:34,449 - CONFIGDIR=C:\Users\Jose PC\.matplotlib
+2024-12-20 13:17:34,449 - interactive is False
+2024-12-20 13:17:34,449 - platform is win32
+2024-12-20 13:17:34,560 - CACHEDIR=C:\Users\Jose PC\.matplotlib
+2024-12-20 13:17:34,560 - Using fontManager instance from C:\Users\Jose PC\.matplotlib\fontlist-v390.json

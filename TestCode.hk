@@ -1,19 +1,16 @@
 type superprogram{
 
-protocol x {};
-protocol y  extends x {};
-
-type program{
+type program2( a ,c ){
 
 };
 
-type program inherits program2 {
+type program( a ,b ) inherits program2( a ,b  ) {
 
       let x = 10;
 
      function tan(x) { 
 
-         let c = 10;        
+        let c = new program( a ,b );        
         sin(c) /  cos(c);
      };
 };
