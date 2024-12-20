@@ -661,6 +661,9 @@ class variable(ASTNode): # check context
         
         # simple variable case ( id == var )
         target = f"{ self.referent_node }_var_{self.name}"
+        if not graph.has_node(target):
+            return 'Object'
+        
         var_neighbor = next(graph.neighbors(target))
         
         let_node_ast = None
