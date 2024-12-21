@@ -212,9 +212,14 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
     
     left_name = left_node.name
     right_name =right_node.name
+    target_type = "type"+"_"+left_node.type(graph=graph)
     
-    target_type = left_node.type(graph=graph)
     attr = f"{right_node.id}_{right_name}"
+    
+    for item in call_to_defintion:
+        if right_node.id in item.keys():
+            attr = f"{item[right_node.id]}_{right_name}"
+            break
     
     child_left_node = f"{stack_referent_node[-1]}_{left_node.id}_{left_name}"
     
@@ -228,16 +233,27 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
         error_description = f"object {left_name} is not declared in scope"
         scope = { "line":line , "column":column }
         error_log.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
+        return
         
-    result = inheritence_walker( graph=graph , target_type=target_type , attr=attr , stack_referent_node=stack_referent_node , state= len(stack_referent_node) - 1 )
+    result , target_scope = inheritence_walker( graph=graph , target_type=target_type , attr=attr , stack_referent_node=stack_referent_node , state= len(stack_referent_node) - 1 )
     
     if not result:
-        
         error_type = "attr definition"
-        error_description = f"object {right_name} is not accesable"
+        error_description = f"object {right_name} is not accessable"
         scope = { "line":line , "column":column }
         error_log.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
+        return
     
+    target_scope_ast = graph.nodes[target_scope]['ASTNode']
+    ref_node_scope = stack_referent_node[-1] + "_" + right_node.id + "_" + right_name
+    
+    build_graph( graph=graph , 
+                def_node_scope=target_scope , 
+                def_node=target_scope_ast , 
+                ref_node_scope=ref_node_scope , 
+                ref_node=right_node ,
+                add_node=False)
+
 @log_state_on_error
 def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_referent_node:list , state= 0 ) -> bool:
     # walk through all visible types that match with target_type and in adition , consider its inheritence
@@ -246,29 +262,29 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
     
     i = state
     while i>=0:
-        
         referent_node = stack_referent_node[i]
         
         if graph.has_node(f"{referent_node}_{target_type}"):
             
-            if attr != '':
+            if attr != '': # search only for the type/protocol ( inheritance case )
                 attr = f'_{attr}'
             
-            if graph.has_node(f"{referent_node}_{target_type}{attr}"):
-                return True
+            target_scope = f"{referent_node}_{target_type}{attr}"
+            if graph.has_node(target_scope):
+                return True , target_scope
             
             target_type_ast = graph.nodes[f"{referent_node}_{target_type}"]["ASTNode"]
             
             if target_type_ast.parent_name != None:
                 
-                parent_type = target_type_ast.parent_name
-                result = inheritence_walker( graph= graph , target_type= parent_type , state= i - 1 )
+                parent_type =  target_type_ast.id + "_" + target_type_ast.parent_name
+                result , target_scope = inheritence_walker( graph= graph , target_type= parent_type , state= i - 1 )
                 
                 if result:
-                    return True
+                    return True , target_scope
         i-=1
         
-    return False
+    return False , ''
 
 @log_state_on_error
 def def_node_children(child:pcr.ASTNode):
@@ -372,8 +388,6 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_log:list , sta
                 
                 my_node = graph.nodes[node]["ASTNode"]
                 my_node_signature = node
-                ast.pointer_to_node_type = my_node.pointer_to_node_type # use pointer_to_node_type function to point to the current type
-                
                 break        
             i-=1
     
@@ -506,3 +520,8 @@ watch_cases = [
             { 'condition': condition_instance_case , 'action': instance_case } ,
             { 'condition': condition_dot_case , 'action': dot_case } ,
         ]
+
+call_to_defintion = [ # this list returns the id of an object that is its definition based on object's id
+    { "var": "let" },
+    { "function_call": "def_function" },
+]
