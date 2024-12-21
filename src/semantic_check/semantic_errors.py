@@ -40,6 +40,6 @@ class semantic_errors:
                 
         else:
             
-            print(" \033[1;31m >\033[1;32m All in context \033[0m")
+            print(" \033[1;31m >\033[1;32m Semantic checked, ALL is OK \033[0m")
         
         pass
