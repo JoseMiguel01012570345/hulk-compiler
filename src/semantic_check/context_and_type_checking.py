@@ -199,7 +199,7 @@ def find_instance_type(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
 def dot_case( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     risk.frame_logger.append( inspect.currentframe() )
     
-    solve_context_and_type( child , error_log , graph , None , all_let=False , stack_referent_node=stack_referent_node )
+    solve_context_and_type( child , error_log , graph , children=[ child.left_node ] , all_let=False , stack_referent_node=stack_referent_node )
     solve_dot_case( graph=graph , error_log=error_log , right_node=child.right_node , left_node=child.left_node , stack_referent_node=stack_referent_node )
 
 @log_state_on_error
@@ -213,6 +213,7 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
     left_name = left_node.name
     right_name =right_node.name
     target_type = "type"+"_"+left_node.type(graph=graph)
+    ref_node_scope = stack_referent_node[-1] + "_" + right_node.id + "_" + right_name
     
     attr = f"{right_node.id}_{right_name}"
     
@@ -235,7 +236,11 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
         error_log.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
         return
         
-    result , target_scope = inheritence_walker( graph=graph , target_type=target_type , attr=attr , stack_referent_node=stack_referent_node , state= len(stack_referent_node) - 1 )
+    result , target_scope = inheritence_walker( graph=graph , 
+                                               target_type=target_type , attr=attr ,
+                                               stack_referent_node=stack_referent_node , 
+                                               state= len(stack_referent_node) - 1 ,
+                                               ref_node=right_node)
     
     if not result:
         error_type = "attr definition"
@@ -245,7 +250,6 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
         return
     
     target_scope_ast = graph.nodes[target_scope]['ASTNode']
-    ref_node_scope = stack_referent_node[-1] + "_" + right_node.id + "_" + right_name
     
     build_graph( graph=graph , 
                 def_node_scope=target_scope , 
@@ -255,10 +259,12 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
                 add_node=False)
 
 @log_state_on_error
-def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_referent_node:list , state= 0 ) -> bool:
+def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_referent_node:list , ref_node:pcr.ASTNode=None , state= 0 ) -> bool:
+    risk.frame_logger.append( inspect.currentframe() )
+    
     # walk through all visible types that match with target_type and in adition , consider its inheritence
     
-    risk.frame_logger.append( inspect.currentframe() )
+    target_scope_ast = pcr.ASTNode
     
     i = state
     while i>=0:
@@ -266,16 +272,28 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
         
         if graph.has_node(f"{referent_node}_{target_type}"):
             
-            if attr != '': # search only for the type/protocol ( inheritance case )
+            if attr != '': # making sure not to add underscore to the attribute search ( type/protocol inheritence )
                 attr = f'_{attr}'
             
             target_scope = f"{referent_node}_{target_type}{attr}"
             if graph.has_node(target_scope):
-                return True , target_scope
-            
+                
+                
+                if ref_node is not None:
+                    target_scope_ast = graph.nodes[target_scope]["ASTNode"]
+                    
+                
+                    if ref_node.id == 'function_call':
+                        if len(target_scope_ast.args.expressions) == len(ref_node.args.expressions):
+                            return True , target_scope
+                    else:
+                            return True , target_scope
+                else:
+                    return True , target_scope
+                    
             target_type_ast = graph.nodes[f"{referent_node}_{target_type}"]["ASTNode"]
             
-            if target_type_ast.parent_name != None:
+            if target_type_ast.parent_name != None: # check type inheritence for such attr
                 
                 parent_type =  target_type_ast.id + "_" + target_type_ast.parent_name
                 result , target_scope = inheritence_walker( graph= graph , target_type= parent_type , state= i - 1 )
@@ -392,7 +410,6 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_log:list , sta
             i-=1
     
     if my_node is not None and my_node.args is not None and len(ast.args.expressions) == len( my_node.args.expressions ):
-        
         ref_node_scope = f"{stack_referent_node[-1]}_{ast.id}_{ast.name}"
         build_graph( graph=graph, def_node_scope=my_node_signature , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
         
