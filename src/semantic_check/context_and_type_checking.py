@@ -199,7 +199,7 @@ def find_instance_type(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
 def dot_case( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     risk.frame_logger.append( inspect.currentframe() )
     
-    solve_context_and_type( child , error_log , graph , children=[ child.left_node ] , all_let=False , stack_referent_node=stack_referent_node )
+    solve_context_and_type( child , error_log , graph , None , all_let=False , stack_referent_node=stack_referent_node )
     solve_dot_case( graph=graph , error_log=error_log , right_node=child.right_node , left_node=child.left_node , stack_referent_node=stack_referent_node )
 
 @log_state_on_error
@@ -272,10 +272,11 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
         
         if graph.has_node(f"{referent_node}_{target_type}"):
             
+            new_attr =attr
             if attr != '': # making sure not to add underscore to the attribute search ( type/protocol inheritence )
-                attr = f'_{attr}'
+                new_attr = f'_{attr}'
             
-            target_scope = f"{referent_node}_{target_type}{attr}"
+            target_scope = f"{referent_node}_{target_type}{new_attr}"
             if graph.has_node(target_scope):
                 
                 
@@ -296,7 +297,7 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
             if target_type_ast.parent_name != None: # check type inheritence for such attr
                 
                 parent_type =  target_type_ast.id + "_" + target_type_ast.parent_name
-                result , target_scope = inheritence_walker( graph= graph , target_type= parent_type , state= i - 1 )
+                result , target_scope = inheritence_walker( graph= graph , target_type=parent_type , state= i , attr=attr , ref_node=ref_node , stack_referent_node=stack_referent_node )
                 
                 if result:
                     return True , target_scope
@@ -413,6 +414,9 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_log:list , sta
         ref_node_scope = f"{stack_referent_node[-1]}_{ast.id}_{ast.name}"
         build_graph( graph=graph, def_node_scope=my_node_signature , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
         
+        return error_log
+    
+    if ast.parent.id == 'dot':
         return error_log
     
     scope = { "line":ast.line , "column":ast.column }

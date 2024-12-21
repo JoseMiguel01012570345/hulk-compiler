@@ -1,26 +1,28 @@
 
 type superprogram {
 
-type program2( ){ 
+type program3(){ 
 
     x(r) =>{
         let y = 30;
     };
 
-    m()=>{
 
-    };
+};
+type program2() inherits program3() { 
 
 };
 
 type program(  ) inherits program2() {
+    
+    type t {
     x = 20;
-
+    
     tan( x ) => {
         
         let z = new program2( );
-        z.x(x);
-        let a = false;
+        z.x( self.x );
     };
+};
 };
 };
