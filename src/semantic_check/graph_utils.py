@@ -32,6 +32,10 @@ def build_graph( graph:nx.DiGraph , def_node_scope:str='' , def_node:pcr.ASTNode
         graph.add_node( def_node_scope , ASTNode=def_node )
         return graph
     
+    if graph.has_node(ref_node_scope): # references are already in the graph and are only allowed one edge
+        ref_node_neighbor = next(graph.neighbors(ref_node_scope))
+        graph.remove_edge(ref_node_scope, ref_node_neighbor)
+     
     graph.add_node( ref_node_scope , ASTNode=ref_node )
     graph.add_edge( ref_node_scope , def_node_scope  )
     return graph
