@@ -793,7 +793,10 @@ class def_function(ASTNode): # check context
         return children
     
     def type(self, graph:nx.DiGraph   ):
-        return self.body.type( graph  )
+        if self.body is not None:
+            return self.body.type( graph  )
+        
+        return self.pointer_to_node_type()
     
 class type_(ASTNode): # check context
     
