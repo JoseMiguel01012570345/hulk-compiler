@@ -1,10 +1,9 @@
 from ..lexer import EnumsTokensDefinition
 TokenType,Type =   EnumsTokensDefinition.TokenType , EnumsTokensDefinition.Type
 import math
+
 '''
-
 NOTE: every builder must return a list in where it specify the properties of the node
-
 '''
 
 def binary_opt(token_list):
@@ -63,7 +62,7 @@ def def_function(token_list):
         return [ ("name" , token_list[1].name ) , ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
     
     if token_list[0].__dict__.__contains__("id"):
-        return [ ("name" , token_list[0] ) , ( "args" , token_list[-3] ) , ( "body", token_list[-1] ) ]
+        return [ ("name" , token_list[0].name ) , ( "args" , token_list[-3] ) , ( "body", token_list[-1] ) ]
 
 def type(token_list):
     
