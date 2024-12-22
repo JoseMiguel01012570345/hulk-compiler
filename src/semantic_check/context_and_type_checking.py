@@ -242,7 +242,10 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
                                                stack_referent_node=stack_referent_node , 
                                                state= len(stack_referent_node) - 1 ,
                                                ref_node=right_node)
-    
+
+    if right_node.id == 'function_call' and result:
+        result = verify_dot_function_call_args( graph=graph , ref_node_scope=ref_node_scope , def_node_scope=target_scope )
+        
     if not result:
         error_type = "attr definition"
         error_description = f"object {right_name} is not accessable"
@@ -258,6 +261,13 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
                 ref_node_scope=ref_node_scope , 
                 ref_node=right_node ,
                 add_node=False)
+
+def verify_dot_function_call_args( graph:nx.DiGraph , ref_node_scope , def_node_scope ):
+    # verfy if all args type matches in the arg scope of the function definition
+    ref_node_ast = graph.nodes[ref_node_scope]["ASTNode"]
+    def_node_ast = graph.nodes[def_node_scope]["ASTNode"]
+    
+    return check_args_type( graph=graph.DiGraph , ref_node_ast=ref_node_ast , def_node_ast=def_node_ast )
 
 @log_state_on_error
 def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_referent_node:list , ref_node:pcr.ASTNode=None , state= 0 ) -> bool:
@@ -299,7 +309,7 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
                 
                 parent_type =  target_type_ast.id + "_" + target_type_ast.parent_name
                 result , target_scope = inheritence_walker( graph= graph , target_type=parent_type , state= i , attr=attr , ref_node=ref_node , stack_referent_node=stack_referent_node )
-                
+                                
                 if result:
                     return True , target_scope
         i-=1

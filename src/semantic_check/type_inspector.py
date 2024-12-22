@@ -17,7 +17,6 @@ def type_inpector( ast:pcr.ASTNode , graph:nx.DiGraph  ):
                 child_signature = f'{child.referent_node}'
         else:
             if child.__dict__.__contains__('name'):
-                print("xx")
                 child_signature = f'{child.referent_node}_{child.id}_{child.name}'
             else:
                 child_signature = f'{child.referent_node}_{child.id}'
