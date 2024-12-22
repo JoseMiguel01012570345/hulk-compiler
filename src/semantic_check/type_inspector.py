@@ -11,14 +11,17 @@ def type_inpector( ast:pcr.ASTNode , graph:nx.DiGraph  ):
     for child in children:
         child_signature = ''
         if child.def_node:
-            child_signature = f'{child.referent_node}_{child.id}_{child.name}'
+            if child.id == 'let':
+                child_signature = f'{child.referent_node}_{child.id}_{child.name}'
+            else:
+                child_signature = f'{child.referent_node}'
         else:
             if child.__dict__.__contains__('name'):
-                
+                print("xx")
                 child_signature = f'{child.referent_node}_{child.id}_{child.name}'
             else:
                 child_signature = f'{child.referent_node}_{child.id}'
-            
+        
         print( child_signature , '___typing:' , child.type( graph=graph ) )
     
     for child in children:
