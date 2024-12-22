@@ -59,6 +59,9 @@ def solve_context_and_type( ast:pcr.ASTNode=None , error_log=[] , graph: nx.DiGr
 def condition_def_case( child:pcr.ASTNode , ast:pcr.ASTNode ):
     return child.id == "type" or child.id == "protocol" or child.id == "def_function" or child.id == "let"
 
+def condition_assigment( child:pcr.ASTNode , ast:pcr.ASTNode ):
+    return child.id == 'assigment'
+
 def condition_auto_call( child:pcr.ASTNode , ast:pcr.ASTNode ):
     return child.id == "auto_call"
 
@@ -77,6 +80,29 @@ def condition_instance_case( child:pcr.ASTNode , ast:pcr.ASTNode ):
 def condition_dot_case( child:pcr.ASTNode , ast:pcr.ASTNode ):
     return child.id == "dot"
 
+def assigment_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
+    solve_context_and_type( ast=child , 
+                            error_log=error_log ,graph=graph , 
+                            children=None , all_let=False , 
+                            stack_referent_node=stack_referent_node )
+    
+    if child.left_node.id == 'let':
+        # avoid repetition
+        right_node_new_posible_types = child.right_node.type(graph)
+        right_node_new_posible_types = [ item for item in child.right_node.posible_types if item != right_node_new_posible_types ] + [ right_node_new_posible_types ]
+        child.left_node.posible_types = child.left_node.posible_types + [ item for item in right_node_new_posible_types if item not in child.left_node.posible_types ]
+        return
+    
+    print(child.left_node.posible_types)
+    if child.left_node.id == 'var' and child.right_node.type(graph) in child.left_node.posible_types:
+        return
+    
+    error_type = "object usage"
+    error_description = "plan variables are only for assigment"
+    scope= { "line": child.left_node.line , "column": child.left_node.column }
+    error_log.append( { "error_type": error_type , "error_description": error_description , "scope":scope } )
+    
+    
 def def_cases( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     
     def_node_error(graph,child,error_log , stack_referent_node )
@@ -133,7 +159,7 @@ def var_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , a
                             error_log=error_log ,graph=graph , 
                             children=None , all_let=False , 
                             stack_referent_node=stack_referent_node )
-    
+
 def instance_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
     find_instance_type( graph=graph , ast=child , error_log=error_log , stack_referent_node=stack_referent_node )
     verify_instance_args = child.node.args.expressions
@@ -155,10 +181,14 @@ def check_inheritance( graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
     else:
         target = f'protocol_{ast.parent_name}'
         
-    # walk through the graph to find the target node , this node has no attr because it's a protocol or type
-    found= inheritence_walker(graph=graph , target_type=target , stack_referent_node=stack_referent_node , attr='' , state=len(stack_referent_node)-1 )
+    # walk through the graph to find the target node , this node has no attr because it's a protocol or type ( no overload of constructor supported )
+    found , target_scope = inheritence_walker(graph=graph , target_type=target , stack_referent_node=stack_referent_node , attr='' , state=len(stack_referent_node)-1 , ref_node=ast )
     
-    if not found: # if its not found it means an error
+    if found:
+        def_node_ast = graph.nodes[target_scope]["ASTNode"]
+        found = check_args_type(graph=graph , ref_node_ast=ast , def_node_ast= def_node_ast )
+    
+    if not found: # error
         error_type , error_description = inheritence_error(ast=ast.parent_name , type_or_protocol=ast.id )
         error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
     
@@ -173,9 +203,7 @@ def find_instance_type(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
     while i >=0:
         
         refence_node = stack_referent_node[i]
-        
         type_name = ast.node.name
-        
         verify_node = f"{refence_node}_type_{type_name}"
         
         if graph.has_node(verify_node):
@@ -290,18 +318,19 @@ def inheritence_walker( graph:nx.DiGraph , target_type:str , attr:str , stack_re
             target_scope = f"{referent_node}_{target_type}{new_attr}"
             if graph.has_node(target_scope):
                 
+                target_scope_ast = graph.nodes[target_scope]["ASTNode"]
+            
+                if ref_node.id == 'function_call':
+                    if len(target_scope_ast.args.expressions) == len(ref_node.args.expressions):
+                        return True , target_scope
                 
-                if ref_node is not None:
-                    target_scope_ast = graph.nodes[target_scope]["ASTNode"]
-                    
+                elif ref_node.id == 'type':
+                    if  target_scope_ast.__dict__.__contains__('constructor') and ref_node.__dict__.__contains__('constructor') and \
+                        len(target_scope_ast.constructor.expressions) == len(ref_node.base.expressions):
+                        return True , target_scope
                 
-                    if ref_node.id == 'function_call':
-                        if len(target_scope_ast.args.expressions) == len(ref_node.args.expressions):
-                            return True , target_scope
-                    else:
-                            return True , target_scope
-                else:
-                    return True , target_scope
+                else: # plan variable
+                        return True , target_scope
                     
             target_type_ast = graph.nodes[f"{referent_node}_{target_type}"]["ASTNode"]
             
@@ -422,7 +451,7 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_log:list , sta
     
     if def_node_ast is not None and def_node_ast.args is not None and \
         len(ast.args.expressions) == len( def_node_ast.args.expressions ) and \
-         check_args_type( graph=graph , ref_node_ast=ast , def_node_ast=def_node_ast , error_log=error_log ):
+         check_args_type( graph=graph , ref_node_ast=ast , def_node_ast=def_node_ast ):
 
         ref_node_scope = f"{stack_referent_node[-1]}_{ast.id}_{ast.name}"
         build_graph( graph=graph, def_node_scope=def_node_scope , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
@@ -467,7 +496,10 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_log:list , stack_referen
         if graph.has_node( f"{reference_node}_let_{ast.name}"): # check if variable is accesable from outter context from its position
             
             ref_node_scope = f'{stack_referent_node[-1]}_var_{ast.name}'
-            build_graph( graph=graph , def_node_scope=f"{reference_node}_let_{ast.name}" , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
+            def_node_scope=f"{reference_node}_let_{ast.name}"
+            def_node_ast = graph.nodes[def_node_scope]['ASTNode']
+            ast.posible_types = def_node_ast.posible_types # add posible types of variable from outer context
+            build_graph( graph=graph , def_node_scope=def_node_scope , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
             return error_log
         
         i-=1
@@ -537,9 +569,7 @@ def type_checking_creteria( graph:nx.DiGraph , ast_node:pcr.ASTNode , stack_refe
         if expected_type != "Object" and ast_type != expected_type :
             
             error_type , error_description = typing_error( ast_node=ast_node )
-            
             scope= { "line": ast_node.line , "column": ast_node.column }
-            
             error_log.append( { "error_type": error_type , "error_description": error_description , "scope":scope } )
             
             return error_log
@@ -547,13 +577,17 @@ def type_checking_creteria( graph:nx.DiGraph , ast_node:pcr.ASTNode , stack_refe
     return error_log
 
 @log_state_on_error
-def check_args_type( graph:nx.DiGraph , ref_node_ast:pcr.ASTNode , def_node_ast:pcr.ASTNode  , error_log:list ):
+def check_args_type( graph:nx.DiGraph , ref_node_ast:pcr.ASTNode , def_node_ast:pcr.ASTNode ):
     risk.frame_logger.append( inspect.currentframe() )
     
     # check each type of the arguments of the definition node
+    if def_node_ast.id == "function_call":
+        ref_node_args = ref_node_ast.args.expressions
+        def_node_args = def_node_ast.args.expressions
     
-    ref_node_args = ref_node_ast.args.expressions
-    def_node_args = def_node_ast.args.expressions
+    if def_node_ast.id == "type":
+        ref_node_args = ref_node_ast.base.expressions
+        def_node_args = def_node_ast.constructor.expressions
     
     for index , item in enumerate(ref_node_args):
         actual_type = item.type(graph)
@@ -572,6 +606,8 @@ watch_cases = [
             { 'condition': condition_var_case , 'action': var_case } ,
             { 'condition': condition_instance_case , 'action': instance_case } ,
             { 'condition': condition_dot_case , 'action': dot_case } ,
+            { 'condition': condition_assigment , 'action': assigment_case } ,
+            
         ]
 
 call_to_defintion = [ # this list returns the id of an object that is its definition based on object's id
