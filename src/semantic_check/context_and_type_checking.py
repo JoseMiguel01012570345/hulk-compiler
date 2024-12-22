@@ -114,10 +114,11 @@ def auto_call( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list ,
     solve_context_and_type(child , error_log , graph  , None , all_let= False ,stack_referent_node=new_stack)
     
 def function_call_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
-    function_call(graph,child,error_log , stack_referent_node )
-    children_function_call = def_node_children(child=child)
     
+    children_function_call = def_node_children(child=child)
     solve_context_and_type( ast=child ,error_log=error_log ,graph=graph , children=children_function_call , stack_referent_node=stack_referent_node , all_let=False )
+    
+    function_call(graph,child,error_log , stack_referent_node )
     
 def args_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
     if child.parent_constructor:
@@ -377,23 +378,22 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_log:list , sta
     risk.frame_logger.append( inspect.currentframe() )
     
     i = len(stack_referent_node) - 1    
-    my_node = None # ast node
-    my_node_signature = '' # graph representation name of my_node
-    
+    def_node_ast = None # ast node
+    def_node_scope = '' # graph representation name of my_node
     while i >= 0:
         
         node = stack_referent_node[i] # recursive case
         
         if f"def_function_{ast.name}" in node:
             
-            my_node = graph.nodes[node]["ASTNode"]
-            my_node_signature = node 
-            ast.node_type =  my_node.pointer_to_node_type # use pointer_to_node_type function to point to the current type
+            def_node_ast = graph.nodes[node]["ASTNode"]
+            def_node_scope = node 
+            ast.node_type =  def_node_ast.pointer_to_node_type # use pointer_to_node_type function to point to the current type
             
             break
         i-=1
         
-    if my_node == None: # outter scope ( non-recursive )
+    if def_node_ast == None: # outter scope ( non-recursive )
         
         i = len(stack_referent_node) - 1
         while i>=0:
@@ -405,14 +405,17 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_log:list , sta
                 
             if graph.has_node(node):
                 
-                my_node = graph.nodes[node]["ASTNode"]
-                my_node_signature = node
+                def_node_ast = graph.nodes[node]["ASTNode"]
+                def_node_scope = node
                 break        
             i-=1
     
-    if my_node is not None and my_node.args is not None and len(ast.args.expressions) == len( my_node.args.expressions ):
+    if def_node_ast is not None and def_node_ast.args is not None and \
+        len(ast.args.expressions) == len( def_node_ast.args.expressions ) and \
+         check_args_type( graph=graph , ref_node_ast=ast , def_node_ast=def_node_ast , error_log=error_log ):
+
         ref_node_scope = f"{stack_referent_node[-1]}_{ast.id}_{ast.name}"
-        build_graph( graph=graph, def_node_scope=my_node_signature , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
+        build_graph( graph=graph, def_node_scope=def_node_scope , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
         
         return error_log
     
@@ -484,15 +487,17 @@ def self_case( graph:nx.DiGraph , reference_node:str , stack_reference_node:list
     
     i = len( stack_reference_node ) - 1
     type_scope = ''
+    type_scope_ast = None
     while i >=0:
         
         stack_ref_node_split =stack_reference_node[i].split('_')
         if type_name not in stack_ref_node_split:
             type_scope = stack_reference_node[ i + 1 ]
+            type_scope_ast = graph.nodes[type_scope]["ASTNode"]
             break
         i -= 1
     
-    return True , graph.nodes[type_scope]["ASTNode"] , type_scope
+    return type_scope_ast.constructor is not None , type_scope_ast , type_scope
 
 @log_state_on_error
 def typing_error( ast_node:pcr.ASTNode ):
@@ -531,6 +536,23 @@ def type_checking_creteria( graph:nx.DiGraph , ast_node:pcr.ASTNode , stack_refe
                 
     return error_log
 
+@log_state_on_error
+def check_args_type( graph:nx.DiGraph , ref_node_ast:pcr.ASTNode , def_node_ast:pcr.ASTNode  , error_log:list ):
+    risk.frame_logger.append( inspect.currentframe() )
+    
+    # check each type of the arguments of the definition node
+    
+    ref_node_args = ref_node_ast.args.expressions
+    def_node_args = def_node_ast.args.expressions
+    
+    for index , item in enumerate(ref_node_args):
+        actual_type = item.type(graph)
+        expected_type =def_node_args[index].type(graph)
+        if actual_type != expected_type:
+            return False
+        
+    return True
+    
 # this list is a pair ( condition , action )
 watch_cases = [ 
             { 'condition': condition_def_case , 'action': def_cases } , 
