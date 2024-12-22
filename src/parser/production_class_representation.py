@@ -17,6 +17,7 @@ class ASTNode:
     type_checker = False
     rules = []
     referent_node = ''
+    posible_types = [ 'Object' ]
     
     def check_rules(self):
         
@@ -344,7 +345,7 @@ class double_dot(binary_opt): # the context of the right side is passed to the c
     def type(self, graph: DiGraph = None):
         
         right_node_type = self.right_node.type( graph   )
-        
+        self.left_node.posible_type = [ 'Object' , right_node_type ]
         self.node_type = right_node_type
         
         return self.pointer_to_node_type()
@@ -504,15 +505,19 @@ class assign(binary_opt):
     
     def type(self, graph: DiGraph = None):
         
-        right_node_type = self.right_node.type( graph   )
+        right_node_type = self.right_node.type( graph )
         
-        self.left_node.node_type = right_node_type
-        
-        self.node_type = right_node_type
+        if self.left_node.id == 'let':
+            self.left_node.node_type = right_node_type
+            self.node_type = right_node_type
+            
+        elif right_node_type in self.left_node.posible_types:
+            self.left_node.posible_type.append( right_node_type )
+            self.left_node.node_type = right_node_type
+            self.node_type = right_node_type
         
         return self.pointer_to_node_type()
-    
-    
+        
 class or_(binary_opt):
     
     expected_type = "Boolean"
@@ -656,7 +661,7 @@ class variable(ASTNode): # check context
     value = None
     type_ = None
     literal = False
-    
+    \
     def __init__(self, grammar={ "derivation": "","identifier": "var"," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
         
@@ -819,6 +824,7 @@ class type_(ASTNode): # check context
     body = None
     node_type = name
     
+    
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
@@ -858,6 +864,7 @@ class protocol(ASTNode): # check context
     parent_name = None
     body = None
     node_type = name
+    
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
