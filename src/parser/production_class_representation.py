@@ -82,6 +82,7 @@ class ASTNode:
         '''
         #### `<referent_node>` is the reference node of the actual node in `graph`
         '''
+        return self.pointer_to_node_type()
 #___________________________________________________AST OF THE GRAMMAR_________________________________________>>>>>>>>>>>>>>>>
 
 class function_call( ASTNode): # check context
@@ -1011,6 +1012,9 @@ class build_in:
     
     def __init__(self):
         pass
+    
+    def type(self,graph):
+        return self.pointer_to_node_type()
     
     def pointer_to_node_type( self ):
         return self.node_type.node_type
