@@ -86,7 +86,7 @@ def protocol(token_list):
     return [ ( "name" , token_list[1].name ) , ("parent_name",token_list[3].name ) , ( "body", token_list[-1] ) ]
 
 def in_(token_list):
-    return [ ( "expressions" , token_list[0] ) , ( "body" , token_list[2] ) ]
+    return [ ( "args" , token_list[0] ) , ( "body" , token_list[2] ) ]
 
 def structure(token_list):
     
