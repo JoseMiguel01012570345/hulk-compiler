@@ -21,10 +21,17 @@ def type_inpector( ast:pcr.ASTNode , graph:nx.DiGraph  ):
             else:
                 child_signature = f'{child.referent_node}_{child.id}'
         
-        print( child_signature , '___typing:' , child.type( graph=graph ) )
-    
-        # uncoment for better type information
-        # print( child_signature , '___typing:' , child.type( graph=graph ).split('_')[-1] )
-    
+        # modify verbose parameter to switch between verbose printing all path of the type or just the name
+        # default to false
+        print_type( child_signature=child_signature , child=child , graph=graph )    
+        
     for child in children:
         type_inpector( child , graph=graph )
+        
+def print_type( child_signature , child , graph , verbose=0 ):
+    
+    if verbose:
+        print( child_signature , '___typing:' , child.type( graph=graph ) )
+        return
+    
+    print( child_signature , '___typing:' , child.type( graph=graph ).split('_')[-1] )
