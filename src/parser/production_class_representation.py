@@ -626,7 +626,6 @@ class let(ASTNode):
         super().__init__(grammar)
         
     def type(self,graph: nx.DiGraph = None, ):
-        self.node_type = self.parent.pointer_to_node_type()
         return self.pointer_to_node_type()
 
 @risk.log_state_on_error
@@ -665,7 +664,7 @@ class variable(ASTNode): # check context
         # simple variable case ( id == var )
         target = f"{ self.referent_node }_{self.id}_{self.name}"
         if not graph.has_node(target):
-            return 'Object'
+            return 'type_Object'
         
         var_neighbor = next(graph.neighbors(target))
         
@@ -675,7 +674,7 @@ class variable(ASTNode): # check context
             
             return let_node_ast.type(graph=graph)
         
-        self.node_type = 'Object'
+        self.node_type = 'type_Object'
         return self.pointer_to_node_type()
         
 class conditional(ASTNode):

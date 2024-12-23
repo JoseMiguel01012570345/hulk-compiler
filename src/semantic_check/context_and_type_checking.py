@@ -92,7 +92,7 @@ def assigment_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:li
         child.node_type = right_node_type
         return
     
-    elif child.left_node.id == 'var': # it is a variable
+    elif child.left_node.id == 'var' or child.left_node.id == 'let': # it is a variable
         
         posible_types = [ right_node_type ] # collect all posible types of the variable
         new_neighbor = list(graph.neighbors(posible_types[-1]) )
@@ -109,6 +109,11 @@ def assigment_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:li
         
         if left_node_type in posible_types:
             child.left_node.node_type = right_node_type
+            
+            # change node type in let node
+            def_node_scope = next(graph.neighbors(f"{child.left_node.referent_node}_{child.left_node.id}_{child.left_node.name}"))
+            def_node_ast = graph.nodes[def_node_scope]['ASTNode']
+            def_node_ast.node_type = right_node_type
             child.node_type = right_node_type
             return
         else: # error
