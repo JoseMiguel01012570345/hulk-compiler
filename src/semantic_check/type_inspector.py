@@ -23,5 +23,8 @@ def type_inpector( ast:pcr.ASTNode , graph:nx.DiGraph  ):
         
         print( child_signature , '___typing:' , child.type( graph=graph ) )
     
+        # uncoment for better type information
+        # print( child_signature , '___typing:' , child.type( graph=graph ).split('_')[-1] )
+    
     for child in children:
         type_inpector( child , graph=graph )

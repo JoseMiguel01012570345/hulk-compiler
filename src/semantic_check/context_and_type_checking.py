@@ -86,22 +86,17 @@ def assigment_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:li
                             children=None , all_let=False , 
                             stack_referent_node=stack_referent_node )
     
-    if child.left_node.id == 'let':
-        # avoid repetition
-        right_node_new_posible_types = child.right_node.type(graph)
-        right_node_new_posible_types = [ item for item in child.right_node.posible_types if item != right_node_new_posible_types ] + [ right_node_new_posible_types ]
-        child.left_node.posible_types = child.left_node.posible_types + [ item for item in right_node_new_posible_types if item not in child.left_node.posible_types ]
+    if child.left_node.id == 'let' or child.left_node.id == 'var':
         return
     
-    print(child.left_node.posible_types)
-    if child.left_node.id == 'var' and child.right_node.type(graph) in child.left_node.posible_types:
-        return
-    
+    # error_type = "type error"
+    # error_description = f"{right_node_type} can not be assigned to {left_node_type}"
+    # scope= { "line": child.left_node.line , "column": child.left_node.column }
+    # error_log.append( { "error_type": error_type , "error_description": error_description , "scope":scope } )
     error_type = "object usage"
     error_description = "plan variables are only for assigment"
     scope= { "line": child.left_node.line , "column": child.left_node.column }
     error_log.append( { "error_type": error_type , "error_description": error_description , "scope":scope } )
-    
     
 def def_cases( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     
@@ -182,17 +177,19 @@ def check_inheritance( graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
         target = f'protocol_{ast.parent_name}'
         
     # walk through the graph to find the target node , this node has no attr because it's a protocol or type ( no overload of constructor supported )
-    found , target_scope = inheritence_walker(graph=graph , target_type=target , stack_referent_node=stack_referent_node , attr='' , state=len(stack_referent_node)-1 , ref_node=ast )
+    found , def_node_scope = inheritence_walker(graph=graph , target_type=target , stack_referent_node=stack_referent_node , attr='' , state=len(stack_referent_node)-1 , ref_node=ast )
     
     if found:
-        def_node_ast = graph.nodes[target_scope]["ASTNode"]
+        def_node_ast = graph.nodes[def_node_scope]["ASTNode"]
         found = check_args_type(graph=graph , ref_node_ast=ast , def_node_ast= def_node_ast )
-    
+        
+        return def_node_scope , def_node_ast
+        
     if not found: # error
         error_type , error_description = inheritence_error(ast=ast.parent_name , type_or_protocol=ast.id )
         error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
     
-    return error_log
+    return None , None
 
 @log_state_on_error
 def find_instance_type(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_referent_node:list ): 
@@ -212,7 +209,8 @@ def find_instance_type(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
             
             if type_node.__dict__.__contains__("constructor") and \
                 len(type_node.constructor.expressions) == len(ast.node.args.expressions):
-                    ast.expected_type = type_name
+                    ast.expected_type = verify_node
+                    ast.node_type = verify_node
                     return error_log
             
         i-=1
@@ -357,24 +355,28 @@ def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_r
     risk.frame_logger.append( inspect.currentframe() )
     
     scope = { "line":ast.line , "column":ast.column }
-    
-    if (ast.id == 'type' or ast.id == 'protocol') and ast.__dict__.__contains__('parent_name'):
-         check_inheritance(graph=graph , ast=ast , error_log=error_log , stack_referent_node=stack_referent_node , scope=scope)
-    
+    def_node_scope , def_node_ast = '' , ''
+    ref_node_scope = f"{stack_referent_node[-1]}_{ast.id}_{ast.name}"
     error_type , error_description = errors.selector(ast)(ast)
     
     # ask for an edge existence
-    reference_node = f"{stack_referent_node[-1]}_{ast.id}_{ast.name}"
-    if graph.has_node( reference_node ):
+    ref_node = f"{stack_referent_node[-1]}_{ast.id}_{ast.name}"
+    if graph.has_node( ref_node ):
         
-        node_ast = graph.nodes[ reference_node ]["ASTNode"]
-        
+        node_ast = graph.nodes[ ref_node ]["ASTNode"]
         args = args_checking( ast , node_ast )
         
         if args:
             error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
         
         return error_log
+
+    if (ast.id == 'type' or ast.id == 'protocol') and ast.__dict__.__contains__('parent_name'):
+        def_node_scope , def_node_ast = check_inheritance(graph=graph , ast=ast , error_log=error_log , stack_referent_node=stack_referent_node , scope=scope)
+        build_graph( graph=graph , def_node_scope=def_node_scope , 
+                    def_node=def_node_ast , ref_node_scope=ref_node_scope, 
+                    ref_node=ast,
+                    add_node=False )
     
     return error_log
 
@@ -514,6 +516,7 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_log:list , stack_referen
 
 def self_case( graph:nx.DiGraph , reference_node:str , stack_reference_node:list ):
     
+    # search for type of self in graph
     if "type" not in reference_node:
         return False , None , ''
     
@@ -521,16 +524,16 @@ def self_case( graph:nx.DiGraph , reference_node:str , stack_reference_node:list
     
     i = len( splited_reference ) - 1
     type_name = ''
-    while i >= 0:
+    while i >= 0: # search in scope of self
         if splited_reference[i] == "type" :
-            type_name = splited_reference[ i + 1 ]
+            type_name = splited_reference[ i + 1 ] # here is the name of type of self
             break
         i -=1
     
     i = len( stack_reference_node ) - 1
     type_scope = ''
     type_scope_ast = None
-    while i >=0:
+    while i >=0: # we will get type_scope_ast
         
         stack_ref_node_split =stack_reference_node[i].split('_')
         if type_name not in stack_ref_node_split:
@@ -566,7 +569,7 @@ def type_checking_creteria( graph:nx.DiGraph , ast_node:pcr.ASTNode , stack_refe
         ast_type = ast_node.type(graph=graph )
         expected_type = ast_node.expected_type
         
-        if expected_type != "Object" and ast_type != expected_type :
+        if expected_type != "type_Object" and ast_type != expected_type :
             
             error_type , error_description = typing_error( ast_node=ast_node )
             scope= { "line": ast_node.line , "column": ast_node.column }

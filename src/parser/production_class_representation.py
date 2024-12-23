@@ -12,12 +12,12 @@ class ASTNode:
     visitor = None
     line = 10e306
     column =10e306
-    expected_type = "Object"
-    node_type = "Object"
+    expected_type = "type_Object"
+    node_type = "type_Object"
     type_checker = False
     rules = []
     referent_node = ''
-    posible_types = [ 'Object' ]
+    posible_types = set()
     
     def check_rules(self):
         
@@ -34,6 +34,7 @@ class ASTNode:
                         "visitor":None
                     } ) -> None:
         
+        self.posible_types.add('Object')
         self.set_identifier(grammar["identifier"])
         self.derivation = grammar["derivation"]
         self.def_node = grammar["definition_node?"]
@@ -121,7 +122,7 @@ class function_call( ASTNode): # check context
             
             return def_function_ast.type(graph=graph)
         
-        self.node_type = 'Object'
+        self.node_type = 'type_Object'
         return self.pointer_to_node_type()
     
 class params( ASTNode):
@@ -179,7 +180,7 @@ class in_(binary_opt):
 
 class plus(binary_opt):
     
-    expected_type = "Number"
+    expected_type = "type_Number"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -190,7 +191,7 @@ class plus(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -199,7 +200,7 @@ class plus(binary_opt):
         
 class minus(binary_opt):
     
-    expected_type = "Number"
+    expected_type = "type_Number"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -210,7 +211,7 @@ class minus(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -219,7 +220,7 @@ class minus(binary_opt):
 
 class multiplication(binary_opt):
     
-    expected_type = "Number"
+    expected_type = "type_Number"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -230,7 +231,7 @@ class multiplication(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -239,7 +240,7 @@ class multiplication(binary_opt):
 
 class divition(binary_opt):
     
-    expected_type = "Number"
+    expected_type = "type_Number"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -250,7 +251,7 @@ class divition(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -259,7 +260,7 @@ class divition(binary_opt):
     
 class pow_(binary_opt):
     
-    expected_type = "Number"
+    expected_type = "type_Number"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -270,7 +271,7 @@ class pow_(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -279,7 +280,7 @@ class pow_(binary_opt):
     
 class per_cent(binary_opt):
     
-    expected_type = "Number"
+    expected_type = "type_Number"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -290,7 +291,7 @@ class per_cent(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -310,7 +311,7 @@ class concatenation(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -330,7 +331,7 @@ class blank_space_concatenation(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -376,7 +377,7 @@ class as_(binary_opt):
 
 class is_(binary_opt):
     
-    expected_type = "Boolean"
+    expected_type = "type_Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -387,7 +388,7 @@ class is_(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -396,7 +397,7 @@ class is_(binary_opt):
 
 class equal(binary_opt): # the context of the right side is passed to the context of the left side
     
-    expected_type = "Boolean"
+    expected_type = "type_Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -408,7 +409,7 @@ class equal(binary_opt): # the context of the right side is passed to the contex
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -418,7 +419,7 @@ class equal(binary_opt): # the context of the right side is passed to the contex
     
 class bigger_than(binary_opt):
     
-    expected_type = "Boolean"
+    expected_type = "type_Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -429,7 +430,7 @@ class bigger_than(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -438,7 +439,7 @@ class bigger_than(binary_opt):
 
 class smaller_than(binary_opt):
     
-    expected_type = "Boolean"
+    expected_type = "type_Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -449,7 +450,7 @@ class smaller_than(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -458,7 +459,7 @@ class smaller_than(binary_opt):
 
 class bigger_or_equal(binary_opt):
     
-    expected_type = "Boolean"
+    expected_type = "type_Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -469,7 +470,7 @@ class bigger_or_equal(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -478,7 +479,7 @@ class bigger_or_equal(binary_opt):
 
 class smaller_or_equal(binary_opt):
     
-    expected_type = "Boolean"
+    expected_type = "type_Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -489,7 +490,7 @@ class smaller_or_equal(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -498,7 +499,7 @@ class smaller_or_equal(binary_opt):
 
 class assign(binary_opt):
     
-    expected_type = "Object"
+    expected_type = "type_Object"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -512,15 +513,15 @@ class assign(binary_opt):
             self.node_type = right_node_type
             
         elif right_node_type in self.left_node.posible_types:
-            self.left_node.posible_type.append( right_node_type )
-            self.left_node.node_type = right_node_type
+            self.left_node.posible_types.union( right_node_type )
+            self.left_node.node_types = right_node_type
             self.node_type = right_node_type
         
         return self.pointer_to_node_type()
         
 class or_(binary_opt):
     
-    expected_type = "Boolean"
+    expected_type = "type_Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -531,7 +532,7 @@ class or_(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -540,7 +541,7 @@ class or_(binary_opt):
 
 class and_(binary_opt):
     
-    expected_type = "Boolean"
+    expected_type = "type_Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -551,7 +552,7 @@ class and_(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -560,7 +561,7 @@ class and_(binary_opt):
     
 class different(binary_opt):
     
-    expected_type = "Boolean"
+    expected_type = "type_Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -571,7 +572,7 @@ class different(binary_opt):
         right_node_type = self.right_node.type( graph   )
         
         if left_node_type != right_node_type or right_node_type != self.expected_type or left_node_type != self.expected_type :
-            self.node_type = "Object"
+            self.node_type = "type_Object"
             return self.pointer_to_node_type()
         
         else:
@@ -608,28 +609,25 @@ class new(unary_expression):
         super().__init__(grammar)
     
     def type(self, graph: DiGraph = None):
-        self.node_type =  self.node.name
         return self.pointer_to_node_type()
-    
-    
     
 class not_(unary_expression):
     
-    expected_type = "Boolean"
+    expected_type = "type_Boolean"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
 class plus_plus(unary_expression):
     
-    expected_type = "Number"
+    expected_type = "type_Number"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
 class minus_minus(unary_expression):
     
-    expected_type = "Number"
+    expected_type = "type_Number"
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
@@ -845,7 +843,7 @@ class type_(ASTNode): # check context
         return children
     
     def type(self, graph: DiGraph = None):
-        self.node_type = self.name
+        self.node_type = self.referent_node
         return self.pointer_to_node_type()
             
 class protocol(ASTNode): # check context
@@ -878,7 +876,7 @@ class protocol(ASTNode): # check context
         return children
     
     def type( self ,graph: DiGraph = None, ):
-        self.node_type = self.name
+        self.node_type = self.referent_node
         return self.pointer_to_node_type()
     
 class vectors(ASTNode):
@@ -938,7 +936,7 @@ class index(ASTNode): # check context
         super().__init__(grammar)
         
     def type( self, graph: DiGraph = None, ):
-        self.node_type = "Object"
+        self.node_type = "type_Object"
         return self.pointer_to_node_type()
     
 class while_(ASTNode):
@@ -1014,8 +1012,8 @@ class block(ASTNode):
   
 class build_in:
     
-    expected_type = 'Object'
-    node_type = 'Object'
+    expected_type = 'type_Object'
+    node_type = 'type_Object'
     
     def __init__(self):
         pass
@@ -1047,24 +1045,24 @@ class buil_in_params:
         return [ "expressions" ]
         
 class Object(build_in):
-    expected_type = 'Object'
-    node_type = 'Object'
+    expected_type = 'type_Object'
+    node_type = 'type_Object'
 
 class Number(build_in):
-    expected_type = 'Number'
-    node_type = 'Number'
+    expected_type = 'type_Number'
+    node_type = 'type_Number'
 
 class Boolean(build_in):
-    expected_type = 'Boolean'
-    node_type = 'Boolean'
+    expected_type = 'type_Boolean'
+    node_type = 'type_Boolean'
 
 class String(build_in):
-    expected_type= "String"
-    node_type= "String"
+    expected_type= "type_String"
+    node_type= "type_String"
 
 class Iterable(build_in):
-    expected_type= "Iterable"
-    node_type= "Iterable"
+    expected_type= "type_Iterable"
+    node_type= "type_Iterable"
 
 class cos(build_in):
     expected_type = Number
