@@ -8,8 +8,6 @@ log_state_on_error = risk.log_state_on_error
 inheritence_error = errors.inheritence_error
 
 import inspect
-# from src import Utils
-# from Utils import names
 
 @log_state_on_error
 def init_graph():
