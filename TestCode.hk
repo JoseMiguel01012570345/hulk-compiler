@@ -8,17 +8,17 @@ type superprogram {
     type program3() inherits program4(){};
 
     type program1() inherits program3(){};
-    
+
     type program2() inherits program1(){
 
     };
 
-
+    
     type program( a , b ) inherits program2( ) {
         
                 function XXX( ) {
                     
-                    let s = new program2();
+                    let s = new program4();
                     let v = new program2(  );
                     s = v;
                     

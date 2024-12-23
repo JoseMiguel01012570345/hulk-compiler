@@ -17,7 +17,6 @@ class ASTNode:
     type_checker = False
     rules = []
     referent_node = ''
-    posible_types = set()
     
     def check_rules(self):
         
@@ -33,8 +32,7 @@ class ASTNode:
                         "builder":None , 
                         "visitor":None
                     } ) -> None:
-        
-        self.posible_types.add('Object')
+    
         self.set_identifier(grammar["identifier"])
         self.derivation = grammar["derivation"]
         self.def_node = grammar["definition_node?"]
@@ -505,18 +503,6 @@ class assign(binary_opt):
         super().__init__(grammar)
     
     def type(self, graph: DiGraph = None):
-        
-        right_node_type = self.right_node.type( graph )
-        
-        if self.left_node.id == 'let':
-            self.left_node.node_type = right_node_type
-            self.node_type = right_node_type
-            
-        elif right_node_type in self.left_node.posible_types:
-            self.left_node.posible_types.union( right_node_type )
-            self.left_node.node_types = right_node_type
-            self.node_type = right_node_type
-        
         return self.pointer_to_node_type()
         
 class or_(binary_opt):

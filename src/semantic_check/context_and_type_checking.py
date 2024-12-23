@@ -85,14 +85,42 @@ def assigment_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:li
                             error_log=error_log ,graph=graph , 
                             children=None , all_let=False , 
                             stack_referent_node=stack_referent_node )
+
+    right_node_type = child.right_node.type( graph )
+    left_node_type = child.left_node.type( graph )
     
-    if child.left_node.id == 'let' or child.left_node.id == 'var':
+    if child.left_node.id == 'let':
+        child.left_node.node_type = right_node_type
+        child.node_type = right_node_type
         return
     
-    # error_type = "type error"
-    # error_description = f"{right_node_type} can not be assigned to {left_node_type}"
-    # scope= { "line": child.left_node.line , "column": child.left_node.column }
-    # error_log.append( { "error_type": error_type , "error_description": error_description , "scope":scope } )
+    elif child.left_node.id == 'var': # it is a variable
+        
+        posible_types = [ right_node_type ] # collect all posible types of the variable
+        new_neighbor = list(graph.neighbors(posible_types[-1]) )
+        if len(new_neighbor) != 0:
+            posible_types.append(new_neighbor[0])
+            
+        while True: # search for the types of the right_node
+        
+            new_neighbor = list(graph.neighbors( posible_types[-1] ))
+            if len(new_neighbor) != 0:
+                posible_types.append(new_neighbor[0])
+                continue
+            break
+        
+        if left_node_type in posible_types:
+            child.left_node.node_type = right_node_type
+            child.node_type = right_node_type
+            return
+        else: # error
+            child.node_type = "type_Object"
+            error_type = "type error"
+            error_description = f"{right_node_type.split('_')[-1]} can not be assigned to {left_node_type.split('_')[-1]}"
+            scope= { "line": child.left_node.line , "column": child.left_node.column }
+            error_log.append( { "error_type": error_type , "error_description": error_description , "scope":scope } )
+            return
+    
     error_type = "object usage"
     error_description = "plan variables are only for assigment"
     scope= { "line": child.left_node.line , "column": child.left_node.column }
@@ -499,9 +527,8 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_log:list , stack_referen
             
             ref_node_scope = f'{stack_referent_node[-1]}_var_{ast.name}'
             def_node_scope=f"{reference_node}_let_{ast.name}"
-            def_node_ast = graph.nodes[def_node_scope]['ASTNode']
-            ast.posible_types = def_node_ast.posible_types # add posible types of variable from outer context
             build_graph( graph=graph , def_node_scope=def_node_scope , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
+            
             return error_log
         
         i-=1
