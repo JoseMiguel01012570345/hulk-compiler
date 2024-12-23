@@ -1,21 +1,29 @@
 
 type superprogram {
 
-    type program2(  ){
 
-        v(x,m)=>{
+    type program4(){};
+    
+    
+    type program3() inherits program4(){};
 
-        };
+    type program1() inherits program3(){};
+    
+    type program2() inherits program1(){
 
     };
 
-    type program( a , b ) inherits program2( a , b ) {
+
+    type program( a , b ) inherits program2( ) {
         
                 function XXX( ) {
                     
-                    let v = new program2();
-                    v.v(v);
+                    let s = new program2();
+                    let v = new program2(  );
+                    s = v;
                     
                 };
         };
+    
+    type pro(a,c) inherits program(a,c){};
 };
