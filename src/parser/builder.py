@@ -32,7 +32,7 @@ def replacement(token_list,index=0):
     return [( "replacement" , token_list[index])]
 
 def let(token_list):
-    return [ ( "name",token_list[1].name ) ]
+    return [ ( "name",token_list[1].name ) , ('node_type' , token_list[1].node_type) ]
 
 def assigment(token_list):    
     return [ ( "left_node" , token_list[0] ) , ("right_node", token_list[-1] ) ] 
@@ -127,3 +127,6 @@ def unary_opt(token_list):
     else:
         return [ ( "node" , token_list[1] ) ]
 
+def anoted_type( token_list ):
+    token_list[0].node_type = token_list[-1].name
+    return [ ( 'node_type' , token_list[-1].name ) , ( 'name' , token_list[0].name ) ]

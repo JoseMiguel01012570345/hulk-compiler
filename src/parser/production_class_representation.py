@@ -336,18 +336,18 @@ class blank_space_concatenation(binary_opt):
             self.node_type = self.expected_type
             return self.pointer_to_node_type()
 
-class double_dot(binary_opt): # the context of the right side is passed to the context of the left side
+# class double_dot(binary_opt): # the context of the right side is passed to the context of the left side
     
-    def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
-        super().__init__(grammar)
+#     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
+#         super().__init__(grammar)
 
-    def type(self, graph: DiGraph = None):
+#     def type(self, graph: DiGraph = None):
         
-        right_node_type = self.right_node.type( graph   )
-        self.left_node.posible_type = [ 'Object' , right_node_type ]
-        self.node_type = right_node_type
+#         right_node_type = self.right_node.type( graph   )
+#         self.left_node.posible_type = [ 'Object' , right_node_type ]
+#         self.node_type = right_node_type
         
-        return self.pointer_to_node_type()
+#         return self.pointer_to_node_type()
 
 class double_dot_equal(binary_opt): # the context of the right side is passed to the context of the left side
     
@@ -667,7 +667,7 @@ class variable(ASTNode): # check context
             return 'type_Object'
         
         var_neighbor = next(graph.neighbors(target))
-        
+            
         let_node_ast = None
         if var_neighbor is not None:
             let_node_ast = graph.nodes[var_neighbor]["ASTNode"]

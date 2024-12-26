@@ -223,16 +223,19 @@ binary_opt = [
     
     # ---------------------------
     
-    # bool -> label.label
+    # atom -> label:label
+    pcr.variable({ "derivation" : ["label",["label", ":" ,"label"]] , "identifier": "var" ,"definition_node?": False ,"builder": B.anoted_type  , "visitor": V.var } ),
+    
+    #  atom -> label.label
     pcr.dot({ "derivation" : ["atom",["label", "." ,"label"]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
-    # dot -> label.call
+    # atom -> label.call
     pcr.dot({ "derivation" : ["atom",["label", "." ,"call" ]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
-    # dot -> call.call
+    # atom -> call.call
     pcr.dot({ "derivation" : ["atom",["call", "." ,"call" ]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
-    # dot -> call.label
+    # atom -> call.label
     pcr.dot({ "derivation" : ["atom",["call", "." ,"label" ]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     # 4 == a.b()    
@@ -376,6 +379,7 @@ terminals= [
             "{",
             "}",
             "$" , 
+            ":",
             
         ]
 

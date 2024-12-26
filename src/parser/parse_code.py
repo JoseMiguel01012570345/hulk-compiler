@@ -65,7 +65,7 @@ def parse_input( code , allow=1 ):
 
                 parser_msg.append( f"{symbols} state={state[-1]}" )
                 
-            result_ast = search_ast_in_grammar(result[1])
+            result_ast = search_ast_in_grammar(result[0])
             
             ast = copy.deepcopy(result_ast)
             
@@ -113,15 +113,21 @@ def parser_process_printer( allow= 1 , parser_msg:list=[] ):
         
         parser_msg.clear()
 
-def search_ast_in_grammar( i ):        
+def search_ast_in_grammar( production ):        
         grammar = GD.grammar
         k = 0
         for feature in grammar:
             
-            for productions in feature:
+            for ast in feature:
                 
-                if k == i: 
-                    return productions    
+                if production[0] == ast.derivation[0] and len(production[1]) == len(ast.derivation[1]): 
+                    is_equal = 0
+                    for index,right_side in enumerate(ast.derivation[1]):
+                        if right_side != production[1][index]:
+                            break
+                        is_equal += 1
+                    if is_equal == len(production[1]):
+                        return ast
                 k += 1
                 
         raise Exception("no index found")
