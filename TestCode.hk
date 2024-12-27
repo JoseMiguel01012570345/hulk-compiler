@@ -11,7 +11,7 @@ type superprogram {
         
             function XXX( a:Iterable ) {
                 
-                let s:z = new program2( self.a , self.b );
+                let s:program2 = new program4( self.a , self.b );
                 
             };
     };

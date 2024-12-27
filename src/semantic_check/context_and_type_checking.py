@@ -172,7 +172,7 @@ def find_anoted_type( graph:nx.DiGraph , anoted_type_name:str , stack_referent_n
     
     '''#### This method returns the type/protocol scope of anoted_type_name passed as argument'''
     if anoted_type_name is None: return 'type_Object'
-    
+      
     # check if anoted is build-in
     type_anoted = f"type_{anoted_type_name}"
     protocol_anoted = f"protocol_{anoted_type_name}"
@@ -274,21 +274,19 @@ def instance_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:lis
 def check_inheritance( graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_referent_node:list , scope:dict ):
     
     found = False
-    target = ''
+    target = f'protocol_{ast.parent_name}'
     
     if ast.id == "type" :
         target = f'type_{ast.parent_name}'
-    else:
-        target = f'protocol_{ast.parent_name}'
-        
+    
     # walk through the graph to find the target node , this node has no attr because it's a protocol or type ( no overload of constructor supported )
     found , def_node_scope = inheritence_walker(graph=graph , target_type=target , stack_referent_node=stack_referent_node , attr='' , state=len(stack_referent_node)-1 , ref_node=ast )
     
     if found:
         def_node_ast = graph.nodes[def_node_scope]["ASTNode"]
         found = check_args_type(graph=graph , ref_node_ast=ast , def_node_ast= def_node_ast )
-        
-        return def_node_scope , def_node_ast
+        if found:
+            return def_node_scope , def_node_ast
         
     if not found: # error
         error_type , error_description = inheritence_error(ast=ast.parent_name , type_or_protocol=ast.id )
@@ -473,6 +471,7 @@ def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_r
         node_ast = graph.nodes[ ref_node ]["ASTNode"]
         args = args_checking( ast , node_ast )
         
+        
         if args:
             error_log.append( { "error_type": error_type , "error_description":error_description , "scope":scope } )
         
@@ -480,10 +479,11 @@ def def_node_error(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_r
 
     if (ast.id == 'type' or ast.id == 'protocol') and ast.__dict__.__contains__('parent_name'):
         def_node_scope , def_node_ast = check_inheritance(graph=graph , ast=ast , error_log=error_log , stack_referent_node=stack_referent_node , scope=scope)
-        build_graph( graph=graph , def_node_scope=def_node_scope , 
-                    def_node=def_node_ast , ref_node_scope=ref_node_scope, 
-                    ref_node=ast,
-                    add_node=False )
+        if def_node_scope is not None and def_node_ast is not None:
+            build_graph( graph=graph , def_node_scope=def_node_scope , 
+                        def_node=def_node_ast , ref_node_scope=ref_node_scope, 
+                        ref_node=ast,
+                        add_node=False )
     
     return error_log
 
@@ -493,9 +493,7 @@ def args_checking( referent_node:pcr.ASTNode , ast:pcr.ASTNode ):
     
     '''
     returns True if amount of arguments is the same
-    
     ast: is the node to be checked
-    
     '''
     
     if ast.id == "def_function":
