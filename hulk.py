@@ -35,7 +35,7 @@ if ast == None:
     print(" \033[1;32m >\033[1;31m Syntaxis errors :( \033[0m")
     exit()
 
-#_________________________SEMANTIC CHEKING__________________________________
+#_________________________SEMANTIC CHEKING_______________________________
 
 graph = ctck.init_graph()
 error_log = []
@@ -48,6 +48,6 @@ print_graph( graph=graph )
 type_inspector.type_inpector( ast=ast , graph=graph )
 
 
-#_________________________CODE GENERATION__________________________________
+#_________________________CODE GENERATION________________________________
 
 #________________________END_____________________________________________

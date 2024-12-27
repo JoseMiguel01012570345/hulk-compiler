@@ -12,7 +12,7 @@ def binary_opt(token_list):
 def var(token_list):
     
     if token_list[0].Type.name == "Variable":
-        return [ ( "name" , token_list[0].Text ) ]
+        return [ ( "name" , token_list[0].Text ) , ( 'anoted_type' , None ) ]
     else:
         
         literal = ( "literal" , True )
@@ -32,7 +32,7 @@ def replacement(token_list,index=0):
     return [( "replacement" , token_list[index])]
 
 def let(token_list):
-    return [ ( "name",token_list[1].name ) , ('node_type' , token_list[1].node_type) ]
+    return [ ( "name",token_list[1].name ) , ('anoted_type' , token_list[1].anoted_type) ]
 
 def assigment(token_list):    
     return [ ( "left_node" , token_list[0] ) , ("right_node", token_list[-1] ) ] 
@@ -129,4 +129,4 @@ def unary_opt(token_list):
 
 def anoted_type( token_list ):
     token_list[0].node_type = token_list[-1].name
-    return [ ( 'node_type' , token_list[-1].name ) , ( 'name' , token_list[0].name ) ]
+    return [ ( 'anoted_type' , token_list[-1].name ) , ( 'name' , token_list[0].name ) ]

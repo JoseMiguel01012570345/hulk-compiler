@@ -78,7 +78,10 @@ def condition_instance_case( child:pcr.ASTNode , ast:pcr.ASTNode ):
 def condition_dot_case( child:pcr.ASTNode , ast:pcr.ASTNode ):
     return child.id == "dot"
 
+@log_state_on_error
 def assigment_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
+    risk.frame_logger.append( inspect.currentframe() )
+    
     solve_context_and_type( ast=child , 
                             error_log=error_log ,graph=graph , 
                             children=None , all_let=False , 
@@ -87,18 +90,14 @@ def assigment_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:li
     right_node_type = child.right_node.type( graph )
     left_node_type = child.left_node.type( graph )
     
-    if child.left_node.id == 'let':
-        child.left_node.node_type = right_node_type
-        child.node_type = right_node_type
-        return
     
-    elif child.left_node.id == 'var' or child.left_node.id == 'let': # it is a variable
+    if child.left_node.id == 'var' or child.left_node.id == 'let': # it is a variable
         
         posible_types = [ right_node_type ] # collect all posible types of the variable
         new_neighbor = list(graph.neighbors(posible_types[-1]) )
         if len(new_neighbor) != 0:
             posible_types.append(new_neighbor[0])
-            
+        
         while True: # search for the types of the right_node
         
             new_neighbor = list(graph.neighbors( posible_types[-1] ))
@@ -107,11 +106,14 @@ def assigment_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:li
                 continue
             break
         
-        if left_node_type in posible_types:
+        if left_node_type in posible_types or left_node_type == 'type_Object':
             child.left_node.node_type = right_node_type
             
             # change node type in let node
-            def_node_scope = next(graph.neighbors(f"{child.left_node.referent_node}_{child.left_node.id}_{child.left_node.name}"))
+            def_node_scope = list(graph.neighbors(f"{child.left_node.referent_node}_{child.left_node.id}_{child.left_node.name}"))[0] \
+                                if len(list(graph.neighbors(f"{child.left_node.referent_node}_{child.left_node.id}_{child.left_node.name}"))) != 0 \
+                                else f"{child.referent_node}_{child.left_node.id}_{child.left_node.name}"
+            
             def_node_ast = graph.nodes[def_node_scope]['ASTNode']
             def_node_ast.node_type = right_node_type
             child.node_type = right_node_type
@@ -155,10 +157,82 @@ def def_cases( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list ,
     
     # case 2 : let
     let_scope = f'{stack_referent_node[-1]}_let_{child.name}'
+    scope_anoted_type = find_anoted_type(graph=graph,
+                                         stack_referent_node=stack_referent_node , 
+                                         anoted_type_name=child.anoted_type , 
+                                         error_log=error_log , ast=child)
+    child.node_type = scope_anoted_type
     graph = build_graph( graph=graph , def_node_scope=let_scope , def_node=child )
     
     solve_context_and_type(child , error_log , graph  , def_children , all_let=False ,stack_referent_node=stack_referent_node )
+
+@log_state_on_error
+def find_anoted_type( graph:nx.DiGraph , anoted_type_name:str , stack_referent_node:list , error_log:list , ast:pcr.ASTNode ):
+    risk.frame_logger.append( inspect.currentframe() )
     
+    '''#### This method returns the type/protocol scope of anoted_type_name passed as argument'''
+    if anoted_type_name is None: return 'type_Object'
+    
+    # check if anoted is build-in
+    type_anoted = f"type_{anoted_type_name}"
+    protocol_anoted = f"protocol_{anoted_type_name}"
+    
+    if type_anoted in build_in_anoted: return type_anoted
+    if protocol_anoted in build_in_anoted: return protocol_anoted
+    #________________________________________________
+    
+    
+    stack_splited = stack_referent_node[-1].split("_")
+    i = len(stack_splited) - 1
+    
+    if anoted_type_name in stack_referent_node[-1]: # anoted_type might be visible from outter scopes
+        while i >=0: # iterate 
+            if stack_splited[i] == anoted_type_name:
+                anoted_type_scope = stack_splited[:i-1] # we will cut from the start to the type/protocol keyword
+                anoted_type_scope_str = ''
+                for index,item in enumerate(anoted_type_scope): # rebuild the str path
+                    if len(anoted_type_name) -1  == index: # check if we are in the last iteration, if so , add the anoted type name
+                        anoted_type_scope_str += f"{item}_{anoted_type_name}" 
+                        return anoted_type_scope_str
+                        
+                    anoted_type_scope_str += f'{item}_'
+            i -= 1
+            
+    # check if the anoted type and it's definition are in a common scope
+    i = len(stack_splited)
+    while i >=0:
+        
+        last_scope = stack_splited[:i] # we will remove the last scope and check the type/protoco
+        
+        # we will check for both type and protocol
+        type_scope =  '' 
+        protocol_scope = ''
+    
+        for index,item in enumerate(last_scope): # rebuild the scope with the type/protocol keyword + anoted_type name
+            if len(last_scope) -1  == index:
+                type_scope += f"{item}_type_{anoted_type_name}"
+                protocol_scope += f"{item}_protocol_{anoted_type_name}"
+                break
+            
+            type_scope += f'{item}_'
+            protocol_scope += f'{item}_'
+    
+        # check the protocol and type build
+        if graph.has_node(type_scope):
+            return type_scope
+        elif graph.has_node(protocol_scope):
+            return protocol_scope
+        
+        i -= 1
+    
+    # error
+    error_type = 'type anoted'
+    error_scope = { "line": ast.line , "column": ast.column  }
+    error_description = f'the type {anoted_type_name} does not exist or is not visible'
+    error_log.append({ 'error_type': error_type , "error_description": error_description ,"scope": error_scope })
+    
+    return 'type_Object'
+
 def auto_call( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
     new_stack.append("anonymus")    
@@ -196,7 +270,7 @@ def instance_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:lis
                            children=verify_instance_args ,
                            stack_referent_node=stack_referent_node , 
                            all_let=False )  
-    
+
 def check_inheritance( graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , stack_referent_node:list , scope:dict ):
     
     found = False
@@ -270,7 +344,8 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
     
     left_name = left_node.name
     right_name =right_node.name
-    target_type = "type"+"_"+left_node.type(graph=graph)
+    splited_type = left_node.type(graph=graph).split('_')
+    target_type = f"{splited_type[-2]}_{splited_type[-1]}"
     ref_node_scope = stack_referent_node[-1] + "_" + right_node.id + "_" + right_name
     
     attr = f"{right_node.id}_{right_name}"
@@ -320,6 +395,7 @@ def solve_dot_case(graph:nx.DiGraph , error_log:list , right_node:pcr.ASTNode , 
                 add_node=False)
 
 def verify_dot_function_call_args( graph:nx.DiGraph , ref_node_scope , def_node_scope ):
+    
     # verfy if all args type matches in the arg scope of the function definition
     ref_node_ast = graph.nodes[ref_node_scope]["ASTNode"]
     def_node_ast = graph.nodes[def_node_scope]["ASTNode"]
@@ -532,6 +608,10 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_log:list , stack_referen
             def_node_scope=f"{reference_node}_let_{ast.name}"
             build_graph( graph=graph , def_node_scope=def_node_scope , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
             
+            anoted_type_scope = find_anoted_type(graph=graph,anoted_type_name=ast.anoted_type
+                                                 ,stack_referent_node=stack_referent_node ,
+                                                 error_log=error_log , ast=ast)
+            ast.anoted_type = anoted_type_scope
             return error_log
         
         i-=1
@@ -646,4 +726,8 @@ watch_cases = [
 call_to_defintion = [ # this list returns the id of an object that is its definition based on object's id
     { "var": "let" },
     { "function_call": "def_function" },
+]
+
+build_in_anoted = [
+    'type_Number', 'type_Object' , 'type_String' , 'type_Iterable'
 ]
