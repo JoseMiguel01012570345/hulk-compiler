@@ -5,7 +5,7 @@ type superprogram {
     type program1(){};
     type program2( a:String , b: String , c:Number , d:Number ) inherits program1(){};
 
-    type program( a:String , b:String , c:Number , d:Number ) inherits program2(  b , c  , d) {
+    type program( a:String , b:String , d:Number ) inherits program2( a, b , c  , d) {
         
             function XXX( a:Iterable ) {
                 let s:program4 = new program4( );
