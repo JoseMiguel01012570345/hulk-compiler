@@ -2,19 +2,14 @@
 type superprogram {
 
 
-    type program4(){};
-    type program3() inherits program4(){};
-    type program1() inherits program3(){};
-    type program2( a:String , b: String ) inherits program1(){};
+    type program1(){};
+    type program2( a:String , b: String , c:Number , d:Number ) inherits program1(){};
 
-    type program( a:Number , b:Number ) inherits program2(  a , b ) {
+    type program( a:String , b:String , c:Number , d:Number ) inherits program2(  b , c  , d) {
         
             function XXX( a:Iterable ) {
-                
-                let s:program2 = new program4( self.a , self.b );
-                
+                let s:program4 = new program4( );
             };
     };
-    
-    type pro(a,c) inherits program(a,c){};
+
 };

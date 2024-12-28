@@ -2,13 +2,11 @@ class semantic_errors:
     
     error_list = [ ]
     def __init__(self) -> None:
-        
         pass
     
     def add_error(self,error_list):
-        
         self.error_list = error_list
-        pass
+        
     
     def print_(self):
     
@@ -42,4 +40,3 @@ class semantic_errors:
             
             print(" \033[1;31m >\033[1;32m Semantic checked, ALL is OK \033[0m")
         
-        pass

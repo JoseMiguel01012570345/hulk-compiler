@@ -39,7 +39,7 @@ if ast == None:
 
 graph = ctck.init_graph()
 error_log = []
-error_log   = ctck.solve_context_and_type( graph=graph , ast=ast , error_log=error_log ) # check context and type
+ctck.solve_context_and_type( graph=graph , ast=ast , error_log=error_log , stack_referent_node=[""] ) # check context and type
 s_error.add_error(error_log) # add errors to error list
 s_error.print_()
 
