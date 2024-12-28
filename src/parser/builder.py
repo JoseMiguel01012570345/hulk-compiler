@@ -90,7 +90,7 @@ def in_(token_list):
 
 def structure(token_list):
     
-    if token_list[0].id == "structure":
+    if token_list[0].id == "args":
         
         token_list[0].expressions.append(token_list[-1])
         
