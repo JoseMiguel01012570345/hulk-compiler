@@ -20,7 +20,6 @@ Lexer.LoadCode(code)
 
 tokens = [token for token in Lexer.Tokenize()]
 
-
 #__________________PARSER__________________________________________
 # uncomment to build states 
 # P.Parser()

@@ -1,15 +1,11 @@
+type superprogram{
+type a{ 
+function tan(x: Number): Number => sin(x) / cos(x);
+function cot(x:Number) => 1 / tan(x);
+function operate(x:Number, y:Number) {
+    
+    let a = 10 , b = 30 in  print(x + y);
+    
+}
 
-type superprogram {
-
-
-    type program1(){};
-    type program2( a:String , b: String , c:Number , d:Number ) inherits program1(){};
-
-    type program( a:String , b:String , d:Number ) inherits program2( a, b , c  , d) {
-        
-            function XXX( a:Iterable ) {
-                let s:program4 = new program4( );
-            };
-    };
-
-};
+}}

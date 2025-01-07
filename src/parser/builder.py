@@ -18,12 +18,12 @@ def var(token_list):
         literal = ( "literal" , True )
         
         if token_list[0].Text == "e":
-            return [ ("id","literal") , ("value", math.e  ) , ("type_" ,"Number")  , literal]
+            return [ ("id","literal") , ("value", math.e  ) , ("node_type" ,"type_Number")  , literal]
         
         if token_list[0].Text == "PI":
-            return [ ("id","literal") , ("value", math.pi  ) , ("type_" ,"Number") , literal ]
+            return [ ("id","literal") , ("value", math.pi  ) , ("node_type" ,"type_Number") , literal ]
         
-        return [ ("id","literal") , ("value", token_list[0].Text  ) , ("type_" ,token_list[0].Type.name ) , literal ]
+        return [ ("id","literal") , ("value", token_list[0].Text  ) , ("node_type" ,f'type_{token_list[0].Type.name}' ) , literal ]
         
 def brackets(token_list):
     return [("replacement",token_list[1])]
@@ -58,12 +58,25 @@ def block(token_list):
         
 def def_function(token_list):
     
-    if not token_list[0].__dict__.__contains__("id"):
-        return [ ("name" , token_list[1].name ) , ( "args" , token_list[-2] ) , ( "body", token_list[-1] ) ]
+    name = None
+    args = None
+    body =     body = ("body" , token_list[-1])
+    node_type = ('node_type' , 'type_Object')
     
-    if token_list[0].__dict__.__contains__("id"):
-        return [ ("name" , token_list[0].name ) , ( "args" , token_list[-3] ) , ( "body", token_list[-1] ) ]
-
+    for index,items in enumerate(token_list):
+        
+        if not items.__dict__.__contains__('id'):
+            continue
+        
+        if items.id == 'var' and index > 2 and token_list[ index - 2].__dict__.__contains__("id") and token_list[ index - 2].id == 'args':
+            node_type = ( "node_type" , items.name )
+        elif items.id == "var":
+            name= ("name" , items.name) 
+        elif items.id == "args":
+            args =  ("args" , items)
+        
+    return [ name , args, node_type , body ]
+    
 def type(token_list):
     
     if len(token_list) == 3:
@@ -86,7 +99,7 @@ def protocol(token_list):
     return [ ( "name" , token_list[1].name ) , ("parent_name",token_list[3].name ) , ( "body", token_list[-1] ) ]
 
 def in_(token_list):
-    return [ ( "args" , token_list[0] ) , ( "body" , token_list[2] ) ]
+    return [ ("name" , "anonymous") , ( "args" , token_list[0] ) , ( "body" , token_list[2] ) ]
 
 def structure(token_list):
     
@@ -101,7 +114,9 @@ def structure(token_list):
 def params(token_list):
 
     if len(token_list) == 3:
-        return [( "expressions" , token_list[1].expressions)]
+        if token_list[1].__dict__.__contains__('expressions'):
+            return [( "expressions" , token_list[1].expressions)]
+        return [( "expressions" , [token_list[1]])]
     else:
         return [("expressions",[])]
 

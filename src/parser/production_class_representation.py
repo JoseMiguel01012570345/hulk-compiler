@@ -643,7 +643,7 @@ class variable(ASTNode): # check context
         risk.frame_logger.append( inspect.currentframe()) # add frame to  frame_logger
         
         if self.literal:
-            return self.type_
+            return self.pointer_to_node_type()
         
         if self.id == 'let':
             return self.pointer_to_node_type()
@@ -1017,82 +1017,99 @@ class buil_in_params:
         return [ "expressions" ]
         
 class Object(build_in):
+    id = 'type'
     expected_type = 'type_Object'
     node_type = 'type_Object'
 
 class Number(build_in):
+    id = 'type'
     expected_type = 'type_Number'
     node_type = 'type_Number'
 
 class Boolean(build_in):
+    id = 'type'
     expected_type = 'type_Boolean'
     node_type = 'type_Boolean'
 
 class String(build_in):
+    id = 'type'
     expected_type= "type_String"
     node_type= "type_String"
 
 class Iterable(build_in):
+    id = 'type'
     expected_type= "type_Iterable"
     node_type= "type_Iterable"
 
 class cos(build_in):
+    id = 'def_function'
     expected_type = Number
     node_type = Number
     args=buil_in_params( [ Number ] )
 
 class cot(build_in):
+    id = 'def_function'
     expected_type = Number
     node_type = Number
     args=buil_in_params( [ Number ] )
     
 class exp(build_in):
+    id = 'def_function'
     expected_type = Number
     node_type = Number
     args=buil_in_params( [ Number ] )
     
 class log(build_in):
+    id = 'def_function'
     expected_type = Number
     node_type = Number
     args=buil_in_params( [ Number ] )
     
 class rand(build_in):
+    id = 'def_function'
     expected_type = Number
     node_type = Number
     args=buil_in_params( [ Number  , Number ] )
     
 class sqrt(build_in):
+    id = 'def_function'
     expected_type = Number
     node_type = Number
     args=buil_in_params( [ Number ] )
     
 class range(build_in):
+    id = 'def_function'
     expected_type = Iterable
     node_type = Iterable
     args=buil_in_params( [ Number  , Number ] )
     
 class tan(build_in):
+    id = 'def_function'
     expected_type = Number
     node_type = Number
     args=buil_in_params( [ Object ] )
     
 class sin(build_in):
+    id = 'def_function'
     expected_type = Number
     node_type = Number
     args=buil_in_params( [ Number ] )
 
 class e(build_in):
+    id = 'let'
     expected_type = Number
     node_type = Number
     
 class PI(build_in):
+    id = 'let'
     expected_type = Number
     node_type = Number
 
 class print(build_in):
+    id = 'def_function'
     expected_type = String
     node_type = String
-    args=buil_in_params( [ String ] )
+    args=buil_in_params( [ Object ] )
     
 class self(ASTNode):
     

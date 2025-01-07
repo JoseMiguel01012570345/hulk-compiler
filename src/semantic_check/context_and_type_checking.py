@@ -84,6 +84,13 @@ def condition_dot_case( child:pcr.ASTNode , ast:pcr.ASTNode ):
 def assigment_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
     risk.frame_logger.append( inspect.currentframe() )
     
+    if child.parent.id == "args" and not child.parent.parent.id == 'auto_call' :
+        error_type = "object usage"
+        error_description = "assigment is not allowed in arguments definition"
+        scope= { "line": child.left_node.line , "column": child.left_node.column }
+        error_log.append( { "error_type": error_type , "error_description": error_description , "scope":scope } )
+        return    
+    
     solve_context_and_type( ast=child , 
                             error_log=error_log ,graph=graph , 
                             children=None , all_let=False , 
@@ -112,13 +119,18 @@ def assigment_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:li
             child.left_node.node_type = right_node_type
             
             # change node type in let node
-            def_node_scope = list(graph.neighbors(f"{child.left_node.referent_node}_{child.left_node.id}_{child.left_node.name}"))[0] \
-                                if len(list(graph.neighbors(f"{child.left_node.referent_node}_{child.left_node.id}_{child.left_node.name}"))) != 0 \
-                                else f"{child.referent_node}_{child.left_node.id}_{child.left_node.name}"
-            
-            def_node_ast = graph.nodes[def_node_scope]['ASTNode']
-            def_node_ast.node_type = right_node_type
-            child.node_type = right_node_type
+            def_node_scope = None
+            if graph.has_node(f"{child.left_node.referent_node}_{child.left_node.id}_{child.left_node.name}"):
+                def_node_scope_neighbors = list(graph.neighbors(f"{child.left_node.referent_node}_{child.left_node.id}_{child.left_node.name}"))
+                if len(def_node_scope_neighbors) != 0:
+                    def_node_scope = list(graph.neighbors(f"{child.left_node.referent_node}_{child.left_node.id}_{child.left_node.name}"))[0] # var case
+                else:
+                    def_node_scope = f"{child.left_node.referent_node}_{child.left_node.id}_{child.left_node.name}" # let case
+                    
+            if def_node_scope is not None:
+                def_node_ast = graph.nodes[def_node_scope]['ASTNode']
+                def_node_ast.node_type = right_node_type
+                child.node_type = right_node_type
             return
         else: # error
             child.node_type = "type_Object"
@@ -236,9 +248,8 @@ def find_anoted_type( graph:nx.DiGraph , anoted_type_name:str , stack_referent_n
 
 def auto_call( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
-    new_stack.append("anonymus")    
-    
-    solve_context_and_type(child , error_log , graph  , None , all_let= False ,stack_referent_node=new_stack)
+    new_stack.append( child.name )
+    solve_context_and_type( ast=child ,error_log=error_log ,graph=graph  ,children=None , all_let= False ,stack_referent_node=new_stack)
     
 def function_call_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
     
@@ -338,8 +349,6 @@ def find_instance_type(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
     
     error_log.append({ "error_type": error_type , "error_description":error_description , "scope":scope })
     
-    
-
 @log_state_on_error
 def dot_case( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     risk.frame_logger.append( inspect.currentframe() )
@@ -577,11 +586,11 @@ def function_call(graph:nx.DiGraph, ast:pcr.function_call , error_log:list , sta
 
         ref_node_scope = f"{stack_referent_node[-1]}_{ast.id}_{ast.name}"
         build_graph( graph=graph, def_node_scope=def_node_scope , ref_node_scope=ref_node_scope , ref_node=ast , add_node=False )
-        
+        return
         
     
     if ast.parent.id == 'dot':
-        pass
+        return
     
     scope = { "line":ast.line , "column":ast.column }
     error_type = "function usage"
@@ -663,7 +672,7 @@ def self_case( graph:nx.DiGraph , reference_node:str , stack_reference_node:list
     return type_scope_ast.constructor is not None , type_scope_ast , type_scope
 
 @log_state_on_error
-def typing_error( ast_node:pcr.ASTNode ):
+def binary_opt_typing_error( ast_node:pcr.ASTNode ):
     risk.frame_logger.append( inspect.currentframe() )
     
     error_type=""
@@ -674,7 +683,8 @@ def typing_error( ast_node:pcr.ASTNode ):
         error_description = "operation can not be peformed between different types"
     else:
         error_type="typing error"
-        error_description = f"operation can not be peformed , expected type { ast_node.expected_type } , dismatchs"
+        expected_type = ast_node.expected_type.split("_")[-1]
+        error_description = f"operation can not be peformed , expected type { expected_type } , dismatchs"
     
     return error_type , error_description
 
@@ -689,7 +699,7 @@ def type_checking_creteria( graph:nx.DiGraph , ast_node:pcr.ASTNode , stack_refe
         
         if expected_type != "type_Object" and ast_type != expected_type :
             
-            error_type , error_description = typing_error( ast_node=ast_node )
+            error_type , error_description = binary_opt_typing_error( ast_node=ast_node )
             scope= { "line": ast_node.line , "column": ast_node.column }
             error_log.append( { "error_type": error_type , "error_description": error_description , "scope":scope } )
             
@@ -697,8 +707,11 @@ def type_checking_creteria( graph:nx.DiGraph , ast_node:pcr.ASTNode , stack_refe
 def check_args_type( graph:nx.DiGraph , ref_node_ast:pcr.ASTNode , def_node_ast:pcr.ASTNode ):
     risk.frame_logger.append( inspect.currentframe() )
     
+    ref_node_args = []
+    def_node_args = []
+    
     # check each type of the arguments of the definition node
-    if def_node_ast.id == "function_call":
+    if def_node_ast.id == "def_function":
         ref_node_args = ref_node_ast.args.expressions
         def_node_args = def_node_ast.args.expressions
     
