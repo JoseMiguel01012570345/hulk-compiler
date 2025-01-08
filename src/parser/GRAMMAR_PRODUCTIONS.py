@@ -5,35 +5,35 @@ from ..semantic_check import visitor as V
 For = [
 
     # atom -> for param block
-    pcr.for_({  "derivation": [ "exp" , [ "for" , "(" , "in" , ")" , "block" ]] , "identifier": "for" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
+    pcr.for_({  "derivation": [ "exp" , [ "for" , "(" , "label" , "in" , "high_level" , ")" , "block" ]] , "identifier": "for" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
     
     # exp -> for param exp
-    pcr.for_({  "derivation": [ "exp" , [ "for" , "(" , "in" , ")" , "exp" ]] , "identifier": "for" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
+    pcr.for_({  "derivation": [ "exp" , [ "for" , "(" , "label" , "in" , "high_level" , ")" , "exp" ]] , "identifier": "for" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
     
     # atom -> for param high_level
-    pcr.for_({  "derivation": [ "atom" , [ "for" , "(" , "in" , ")" , "high_level" ]] , "identifier": "for" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
+    pcr.for_({  "derivation": [ "atom" , [ "for" , "(" , "label" , "in" , "high_level" , ")" , "high_level" ]] , "identifier": "for" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
       
 ]
 
 conditional = [
 
     # if_high_level -> if param high_level
-    pcr.if_({  "derivation": [ "if_high_level" , [ "if" , "param" , "high_level" ]] , "identifier": "if" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    pcr.if_({  "derivation": [ "if_high_level" , [ "if" , "(" , "bool" , ")" , "high_level" ]] , "identifier": "if" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
     
     # if_exp -> if param exp
-    pcr.if_({  "derivation": [ "if_exp" , [ "if" , "param" , "exp" ]] , "identifier": "if" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    pcr.if_({  "derivation": [ "if_exp" , [ "if" , "(" , "bool" , ")" , "exp" ]] , "identifier": "if" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
     
     # if_exp -> if param exp
-    pcr.if_({  "derivation": [ "if_exp" , [ "if" , "param" , "block" ]] , "identifier": "if" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    pcr.if_({  "derivation": [ "if_exp" , [ "if" , "(" , "bool" , ")" , "block" ]] , "identifier": "if" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
     
     # elif_high_level -> elif param high_level
-    pcr.elif_({  "derivation": [ "elif_high_level" , [ "elif" , "param" , "high_level" ]] , "identifier": "elif" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    pcr.elif_({  "derivation": [ "elif_high_level" , [ "elif" , "(" , "bool" , ")" , "high_level" ]] , "identifier": "elif" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
     
     # elif_exp -> elif param exp
-    pcr.elif_({  "derivation": [ "elif_exp" , [ "elif" , "param" , "exp" ]] , "identifier": "elif" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    pcr.elif_({  "derivation": [ "elif_exp" , [ "elif" , "(" , "bool" , ")" , "exp" ]] , "identifier": "elif" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
     
     # elif_exp -> elif param exp
-    pcr.elif_({  "derivation": [ "elif_exp" , [ "elif" , "param" , "block" ]] , "identifier": "elif" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
+    pcr.elif_({  "derivation": [ "elif_exp" , [ "elif" , "(" , "bool" , ")" , "block" ]] , "identifier": "elif" , "definition_node?": False , "builder": B.if_elif , "visitor": V.if_else }),
     
     # else_high_level -> else high_level
     pcr.else_({  "derivation": [ "else_high_level" , [ "else" , "high_level" ]] , "identifier": "else" , "definition_node?": False , "builder": B.else_ , "visitor": V.else_ }),
@@ -66,12 +66,17 @@ While = [
     # exp -> while param exp
     pcr.while_({  "derivation": [ "exp" , [ "while" , "(" , "bool" , ")" , "exp" ]] , "identifier": "while" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
     
-    # atom -> while param high_level
-    pcr.while_({  "derivation": [ "exp" , [ "while" , "(" , "bool" , ")" , "high_level" ]] , "identifier": "while" , "definition_node?": False , "builder": B.for_while , "visitor": V.for_while }),
-
 ]
 
 vector = [
+    
+    pcr.vectors({  "derivation": [ "atom" , [ "[" , "structure" , "]" ]] , "identifier": "vector" , "definition_node?": False , "builder": B.block , "visitor": V.block }),
+    
+    pcr.vectors({  "derivation": [ "atom" , [ "[" , "high_level" , "]" ]] , "identifier": "vector" , "definition_node?": False , "builder": B.block , "visitor": V.block }),
+    
+    pcr.vectors({  "derivation": [ "atom" , [ "[" , "]" ]] , "identifier": "vector" , "definition_node?": False , "builder": B.block , "visitor": V.block }),
+
+    pcr.index({  "derivation": [ "atom" , [ "label" , "[" , "high_level" , "]" ]] , "identifier": "index" , "definition_node?": False , "builder": B.binary_opt , "visitor": V.binary_opt }),
 
 ]
 
@@ -142,9 +147,9 @@ function = [
 IN = [
 
     # exp -> structure in high_level
-    pcr.in_({ "derivation": [ "in", [ "structure", "in" , "high_level" ] ] , "identifier": "auto_call" , "definition_node?":True , "builder": B.in_ , "visitor": V.def_function }),
+    pcr.in_({ "derivation": [ "IN", [ "structure", "in" , "high_level" ] ] , "identifier": "auto_call" , "definition_node?":True , "builder": B.in_ , "visitor": V.def_function }),
     
-    pcr.in_({ "derivation": [ "high_level", [ "in" ] ] , "identifier": "." , "definition_node?":False , "builder": B.replacement , "visitor": V.replacement }),
+    pcr.in_({ "derivation": [ "high_level", [ "IN" ] ] , "identifier": "." , "definition_node?":False , "builder": B.replacement , "visitor": V.replacement }),
 
     # high_level -> high_level in block
     pcr.in_({ "derivation": [ "exp", [ "structure", "in" , "block" ] ] , "identifier": "auto_call" , "definition_node?":True , "builder": B.in_ , "visitor": V.def_function }),
@@ -337,7 +342,7 @@ non_terminals = [
         "pow",
         "bool",
         "call",
-        "in" ,
+        "IN" ,
                     
 ]
 
@@ -386,6 +391,8 @@ terminals= [
             "}",
             "$" , 
             ":",
+            "[",
+            "]",
             
         ]
 
