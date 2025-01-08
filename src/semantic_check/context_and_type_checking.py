@@ -24,12 +24,9 @@ def init_graph():
 def solve_context_and_type( error_log:list , ast:pcr.ASTNode , graph: nx.DiGraph , stack_referent_node:list , children=None , all_let = False ):
     risk.frame_logger.append( inspect.currentframe() )
     ast.referent_node = stack_referent_node[-1]
-    
+            
     if  children is None:
         children = ast.visitor_ast()
-    
-    if ast.id == 'def_function':
-        print()
     
     for child in children:
         
@@ -50,6 +47,7 @@ def solve_context_and_type( error_log:list , ast:pcr.ASTNode , graph: nx.DiGraph
                 if condition( child=child , ast=ast ):
                     action( graph=graph , child=child , stack_referent_node=stack_referent_node , all_let=all_let , error_log=error_log )
                     skip = True
+                    break
             
             if not skip:
                 solve_context_and_type( ast=child ,error_log= error_log , graph=graph ,children=None ,all_let=all_let ,stack_referent_node=stack_referent_node )
@@ -248,7 +246,7 @@ def find_anoted_type( graph:nx.DiGraph , anoted_type_name:str , stack_referent_n
 
 def auto_call( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     new_stack = [ item for item in stack_referent_node] # add the context to the stack , we are entering in new context
-    new_stack.append( child.name )
+    new_stack.append( f"{new_stack[-1]}_{child.name}" )
     solve_context_and_type( ast=child ,error_log=error_log ,graph=graph  ,children=None , all_let= False ,stack_referent_node=new_stack)
     
 def function_call_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
@@ -720,9 +718,23 @@ def check_args_type( graph:nx.DiGraph , ref_node_ast:pcr.ASTNode , def_node_ast:
         def_node_args = def_node_ast.constructor.expressions
     
     for index , item in enumerate(ref_node_args):
+        
         actual_type = item.type(graph)
         expected_type =def_node_args[index].type(graph)
-        if actual_type != expected_type:
+        
+        if expected_type == 'type_Object':
+            continue
+        posible_types = [ actual_type ]
+        
+        while True: # search for the types of the right_node
+        
+            new_neighbor = list(graph.neighbors( posible_types[-1] ))
+            if len(new_neighbor) != 0:
+                posible_types.append(new_neighbor[0])
+                continue
+            break
+        
+        if expected_type not in posible_types:
             return False
         
     return True

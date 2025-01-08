@@ -167,7 +167,6 @@ class in_(binary_opt):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": "","visitor": "" }) -> None:
         super().__init__(grammar)
         
-    expressions = []
     body: ASTNode = None
     
     def children_name(self):

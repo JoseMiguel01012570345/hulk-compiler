@@ -99,7 +99,8 @@ def protocol(token_list):
     return [ ( "name" , token_list[1].name ) , ("parent_name",token_list[3].name ) , ( "body", token_list[-1] ) ]
 
 def in_(token_list):
-    return [ ("name" , "anonymous") , ( "args" , token_list[0] ) , ( "body" , token_list[2] ) ]
+    counter.auto_call_count += 1
+    return [ ("name" , f"anonymous{counter.auto_call_count}") , ( "args" , token_list[0] ) , ( "body" , token_list[2] ) ]
 
 def structure(token_list):
     
@@ -124,7 +125,7 @@ def function_call(token_list):
     return [( "name" , token_list[0].name ) , ( "args",token_list[1] )]
     
 def for_while(token_list):
-    return [ ( "condition" , token_list[1]) , ("body", token_list[2]) ]
+    return [ ( "condition" , token_list[2]) , ("body", token_list[-1]) ]
 
 def if_elif(token_list):
     return [ ("condition" , token_list[1]) , ("body",token_list[-1]) ]
@@ -145,3 +146,6 @@ def unary_opt(token_list):
 def anoted_type( token_list ):
     token_list[0].node_type = token_list[-1].name
     return [ ( 'anoted_type' , token_list[-1].name ) , ( 'name' , token_list[0].name ) ]
+
+class counter:
+    auto_call_count = 0

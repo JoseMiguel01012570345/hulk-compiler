@@ -1,11 +1,10 @@
 type superprogram{
-type a{ 
-function tan(x: Number): Number => sin(x) / cos(x);
-function cot(x:Number) => 1 / tan(x);
+
 function operate(x:Number, y:Number) {
     
-    let a = 10 , b = 30 in  print(x + y);
-    
-}
+
+     for( a in [ 1 ,2 ]){
+        print(a);
+     }
 
 }}

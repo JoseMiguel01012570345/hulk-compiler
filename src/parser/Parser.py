@@ -190,8 +190,6 @@ class Parser:
             
             if i >= len(i0): break
             
-            if i == 5: 
-                print()
             derivation = i0[i]["production"]
             
             look_ahead , key_stone = self.first( derivation[1] , pivote=-1 ,look_ahead=i0[i]["look_ahead"] )
