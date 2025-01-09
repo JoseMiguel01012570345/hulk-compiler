@@ -118,6 +118,9 @@ class function_call( ASTNode): # check context
         if func_call_neighbor is not None:
             def_function_ast = graph.nodes[func_call_neighbor]["ASTNode"]
             
+            if def_function_ast.name == self.name:
+                return def_function_ast.node_type
+            
             return def_function_ast.type(graph=graph)
         
         self.node_type = 'type_Object'
