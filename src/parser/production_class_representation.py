@@ -988,6 +988,7 @@ class build_in:
     
     expected_type = 'type_Object'
     node_type = 'type_Object'
+    name = ''
     
     def __init__(self):
         pass
@@ -1022,96 +1023,113 @@ class Object(build_in):
     id = 'type'
     expected_type = 'type_Object'
     node_type = 'type_Object'
+    name = 'Object'
 
 class Number(build_in):
     id = 'type'
     expected_type = 'type_Number'
     node_type = 'type_Number'
+    name = 'Number'
 
 class Boolean(build_in):
     id = 'type'
     expected_type = 'type_Boolean'
     node_type = 'type_Boolean'
+    name = 'Boolean'
 
 class String(build_in):
     id = 'type'
     expected_type= "type_String"
     node_type= "type_String"
+    name = 'String'
 
 class Iterable(build_in):
     id = 'type'
     expected_type= "type_Iterable"
     node_type= "type_Iterable"
+    name = 'Iterable'
 
 class cos(build_in):
     id = 'def_function'
-    expected_type = Number
-    node_type = Number
+    expected_type = "type_Number"
+    node_type = "type_Number"
     args=buil_in_params( [ Number ] )
+    name = 'cos'
 
 class cot(build_in):
     id = 'def_function'
-    expected_type = Number
-    node_type = Number
+    expected_type = "type_Number"
+    node_type = "type_Number"
     args=buil_in_params( [ Number ] )
+    name = 'cot'
     
 class exp(build_in):
     id = 'def_function'
-    expected_type = Number
-    node_type = Number
+    expected_type = "type_Number"
+    node_type = "type_Number"
     args=buil_in_params( [ Number ] )
+    name = 'exp'
     
 class log(build_in):
     id = 'def_function'
-    expected_type = Number
-    node_type = Number
+    expected_type = "type_Number"
+    node_type = "type_Number"
     args=buil_in_params( [ Number ] )
+    name = 'log'
     
 class rand(build_in):
     id = 'def_function'
-    expected_type = Number
-    node_type = Number
+    expected_type = "type_Number"
+    node_type = "type_Number"
     args=buil_in_params( [ Number  , Number ] )
+    name = 'rand'
     
 class sqrt(build_in):
     id = 'def_function'
-    expected_type = Number
-    node_type = Number
+    expected_type = "type_Number"
+    node_type = "type_Number"
     args=buil_in_params( [ Number ] )
+    name = 'sqrt'
     
 class range(build_in):
     id = 'def_function'
-    expected_type = Iterable
-    node_type = Iterable
+    expected_type = "type_Iterable"
+    node_type = "type_Iterable"
     args=buil_in_params( [ Number  , Number ] )
+    name = 'range'
     
 class tan(build_in):
     id = 'def_function'
-    expected_type = Number
-    node_type = Number
+    expected_type = "type_Number"
+    node_type = "type_Number"
     args=buil_in_params( [ Object ] )
+    name = 'tan'
     
 class sin(build_in):
     id = 'def_function'
-    expected_type = Number
-    node_type = Number
+    expected_type = "type_Number"
+    node_type = "type_Number"
     args=buil_in_params( [ Number ] )
+    name = 'sin'
 
 class e(build_in):
     id = 'let'
-    expected_type = Number
-    node_type = Number
+    expected_type = "type_Number"
+    node_type = "type_Number"
+    name = 'e'
     
 class PI(build_in):
     id = 'let'
-    expected_type = Number
-    node_type = Number
+    expected_type = "type_Number"
+    node_type = "type_Number"
+    name = 'PI'
 
 class print(build_in):
     id = 'def_function'
-    expected_type = String
-    node_type = String
+    expected_type = "type_String"
+    node_type = "type_String"
     args=buil_in_params( [ Object ] )
+    name = 'print'
     
 class self(ASTNode):
     

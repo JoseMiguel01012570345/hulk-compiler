@@ -5,4 +5,8 @@ function operate(x:Number):Number {
       let a: x = (let x =10 in print(" ")) , e = 20 in print(a);
 
       operate(x) + 5;
+
+      for( a in operate(x) ){
+            print(a);
+      }
 }}
