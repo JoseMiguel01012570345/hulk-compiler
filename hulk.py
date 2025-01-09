@@ -22,7 +22,8 @@ tokens = [token for token in Lexer.Tokenize()]
 
 #__________________PARSER__________________________________________
 # uncomment to build states 
-# P.Parser()
+# if P.Parser():
+#     exit()
 
 # parse code
 ast = parse_input( code=[value[0] for value in tokens]  , allow=1 )
