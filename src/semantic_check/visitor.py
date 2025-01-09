@@ -156,10 +156,6 @@ def remove_child(ast:pcr.ASTNode):
             else:
                 ast.__dict__[node_out] = None # because this child has only one son
             
-            pass
-        
-            pass
-    
     return ast
 
 def non_reduce_node(id):
