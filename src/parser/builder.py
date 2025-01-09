@@ -100,7 +100,20 @@ def protocol(token_list):
 
 def in_(token_list):
     counter.auto_call_count += 1
-    return [ ("name" , f"anonymous{counter.auto_call_count}") , ( "args" , token_list[0] ) , ( "body" , token_list[2] ) ]
+    
+    args = None
+    for index,item in enumerate(token_list):
+        if item.__dict__.__contains__('Text') and item.Text == 'in':
+            parse_args = token_list[:index]
+            
+            if len(parse_args) == 2:
+                parse_args[-1].expressions.append(parse_args[0])
+                args = parse_args[-1]
+            elif len(token_list) == 1:
+                args = parse_args
+            break
+    
+    return [ ("name" , f"anonymous{counter.auto_call_count}") , ( "args" ,args ) , ( "body" , token_list[2] ) ]
 
 def structure(token_list):
     
