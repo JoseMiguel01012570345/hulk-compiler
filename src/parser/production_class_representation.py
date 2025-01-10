@@ -817,7 +817,7 @@ class type_(ASTNode): # check context
         return children
     
     def type(self, graph: DiGraph = None):
-        self.node_type = self.referent_node
+        self.node_type = f"self.referent_node_type_{self.name}"
         return self.pointer_to_node_type()
             
 class protocol(ASTNode): # check context
@@ -850,7 +850,7 @@ class protocol(ASTNode): # check context
         return children
     
     def type( self ,graph: DiGraph = None, ):
-        self.node_type = self.referent_node
+        self.node_type = f"self.referent_node_protocol_{self.name}"
         return self.pointer_to_node_type()
     
 class vectors(ASTNode):

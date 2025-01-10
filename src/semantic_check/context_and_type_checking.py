@@ -258,7 +258,7 @@ def function_call_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_nod
     
 def args_case(graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list):
     if child.parent_constructor:
-        solve_context_and_type(child , error_log , graph  , None , all_let=False , stack_referent_node=stack_referent_node )
+        solve_context_and_type(ast=child , error_log=error_log ,graph=graph  , children=None , all_let=False , stack_referent_node=stack_referent_node )
         return
     
     solve_context_and_type( ast=child ,error_log=error_log ,graph=graph  ,children=None , all_let=True , stack_referent_node=stack_referent_node )
@@ -351,7 +351,7 @@ def find_instance_type(graph:nx.DiGraph , ast:pcr.ASTNode , error_log:list , sta
 def dot_case( graph:nx.DiGraph , child:pcr.ASTNode , stack_referent_node:list , all_let:bool , error_log:list ):
     risk.frame_logger.append( inspect.currentframe() )
     
-    solve_context_and_type( child , error_log , graph , None , all_let=False , stack_referent_node=stack_referent_node )
+    solve_context_and_type( ast=child , error_log=error_log ,graph= graph ,children= None , all_let=False , stack_referent_node=stack_referent_node )
     solve_dot_case( graph=graph , error_log=error_log , right_node=child.right_node , left_node=child.left_node , stack_referent_node=stack_referent_node )
 
 @log_state_on_error
@@ -613,7 +613,8 @@ def variable(graph:nx.DiGraph, ast:pcr.variable , error_log:list , stack_referen
                         ref_node_scope=self_scope ,
                         add_node=False
                         )
-            
+            return
+        
     i = len(stack_referent_node) - 1
     while i >=0:
         

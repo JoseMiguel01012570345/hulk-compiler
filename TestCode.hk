@@ -1,12 +1,6 @@
-type superprogram{
 
-function operate(x:Number):Number {
+type Range(min:Number, max:Number) {
+
+    next(): Boolean => (self.current := self.current + 1) < self.max;
     
-      let a: x = (let x =10 in print(" ")) , e = 20 in print(a);
-
-      operate(x) + 5;
-
-      for( a in operate(x) ){
-            print(a);
-      }
-}}
+}

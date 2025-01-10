@@ -138,7 +138,7 @@ function = [
     # # high_level -> atom param => high_level
     pcr.def_function({ "derivation": [ "high_level" , [ "label" , "param" , ":" , "label" , "=>" , "high_level"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
     
-    pcr.def_function({ "derivation": [ "exp" , [ "label" , "param" , ":" , "label"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
+    pcr.def_function({ "derivation": [ "exp" , [ "label" , "param" , ":" , "label" , ";"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
     
     pcr.def_function({ "derivation": [ "high_level" , [ "label" , "param" , "=>" , "high_level"]] , "identifier": "def_function" , "definition_node?": True , "builder": B.def_function , "visitor": V.def_function }),
 
@@ -174,7 +174,7 @@ params=[
     # param -> ( structure )
     pcr.params({ "derivation": [ "param", [ "(" , "structure" ,")" ] ] , "identifier": "args" , "definition_node?":False , "builder": B.params , "visitor": V.block }),
     
-    # pcr.params({ "derivation": [ "param", [ "(" , "high_level" ,")" ] ] , "identifier": "args" , "definition_node?":False , "builder": B.params , "visitor": V.block }),
+    pcr.params({ "derivation": [ "atom", [ "(" , "high_level" ,")" ] ] , "identifier": "args" , "definition_node?":False , "builder": B.params , "visitor": V.block }),
     
     # param -> ( )
     pcr.params({ "derivation": [ "param", [ "(",")" ] ] , "identifier": "args" , "definition_node?":False , "builder": B.params , "visitor": V.block }),
@@ -191,30 +191,40 @@ variable = [
     
     # var_declaration -> atom = high_level
     pcr.assign({  "derivation": ["high_level",["label", "=" , "high_level" ]] , "identifier": "assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["high_level",["call" , "." , "label" , "=" , "high_level" ]] , "identifier": "assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["high_level",["label" , "." , "label" , "=" , "high_level" ]] , "identifier": "assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
     
     pcr.assign({  "derivation": ["exp",["label", ":=" , "exp" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["exp",["label", "." , "label" , ":=" , "exp" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["exp",["call", "." , "label" , ":=" , "exp" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
     
+    pcr.assign({  "derivation": ["exp",["label", "." , "label" , ":" , "label" , ":=" , "exp" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["exp",["call", "." , "label"  , ":" , "label" , ":=" , "exp" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
     pcr.assign({  "derivation": ["exp",["label" , ":" , "label" , ":=" , "exp" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    
+    pcr.assign({  "derivation": ["high_level",["label", ":=" , "high_level" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["high_level",["label", "." , "label" , ":=" , "high_level" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["high_level",["call", "." , "label" , ":=" , "high_level" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    
+    pcr.assign({  "derivation": ["high_level",["label", "." , "label" , ":" , "label" , ":=" , "high_level" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["high_level",["call", "." , "label"  , ":" , "label" , ":=" , "high_level" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
+    pcr.assign({  "derivation": ["high_level",["label" , ":" , "label" , ":=" , "high_level" ]] , "identifier": "re_assigment" , "definition_node?": False ,"builder": B.assigment , "visitor": V.binary_opt } ) ,
     
     pcr.variable({ "derivation" : ["label",["label", ":" ,"label"]] , "identifier": "var" ,"definition_node?": False ,"builder": B.anoted_type  , "visitor": V.var } ),
 ]
 
 expression_block = [
     
-    # block -> { exp
-    pcr.block({  "derivation": ["block",[ "{", "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    pcr.block({  "derivation": ["block",[ "{", "sblock" , "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
-    # block -> block block
-    pcr.block({  "derivation": ["block",[ "block", "block" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
+    pcr.block({  "derivation": ["sblock",[ "sblock", "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
     
-    # block -> block exp
-    pcr.block({  "derivation": ["block",[ "block", "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
+    pcr.block({  "derivation": ["sblock",[ "sblock", "block" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
     
-    pcr.block({  "derivation": ["block",[ "block", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    pcr.block({  "derivation": ["sblock",[ "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
     
     pcr.block({  "derivation": ["block",[ "{", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
-    # exp -> high_level ;
     pcr.ASTNode({ "derivation": ["exp",["high_level",";" ]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
 ]
@@ -347,6 +357,7 @@ non_terminals = [
         "bool",
         "call",
         "var_declaration_value" ,
+        "sblock" ,
                     
 ]
 
