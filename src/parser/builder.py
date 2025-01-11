@@ -39,28 +39,24 @@ def assigment(token_list):
 
 def block(token_list):
     
-    if len(token_list) == 1:
-        return [ ( "expressions" , [ token_list[0] ] ) ]
-        
-    if not token_list[0].__dict__.__contains__("id"):
-        
-        if not token_list[1].__dict__.__contains__("id"):
-            return [ ( "expressions" , [ ] ) ]
-             
-        return [ ( "expressions" , [ token_list[1] ] ) ]
+    expressions = []
+    for exp in token_list:
+        if exp.__dict__.__contains__('id'):
+            if exp.__dict__.__contains__('expressions'):
+                expressions.extend(exp.expressions)
+                continue
+            expressions.append(exp)
     
-    elif not  token_list[-1].__dict__.__contains__("id")  :     
-        return [("expressions", token_list[0].expressions )]
-    
-    else:
-        token_list[0].expressions.append(token_list[-1])
-        return [ ( "expressions" , token_list[0].expressions  )  ]    
+    return [ ( "expressions" , expressions  )  ]    
         
 def def_function(token_list):
     
     name = None
     args = None
-    body =     body = ("body" , token_list[-1])
+    body = ( 'body' , None )
+    if token_list[-1].__dict__.__contains__("id"):
+        body =     body = ("body" , token_list[-1])
+        
     node_type = ('node_type' , 'type_Object')
     
     for index,items in enumerate(token_list):
@@ -141,7 +137,7 @@ def for_while(token_list):
     return [ ( "condition" , token_list[2]) , ("body", token_list[-1]) ]
 
 def if_elif(token_list):
-    return [ ("condition" , token_list[1]) , ("body",token_list[-1]) ]
+    return [ ("condition" , token_list[2]) , ("body",token_list[-1]) ]
 
 def else_(token_list):
     return [("body",token_list[-1]) ]
@@ -159,6 +155,9 @@ def unary_opt(token_list):
 def anoted_type( token_list ):
     token_list[0].node_type = token_list[-1].name
     return [ ( 'anoted_type' , token_list[-1].name ) , ( 'name' , token_list[0].name ) ]
+
+def vector_gen( token_list ):
+    return [ ( 'generator' , token_list[1] ) , ( 'variable' , token_list[3] ) , ( 'iterator' , token_list[-2] ) ]
 
 class counter:
     auto_call_count = 0
