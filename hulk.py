@@ -35,7 +35,7 @@ ast = parse_input( code=[value[0] for value in tokens]  , allow=1 )
 
 s_error = semantic_errors.semantic_errors()
 
-if ast == None: 
+if ast == None:
     
     print(" \033[1;32m >\033[1;31m Syntaxis errors :( \033[0m")
     exit()
