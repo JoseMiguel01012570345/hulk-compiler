@@ -871,6 +871,9 @@ class vectors(ASTNode):
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
     
+    def children_name(self):
+        return [ 'generator' , 'variable' , 'iterator' ]
+    
     def type( self, graph: DiGraph = None, ):
         self.node_type = "Iterable"
         return self.pointer_to_node_type()
@@ -908,6 +911,9 @@ class index(ASTNode): # check context
     
     def __init__(self, grammar={ "derivation": "","identifier": ""," definition_node?": "","builder": None,"visitor": None }) -> None:
         super().__init__(grammar)
+    
+    def children_name(self):
+        return [ "left_node" , "right_node" ]
         
     def type( self, graph: DiGraph = None, ):
         self.node_type = "type_Object"
