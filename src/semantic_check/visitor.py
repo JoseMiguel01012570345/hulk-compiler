@@ -75,6 +75,9 @@ def function_call(self: pcr.ASTNode ):
    
     return children
 
+def vector_gen( self: pcr.ASTNode ):
+    return [ self.generator , self.variable , self.iterator ]
+
 def for_while(self:pcr.ASTNode):
     return [ self.condition , self.body ]
 
@@ -128,7 +131,7 @@ def remove_child(ast:pcr.ASTNode):
         
         if len(grand_son) != 0:
             child = remove_child(child)
-    
+
         reduce , num = reduce_node_condition(child)
         
         if reduce:
@@ -141,7 +144,7 @@ def remove_child(ast:pcr.ASTNode):
             else:
                 node_out = children_name[index]
             
-            if num == 1:
+            if num == 0:
                 
                 if children_name[0] == "expressions":
                     
@@ -187,10 +190,10 @@ def reduce_node_condition(child:pcr.ASTNode) -> bool:
     children = child.visitor_ast()
     
     if len(children) == 1 and children[0] != None and not non_reduce_node(child.id) :
-        return True , 1
+        return True , 0
 
     if len(children) == 0 and not non_reduce_node(child.id):
-        return True , 2
+        return True , -1 
 
-    return False , 3
+    return False , -1 #
 
