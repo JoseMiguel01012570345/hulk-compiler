@@ -48,7 +48,7 @@ conditional = [
     pcr.block({  "derivation": [ "atom" , [ "if_high_level" , "else_high_level" ]] , "identifier": "conditional_block" , "definition_node?": False , "builder": B.conditional , "visitor": V.conditional }),
     
     # atom -> if_high_level elif_high_level else_high_level
-    pcr.block({  "derivation": [ "exp" , [ "if_high_level" , "elif_high_level" , "else_high_level" ]] , "identifier": "conditional_block" , "definition_node?": False , "builder": B.conditional , "visitor": V.conditional }),
+    pcr.block({  "derivation": [ "atom" , [ "if_high_level" , "elif_high_level" , "else_high_level" ]] , "identifier": "conditional_block" , "definition_node?": False , "builder": B.conditional , "visitor": V.conditional }),
     
     # exp -> if_exp else_exp
     pcr.block({  "derivation": [ "exp" , [ "if_exp" , "else_exp" ]] , "identifier": "conditional_block" , "definition_node?": False , "builder": B.conditional , "visitor": V.conditional }),
@@ -75,6 +75,8 @@ vector = [
     pcr.vectors({  "derivation": [ "atom" , [ "[" , "high_level" , "]" ]] , "identifier": "vector" , "definition_node?": False , "builder": B.block , "visitor": V.block }),
     
     pcr.vectors({  "derivation": [ "atom" , [ "[" , "]" ]] , "identifier": "vector" , "definition_node?": False , "builder": B.block , "visitor": V.block }),
+
+    pcr.vectors({  "derivation": [ "atom" , [ "[" , "high_level" , "||" , "label" , "in" , "high_level" , "]" ]] , "identifier": "vector" , "definition_node?": False , "builder": B.vector_gen , "visitor": V.vector_gen }),
 
     pcr.index({  "derivation": [ "atom" , [ "label" , "[" , "high_level" , "]" ]] , "identifier": "index" , "definition_node?": False , "builder": B.binary_opt , "visitor": V.binary_opt }),
 
@@ -173,9 +175,7 @@ params=[
     
     # param -> ( structure )
     pcr.params({ "derivation": [ "param", [ "(" , "structure" ,")" ] ] , "identifier": "args" , "definition_node?":False , "builder": B.params , "visitor": V.block }),
-    
-    pcr.params({ "derivation": [ "atom", [ "(" , "high_level" ,")" ] ] , "identifier": "args" , "definition_node?":False , "builder": B.params , "visitor": V.block }),
-    
+        
     # param -> ( )
     pcr.params({ "derivation": [ "param", [ "(",")" ] ] , "identifier": "args" , "definition_node?":False , "builder": B.params , "visitor": V.block }),
     
@@ -217,15 +217,25 @@ expression_block = [
     
     pcr.block({  "derivation": ["block",[ "{", "sblock" , "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
-    pcr.block({  "derivation": ["sblock",[ "sblock", "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
+    pcr.block({  "derivation": ["block",[ "{", "sblock" , "}" , ";" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    
+    pcr.block({  "derivation": ["sblock",[ "exp_block" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
     
     pcr.block({  "derivation": ["sblock",[ "sblock", "block" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
-    
-    pcr.block({  "derivation": ["sblock",[ "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
     
     pcr.block({  "derivation": ["block",[ "{", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
     pcr.ASTNode({ "derivation": ["exp",["high_level",";" ]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
+    
+    
+    
+    pcr.block({ "derivation": ["exp_block",["exp_block" , "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    
+    pcr.ASTNode({ "derivation": ["exp_block",[ "{" , "exp_block"   ]] , "identifier": "." , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    
+    pcr.ASTNode({ "derivation": ["exp",[  "exp_block" , "}" , ";"  ]] , "identifier": "." , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    
+    pcr.ASTNode({ "derivation": ["exp",[  "exp_block" , "}"  ]] , "identifier": "." , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
 ]
 
@@ -247,10 +257,7 @@ unary_opt = [
 binary_opt = [
     
     # ---------------------------
-    
-    # atom -> label:label
-    
-    #  atom -> label.label
+        
     pcr.dot({ "derivation" : ["atom",["label", "." ,"label"]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     # atom -> label.call
@@ -262,17 +269,25 @@ binary_opt = [
     # atom -> call.label
     pcr.dot({ "derivation" : ["atom",["call", "." ,"label" ]] , "identifier": "dot" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
-    # 4 == a.b()    
+
     # ---------------------------
     
     # bool -> bool == concatenation
+    pcr.equal({ "derivation" : ["bool",[ "bool" , "as" , "label" ]] , "identifier": "equal" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    pcr.equal({ "derivation" : ["bool",[ "bool" , "is" , "label" ]] , "identifier": "equal" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
     pcr.equal({ "derivation" : ["bool",["bool","==","concatenation"]] , "identifier": "equal" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     # bool -> bool >= concatenation
-    pcr.bigger_than({ "derivation" : ["bool",["bool",">=","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    pcr.bigger_or_equal({ "derivation" : ["bool",["bool",">=","concatenation"]] , "identifier": ">=" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     # bool -> bool <= concatenation
-    pcr.smaller_than({ "derivation" : ["bool",["bool","<=","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    pcr.smaller_or_equal({ "derivation" : ["bool",["bool","<=","concatenation"]] , "identifier": "<=" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    pcr.smaller_than({ "derivation" : ["bool",["bool","<","concatenation"]] , "identifier": "<" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
+    
+    pcr.bigger_than({ "derivation" : ["bool",["bool",">","concatenation"]] , "identifier": ">" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
     
     # bool -> bool & concatenation
     pcr.and_({ "derivation" : ["bool",["bool","&","concatenation"]] , "identifier": "or" ,"definition_node?": False ,"builder": B.binary_opt  , "visitor": V.binary_opt } ),
@@ -358,6 +373,7 @@ non_terminals = [
         "call",
         "var_declaration_value" ,
         "sblock" ,
+        "exp_block" ,
                     
 ]
 
@@ -408,7 +424,11 @@ terminals= [
             ":",
             "[",
             "]",
-            
+            "<",
+            ">",
+            "is",
+            "as",
+            "||"
         ]
 
 grammar =[ 

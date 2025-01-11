@@ -1,6 +1,8 @@
+type a{ 
 
-type Range(min:Number, max:Number) {
-
-    next(): Boolean => (self.current := self.current + 1) < self.max;
+{
+    print(" ");
     
+}
+
 }
