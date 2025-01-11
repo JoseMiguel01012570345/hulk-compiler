@@ -1,6 +1,45 @@
-2025-01-11 07:07:58,668 - matplotlib data path: C:\Program Files\Python311\Lib\site-packages\matplotlib\mpl-data
-2025-01-11 07:07:58,677 - CONFIGDIR=C:\Users\Jose PC\.matplotlib
-2025-01-11 07:07:58,678 - interactive is False
-2025-01-11 07:07:58,678 - platform is win32
-2025-01-11 07:07:58,721 - CACHEDIR=C:\Users\Jose PC\.matplotlib
-2025-01-11 07:07:58,723 - Using fontManager instance from C:\Users\Jose PC\.matplotlib\fontlist-v390.json
+2025-01-11 07:43:36,197 - matplotlib data path: C:\Program Files\Python311\Lib\site-packages\matplotlib\mpl-data
+2025-01-11 07:43:36,208 - CONFIGDIR=C:\Users\Jose PC\.matplotlib
+2025-01-11 07:43:36,209 - interactive is False
+2025-01-11 07:43:36,209 - platform is win32
+2025-01-11 07:43:36,269 - CACHEDIR=C:\Users\Jose PC\.matplotlib
+2025-01-11 07:43:36,272 - Using fontManager instance from C:\Users\Jose PC\.matplotlib\fontlist-v390.json
+2025-01-11 07:43:36,888 - An error occurred in def_node_error: 'protocol' object has no attribute 'constructor'
+2025-01-11 07:43:36,888 - Local variables at error:
+2025-01-11 07:43:36,888 - graph = DiGraph with 45 nodes and 13 edges
+2025-01-11 07:43:36,888 - target_type = protocol_Hashable
+2025-01-11 07:43:36,888 - attr = 
+2025-01-11 07:43:36,888 - stack_referent_node = ['', '_protocol_Equatable']
+2025-01-11 07:43:36,888 - ref_node = <src.parser.production_class_representation.protocol object at 0x000002A8DBE77C90>
+2025-01-11 07:43:36,888 - state = 1
+2025-01-11 07:43:36,888 - target_scope_ast = <src.parser.production_class_representation.protocol object at 0x000002A8DBE77490>
+2025-01-11 07:43:36,888 - i = 0
+2025-01-11 07:43:36,889 - referent_node = 
+2025-01-11 07:43:36,889 - new_attr = 
+2025-01-11 07:43:36,889 - target_scope = _protocol_Hashable
+2025-01-11 07:43:36,889 - An error occurred in solve_context_and_type: 'protocol' object has no attribute 'constructor'
+2025-01-11 07:43:36,889 - Local variables at error:
+2025-01-11 07:43:36,889 - graph = DiGraph with 45 nodes and 13 edges
+2025-01-11 07:43:36,889 - target_type = protocol_Hashable
+2025-01-11 07:43:36,889 - attr = 
+2025-01-11 07:43:36,889 - stack_referent_node = ['', '_protocol_Equatable']
+2025-01-11 07:43:36,889 - ref_node = <src.parser.production_class_representation.protocol object at 0x000002A8DBE77C90>
+2025-01-11 07:43:36,889 - state = 1
+2025-01-11 07:43:36,889 - target_scope_ast = <src.parser.production_class_representation.protocol object at 0x000002A8DBE77490>
+2025-01-11 07:43:36,889 - i = 0
+2025-01-11 07:43:36,889 - referent_node = 
+2025-01-11 07:43:36,889 - new_attr = 
+2025-01-11 07:43:36,889 - target_scope = _protocol_Hashable
+2025-01-11 07:43:36,889 - An error occurred in solve_context_and_type: 'protocol' object has no attribute 'constructor'
+2025-01-11 07:43:36,889 - Local variables at error:
+2025-01-11 07:43:36,889 - graph = DiGraph with 45 nodes and 13 edges
+2025-01-11 07:43:36,889 - target_type = protocol_Hashable
+2025-01-11 07:43:36,889 - attr = 
+2025-01-11 07:43:36,889 - stack_referent_node = ['', '_protocol_Equatable']
+2025-01-11 07:43:36,889 - ref_node = <src.parser.production_class_representation.protocol object at 0x000002A8DBE77C90>
+2025-01-11 07:43:36,889 - state = 1
+2025-01-11 07:43:36,889 - target_scope_ast = <src.parser.production_class_representation.protocol object at 0x000002A8DBE77490>
+2025-01-11 07:43:36,889 - i = 0
+2025-01-11 07:43:36,889 - referent_node = 
+2025-01-11 07:43:36,889 - new_attr = 
+2025-01-11 07:43:36,889 - target_scope = _protocol_Hashable
