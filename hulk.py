@@ -25,11 +25,6 @@ tokens = [token for token in Lexer.Tokenize()]
 # if P.Parser():
 #     exit()
 
-# TODO: 
-# 1. add ";" after a block , 
-# 2. add scape backs-slash
-# 3. add block as a exp
-
 # parse code
 ast = parse_input( code=[value[0] for value in tokens]  , allow=1 )
 
