@@ -229,12 +229,14 @@ expression_block = [
     
     pcr.block({  "derivation": ["block",[ "{", "}" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
+    pcr.block({  "derivation": ["block",[ "{", "}" , ";" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    
     pcr.ASTNode({ "derivation": ["exp",["high_level",";" ]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
     
-    pcr.ASTNode({ "derivation": ["exp",[  "{" , "exp_block" , "}" , ";"  ]] , "identifier": "." , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    pcr.block({ "derivation": ["atom",[  "{" , "exp_block" , "}"  ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
-    pcr.ASTNode({ "derivation": ["atom",[  "{" , "exp_block" , "}"  ]] , "identifier": "." , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    pcr.block({ "derivation": ["exp",[  "{" , "exp_block" , "}" , ";"  ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
     
 ]
