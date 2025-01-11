@@ -22,8 +22,8 @@ tokens = [token for token in Lexer.Tokenize()]
 
 #__________________PARSER__________________________________________
 # uncomment to build states 
-if P.Parser():
-    exit()
+# if P.Parser():
+#     exit()
 
 # TODO: 
 # 1. add ";" after a block , 

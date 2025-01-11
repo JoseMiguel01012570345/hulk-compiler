@@ -219,7 +219,11 @@ expression_block = [
     
     pcr.block({  "derivation": ["block",[ "{", "sblock" , "}" , ";" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
+    pcr.block({ "derivation": ["exp_block",["exp_block" , "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    
     pcr.block({  "derivation": ["sblock",[ "exp_block" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
+    
+    pcr.ASTNode({ "derivation": ["exp_block",[ "exp" ]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
     pcr.block({  "derivation": ["sblock",[ "sblock", "block" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block   } ) ,
     
@@ -228,14 +232,10 @@ expression_block = [
     pcr.ASTNode({ "derivation": ["exp",["high_level",";" ]] , "identifier": "." , "definition_node?": False ,"builder": B.replacement , "visitor": V.replacement } ) ,
     
     
+    pcr.ASTNode({ "derivation": ["exp",[  "{" , "exp_block" , "}" , ";"  ]] , "identifier": "." , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
-    pcr.block({ "derivation": ["exp_block",["exp_block" , "exp" ]] , "identifier": "block" , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
+    pcr.ASTNode({ "derivation": ["atom",[  "{" , "exp_block" , "}"  ]] , "identifier": "." , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
-    pcr.ASTNode({ "derivation": ["exp_block",[ "{" , "exp_block"   ]] , "identifier": "." , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
-    
-    pcr.ASTNode({ "derivation": ["exp",[  "exp_block" , "}" , ";"  ]] , "identifier": "." , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
-    
-    pcr.ASTNode({ "derivation": ["exp",[  "exp_block" , "}"  ]] , "identifier": "." , "definition_node?": False ,"builder": B.block , "visitor": V.block } ) ,
     
 ]
 
