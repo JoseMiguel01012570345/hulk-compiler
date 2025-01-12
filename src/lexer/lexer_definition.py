@@ -122,22 +122,45 @@ class HULKLexer(Lexer):
     An implementation of a lexer for the HULK language
     """
     
+    #esta es la configuracion que tenias tu, en donde no consideras las palabras claves
+    #_priorities = {
+        #0: copy(BooleanRecognizer),
+        #1: copy(NumericRecognizer),
+        #2: copy(StringRecognizer),
+        #3: copy(VariableRecognizer),
+        #4: copy(SymbolRecognizer),
+        #5: copy(OperatorRecognizer)
+    #}
+    
+    #_recognizer_types = {
+        #0: TokenType.Boolean,
+        #1: TokenType.Number,   
+        #2: TokenType.String,
+        #3: TokenType.Variable,
+        #4: TokenType.Symbol,
+        #5: TokenType.Operator
+    #}
+    
+    
+    #esta es la configuracion que creo que esta correcta, en donde si considero las palabras claves
     _priorities = {
         0: copy(BooleanRecognizer),
         1: copy(NumericRecognizer),
         2: copy(StringRecognizer),
-        3: copy(VariableRecognizer),
-        4: copy(SymbolRecognizer),
-        5: copy(OperatorRecognizer)
+        3: copy(KeywordRecognizer),
+        4: copy(VariableRecognizer),
+        5: copy(SymbolRecognizer),
+        6: copy(OperatorRecognizer)
     }
     
     _recognizer_types = {
         0: TokenType.Boolean,
         1: TokenType.Number,   
         2: TokenType.String,
-        3: TokenType.Variable,
-        4: TokenType.Symbol,
-        5: TokenType.Operator
+        3: TokenType.Keyword,
+        4: TokenType.Variable,
+        5: TokenType.Symbol,
+        6: TokenType.Operator
     }
     
     def __init__(self):
