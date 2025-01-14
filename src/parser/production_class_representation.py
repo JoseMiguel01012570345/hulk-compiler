@@ -14,7 +14,7 @@ class ASTNode:
     column =10e306
     expected_type = "type_Object"
     node_type = "type_Object"
-    type_checker = False
+    is_operator = False
     rules = []
     referent_node = ''
     
