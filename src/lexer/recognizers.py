@@ -102,11 +102,23 @@ def make_string_automaton():
     start = State()
     state2 = State(value='"')
     state_reading = State(value='all')
+    state_escape = State(value='\\')
+    state_escape.add_transition("'",state_reading)
+    state_escape.add_transition("t",state_reading)
+    state_escape.add_transition("n",state_reading)
+    state_escape.add_transition('"',state_reading)
+    state_escape.add_transition('r',state_reading)
     final = State(value='final',final=True)
     start.add_transition('"',state2)
     for symbol in ascii_letters + digits + punctuation.replace('"','') + whitespace:
-        state2.add_transition(symbol,state_reading)
-        state_reading.add_transition(symbol,state_reading)
+        if symbol == '\\':
+            state2.add_transition(symbol,state_escape)
+            state_reading.add_transition(symbol,state_escape)
+            pass
+        else:
+            state2.add_transition(symbol,state_reading)
+            state_reading.add_transition(symbol,state_reading)
+            pass
         pass
     state_reading.add_transition('"',final)
     return Automaton(start,state2,state_reading,final)
