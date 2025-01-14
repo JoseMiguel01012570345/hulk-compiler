@@ -24,9 +24,9 @@ class semantic_errors:
         
         elif len(self.error_list) > 1 :
             
-            print(f" \033[1;31m >\033[1;31m There are several errors in your code \033[0;m")
+            print(f" \033[1;31m >\033[1;31m There are several errors({len(self.error_list)}) in your code \033[0;m")
             
-            for item in self.error_list:
+            for index,item in enumerate(self.error_list):
                 
                 type_ = item['error_type']
                 description = item['error_description']
@@ -34,7 +34,7 @@ class semantic_errors:
                 line = scope["line"]
                 column = scope["column"]
         
-                print(f" \033[1;31m > \033[1;32m There is an issue of the type: \033[1;31m {type_} \033[1;32m which says \033[1;31m {description} at line { line } , column { column } \033[0;m ")
+                print(f" \033[1;31m > [{index + 1}] \033[1;32m There is an issue of the type: \033[1;31m {type_} \033[1;32m which says \033[1;31m {description} at line { line } , column { column } \033[0;m ")
                 
         else:
             
